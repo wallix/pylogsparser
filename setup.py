@@ -35,7 +35,7 @@ data.extend(glob.glob('normalizers/*.template'))
 data.extend(glob.glob('normalizers/*.dtd'))
 
 setup(
-    name = "pylogparser",
+    name = "pylogsparser",
     version = "0.1",
     author = "Wallix",
     author_email = "opensource@wallix.org",
@@ -52,6 +52,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: System :: Logging",
         "Topic :: Software Development :: Libraries",
-        "License :: OSI Approved :: LGPL License",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     ],
 )
