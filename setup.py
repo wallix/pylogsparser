@@ -2,7 +2,7 @@
 
 # pylogsparser - Logs parsers python library
 #
-# Copyright (C) 2011 Wallix Inc.
+# Copyright (C) 2011 Wallix SARL
 #
 # This library is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by the
@@ -37,12 +37,12 @@ data.extend(glob.glob('normalizers/*.dtd'))
 setup(
     name = "pylogparser",
     version = "0.1",
-    author = "Wallix R&D",
-    author_email = "dev@wallix.com",
+    author = "Wallix",
+    author_email = "opensource@wallix.org",
     description = ("A log parser library packaged with a set of ready to use parsers (DHCPd, Squid, Apache, ...)"),
-    license = "BSD",
+    license = "LGPL",
     keywords = "log parser xml library python",
-    url = "http://www.wallix.com/pylogsparser",
+    url = "http://www.wallix.org/pylogsparser-project/",
     packages=['logsparser', 'tests'],
     data_files=[('share/normalizers', data)],
     requires=['lxml', 'pytz'],
@@ -52,6 +52,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: System :: Logging",
         "Topic :: Software Development :: Libraries",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: LGPL License",
     ],
 )
