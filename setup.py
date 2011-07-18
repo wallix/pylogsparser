@@ -35,14 +35,14 @@ data.extend(glob.glob('normalizers/*.template'))
 data.extend(glob.glob('normalizers/*.dtd'))
 
 setup(
-    name = "pylogparser",
+    name = "pylogsparser",
     version = "0.1",
-    author = "Wallix R&D",
-    author_email = "dev@wallix.com",
+    author = "Wallix",
+    author_email = "opensource@wallix.org",
     description = ("A log parser library packaged with a set of ready to use parsers (DHCPd, Squid, Apache, ...)"),
-    license = "BSD",
+    license = "LGPL",
     keywords = "log parser xml library python",
-    url = "http://www.wallix.com/pylogsparser",
+    url = "http://www.wallix.org/pylogsparser",
     packages=['logsparser', 'tests'],
     data_files=[('share/normalizers', data)],
     requires=['lxml', 'pytz'],
@@ -52,6 +52,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: System :: Logging",
         "Topic :: Software Development :: Libraries",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     ],
 )
