@@ -1,6 +1,24 @@
 LogsParser
 ==========
 
+Description
+:::::::::::
+
+LogsParser is an opensource python library created by Wallix ( http://www.wallix.org ).
+It is used as the core mechanism for logs tagging and normalization by Wallix's Log Box
+( http://www.wallix.com/index.php/products/wallix-logbox ).
+
+Logs come in a variety of formats. In order to parse many different types of
+logs, a developer used to need to write an engine based on a large list of complex
+regular expressions. It can become rapidly unreadable and unmaintainable.
+
+By using LogsParser, a developer can free herself from the burden of writing a
+log parsing engine, since the module comes in with "batteries included".
+Furthermore, this engine relies upon XML definition files that can be loaded at
+runtime. The definition files were designed to be easily readable and need very
+little skill in programming or regular expressions, without sacrificing
+powerfulness or expressiveness.
+
 Purpose
 :::::::
 
