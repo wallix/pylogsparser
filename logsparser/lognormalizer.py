@@ -188,7 +188,22 @@ class LogNormalizer():
 
         @param data: must be a dictionary with at least a key 'raw' or 'body'
                      with BaseString values (preferably Unicode).
-        """
+        
+        Here an example :
+        >>> from logsparser import lognormalizer
+        >>> from pprint import pprint
+        >>> ln = lognormalizer.LogNormalizer('/usr/local/share/normalizers/')
+        >>> mylog = {'raw' : 'Jul 18 15:35:01 zoo /USR/SBIN/CRON[14338]: (root) CMD (/srv/git/redmine-changesets.sh)'}
+        >>> ln.lognormalize(mylog)
+        >>> pprint mylog
+        {'body': '(root) CMD (/srv/git/redmine-changesets.sh)',
+        'date': datetime.datetime(2011, 7, 18, 15, 35, 1),
+        'pid': '14338',
+        'program': '/USR/SBIN/CRON',
+        'raw': 'Jul 18 15:35:01 zoo /USR/SBIN/CRON[14338]: (root) CMD (/srv/git/redmine-changesets.sh)',
+        'source': 'zoo',
+        'uuid': 70851882840934161193887647073096992594L}
+"""
         data = self.uuidify(data)
         data = self.normalize(data)
         # convert date to UTC

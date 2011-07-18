@@ -1,11 +1,11 @@
-Start pylogparser unittests
+Start pylogsparser unittests
 ---------------------------
 
 The command below will start logsparser test suite.
 
-$ NORMALIZERS_PATH=normalizers/ python tests/test_normalizer.py
+$ NORMALIZERS_PATH=normalizers/ python tests/test_suite.py
 
-Install pylogparser
+Install pylogsparser
 -------------------
 
 # python setup.py install
