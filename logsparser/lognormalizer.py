@@ -1,0 +1,225 @@
+# -*- python -*-
+
+# pylogsparser - Logs parsers python library
+#
+# Copyright (C) 2011 Wallix Inc.
+#
+# This library is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation; either version 2.1 of the License, or (at your
+# option) any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+
+
+"""This module exposes the L{LogNormalizer} class that can be used for
+higher-level management of the normalization flow.
+Using this module is in no way mandatory in order to benefit from
+the normalization system; the C{LogNormalizer} class provides basic facilities
+for further integration in a wider project (web services, ...).
+"""
+
+import os
+import uuid as _UUID_
+import pytz
+import warnings
+
+from normalizer import Normalizer
+from lxml.etree import parse, DTD, fromstring as XMLfromstring
+
+class LogNormalizer():
+    """Basic normalization flow manager.
+    Normalizers definitions are loaded from a path and checked against the DTD.
+    If the definitions are syntactically correct, the normalizers are
+    instantiated and populate the manager's cache.
+    Normalization priormority is established as follows:
+    
+    * Maximum priority assigned to normalizers where the "appliedTo" tag is set
+      to "raw". They MUST be mutually exclusive.
+    * Medium priority assigned to normalizers where the "appliedTo" tag is set
+      to "body".
+    * Lowest priority assigned to any remaining normalizers.
+    
+    Some extra treatment is also done prior and after the log normalization:
+    
+    * Assignment of a unique ID, under the tag "uuid"
+    * Conversion of date tags to UTC, if the "_timezone" was set prior to
+      the normalization process."""
+    
+    def __init__(self, normalizers_path, active_normalizers = {}):
+        """
+        Instantiates a flow manager. The default behavior is to activate every
+        available normalizer.
+        
+        @param normalizer_path: absolute path to the normalizer XML definitions
+        to use.
+        @param active_normalizers: a dictionary of active normalizers
+        in the form {name: [True|False]}.
+        """
+        self.normalizers_path = normalizers_path
+        self.active_normalizers = active_normalizers
+        self.dtd = DTD(open(os.path.join(self.normalizers_path,
+                                         'normalizer.dtd')))
+        self._cache = []
+        self.reload()
+        
+    def reload(self):
+        """Refreshes this instance's normalizers pool."""
+        self.normalizers = { 'raw' : [], 'body' : [] }
+        for path in self.iter_normalizer():
+            norm = parse(open(path))
+            if not self.dtd.validate(norm):
+                warnings.warn('Skipping %s : invalid DTD' % path)
+            else:
+                normalizer = Normalizer(norm, os.path.join(self.normalizers_path,
+                                                        'common_tagTypes.xml'))
+                self.normalizers.setdefault(normalizer.appliedTo, [])
+                self.normalizers[normalizer.appliedTo].append(normalizer)
+        self.activate_normalizers()
+
+    def iter_normalizer(self):
+        """ Iterates through normalizers and returns the normalizers' paths.
+        
+        @return: a generator of absolute paths.
+        """
+        path = self.normalizers_path
+        for root, dirs, files in os.walk(path):
+            for name in files:
+                if not name.startswith('common_tagTypes') and \
+                       name.endswith('.xml'):
+                    yield os.path.join(root, name)
+
+    def __len__(self):
+        """ Returns the amount of available normalizers.
+        """
+        return len([n for n in self.iter_normalizer()])
+
+    def update_normalizer(self, raw_xml_contents, name = None ):
+        """used to add or update a normalizer.
+        @param raw_xml_contents: XML description of normalizer as flat XML. It
+        must comply to the DTD.
+        @param name: if set, the XML description will be saved as name.xml.
+        If left blank, name will be fetched from the XML description.
+        """
+        xmlconf = XMLfromstring(raw_xml_contents).getroottree()
+        if not self.dtd.validate(xmlconf):
+            raise ValueError, "This definition file does not follow the normalizers DTD :\n\n%s" % \
+                               self.dtd.error_log.filter_from_errors()
+        if not name:
+            name = xmlconf.getroot().get('name')
+        if not name.endswith('.xml'):
+            name += '.xml'
+        path = self.normalizers_path
+        xmlconf.write(open(os.path.join(path, name), 'w'),
+                      encoding = 'utf8',
+                      method = 'xml',
+                      pretty_print = True)
+        self.reload()
+        
+    def get_normalizer_source(self, name):
+        """Returns the raw XML source of normalizer name."""
+        try:
+            norm = [ u for u in sum(self.normalizers.values(), []) if u.name == name][0]
+            return norm.get_source()
+        except:
+            raise ValueError, "Normalizer %s not found" % name
+        
+    def activate_normalizers(self):
+        """Activates normalizers according to what was set by calling
+        set_active_normalizers. If no call to the latter function has been
+        made so far, this method activates every normalizer."""
+        if not self.active_normalizers:
+            self.active_normalizers = dict([ (n.name, True) for n in \
+                        sum([ v for v in self.normalizers.values()], []) ])
+        # fool-proof the list
+        self.set_active_normalizers(self.active_normalizers)
+        # build an ordered cache to speed things up
+        self._cache = []
+        # First normalizers to apply are the "raw" ones.
+        for norm in self.normalizers['raw']:
+            # consider the normalizer to be inactive if not
+            # explicitly in our list
+            if self.active_normalizers.get(norm.name, False):
+                self._cache.append(norm)
+        # Then, apply the applicative normalization on "body":
+        for norm in self.normalizers['body']:
+            if self.active_normalizers.get(norm.name, False):
+                self._cache.append(norm)
+        # Then, apply everything else
+        for norm in sum([ self.normalizers[u] for u in self.normalizers 
+                                           if u not in ['raw', 'body']], []):
+            self._cache.append(norm)
+
+    def get_active_normalizers(self):
+        """Returns a dictionary of normalizers; keys are normalizers' names and
+        values are True|False according to the normalizer's activation state."""
+        return self.active_normalizers
+
+    def set_active_normalizers(self, norms = {}):
+        """Sets the active/inactive normalizers. Default behavior is to
+        deactivate every normalizer.
+        
+        @param norms: a dictionary, similar to the one returned by
+        get_active_normalizers."""
+        default = dict([ (n.name, False) for n in \
+                            sum([ v for v in self.normalizers.values()], []) ])
+        default.update(norms)
+        self.active_normalizers = default
+        
+    def lognormalize(self, data):
+        """ This method is the entry point to normalize data (a log).
+
+        data is passed through every activated normalizer
+        and extra tagging occurs accordingly.
+        
+        data receives also an extra uuid tag.
+        
+        If data contains a key called _timezone, its value is used to convert
+        any date into UTC. This value must be a valid timezone name; see
+        the pytz module for more information.
+
+        @param data: must be a dictionary with at least a key 'raw' or 'body'
+                     with BaseString values (preferably Unicode).
+        """
+        data = self.uuidify(data)
+        data = self.normalize(data)
+        # convert date to UTC
+        if '_timezone' in data.keys():
+            try:    
+                timezone = pytz.timezone(data['_timezone'])
+                loc_date = timezone.localize(data['date'])
+                data['date'] = loc_date.astimezone(pytz.utc)
+                # turn the date into a "naive" object
+                data['date'] = data['date'].replace(tzinfo=None)
+                del data['_timezone']
+            except:
+                warnings.warn('Invalid timezone %s, skipping UTC conversion' % \
+                              data['_timezone'])
+    
+    # some more functions for clarity
+    def uuidify(self, log):
+        """Adds a unique UID to the normalized log."""
+        log["uuid"] = _UUID_.uuid4().int
+        return log
+        
+    def normalize(self, log):
+        """plain normalization."""
+        for norm in self._cache:
+            log = norm.normalize(log)
+        return log
+
+    def _normalize(self, log):
+        """Used for testing only, the normalizers' tags prerequisite are
+        deactivated."""
+        for norm in self._cache:
+            log = norm.normalize(log, do_not_check_prereq = True)
+        return
+        

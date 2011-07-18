@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="PAM"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">This normalizer can parse messages issued by the Pluggable Authentication Module (PAM).</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages émis par le module d'authentification par greffons (PAM).</localized_desc></description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="PAMComponent" type="basestring">
+            <description>
+        <localized_desc language="en">the name of the PAM component</localized_desc>
+        <localized_desc language="fr">le nom du composant PAM</localized_desc></description>
+            <regexp>pam_\w+</regexp>
+        </tagType>
+        <tagType name="PAMUser" type="basestring">
+            <description>
+        <localized_desc language="en">the user information</localized_desc>
+        <localized_desc language="fr">l'utilisateur concerné par l'authentification</localized_desc></description>
+            <regexp>[^ ]+</regexp>
+        </tagType>
+        <tagType name="PAMSession" type="basestring">
+            <description>
+        <localized_desc language="en">the session action</localized_desc>
+        <localized_desc language="fr">l'action de session</localized_desc></description>
+            <regexp>opened|closed</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_action">
+log["action"] = {'opened' : 'open',
+                 'closed' : 'close'}.get(value, value)</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="PAM-001-session">
+            <description>
+        <localized_desc language="en">This type of message is logged at session opening or closing.</localized_desc>
+        <localized_desc language="fr">Structure des message émis à l'ouverture ou la fermeture de session.</localized_desc></description>
+            <text>PAMCOMPONENT\(PROGRAM:TYPE\):.* session ACTION for user USER</text>
+            <tags>
+                <tag name="component" tagType="PAMComponent">
+                 <description>
+        <localized_desc language="en">the PAM component</localized_desc>
+        <localized_desc language="fr">le composant PAM</localized_desc></description>
+                 <substitute>PAMCOMPONENT</substitute>
+                </tag>
+                <tag name="program" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the program calling PAM</localized_desc>
+        <localized_desc language="fr">le programme invoquant l'authentification via PAM</localized_desc></description>
+                 <substitute>PROGRAM</substitute>
+                </tag>
+                <tag name="type" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the authentication type</localized_desc>
+        <localized_desc language="fr">le type d'authentification</localized_desc></description>
+                 <substitute>TYPE</substitute>
+                </tag>
+                <tag name="action" tagType="PAMSession">
+                 <description>
+        <localized_desc language="en">the action taken regarding the session</localized_desc>
+        <localized_desc language="fr">l'action associée à la session</localized_desc></description>
+                 <substitute>ACTION</substitute>
+                 <callbacks>
+                  <callback>decode_action</callback>
+                 </callbacks>
+                </tag>
+                <tag name="user" tagType="PAMUser">
+                 <description>
+        <localized_desc language="en">the user for which an authentication request is issued</localized_desc>
+        <localized_desc language="fr">l'utilisateur pour lequel la demande d'authentification est émise</localized_desc></description>
+                 <substitute>USER</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>pam_unix(cron:session): session opened for user www-data by (uid=0)</text>
+                     <expectedTags>
+                          <expectedTag name="program">cron</expectedTag>
+                          <expectedTag name="component">pam_unix</expectedTag>
+                          <expectedTag name="type">session</expectedTag>
+                          <expectedTag name="action">open</expectedTag>
+                          <expectedTag name="user">www-data</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="PAM-002-generic">
+            <description>
+        <localized_desc language="en">A generic PAM message.</localized_desc>
+        <localized_desc language="fr">Structure générique des messages PAM non relatifs à une ouverture ou fermeture de session.</localized_desc></description>
+            <text>PAMCOMPONENT\(PROGRAM:TYPE\):.* (?:user=USER)?</text>
+            <tags>
+                <tag name="component" tagType="PAMComponent">
+                 <description>
+        <localized_desc language="en">the PAM component</localized_desc>
+        <localized_desc language="fr">le composant PAM</localized_desc></description>
+                 <substitute>PAMCOMPONENT</substitute>
+                </tag>
+                <tag name="program" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the program calling PAM</localized_desc>
+        <localized_desc language="fr">le programme invoquant l'authentification via PAM</localized_desc></description>
+                 <substitute>PROGRAM</substitute>
+                </tag>
+                <tag name="type" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the authentication type</localized_desc>
+        <localized_desc language="fr">le type d'authentification</localized_desc></description>
+                 <substitute>TYPE</substitute>
+                </tag>
+                <tag name="user" tagType="PAMUser">
+                 <description>
+        <localized_desc language="en">the user for which an authentication request is issued</localized_desc>
+        <localized_desc language="fr">l'utilisateur pour lequel la demande d'authentification est émise</localized_desc></description>
+                 <substitute>USER</substitute>
+                </tag>
+            </tags>
+        </pattern>
+    </patterns>
+</normalizer>
+

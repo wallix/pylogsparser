@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<!--
+Normalization for ISC BIND9 log lines
+
+named normalizer complement (Reaching limit of 100 named groups)
+
+TODO: handle view
+
+-->
+<normalizer name="named-2"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en"></localized_desc>
+        <localized_desc language="fr"></localized_desc>
+    </description>
+    <authors>
+        <author>fbo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="NonWhitespaceChar" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>\S+</regexp>
+        </tagType>
+        <tagType name="Class" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <!-- Be more restrictive ? http://www.iana.org/assignments/dns-parameters -->
+           <regexp>\S+</regexp>
+        </tagType>
+        <tagType name="Type" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <!-- Be more restrictive ? http://www.iana.org/assignments/dns-parameters -->
+            <regexp>\S+</regexp>
+        </tagType>
+        <tagType name="NamedDate" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+           <regexp>\d+-\w+-\d{4} \d+:\d+:\d+\.\d+</regexp>
+        </tagType>
+        <tagType name="NamedCategory" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+           <regexp>default:|general:|database:|security:|config:|resolver:|xfer-in:|xfer-out:|notify:|client:|unmatched:|network:|update:|update-security:|queries:|dispatch:|dnssec:|lame-servers:|edns-disabled:</regexp>
+        </tagType>
+        <tagType name="NamedSeverity" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+           <regexp>emerg:|alert:|crit:|error:|warn:|notice:|info:|debug:</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_named_date">
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+r = re.compile('(\d+)-(\w+)-(\d{4}) (\d+):(\d+):(\d+)\.(\d+)')
+ma = r.match(value)
+d, m, y, h, mi, s, ms = ma.groups()
+m = MONTHS.index(m) + 1
+log['date'] = datetime(int(y),
+                       int(m),
+                       int(d),
+                       int(h),
+                       int(mi),
+                       int(s),
+                       int(ms))
+        </callback>
+        <callback name="decode_named_category">
+log['category'] = value.rstrip(':')
+        </callback>
+        <callback name="decode_named_severity">
+# define severities
+SEVERITIES = [ "emerg",
+               "alert",
+               "crit",
+               "error",
+               "warn",
+               "notice",
+               "info",
+               "debug" ]
+severity = value.rstrip(':')
+log["severity"] = severity
+log["severity_code"] = SEVERITIES.index(severity)
+        </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="named-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: transfer of 'ZONE/CLASS': TYPE ACTION$</text>
+            <tags>
+                <tag name="client_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">Client IP address related to this request</localized_desc>
+                        <localized_desc language="fr">Adresse IP du client ayant généré la requête</localized_desc>
+                    </description>
+                    <substitute>IP</substitute>
+                </tag>
+                <tag name="client_sport" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">UDP client port</localized_desc>
+                        <localized_desc language="fr">Port UDP du client</localized_desc>
+                    </description>
+                    <substitute>PORT</substitute>
+                </tag>
+                <tag name="zone" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en">DNS Zone related to this request</localized_desc>
+                        <localized_desc language="fr">Zone DNS concernée par la requête</localized_desc>
+                    </description>
+                    <substitute>ZONE</substitute>
+                </tag>
+                <tag name="action" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en">Action prise par le serveur</localized_desc>
+                        <localized_desc language="fr">Action taken by server</localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                </tag>
+                <tag name="class" tagType="Class">
+                    <description>
+                        <localized_desc language="en">Requested DNS Class (CLASS)</localized_desc>
+                        <localized_desc language="fr">Classe DNS de la requête</localized_desc>
+                    </description>
+                    <substitute>CLASS</substitute>
+                </tag>
+                <tag name="type" tagType="Type">
+                    <description>
+                        <localized_desc language="en">Requested DNS recording Type (TYPE)</localized_desc>
+                        <localized_desc language="fr">Type (TYPE) d'enregistrement DNS demandé</localized_desc>
+                    </description>
+                    <substitute>TYPE</substitute>
+                </tag>
+                <tag name="__nameddate" tagType="NamedDate">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_named_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedcat" tagType="NamedCategory">
+                    <description>
+                        <localized_desc language="en">Subsystem category</localized_desc>
+                        <localized_desc language="fr">Catégorie de sous-système</localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                    <callbacks>
+                        <callback>decode_named_category</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedsev" tagType="NamedSeverity">
+                    <description>
+                        <localized_desc language="en">Message severity</localized_desc>
+                        <localized_desc language="fr">Sévérité du message</localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_named_severity</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="msg_type">zone_transfer</commonTag>
+                <commonTag name="program">named</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>client 10.10.4.4#35129: transfer of 'qa.ifr.lan/IN': AXFR started</text>
+                     <expectedTags>
+                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="msg_type">zone_transfer</expectedTag>
+                          <expectedTag name="zone">qa.ifr.lan</expectedTag>
+                          <expectedTag name="class">IN</expectedTag>
+                          <expectedTag name="action">started</expectedTag>
+                          <expectedTag name="type">AXFR</expectedTag>
+                          <expectedTag name="program">named</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="named-002">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?transfer of 'ZONE/CLASS' from IP#PORT: ACTION of transfer</text>
+            <tags>
+                <tag name="master_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>IP</substitute>
+                </tag>
+                <tag name="master_port" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PORT</substitute>
+                </tag>
+                <tag name="zone" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ZONE</substitute>
+                </tag>
+                <tag name="action" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                </tag>
+                <tag name="class" tagType="Class">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CLASS</substitute>
+                </tag>
+                <tag name="__nameddate" tagType="NamedDate">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_named_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedcat" tagType="NamedCategory">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                    <callbacks>
+                        <callback>decode_named_category</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedsev" tagType="NamedSeverity">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_named_severity</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="msg_type">zone_transfer</commonTag>
+                <commonTag name="program">named</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>transfer of 'localdomain/IN' from 192.168.1.3#53: end of transfer</text>
+                     <expectedTags>
+                          <expectedTag name="master_ip">192.168.1.3</expectedTag>
+                          <expectedTag name="msg_type">zone_transfer</expectedTag>
+                          <expectedTag name="zone">localdomain</expectedTag>
+                          <expectedTag name="class">IN</expectedTag>
+                          <expectedTag name="action">end</expectedTag>
+                          <expectedTag name="program">named</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="named-003">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?transfer of 'ZONE/CLASS' from IP#PORT: failed while receiving responses: REFUSED</text>
+            <tags>
+                <tag name="master_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>IP</substitute>
+                </tag>
+                <tag name="master_port" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PORT</substitute>
+                </tag>
+                <tag name="zone" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ZONE</substitute>
+                </tag>
+                <tag name="class" tagType="Class">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CLASS</substitute>
+                </tag>
+                <tag name="__nameddate" tagType="NamedDate">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_named_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedcat" tagType="NamedCategory">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                    <callbacks>
+                        <callback>decode_named_category</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedsev" tagType="NamedSeverity">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_named_severity</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="msg_type">zone_transfer_failure</commonTag>
+                <commonTag name="program">named</commonTag>
+                <commonTag name="action">failed</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>transfer of 'ns2.domain.de/IN' from 192.168.0.5#53: failed while receiving responses: REFUSED</text>
+                     <expectedTags>
+                          <expectedTag name="master_ip">192.168.0.5</expectedTag>
+                          <expectedTag name="msg_type">zone_transfer_failure</expectedTag>
+                          <expectedTag name="zone">ns2.domain.de</expectedTag>
+                          <expectedTag name="class">IN</expectedTag>
+                          <expectedTag name="action">failed</expectedTag>
+                          <expectedTag name="program">named</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="named-004">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?lame server resolving 'DOMAIN' \(in 'ZONE'\?\): IP#PORT</text>
+            <tags>
+                <tag name="master_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>IP</substitute>
+                </tag>
+                <tag name="master_port" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PORT</substitute>
+                </tag>
+                <tag name="zone" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ZONE</substitute>
+                </tag>
+                <tag name="domain" tagType="NonWhitespaceChar">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DOMAIN</substitute>
+                </tag>
+                <tag name="__nameddate" tagType="NamedDate">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_named_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedcat" tagType="NamedCategory">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                    <callbacks>
+                        <callback>decode_named_category</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__namedsev" tagType="NamedSeverity">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_named_severity</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="msg_type">lame_server_report</commonTag>
+                <commonTag name="program">named</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>lame server resolving 'www.cadenhead.org' (in 'cadenhead.org'?): 67.19.3.218#53</text>
+                     <expectedTags>
+                          <expectedTag name="master_ip">67.19.3.218</expectedTag>
+                          <expectedTag name="msg_type">lame_server_report</expectedTag>
+                          <expectedTag name="zone">cadenhead.org</expectedTag>
+                          <expectedTag name="domain">www.cadenhead.org</expectedTag>
+                          <expectedTag name="program">named</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

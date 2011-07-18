@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="MyNormalizer"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en"></localized_desc>
+        <localized_desc language="fr"></localized_desc>
+    </description>
+    <authors>
+        <author></author>
+    </authors>
+    <tagTypes>
+        <tagType name="myCustomTagType" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp></regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="myCallbackFunction"></callback>
+    </callbacks>
+    <patterns>
+        <pattern name="MyNormalizer-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text></text>
+            <tags>
+                <tag name="myTag" tagType="myCustomTagType">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute></substitute>
+                    <callbacks>
+                        <callback></callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text></text>
+                     <expectedTags>
+                          <expectedTag name="myTag"></expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

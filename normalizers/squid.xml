@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="squid"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>        
+        <localized_desc language="en">This normalizer parses messages issued by the Squid proxy server.
+Please note that only Squid's "native log format" is supported by this normalizer.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages émis par les proxys Squid.
+Seul le format "natif" des logs Squid est supporté par ce normaliseur.</localized_desc></description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="NoSpace" type="basestring">
+            <description>        
+        <localized_desc language="en">single lexeme without inner spaces</localized_desc>
+        <localized_desc language="fr">unité sémantique sans espace intersticiel</localized_desc></description>
+            <regexp>[^ ]+</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_epoch">
+log["date"] = datetime.fromtimestamp(float(value))</callback>
+        <callback name="decode_user">
+if value != "-":
+    log["user"] = value</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="squid-001">
+            <description>        
+        <localized_desc language="en">This pattern parses Squid's native log format.</localized_desc>
+        <localized_desc language="fr">Cette structure décrit le format "natif" des logs Squid.</localized_desc></description>
+            <text>EPOCH +ELAPSED IP CODE/REQUESTSTATUS SIZE METHOD URL USER PEERSTATUS/PEERHOST MIMETYPE</text>
+            <tags>
+                <tag name="__epoch" tagType="EpochTime">
+                 <description>        
+        <localized_desc language="en">the log EPOCH timestamp</localized_desc>
+        <localized_desc language="fr">l'horodatage du log au format EPOCH</localized_desc></description>
+                 <substitute>EPOCH</substitute>
+                 <callbacks>
+                  <callback>decode_epoch</callback>
+                 </callbacks>
+                </tag>
+                <tag name="__user" tagType="NoSpace">
+                 <description>        
+        <localized_desc language="en">the user concerned by the request</localized_desc>
+        <localized_desc language="fr">l'utilisateur concerné par la requête</localized_desc></description>
+                 <substitute>USER</substitute>
+                 <callbacks>
+                  <callback>decode_user</callback>
+                 </callbacks>
+                </tag>
+                <tag name="elapsed" tagType="Integer">
+                 <description>        
+        <localized_desc language="en">the elapsed time for the request</localized_desc>
+        <localized_desc language="fr">le temps écoulé pour la requête</localized_desc></description>
+                 <substitute>ELAPSED</substitute>
+                </tag>
+                <tag name="ip" tagType="IP">
+                 <description>        
+        <localized_desc language="en">the remote host's IP</localized_desc>
+        <localized_desc language="fr">l'adresse IP de l'hôte distant</localized_desc></description>
+                 <substitute>IP</substitute>
+                </tag>
+                <tag name="code" tagType="NoSpace">
+                 <description>        
+        <localized_desc language="en">the code returned by the proxy</localized_desc>
+        <localized_desc language="fr">le code de la réponse émise par le proxy</localized_desc></description>
+                 <substitute>CODE</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                 <description>        
+        <localized_desc language="en">the request's status</localized_desc>
+        <localized_desc language="fr">le statut de la requête</localized_desc></description>
+                 <substitute>REQUESTSTATUS</substitute>
+                </tag>
+                <tag name="size" tagType="Integer">
+                 <description>        
+        <localized_desc language="en">the size of the request's result</localized_desc>
+        <localized_desc language="fr">la taille du résultat de la requête</localized_desc></description>
+                 <substitute>SIZE</substitute>
+                </tag>
+                <tag name="method" tagType="NoSpace">
+                 <description>        
+        <localized_desc language="en">the request's method</localized_desc>
+        <localized_desc language="fr">la méthode associée à la requête</localized_desc></description>
+                 <substitute>METHOD</substitute>
+                </tag>
+                <tag name="url" tagType="URL">
+                 <description>        
+        <localized_desc language="en">the requested URL</localized_desc>
+        <localized_desc language="fr">l'URL requêtée</localized_desc></description>
+                 <substitute>URL</substitute>
+                </tag>
+                <tag name="peer_status" tagType="NoSpace">
+                 <description>        
+        <localized_desc language="en">the peer's status</localized_desc>
+        <localized_desc language="fr">le statut du pair</localized_desc></description>
+                 <substitute>PEERSTATUS</substitute>
+                </tag>
+                <tag name="peer_host" tagType="NoSpace">
+                 <description>        
+        <localized_desc language="en">the peer's host</localized_desc>
+        <localized_desc language="fr">l'hôte du pair</localized_desc></description>
+                 <substitute>PEERHOST</substitute>
+                </tag>
+                <tag name="mime_type" tagType="NoSPace">
+                 <description>        
+        <localized_desc language="en">the MIME type of the result of the request</localized_desc>
+        <localized_desc language="fr">le type MIME du résultat de la requête</localized_desc></description>
+                 <substitute>MIMETYPE</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>1259844091.407    307 82.238.42.70 TCP_MISS/200 1015 GET http://www.ietf.org/css/ietf.css fbo DIRECT/64.170.98.32 text/css</text>
+                     <expectedTags>
+                          <expectedTag name="code">TCP_MISS</expectedTag>
+                          <expectedTag name="elapsed">307</expectedTag>
+                          <expectedTag name="ip">82.238.42.70</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="mime_type">text/css</expectedTag>
+                          <expectedTag name="peer_host">64.170.98.32</expectedTag>
+                          <expectedTag name="peer_status">DIRECT</expectedTag>
+                          <expectedTag name="size">1015</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="url">http://www.ietf.org/css/ietf.css</expectedTag>
+                          <expectedTag name="user">fbo</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+    <commonTags>
+        <commonTag name="program">squid</commonTag>
+    </commonTags>
+</normalizer>
+

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="sshd"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description><localized_desc language="en">This normalizer can parse connection messages logged by a SSH server.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les événements de connexion à un serveur SSH.</localized_desc></description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="ActionTag" type="basestring">
+            <description>
+        <localized_desc language="en">matches the action logged for a connection</localized_desc>
+        <localized_desc language="fr">correspond à l'action de connexion</localized_desc></description>
+            <regexp>Failed|Accepted</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_action">
+if value == "Failed":
+    log['action'] = 'fail'
+else:
+    log['action'] = 'accept'</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="sshd-001">
+            <description>
+        <localized_desc language="en">A generic sshd log line.</localized_desc>
+        <localized_desc language="fr">Une notification standard de connexion à un serveur SSH.</localized_desc></description>
+            <text>ACTION METHOD for(?: invalid user)? USER from IP port [0-9]+ ssh[0-9]</text>
+            <tags>
+                <tag name="__action" tagType="ActionTag">
+                 <description>
+        <localized_desc language="en">the outcome of the connection attempt</localized_desc>
+        <localized_desc language="fr">le résultat de la tentative de connexion</localized_desc></description>
+                 <substitute>ACTION</substitute>
+                 <callbacks>
+                  <callback>decode_action</callback>
+                 </callbacks>
+                </tag>
+                <tag name="method" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the connection method (password or key)</localized_desc>
+        <localized_desc language="fr">la méthode de connexion utilisée (mot de passe ou clé asymétrique)</localized_desc></description>
+                 <substitute>METHOD</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the user requesting the connection</localized_desc>
+        <localized_desc language="fr">l'utilisateur à l'origine de la connexion</localized_desc></description>
+                 <substitute>USER</substitute>
+                </tag>
+                <tag name="ip" tagType="IP">
+                 <description>
+        <localized_desc language="en">the inbound connection's IP address</localized_desc>
+        <localized_desc language="fr">l'IP entrante de la connexion</localized_desc></description>
+                 <substitute>IP</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Failed password for admin from 218.49.183.17 port 49468 ssh2</text>
+                     <expectedTags>
+                          <expectedTag name="action">fail</expectedTag>
+                          <expectedTag name="method">password</expectedTag>
+                          <expectedTag name="user">admin</expectedTag>
+                          <expectedTag name="ip">218.49.183.17</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

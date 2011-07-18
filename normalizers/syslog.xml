@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="syslog"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en">This normalizer is used to parse syslog lines, as defined in RFC3164.
+Priority, when present, is broken into the facility and severity codes.</localized_desc>
+  <localized_desc language="fr">Ce normaliseur traite les événements au format syslog, tel qu'il est défini dans la RFC3164.
+Si le message contient une information de priorité, celle-ci est décomposée en deux valeurs : facilité et gravité.</localized_desc>
+ </description>
+ <authors>
+  <author>mhu@wallix.com</author>
+ </authors>
+ <!-- Most of the following declarations should be unnecessary once we define a pool of generic types. They are here for educational purposes.-->
+ <tagTypes>
+  <tagType name="syslogPriority" type="integer">
+   <description>
+    <localized_desc language="en">Expression matching a syslog line priority, defined as 8*facility + severity.</localized_desc>
+    <localized_desc language="fr">Expression correspondant à la priorité du message, suivant la formule 8 x facilité + gravité.</localized_desc>
+   </description>
+   <regexp>\d{1,3}</regexp>
+  </tagType>
+  <tagType name="syslogSource" type="basestring">
+   <description>
+    <localized_desc language="en">Expression matching the log's source.</localized_desc>
+    <localized_desc language="fr">Expression correspondant à la source du message.</localized_desc>
+   </description>
+   <regexp>[^: ]+</regexp>
+  </tagType>
+  <tagType name="syslogProgram" type="basestring">
+   <description>
+    <localized_desc language="en">Expression matching the log's program.</localized_desc>
+    <localized_desc language="fr">Expression correspondant au programme notifiant l'événement.</localized_desc>
+   </description>
+   <regexp>[^: []*</regexp>
+  </tagType> 
+ </tagTypes>
+ <callbacks>
+  <callback name="decode_priority">
+# define facilities
+FACILITIES = { 0: "kernel",
+               1: "user",
+               2: "mail",
+               3: "daemon",
+               4: "auth",
+               5: "syslog",
+               6: "print",
+               7: "news",
+               8: "uucp",
+               9: "ntp",
+               10: "secure",
+               11: "ftp",
+               12: "ntp",
+               13: "audit",
+               14: "alert",
+               15: "ntp" }
+for i in range(0, 8):
+    FACILITIES[i+16] = "local%d" % i
+
+# define severities
+SEVERITIES = { 0: "emerg",
+               1: "alert",
+               2: "crit",
+               3: "error",
+               4: "warn",
+               5: "notice",
+               6: "info",
+               7: "debug" }
+facility = int(value) / 8
+severity = int(value) % 8
+if facility not in FACILITIES or severity not in SEVERITIES:
+    raise ValueError('facility or severity is out of range')
+log["facility"] = "%s" % FACILITIES[facility]
+log["severity"] = "%s" % SEVERITIES[severity]
+log["facility_code"] = "%d" % facility
+log["severity_code"] = "%d" % severity
+  </callback>
+  <callback name="decode_date">
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']   
+now = datetime.now()
+currentyear = now.year
+# Following line may throw a lot of ValueError
+newdate = datetime(currentyear,
+                   MONTHS.index(value[0:3]) + 1,
+                   int(value[4:6]),
+                   int(value[7:9]),
+                   int(value[10:12]),
+                   int(value[13:15]))
+log["date"] = newdate
+  </callback>
+ </callbacks>
+ <patterns>
+  <pattern name="syslog-001">
+   <description>
+    <localized_desc language="en">A syslog line with optional priority (sent through network), source, program and optional PID.</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité (optionnelle), une source, un programme et un PID (optionnel).</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE PROGRAM(?:\[PID\])?: BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority"><!-- tags starting with double underscores will not appear in the final wallixlog.-->
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDate">
+     <description>
+     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>decode_date</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="program" tagType="syslogProgram">
+     <description>
+     <localized_desc language="en">the log's program</localized_desc>
+     <localized_desc language="fr">le programme à l'origine de l'événement</localized_desc>
+     </description>
+     <substitute>PROGRAM</substitute>
+    </tag>
+    <tag name="pid" tagType="Integer">
+     <description>
+     <localized_desc language="en">the program's process ID</localized_desc>
+     <localized_desc language="fr">le PID du programme</localized_desc>
+     </description>
+     <substitute>PID</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>&lt;29&gt;Jul 18 08:55:35 naruto dhclient[2218]: bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
+     <expectedTags>
+      <expectedTag name="facility">daemon</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">naruto</expectedTag>
+      <expectedTag name="program">dhclient</expectedTag>
+      <expectedTag name="pid">2218</expectedTag>
+      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="syslog-002">
+   <description>
+    <localized_desc language="en">A syslog line with optional priority (sent through network), source, and no information about program and PID.</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité (optionnelle), une source, et pas d'information sur le programme.</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDate">
+     <description>
+     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>decode_date</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>&lt;29&gt;Jul 18 08:55:35 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
+     <expectedTags>
+      <expectedTag name="facility">daemon</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">naruto</expectedTag>
+      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>
+

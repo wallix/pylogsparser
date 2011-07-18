@@ -1,0 +1,95 @@
+<!ELEMENT normalizer (description?,authors?,tagTypes?,callbacks?,prerequisites?,patterns,commonTags?)>
+ <!-- The given name of the normalizer -->
+ <!ATTLIST normalizer name CDATA #REQUIRED>
+ <!-- The version of this normalizer -->
+ <!ATTLIST normalizer version CDATA #REQUIRED>
+ <!-- Compile the associated regexps with the UNICODE flag -->
+ <!ATTLIST normalizer unicode (no|yes) "yes">
+ <!-- Compile the associated regexps with the IGNORECASE flag -->
+ <!ATTLIST normalizer ignorecase (no|yes) "yes">
+ <!-- Patterns are multiline -->
+ <!ATTLIST normalizer multiline (no|yes) "yes">
+ <!-- how to match the pattern : "match" to match at the beginning of the sample,
+      or "search" to match anywhere in the sample -->
+ <!ATTLIST normalizer matchtype (match|search) "match">
+ <!-- What tag will the patterns be applied to ? Set the value to "raw" for
+      protocol normalizers, "body" for application or generic normalizers -->
+ <!ATTLIST normalizer appliedTo CDATA #REQUIRED>
+<!-- A set of descriptions, language is specified as the usual language code -->
+<!ELEMENT description (localized_desc+)>
+ <!ELEMENT localized_desc (#PCDATA)>
+ <!ATTLIST localized_desc language CDATA #REQUIRED>
+<!ELEMENT authors (author+)>
+<!ELEMENT author (#PCDATA)>
+
+<!-- Here one can define specific regexp blocks (this should be rare, with 
+     most cases being covered by default tagTypes.). Once extracted, the result
+     is passed to the callbacks in order. -->
+<!ELEMENT tagTypes (tagType+)>
+<!ELEMENT tagType (description?,regexp)>
+ <!-- the name of the tag type preferably in camelCase, for example
+      "syslogDate", "EPOCH", "IP", etc -->
+ <!ATTLIST tagType name CDATA #REQUIRED>
+ <!-- The expected python type of the extracted value once the callbacks
+      have been fired. Not used yet, might be in the future. -->
+ <!ATTLIST tagType type (integer|float|basestring|datetime) "basestring">
+<!-- the regular expression the data must match to qualify, for example
+     "[A-Z][a-z]{2} [ 0-9]\d \d{2}:\d{2}:\d{2}" -->
+<!ELEMENT regexp (#PCDATA)>
+<!-- Python functions to call after the data has been extracted with the regular
+     expression. The functions are called in order of definition.-->
+<!ELEMENT callbacks (callback+)> 
+<!ELEMENT callback (#PCDATA)>
+ <!-- a name is REQUIRED as an attribute when defining the function, and
+      unnecessary when associated to a tag definition. Instead, the name MUST be
+      mentioned as text between the <callback> tags. -->
+ <!ATTLIST callback name CDATA #IMPLIED>
+<!-- does a tag need to match a value before we should apply this normalizer ? -->
+<!ELEMENT prerequisites (prereqTag+)> 
+<!ELEMENT prereqTag (#PCDATA)>
+ <!ATTLIST prereqTag name CDATA #REQUIRED>
+
+<!ELEMENT value (#PCDATA)>
+
+<!-- Define the patterns associated to this normalizer. -->
+<!ELEMENT patterns (pattern+)> 
+<!ELEMENT pattern (description?,text,tags,commonTags?,examples?)>
+ <!-- a handy name for the pattern. Patterns are applied in alphabetical order
+      of names.-->
+ <!ATTLIST pattern name CDATA #REQUIRED>
+<!-- a meta description of the log line covered by this pattern, for example
+     <SYSLOGCODE>SYSLOGDATE SOURCE PROGRAM\[PID\]: BODY
+     Regular expressions' metacharacters are not escaped by default, to provide
+     their full power without the hassle.-->
+<!ELEMENT text (#PCDATA)> 
+<!-- a list of real-life examples that can be used for auto-generating some
+     documentation and unit testing. -->
+<!ELEMENT examples (example+)> 
+ <!ELEMENT example (description?,text,expectedTags)>
+<!-- a (non necessarily complete) list of tags this normalizer will extract
+     from this example. These tags must be present after normalizing the
+     example for this normalizer to be considered valid.-->
+<!ELEMENT expectedTags (expectedTag+)> 
+ <!ELEMENT expectedTag (#PCDATA)>
+  <!ATTLIST expectedTag name CDATA #REQUIRED>
+<!-- A list of tags associated to the meta description in the pattern. -->
+<!ELEMENT tags (tag+)> 
+<!ELEMENT tag (description?,substitute,callbacks?)>
+<!-- The name of the tag, as it will appear in the WallixLog. 
+     if the name starts with '__' it is considered a temporary value (typically
+     processed in callbacks) that will therefore not appear after normalization.-->
+ <!ATTLIST tag name CDATA #REQUIRED> 
+ <!-- the tag type, used to determine the regular expression that will be
+      substituted in the pattern. It must be either a built-in tagType,
+      or one defined in the current tagTypes markup. Newly defined tagTypes
+      take precedence over built-in ones in case of a naming conflict. -->
+ <!ATTLIST tag tagType CDATA "Anything"> 
+<!-- The string chain that will be replaced by the tagType's regular
+     expression in the pattern. -->
+<!ELEMENT substitute (#PCDATA)>
+
+<!-- If necessary, define here tags that must be set even though they weren't
+     found in the pattern. -->
+<!ELEMENT commonTags (commonTag+)> 
+<!ELEMENT commonTag (#PCDATA)>
+ <!ATTLIST commonTag name CDATA #REQUIRED>

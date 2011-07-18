@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="LEA"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">This normalizer handles LEA (Log Export API) normalization. The LEA format is used by CheckPoint products to export logs to a LogBox.
+The formatting with | as a fields separator is due to the use of FW1-LogGrabber for log fetching.
+
+Due to the dynamic nature of this logging format, please refer to your product's documentation to find out more about tagging.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les logs émis en utilisant l'API d'export de logs (LEA). Cette API peut être utilisée pour la réception de logs en provenance d'équipements CheckPoint.
+Le formatage des champs séparés par le caractère | est dû à la récupération des logs via l'utilitaire FW1-LogGrabber.
+
+En raison de la nature dynamique de ce format de log, les tags extraits peuvent varier en fonction des événements consignés. Veuillez vous référer à la documentation de votre équipement exposant LEA pour de plus amples informations.</localized_desc></description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="LEAFields" type="basestring">
+            <description>
+        <localized_desc language="en">LEA fields as "key=value", separated by |</localized_desc>
+        <localized_desc language="fr">Champs descriptifs au format "clé=valeur", séparés par le caractère |</localized_desc></description>
+            <regexp>(?:[^ =]+=[^|]+|)*[^ =]+=[^|]+</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_LEA">
+# These are the only tags we extract
+KNOWN = [ ("loc", "id"),
+          "product",
+          ("i/f_dir", "dir"),
+          ("i/f_name", "interface"),
+          ("orig","origin"),
+          "type",
+          "action",
+          ("proto", "protocol"),
+          "rule",
+          "src",
+          "dst",
+          ("s_port", "spt"),
+          ("service", "dpt"),
+          ("uuid", "lea_uuid") ]
+dic = {}
+body = value.split('|')
+for l in body:
+    key, val = l.split("=", 1)
+    dic[key] = val
+# keep only known tags
+for t in KNOWN:
+    if isinstance(t, basestring):
+       t = (t,t)
+    old, new = t
+    if old in dic.keys():
+        log[new] = dic[old]
+# improve body readability
+log['body'] = log['body'].replace("|", " ") 
+# Try to retrieve the date
+try:
+    log['date'] = datetime.fromtimestamp(int(dic['time']))
+except:
+    try:
+        log['date'] = datetime.strptime(dic['time'], "%Y-%m-%d %H:%M:%S")
+    except:
+        # cannot parse it, keep it safe
+        log['time'] = dic['time']
+</callback>
+    </callbacks>
+    <prerequisites>
+        <prereqTag name="program">lea</prereqTag>
+    </prerequisites>
+    <patterns>
+        <pattern name="LEA-001">
+            <description>
+        <localized_desc language="en">A list of key-value couples, separated by a | character.</localized_desc>
+        <localized_desc language="fr">L'événement est décrit à l'aide d'une série de couples clé-valeur, séparés par le caractère |.</localized_desc></description>
+            <text>LEAFIELDS</text>
+            <tags>
+                <tag name="__lea" tagType="LEAFields">
+                 <description>
+        <localized_desc language="en">a list of key-value couples, separated by a | character, needing some post-processing</localized_desc>
+        <localized_desc language="fr">la liste des couples clé-valeur, à passer à une fonction de post-traitement</localized_desc></description>
+                 <substitute>LEAFIELDS</substitute>
+                 <callbacks>
+                  <callback>decode_LEA</callback>
+                 </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>loc=3707|time=1199716450|action=accept|orig=fw1|i/f_dir=inbound|i/f_name=PCnet1|has_accounting=0|uuid=&lt;47822e42,00000001,7b040a0a,000007b6&gt;|product=VPN-1 &amp; FireWall-1|__policy_id_tag=product=VPN-1 &amp; FireWall-1[db_tag={9F95C344-FE3F-4E3E-ACD8-60B5194BAAB4};mgmt=fw1;date=1199701916;policy_name=Standard]|src=naruto|s_port=56840|dst=fw1|service=https|proto=tcp|rule=1</text>
+                     <expectedTags>
+                          <expectedTag name="id">3707</expectedTag>
+                          <expectedTag name="action">accept</expectedTag>
+                          <expectedTag name="product">VPN-1 &amp; FireWall-1</expectedTag>
+                          <expectedTag name="dir">inbound</expectedTag>
+                          <expectedTag name="interface">PCnet1</expectedTag>
+                          <expectedTag name="origin">fw1</expectedTag>
+                          <expectedTag name="protocol">tcp</expectedTag>
+                          <expectedTag name="rule">1</expectedTag>
+                          <expectedTag name="src">naruto</expectedTag>
+                          <expectedTag name="dst">fw1</expectedTag>
+                          <expectedTag name="spt">56840</expectedTag>
+                          <expectedTag name="dpt">https</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

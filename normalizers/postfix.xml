@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="postfix"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">Postfix log normalization.
+Postfix logs consist of a message UID and a list of keys and values.
+Normalized keys are "client", "to", "from", "orig_to", "relay", "size", "message-id" and "status".</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les logs émis par le service Postfix.
+Les messages Postfix consistent en un UID de message et une liste variable de clés et de valeurs associées.
+Les clés extraites par ce normaliseur sont "client", "to", "from", "orig_to", "relay", "size", "message-id" et "status".</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="postfixUID" type="basestring">
+            <description>
+        <localized_desc language="en">the hexadecimal message UID</localized_desc>
+        <localized_desc language="fr">l'UID associé au message, exprimé sous forme d'un nombre hexadécimal</localized_desc></description>
+            <regexp>[0-9A-F]{11}</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_postfix_key_value">
+# find the component and trim the program
+if log.get("program", "").startswith("postfix"):
+    log["component"] = log['program'][8:]
+    log["program"] = "postfix"
+ACCEPTED = [ "client",
+             "to",
+             "from",
+             "orig_to",
+             "relay",
+             "size",
+             "message-id",
+             "status" ]
+couples = value.split(', ')
+for couple in couples:
+    tagname, tagvalue = couple.split('=', 1)
+    if tagname in ACCEPTED:
+        tagvalue = tagvalue.strip('&lt;&gt;')
+        log[tagname] = tagvalue
+        if tagname == 'status':
+            log[tagname] = log[tagname].split()[0]
+    </callback>
+    </callbacks>
+    <prerequisites>
+        <prereqTag name="program">postfix.+</prereqTag>
+    </prerequisites>
+    <patterns>
+        <pattern name="postfix-001">
+            <description>
+        <localized_desc language="en">Generic postfix message with an UID and many key-values couples.</localized_desc>
+        <localized_desc language="fr">Message Postfix générique comportant un UID et plusieurs couples clé-valeur.</localized_desc></description>
+            <text>UID: KEYVALUES</text>
+            <tags>
+                <tag name="uid" tagType="postfixUID">
+                 <description>
+        <localized_desc language="en">the Postfix message UID</localized_desc>
+        <localized_desc language="fr">l'UID du message</localized_desc></description>
+                 <substitute>UID</substitute>
+                </tag>
+                <tag name="__keyvalues" tagType="Anything">
+                 <description>
+        <localized_desc language="en">the Postfix key-value couples</localized_desc>
+        <localized_desc language="fr">les couples clé-valeur du log</localized_desc></description>
+                 <substitute>KEYVALUES</substitute>
+                 <callbacks>
+                  <callback>decode_postfix_key_value</callback>
+                 </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>74275790B06: to=&lt;root@ubuntu&gt;, orig_to=&lt;root&gt;, relay=none, delay=0.91, delays=0.31/0.07/0.53/0, dsn=5.4.4, status=bounced (Host or domain name not found. Name service error for name=ubuntu type=A: Host not found)</text>
+                     <expectedTags>
+                          <expectedTag name="uid">74275790B06</expectedTag>
+                          <expectedTag name="to">root@ubuntu</expectedTag>
+                          <expectedTag name="orig_to">root</expectedTag>
+                          <expectedTag name="relay">none</expectedTag>
+                          <expectedTag name="status">bounced</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

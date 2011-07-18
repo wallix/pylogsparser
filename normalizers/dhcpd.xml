@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="DHCPd"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">This normalizer is used to parse DHCPd messages.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages émis par les serveurs DHCPd.</localized_desc></description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="AnythingWithoutSpace" type="basestring">
+            <description>
+        <localized_desc language="en">Expression matching a single word or lexeme.</localized_desc>
+        <localized_desc language="fr">Expression correspondant à un mot sans espace intersticiel.</localized_desc></description>
+            <regexp>[^ ]+</regexp>
+        </tagType>
+        <tagType name="DHCPAction" type="basestring">
+            <description>
+        <localized_desc language="en">Expression matching the action notified by the DCHP daemon.</localized_desc>
+        <localized_desc language="fr">Expression correspondant à l'action DHCP.</localized_desc></description>
+            <regexp>DHCP[A-Z]+</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_action">
+log["action"] = value[4:]
+        </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="DHCPd-001-DISCOVER">
+            <description>
+        <localized_desc language="en">Generic DHCP discovery message.</localized_desc>
+        <localized_desc language="fr">Structure générique d'un message de découverte DHCP.</localized_desc></description>
+            <text>DHCPACTION from MACADDRESS via ADDRESS</text>
+            <tags>
+                <tag name="__dhcpaction" tagType="DHCPAction">
+                    <substitute>DHCPACTION</substitute>
+                    <callbacks>
+                        <callback>decode_action</callback>
+                    </callbacks>
+                </tag>
+                <tag name="mac" tagType="MACAddress">
+                    <substitute>MACADDRESS</substitute>
+                </tag>
+                <tag name="via" tagType="AnythingWithoutSpace">
+                    <substitute>ADDRESS</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                    <text>DHCPDISCOVER from 02:1c:25:a3:32:76 via 183.213.184.122</text>
+                    <expectedTags>
+                        <expectedTag name="action">DISCOVER</expectedTag>
+                        <expectedTag name="mac">02:1c:25:a3:32:76</expectedTag>
+                        <expectedTag name="via">183.213.184.122</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="DHCPd-002-INFORM">
+            <description>
+        <localized_desc language="en">Generic DHCP inform message.</localized_desc>
+        <localized_desc language="fr">Message générique informatif.</localized_desc></description>
+            <text>DHCPACTION from IP</text>
+            <tags>
+                <tag name="__dhcpaction" tagType="DHCPAction">
+                    <substitute>DHCPACTION</substitute>
+                    <callbacks>
+                        <callback>decode_action</callback>
+                    </callbacks>
+                </tag>
+                <tag name="ip" tagType="IP">
+                    <substitute>IP</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                    <text>DHCPINFORM from 183.231.184.122</text>
+                    <expectedTags>
+                        <expectedTag name="action">INFORM</expectedTag>
+                        <expectedTag name="ip">183.231.184.122</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="DHCPd-003-OTHERACTIONS">
+            <description>
+        <localized_desc language="en">Other DHCP messages : offer, request, acknowledge, non-acknowledge, decline, release.</localized_desc>
+        <localized_desc language="fr">Autres messages DHCP : offre de bail, requête, confirmation, réfutation, refus, libération de bail.</localized_desc></description>
+            <text>DHCPACTION [a-z]+ IP [a-z]+ MACADDRESS via VIA</text>
+            <tags>
+                <tag name="__dhcpaction" tagType="DHCPAction">
+                    <substitute>DHCPACTION</substitute>
+                    <callbacks>
+                        <callback>decode_action</callback>
+                    </callbacks>
+                </tag>
+                <tag name="ip" tagType="IP">
+                    <substitute>IP</substitute>
+                </tag>
+                <tag name="mac" tagType="MACAddress">
+                    <substitute>MACADDRESS</substitute>
+                </tag>
+                <tag name="via" tagType="AnythingWithoutSpace">
+                    <substitute>VIA</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                    <text>DHCPOFFER on 183.231.184.122 to 00:13:ec:1c:06:5b via 183.213.184.122</text>
+                    <expectedTags>
+                        <expectedTag name="action">OFFER</expectedTag>
+                        <expectedTag name="ip">183.231.184.122</expectedTag>
+                        <expectedTag name="mac">00:13:ec:1c:06:5b</expectedTag>
+                        <expectedTag name="via">183.213.184.122</expectedTag>
+                    </expectedTags>
+                </example>
+                <example>
+                    <text>DHCPREQUEST for 183.231.184.122 from 00:13:ec:1c:06:5b via 183.213.184.122</text>
+                    <expectedTags>
+                        <expectedTag name="action">REQUEST</expectedTag>
+                        <expectedTag name="ip">183.231.184.122</expectedTag>
+                        <expectedTag name="mac">00:13:ec:1c:06:5b</expectedTag>
+                        <expectedTag name="via">183.213.184.122</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>

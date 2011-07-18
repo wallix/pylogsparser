@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="netfilter"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">Netfilter log normalization.
+Netfilter logs consist of a list of keys and values. Normalized keys are "in", "out", "mac", "src", "spt", "dst", "dpt", "len", "proto".
+        </localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les logs émis par le composant kernel Netfilter.
+Les messages Netfilter consistent en une liste de clés et de valeurs associèes.
+Les clés extraites par ce normaliseur sont "in", "out", "mac", "src", "spt", "dst", "dpt", "len", "proto".
+        </localized_desc>
+    </description>
+    <authors>
+        <author>fbo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="NetfilterFields" type="basestring">
+            <description>
+        <localized_desc language="en">Some typical fields used for log identification.</localized_desc>
+        <localized_desc language="fr">Quelques champs propres aux logs NETFILTER.</localized_desc></description>
+            <regexp>IN=.* OUT=.* SRC=.* DST=.*</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_netfilter_key_value">
+ACCEPTED = [ "in", "out", "mac", "src",
+             "spt", "dst", "dpt", "len", "proto" ]
+# Retreive elements separeted by space
+elms = value.split()
+candidates = [elm for elm in elms if not elm.find('=') == -1 and not elm.endswith('=')]
+kv_dict = dict([x.split('=') for x in candidates])
+for k,v in kv_dict.items():
+    kl = k.lower()
+    if kl in ACCEPTED:
+        log[kl] = v
+log['program'] = 'netfilter'
+        </callback>
+    </callbacks>
+    <prerequisites>
+        <prereqTag name="program">kernel</prereqTag>
+    </prerequisites> 
+    <patterns>
+        <pattern name="netfilter-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>(?:USERPREFIX )?KEYVALUES</text>
+            <tags>
+                <tag name="prefix" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">a user defined log prefix</localized_desc>
+                        <localized_desc language="fr">un préfixe défini par l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>USERPREFIX</substitute>
+                </tag>
+                <tag name="__keyvalues" tagType="NetfilterFields">
+                    <description>
+                        <localized_desc language="en">Generic Netfilter message with many key-values couples</localized_desc>
+                        <localized_desc language="fr">Message Netfilter générique comportant plusieurs couples clé-valeur</localized_desc>
+                    </description>
+                    <substitute>KEYVALUES</substitute>
+                    <callbacks>
+                        <callback>decode_netfilter_key_value</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>*UDP_IN Blocked* IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:15:5d:20:c2:06:08:00 SRC=69.10.39.115 DST=255.255.255.255 LEN=166 TOS=0x00 PREC=0x00 TTL=128 ID=22557 PROTO=UDP SPT=55439 DPT=6112</text>
+                     <expectedTags>
+                          <expectedTag name="program">netfilter</expectedTag>
+                          <expectedTag name="in">eth0</expectedTag>
+                          <expectedTag name="mac">ff:ff:ff:ff:ff:ff:00:15:5d:20:c2:06:08:00</expectedTag>
+                          <expectedTag name="src">69.10.39.115</expectedTag>
+                          <expectedTag name="dst">255.255.255.255</expectedTag>
+                          <expectedTag name="len">166</expectedTag>
+                          <expectedTag name="proto">UDP</expectedTag>
+                          <expectedTag name="spt">55439</expectedTag>
+                          <expectedTag name="dpt">6112</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
