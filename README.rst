@@ -5,7 +5,7 @@ Description
 :::::::::::
 
 LogsParser is an opensource python library created by Wallix ( http://www.wallix.org ).
-It is used as the core mechanism for logs tagging and normalization by Wallix's Log Box
+It is used as the core mechanism for logs tagging and normalization by Wallix's LogBox
 ( http://www.wallix.com/index.php/products/wallix-logbox ).
 
 Logs come in a variety of formats. In order to parse many different types of
