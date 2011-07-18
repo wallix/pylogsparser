@@ -203,7 +203,7 @@ class LogNormalizer():
         'raw': 'Jul 18 15:35:01 zoo /USR/SBIN/CRON[14338]: (root) CMD (/srv/git/redmine-changesets.sh)',
         'source': 'zoo',
         'uuid': 70851882840934161193887647073096992594L}
-"""
+        """
         data = self.uuidify(data)
         data = self.normalize(data)
         # convert date to UTC
