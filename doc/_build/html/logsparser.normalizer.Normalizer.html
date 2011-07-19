@@ -1,0 +1,269 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>logsparser.normalizer.Normalizer : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">l.n.Normalizer(<span title="object">object</span>) : class documentation</h1>
+    <p>
+      <span id="part">Part of <a href="logsparser.html">logsparser</a>.<a href="logsparser.normalizer.html">normalizer</a></span>
+      
+      <a href="classIndex.html#logsparser.normalizer.Normalizer">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <div>Log Normalizer, based on an XML definition file.<table class="fieldTable"></table></div>
+
+    
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id10">
+  
+  
+<tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#__init__">__init__</a></td>
+    <td><span>initializes the normalizer with an lxml ElementTree.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#get_description">get_description</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#get_long_description">get_long_description</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#get_uncompiled_regexp">get_uncompiled_regexp</a></td>
+    <td><span>returns the uncompiled regular expression associated to pattern named 
+p.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#normalize">normalize</a></td>
+    <td><span>normalization in standalone mode.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#validate">validate</a></td>
+    <td><span>if the definition file comes with pattern examples, this method can</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#get_source">get_source</a></td>
+    <td><span>gets the raw XML source for this normalizer.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#get_languages">get_languages</a></td>
+    <td><span>guesstimates the available languages from the description field and</span></td>
+  </tr><tr class="method private">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.normalizer.Normalizer.html#__parse_patterns">__parse_patterns</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+  
+</table>
+      
+      
+    </div>
+    
+    
+    
+
+    <div class="function">
+  <a name="logsparser.normalizer.Normalizer.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __init__(self, xmlconf, genericTagTypes):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>initializes the normalizer with an lxml ElementTree.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">xmlconf</td><td>lxml ElementTree normalizer definition
+</td></tr><tr><td></td><td class="fieldArg">genericTagTypes</td><td>path to generic tags definition xml file
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.__parse_patterns">
+    
+  </a>
+  <a name="__parse_patterns">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __parse_patterns(self, node):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div class="undocumented">Undocumented</div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.get_description">
+    
+  </a>
+  <a name="get_description">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_description(self, language='en'):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div class="undocumented">Undocumented</div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.get_long_description">
+    
+  </a>
+  <a name="get_long_description">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_long_description(self, language='en'):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div class="undocumented">Undocumented</div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.get_uncompiled_regexp">
+    
+  </a>
+  <a name="get_uncompiled_regexp">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_uncompiled_regexp(self, p=None, increment=0):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>returns the uncompiled regular expression associated to pattern named p.
+If p is None, all patterns are stitched together, ready for compilation. 
+increment is the starting value to use for the generic tag names in the 
+returned regular expression.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">regexp, dictionary of tag names &lt;-&gt; tag codes, dictionary of tags 
+codes &lt;-&gt; pattern the tag came from, new increment value
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.normalize">
+    
+  </a>
+  <a name="normalize">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    normalize(self, log, do_not_check_prereq=False):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>normalization in standalone mode.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">log</td><td>a dictionary or an object providing at least a get() method
+</td></tr><tr><td></td><td class="fieldArg">do_not_check_prereq</td><td>if set to True, the prerequisite tags check is skipped (debug purpose only)
+</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">a dictionary with updated tags if normalization was successful.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.validate">
+    
+  </a>
+  <a name="validate">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    validate(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>if the definition file comes with pattern examples, this method can be 
+invoked to test these patterns against the examples. Note that tags not 
+included in the &quot;expectedTags&quot; directives will not be checked for
+validation.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">True if the normalizer is validated, raises a ValueError describing the 
+problem otherwise.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.get_source">
+    
+  </a>
+  <a name="get_source">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_source(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>gets the raw XML source for this normalizer.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.normalizer.Normalizer.get_languages">
+    
+  </a>
+  <a name="get_languages">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_languages(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>guesstimates the available languages from the description field and 
+returns them as a list.<table class="fieldTable"></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for logsparser, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2011-07-19 11:51:07.
+    </address>
+  </body>
+</html>
