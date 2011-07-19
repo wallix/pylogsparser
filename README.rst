@@ -128,20 +128,20 @@ When writing a callback function, the following rules must be respected :
   the transformed value to the concerned tag name) and must not return anything.
 * Your callback function has a restricted access to the following facilities: ::
 
-  "list", "dict", "tuple", "set", "long", "float", "object",
-  "bool", "callable", "True", "False", "dir",
-  "frozenset", "getattr", "hasattr", "abs", "cmp", "complex",
-  "divmod", "id", "pow", "round", "slice", "vars",
-  "hash", "hex", "int", "isinstance", "issubclass", "len",
-  "map", "filter", "max", "min", "oct", "chr", "ord", "range",
-  "reduce", "repr", "str", "unicode", "basestring", "type", "zip", "xrange", "None",
-  "Exception"  
+   "list", "dict", "tuple", "set", "long", "float", "object",
+   "bool", "callable", "True", "False", "dir",
+   "frozenset", "getattr", "hasattr", "abs", "cmp", "complex",
+   "divmod", "id", "pow", "round", "slice", "vars",
+   "hash", "hex", "int", "isinstance", "issubclass", "len",
+   "map", "filter", "max", "min", "oct", "chr", "ord", "range",
+   "reduce", "repr", "str", "unicode", "basestring", "type", "zip", "xrange", "None",
+   "Exception"  
 
 * Importing modules is therefore forbidden and impossible. The *re* and *datetime*
-  modules are available for use as if the following lines were present : ::
+  modules are available for use as if the following lines were present: ::
 
-  import re
-  from datetime import datetime
+   import re
+   from datetime import datetime
 
 
 Pattern definition
