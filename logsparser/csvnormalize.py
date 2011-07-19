@@ -1,5 +1,6 @@
 import csv
-from normalizer import TagType, Tag
+import re
+from normalizer import TagType, Tag, CallbackFunction
 
 class CSVPattern(object):
     def __init__(self,
@@ -24,6 +25,19 @@ class CSVPattern(object):
         self.check_count = len(self.fields)
 
     def check_type(self, data):
+        # TODO: re flags
+        for tag in self.tags:
+            r = re.compile(self.tags[tag].tagtype.regexp)
+            field = self.tags[tag].substitute
+            if field not in data.keys():
+                continue
+            if not r.match(data[field]):
+                # We found a tag that not matchs the expected regexp
+                return None
+            else:
+                value = data[field]
+                del data[field]
+                data[tag] = value
         return data
 
     def apply_cb(self, data):
@@ -73,6 +87,10 @@ if __name__ == '__main__':
     tt1 = TagType(name='AnyThing',
                  ttype=str,
                  regexp = '.*')
+    
+    tt2 = TagType(name='AnyThing',
+                 ttype=int,
+                 regexp = '[1-9]*')
 
     t1 = Tag(name='tagf1',
              tagtype = tt1,
@@ -83,13 +101,17 @@ if __name__ == '__main__':
              substitute = 'F2')
 
     t3 = Tag(name='tagf3',
-             tagtype = tt1,
+             tagtype = tt2,
              substitute = 'F3')
     
     t4 = Tag(name='tagf4',
              tagtype = tt1,
              substitute = 'F4')
-    
-    a = CSVPattern('test', 'F1,F2,F3,F4')
-    ret = a.normalize('bonjour, le, monde, demain')
+
+    p_tags = {}
+    for t in (t1, t2, t3, t4):
+        p_tags[t.name] = t
+
+    a = CSVPattern('test', 'F1,F2,F3,F4', tags = p_tags)
+    ret = a.normalize('bonjour,le,,demain')
     print ret
