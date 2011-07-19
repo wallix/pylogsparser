@@ -58,7 +58,7 @@ Most definition files will include the following sections :
 * Prerequisites on tag values prior to parsing (non-mandatory)
 * Log pattern(s) and how they are to be parsed
 * Extra tags with a fixed value that should be added once the parsing is done
- (non-mandatory)
+  (non-mandatory)
 
 Root
 ....
@@ -126,7 +126,7 @@ When writing a callback function, the following rules must be respected :
   to normalization induced by this parser definition file).
 * Your callback function can modify the "log" argument (especially assign
   the transformed value to the concerned tag name) and must not return anything.
-* Your callback function has a restricted access to the following facilities ::
+* Your callback function has a restricted access to the following facilities: ::
 
   "list", "dict", "tuple", "set", "long", "float", "object",
   "bool", "callable", "True", "False", "dir",
@@ -138,9 +138,8 @@ When writing a callback function, the following rules must be respected :
   "Exception"  
 
 * Importing modules is therefore forbidden and impossible. The *re* and *datetime*
-  modules are available for use as if the following lines were present :
-  
-::
+  modules are available for use as if the following lines were present : ::
+
   import re
   from datetime import datetime
 
