@@ -1,0 +1,401 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>logsparser.lognormalizer.LogNormalizer : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">l.l.LogNormalizer : class documentation</h1>
+    <p>
+      <span id="part">Part of <a href="logsparser.html">logsparser</a>.<a href="logsparser.lognormalizer.html">lognormalizer</a></span>
+      
+      <a href="classIndex.html#logsparser.lognormalizer.LogNormalizer">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <pre>Basic normalization flow manager.
+Normalizers definitions are loaded from a path and checked against the DTD.
+If the definitions are syntactically correct, the normalizers are
+instantiated and populate the manager's cache.
+Normalization priormority is established as follows:
+
+* Maximum priority assigned to normalizers where the "appliedTo" tag is set
+  to "raw". They MUST be mutually exclusive.
+* Medium priority assigned to normalizers where the "appliedTo" tag is set
+  to "body".
+* Lowest priority assigned to any remaining normalizers.
+
+Some extra treatment is also done prior and after the log normalization:
+
+* Assignment of a unique ID, under the tag "uuid"
+* Conversion of date tags to UTC, if the "_timezone" was set prior to
+  the normalization process.</pre>
+
+    
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id3">
+  
+  
+<tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#__init__">__init__</a></td>
+    <td><span>Instantiates a flow manager. The default behavior is to activate 
+every</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#reload">reload</a></td>
+    <td><span>Refreshes this instance's normalizers pool.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#iter_normalizer">iter_normalizer</a></td>
+    <td><span>Iterates through normalizers and returns the normalizers' paths.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#__len__">__len__</a></td>
+    <td><span>Returns the amount of available normalizers.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#update_normalizer">update_normalizer</a></td>
+    <td><span>used to add or update a normalizer.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#get_normalizer_source">get_normalizer_source</a></td>
+    <td><span>Returns the raw XML source of normalizer name.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#activate_normalizers">activate_normalizers</a></td>
+    <td><span>Activates normalizers according to what was set by calling</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#get_active_normalizers">get_active_normalizers</a></td>
+    <td><span>Returns a dictionary of normalizers; keys are normalizers' names and</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#set_active_normalizers">set_active_normalizers</a></td>
+    <td><span>Sets the active/inactive normalizers. Default behavior is to</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#lognormalize">lognormalize</a></td>
+    <td><span>This method is the entry point to normalize data (a log).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#uuidify">uuidify</a></td>
+    <td><span>Adds a unique UID to the normalized log.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#normalize">normalize</a></td>
+    <td><span>plain normalization.</span></td>
+  </tr><tr class="method private">
+    
+    
+    <td>Method</td>
+    <td><a href="logsparser.lognormalizer.LogNormalizer.html#_normalize">_normalize</a></td>
+    <td><span>Used for testing only, the normalizers' tags prerequisite are</span></td>
+  </tr>
+  
+</table>
+      
+      
+    </div>
+    
+    
+    
+
+    <div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __init__(self, normalizers_path, active_normalizers={}):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Instantiates a flow manager. The default behavior is to activate every 
+available normalizer.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">normalizer_path</td><td>absolute path to the normalizer XML definitions to use.
+</td></tr><tr><td></td><td class="fieldArg">active_normalizers</td><td>a dictionary of active normalizers in the form {name: [True|False]}.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.reload">
+    
+  </a>
+  <a name="reload">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    reload(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Refreshes this instance's normalizers pool.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.iter_normalizer">
+    
+  </a>
+  <a name="iter_normalizer">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    iter_normalizer(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Iterates through normalizers and returns the normalizers' paths.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">a generator of absolute paths.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.__len__">
+    
+  </a>
+  <a name="__len__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __len__(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Returns the amount of available normalizers.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.update_normalizer">
+    
+  </a>
+  <a name="update_normalizer">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    update_normalizer(self, raw_xml_contents, name=None):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>used to add or update a normalizer.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">raw_xml_contents</td><td>XML description of normalizer as flat XML. It must comply to the DTD.
+</td></tr><tr><td></td><td class="fieldArg">name</td><td>if set, the XML description will be saved as name.xml. If left blank, name 
+will be fetched from the XML description.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.get_normalizer_source">
+    
+  </a>
+  <a name="get_normalizer_source">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_normalizer_source(self, name):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Returns the raw XML source of normalizer name.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.activate_normalizers">
+    
+  </a>
+  <a name="activate_normalizers">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    activate_normalizers(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Activates normalizers according to what was set by calling 
+set_active_normalizers. If no call to the latter function has been made so 
+far, this method activates every normalizer.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.get_active_normalizers">
+    
+  </a>
+  <a name="get_active_normalizers">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_active_normalizers(self):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Returns a dictionary of normalizers; keys are normalizers' names and 
+values are True|False according to the normalizer's activation state.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.set_active_normalizers">
+    
+  </a>
+  <a name="set_active_normalizers">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    set_active_normalizers(self, norms={}):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Sets the active/inactive normalizers. Default behavior is to deactivate 
+every normalizer.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">norms</td><td>a dictionary, similar to the one returned by get_active_normalizers.
+</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.lognormalize">
+    
+  </a>
+  <a name="lognormalize">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    lognormalize(self, data):
+    
+  </div>
+  <div class="functionBody">
+    
+    <pre>This method is the entry point to normalize data (a log).
+
+data is passed through every activated normalizer
+and extra tagging occurs accordingly.
+
+data receives also an extra uuid tag.
+
+If data contains a key called _timezone, its value is used to convert
+any date into UTC. This value must be a valid timezone name; see
+the pytz module for more information.
+
+@param data: must be a dictionary with at least a key 'raw' or 'body'
+             with BaseString values (preferably Unicode).
+
+Here an example :
+&gt;&gt;&gt; from logsparser import lognormalizer
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; ln = lognormalizer.LogNormalizer('/usr/local/share/normalizers/')
+&gt;&gt;&gt; mylog = {'raw' : 'Jul 18 15:35:01 zoo /USR/SBIN/CRON[14338]: (root) CMD (/srv/git/redmine-changesets.sh)'}
+&gt;&gt;&gt; ln.lognormalize(mylog)
+&gt;&gt;&gt; pprint mylog
+{'body': '(root) CMD (/srv/git/redmine-changesets.sh)',
+'date': datetime.datetime(2011, 7, 18, 15, 35, 1),
+'pid': '14338',
+'program': '/USR/SBIN/CRON',
+'raw': 'Jul 18 15:35:01 zoo /USR/SBIN/CRON[14338]: (root) CMD (/srv/git/redmine-changesets.sh)',
+'source': 'zoo',
+'uuid': 70851882840934161193887647073096992594L}</pre>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.uuidify">
+    
+  </a>
+  <a name="uuidify">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    uuidify(self, log):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Adds a unique UID to the normalized log.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer.normalize">
+    
+  </a>
+  <a name="normalize">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    normalize(self, log):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>plain normalization.<table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="logsparser.lognormalizer.LogNormalizer._normalize">
+    
+  </a>
+  <a name="_normalize">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    _normalize(self, log):
+    
+  </div>
+  <div class="functionBody">
+    
+    <div>Used for testing only, the normalizers' tags prerequisite are 
+deactivated.<table class="fieldTable"></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for logsparser, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2011-07-19 11:51:07.
+    </address>
+  </body>
+</html>
