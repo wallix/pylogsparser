@@ -28,6 +28,7 @@ by the Normalizer class.
 """
 
 import re
+import csv
 import gettext
 import warnings
 
@@ -173,7 +174,103 @@ class Pattern(object):
                  'substitutes' : substitutes,
                  'commonTags' : self.commonTags,
                  'examples' : examples_desc }
-            
+
+class CSVPattern(object):
+    """A pattern that handle CSV case."""
+    def __init__(self,
+                 name,
+                 pattern,
+                 separator = ',',
+                 quotechar = '"',
+                 tags = {},
+                 callBacks = [],
+                 description = '',
+                 commonTags = {},
+                 examples = []):
+        """ 
+        @param name: the pattern name
+        @param pattern: the CSV pattern
+        @param separator: the CSV delimiter
+        @param quotechar: the CSV quote character
+        @param tags: a dict of L{Tag} instance with Tag name as key
+        @param callBacks: a list of L{CallbackFunction}
+        @param description: a pattern description
+        @param commonTags: a Dict of tags to add to the final normalisation
+        @param examples: a list of L{PatternExample}
+        """
+        self.name = name
+        self.pattern = pattern
+        self.separator = separator
+        self.quotechar = quotechar
+        self.tags = tags
+        self.callBacks = callBacks
+        self.description = description
+        self.examples = examples
+        self.commonTags = commonTags
+        _fields = self.pattern.split(self.separator)
+        self.fields = [f.strip() for f in _fields]
+        self.check_count = len(self.fields)
+
+    def postprocess(self, data):
+        for tag in self.tags:
+            r = re.compile(self.tags[tag].tagtype.regexp)
+            field = self.tags[tag].substitute
+            if field not in data.keys():
+                continue
+            if not r.match(data[field]):
+                # We found a tag that not matchs the expected regexp
+                return None
+            else:
+                value = data[field]
+                del data[field]
+                data[tag] = value
+                # try to apply callbacks
+                for cbname in self.tags[tag].callbacks:
+                    callback = [cb for cb in self.callBacks if cb.name == cbname][0]
+                    try:
+                        callback(data[tag], data)
+                    except Exception, e:
+                        raise Exception("Error on callback %s in pattern %s : %s - skipping" %
+                                       (callback.name,
+                                        self.name, e))
+        return data
+
+    def normalize(self, logline):
+        # Verify logline is a basestring
+        if not isinstance(logline, basestring):
+            return None
+        # Try to retreive some fields with csv reader
+        try:
+            data = [data for data in csv.reader([logline], delimiter = self.separator, quotechar = self.quotechar)][0]
+        except:
+            return None
+        # Check we have something in data
+        if not data:
+            return None
+        else:
+            # Verify csv reader has match the expected number of fields
+            if len(data) != self.check_count:
+                return None
+            # Check expected for for fileds and apply callbacks
+            data = self.postprocess(dict(zip(self.fields, data)))
+            # Add common tags
+            if data:
+                data.update(self.commonTags)
+        return data
+        
+    def test_examples(self):
+        raise NotImplementedError
+        
+    def get_description(self, language = 'en'):
+        tags_desc = dict([ (tag.name, tag.get_description(language)) for tag in self.tags.values() ])
+        substitutes = dict([ (tag.substitute, tag.name) for tag in self.tags.values() ])
+        examples_desc = [ example.get_description(language) for example in self.examples ]
+        return { 'pattern' : self.pattern, 
+                 'description' : self.description.get(language, "N/A"),
+                 'tags' : tags_desc,
+                 'substitutes' : substitutes,
+                 'commonTags' : self.commonTags,
+                 'examples' : examples_desc }
 
 class CallbackFunction(object):
     """This class is used to define a callback function from source code present

@@ -21,11 +21,12 @@
 
 import os
 import unittest
-from logsparser.normalizer import Normalizer
+from datetime import datetime
+from logsparser.normalizer import Normalizer, TagType, Tag, CallbackFunction, CSVPattern
 from lxml.etree import parse, DTD
 
-class Test(unittest.TestCase):
-    """Unit tests for logsparser.normalize"""
+class TestSample(unittest.TestCase):
+    """Unit tests for logsparser.normalize. Validate sample log example"""
     normalizer_path = os.environ['NORMALIZERS_PATH']
 
     def normalize_samples(self, norm, name, version):
@@ -75,6 +76,96 @@ class Test(unittest.TestCase):
     def test_normalize_samples_011_named2(self):
         self.normalize_samples('named-2.xml', 'named-2', 0.99)
 
+class TestCSVPattern(unittest.TestCase):
+    """Test CSVPattern behaviour"""
+    tt1 = TagType(name='AnyThing', ttype=str, regexp='.*')
+
+    tt2 = TagType(name='SyslogDate', ttype=datetime,
+                  regexp='[A-Z][a-z]{2} [ 0-9]\d \d{2}:\d{2}:\d{2}')
+
+    cb_syslogdate = CallbackFunction("""
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+now = datetime.now()
+currentyear = now.year
+# Following line may throw a lot of ValueError
+newdate = datetime(currentyear,
+                   MONTHS.index(value[0:3]) + 1,
+                   int(value[4:6]),
+                   int(value[7:9]),
+                   int(value[10:12]),
+                   int(value[13:15]))
+log["date"] = newdate
+""", name = 'formatsyslogdate')
+
+    def test_001(self):
+        t1 = Tag(name='date',
+                tagtype = self.tt1,
+                substitute = 'DATE')
+        t2 = Tag(name='id',
+                tagtype = self.tt1,
+                substitute = 'ID')
+        t3 = Tag(name='msg',
+                tagtype = self.tt1,
+                substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags)
+        ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
+        self.assertEqual(ret['date'], 'Jul 18 08:55:35')
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on 127.0.0.1, pam auth started')
+        
+    def test_002(self):
+        t1 = Tag(name='date',
+                tagtype = self.tt2,
+                substitute = 'DATE')
+        t2 = Tag(name='id',
+                tagtype = self.tt1,
+                substitute = 'ID')
+        t3 = Tag(name='msg',
+                tagtype = self.tt1,
+                substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags)
+
+        ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
+        self.assertEqual(ret['date'], 'Jul 18 08:55:35')
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on 127.0.0.1, pam auth started')
+            
+        ret = p.normalize('2011 Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
+        self.assertEqual(ret, None)
+        
+    def test_003(self):
+        t1 = Tag(name='date',
+               tagtype = self.tt2,
+               substitute = 'DATE',
+               callbacks = ['formatsyslogdate'])
+        t2 = Tag(name='id',
+               tagtype = self.tt1,
+               substitute = 'ID')
+        t3 = Tag(name='msg',
+               tagtype = self.tt1,
+               substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags, callBacks = [self.cb_syslogdate])
+
+        ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
+        self.assertEqual(ret['date'], datetime(datetime.now().year, 7, 18, 8, 55, 35))
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on 127.0.0.1, pam auth started')
+
 if __name__ == "__main__":
     unittest.main()
-
