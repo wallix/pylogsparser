@@ -1,0 +1,3 @@
+[submodule "pylogsparser"]
+	path = pylogsparser
+	url = ssh://mhuin@zoo/srv/git/pylogsparser.git
