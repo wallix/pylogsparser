@@ -75,6 +75,9 @@ class Test(unittest.TestCase):
     def test_normalize_samples_011_named2(self):
         self.normalize_samples('named-2.xml', 'named-2', 0.99)
 
+    def test_normalize_samples_012_s3(self):
+        self.normalize_samples('s3.xml', 's3', 0.99)
+
 if __name__ == "__main__":
     unittest.main()
 

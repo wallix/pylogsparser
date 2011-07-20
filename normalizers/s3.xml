@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 O. Hervieu <olivier.hervieu@gmail.com   -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="s3"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+  <description>
+    <localized_desc language="en">S3 log normalization.
+S3 logs consist of a list of values.
+Normalized keys are "bucket_owner", "bucket", "date", "ip", "requestor", "requestid", "operation", "key", "http_method", "http_target", "http_proto", "http_sta\
+tus", "s3err", "sent", "object_size", "total_request_time", "turn_around_time", "referer", "user_agent" and "version_id".</localized_desc>
+    <localized_desc language="fr">Ce normaliseur analyse les logs émis par S3.
+Les messages S3 consistent en une liste de valeurs.
+Les clés extraites par ce normaliseur sont "bucket_owner", "bucket", "date", "ip", "requestor", "requestid", "operation", "key", "http_method", "http_target", "http_proto", "http_status", "s3err", "sent", "object_size", "total_request_time", "turn_around_time", "referer", "user_agent" et "version_id".</localized_desc>
+  </description>
+  <authors>
+    <author>olivier.hervieu@tinyclues.com</author>
+  </authors>
+  <tagTypes>
+    <tagType name="CommonTimeFormat" type="datetime">
+      <description>
+        <localized_desc language="en">Matches S3 common time format.</localized_desc>
+        <localized_desc language="fr">Une expression correspondant au format d'horodatage des logs S3.</localized_desc>
+      </description>
+      <regexp>\[\d{1,2}/.{3}/\d{4}:\d{1,2}:\d{1,2}:\d{1,2}(?: [+-]\d{4})?\]</regexp>
+    </tagType>
+    <tagType name="S3String" type="basestring">
+      <description>
+        <localized_desc language="en">Matches S3 quoted strings.</localized_desc>
+        <localized_desc language="fr">Permet de parser les chaines de caracters S3.</localized_desc>
+      </description>
+      <regexp>\".*\"</regexp>
+    </tagType>
+  </tagTypes>
+    <callbacks>
+        <callback name="decode_ctf">
+english_months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
+ctf = re.compile("(?P&lt;day&gt;\d+)/(?P&lt;month&gt;[a-zA-Z]+)/(?P&lt;year&gt;\d+):(?P&lt;hour&gt;\d+):(?P&lt;minute&gt;\d+):(?P&lt;second&gt;\d+)")
+m = ctf.search(value)
+if m:
+    vals = m.groupdict()
+    vals['month'] = english_months[vals['month']]
+    vals = dict( [ (u, int(vals[u])) for u in vals.keys() ])
+    log['date'] = datetime(**vals)
+else:
+    raise Exception, "invalid date string %s" % value
+	</callback>
+	<callback name="split_s3_info">
+value = value[1:-1].split(' ')
+log['http_method'] = value[0]
+log['http_target'] = value[1]
+log['http_proto'] = value[2]
+	</callback>
+	<callback name="refer_unquote">
+value = value[1:-1]
+log['referer'] = value
+	</callback>
+	<callback name="agent_unquote">
+value = value[1:-1]
+log['user_agent'] = value
+	</callback>
+
+    </callbacks>
+  <patterns>
+    <pattern name="s3generic">
+      <description>
+        <localized_desc language="en">Generic s3 log pattern.</localized_desc>
+        <localized_desc language="fr">Parseur générique des logs S3.</localized_desc>
+      </description>
+      <text>OWNER NAME DATE IP REQUESTOR REQUESTID OP KEY HTTP_METHOD HTTP_STATUS S3ERR SENT SIZE TOTAL TAT REF AGENT VID</text> 
+      <tags>
+        <tag name="bucket_owner" tagType="Anything">
+          <description>
+            <localized_desc language="en">The canonical user id of the owner of the source bucket</localized_desc>
+            <localized_desc language="fr">Identifiant canonique du propriétaire du bucket</localized_desc>
+          </description>
+	  <substitute>OWNER</substitute>
+        </tag>
+        <tag name="bucket" tagType="Anything">
+          <description>
+            <localized_desc language="en">the bucket name</localized_desc>
+            <localized_desc language="fr">le nom du bucket</localized_desc>
+          </description>
+	  <substitute>NAME</substitute>
+        </tag>
+	<tag name="__date" tagType="CommonTimeFormat">
+          <description>
+            <localized_desc language="en">the time at which the request was issued. Please note that the timezone information is not carried over</localized_desc>
+            <localized_desc language="fr">la date à laquelle la requête a été émise. L'information de fuseau horaire n'est pas prise en compte</localized_desc>
+	  </description>
+          <substitute>DATE</substitute>
+          <callbacks>
+            <callback>decode_ctf</callback>
+          </callbacks>
+        </tag>
+        <tag name="ip" tagType="Anything">
+          <description>
+            <localized_desc language="en">The apparent Internet address of the requester.</localized_desc>
+            <localized_desc language="fr">Adresse IP apparente de la requête.</localized_desc>
+          </description>
+	  <substitute>IP</substitute>
+        </tag>
+        <tag name="requestor" tagType="Anything">
+          <description>
+            <localized_desc language="en">The canonical user id of the requester.</localized_desc>
+            <localized_desc language="fr">Identifiant canonique du requeteur.</localized_desc>
+          </description>
+	  <substitute>REQUESTOR</substitute>
+	</tag>
+        <tag name="requestid" tagType="Anything">
+          <description>
+            <localized_desc language="en">request id</localized_desc>
+            <localized_desc language="fr">id de la requête</localized_desc>
+          </description>
+	  <substitute>REQUESTID</substitute>
+	</tag>
+        <tag name="operation" tagType="Anything">
+          <description>
+            <localized_desc language="en">operation type</localized_desc>
+            <localized_desc language="fr">type de l'opération</localized_desc>
+          </description>
+	  <substitute>OP</substitute>
+	</tag>
+        <tag name="key" tagType="Anything">
+          <description>
+            <localized_desc language="en">The "key" part of the request, URL encoded, or "-" if the operation does not take a key parameter.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>KEY</substitute>
+	</tag>
+	<tag name="__s3http_info" tagType="S3String">
+	  <description>
+            <localized_desc language="en">The Request-URI part of the HTTP request message.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+	  </description>
+          <substitute>HTTP_METHOD</substitute>
+          <callbacks>
+            <callback>split_s3_info</callback>
+	  </callbacks>
+	</tag>
+        <tag name="http_status" tagType="Integer">
+          <description>
+            <localized_desc language="en">The numeric HTTP status code of the response.</localized_desc>
+            <localized_desc language="fr">Code numérique de retour de la requête HTTP.</localized_desc>
+          </description>
+	  <substitute>HTTP_STATUS</substitute>
+	</tag>
+        <tag name="s3err" tagType="Anything">
+          <description>
+            <localized_desc language="en">The Amazon S3 Error Code, or "-" if no error occurred.</localized_desc>
+            <localized_desc language="fr">Code d'erreur S3 ou "-".</localized_desc>
+          </description>
+	  <substitute>S3ERR</substitute>
+	</tag>
+	<tag name="sent" tagType="Anything">
+          <description>
+            <localized_desc language="en">The number of response bytes sent, excluding HTTP protocol overhead, or "-" if zero.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>SENT</substitute>
+	</tag>
+	<tag name="object_size" tagType="Anything">
+          <description>
+            <localized_desc language="en">The total size of the object in question.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>SIZE</substitute>
+	</tag>
+	<tag name="total_request_time" tagType="Integer">
+          <description>
+            <localized_desc language="en">The number of milliseconds the request was in flight from the server's perspective.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>TOTAL</substitute>
+	</tag>
+	<tag name="turn_around_time" tagType="Anything">
+          <description>
+            <localized_desc language="en">The number of milliseconds that Amazon S3 spent processing your request.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>TAT</substitute>
+	</tag>
+	<tag name="__referer" tagType="S3String">
+          <description>
+            <localized_desc language="en">The value of the HTTP Referrer header, if present</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>REF</substitute>
+          <callbacks>
+            <callback>refer_unquote</callback>
+	  </callbacks>
+	</tag>
+        <tag name="__user_agent" tagType="S3String">
+          <description>
+            <localized_desc language="en">The value of the HTTP User-Agent header.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>AGENT</substitute>
+          <callbacks>
+            <callback>agent_unquote</callback>
+	  </callbacks>
+	</tag>
+	<tag name="version_id" tagType="Anything">
+          <description>
+            <localized_desc language="en">The version ID in the request, or "-" if the operation does not take a versionId parameter.</localized_desc>
+            <localized_desc language="fr"></localized_desc>
+          </description>
+	  <substitute>VID</substitute>
+	</tag>
+      </tags>
+      <examples>
+        <example>
+          <text>DEADBEEF testbucket [19/Jul/2011:13:17:11 +0000] 10.194.22.16 FACEDEAD CAFEDECA REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 951 - 397 - "-" "Jakarta Commons-HttpClient/3.0" -</text>
+          <expectedTags>
+            <expectedTag name="bucket_owner">DEADBEEF</expectedTag>
+            <expectedTag name="bucket">testbucket</expectedTag>
+	    <expectedTag name="ip">10.194.22.16</expectedTag>
+	    <expectedTag name="requestor">FACEDEAD</expectedTag>
+	    <expectedTag name="requestid">CAFEDECA</expectedTag>
+	    <expectedTag name="operation">REST.GET.ACL</expectedTag>
+	    <expectedTag name="key">-</expectedTag>
+	    <expectedTag name="http_method">GET</expectedTag>
+	    <expectedTag name="http_target">/?acl</expectedTag>
+	    <expectedTag name="http_proto">HTTP/1.1</expectedTag>
+	    <expectedTag name="http_status">200</expectedTag>
+	    <expectedTag name="s3err">-</expectedTag>
+	    <expectedTag name="sent">951</expectedTag>
+	    <expectedTag name="object_size">-</expectedTag>
+	    <expectedTag name="total_request_time">397</expectedTag>
+	    <expectedTag name="turn_around_time">-</expectedTag>
+	    <expectedTag name="referer">-</expectedTag>
+	    <expectedTag name="user_agent">Jakarta Commons-HttpClient/3.0</expectedTag>
+	    <expectedTag name="version_id">-</expectedTag>
+          </expectedTags>
+        </example>
+      </examples>
+    </pattern>
+  </patterns>
+</normalizer>
