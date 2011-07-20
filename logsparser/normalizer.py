@@ -31,6 +31,7 @@ import re
 import csv
 import gettext
 import warnings
+import math
 
 from lxml.etree import parse, tostring
 from datetime import datetime # pyflakes:ignore
@@ -48,7 +49,7 @@ SAFE_SYMBOLS = ["list", "dict", "tuple", "set", "long", "float", "object",
                 "hash", "hex", "int", "isinstance", "issubclass", "len",
                 "map", "filter", "max", "min", "oct", "chr", "ord", "range",
                 "reduce", "repr", "str", "unicode", "basestring", "type", "zip",
-                "xrange", "None", "Exception", "re", "datetime"]
+                "xrange", "None", "Exception", "re", "datetime", "math"]
 
 class Tag(object):
     """A tag as defined in a pattern."""
@@ -236,15 +237,31 @@ class CSVPattern(object):
                 del data[field]
                 data[tag] = value
                 # try to apply callbacks
+                # but do not try to apply callbacks if we do not have any value
+                if not data[tag]:
+                    continue
                 callbacks_names = self.tags[tag].callbacks
                 for cbname in callbacks_names:
-                    callback = [cb for cb in self.callBacks if cb.name == cbname][0]
+                    try:
+                        callback = [cb for cb in self.callBacks.values() if cb.name == cbname][0]
+                    except:
+                        warnings.warn("Unable to find callback %s for pattern %s" %
+                                     (cbname, self.name))
+                        continue
                     try:
                         callback(data[tag], data)
                     except Exception, e:
                         raise Exception("Error on callback %s in pattern %s : %s - skipping" %
                                        (cbname,
                                         self.name, e))
+        # remove temporary tags
+        temp_tags = [t for t in data.keys() if t.startswith('__')]
+        for t in temp_tags:
+            del data[t]
+        empty_tags = [t for t in data.keys() if not data[t]]
+        # remove empty tags
+        for t in empty_tags:
+            del data[t]
         return data
 
     def normalize(self, logline):

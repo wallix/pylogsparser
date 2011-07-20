@@ -75,6 +75,9 @@ class TestSample(unittest.TestCase):
     
     def test_normalize_samples_011_named2(self):
         self.normalize_samples('named-2.xml', 'named-2', 0.99)
+    
+    def test_normalize_samples_012_symantec(self):
+        self.normalize_samples('symantec.xml', 'symantec', 0.99)
 
 
 class TestCSVPattern(unittest.TestCase):
@@ -171,7 +174,7 @@ log["date"] = newdate
             p_tags[t.name] = t
         
         p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags,
-                        tagTypes = self.tag_types, callBacks = [self.cb_syslogdate],
+                        tagTypes = self.tag_types, callBacks = {self.cb_syslogdate.name:self.cb_syslogdate},
                         genericTagTypes = self.generic_tagTypes)
 
         ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
