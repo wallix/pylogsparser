@@ -37,6 +37,7 @@ class Test(unittest.TestCase):
         ln = lognormalizer.LogNormalizer(normalizer_path)
         data = {'raw' : log}
         ln.lognormalize(data)
+        #print data
         for key in subset:
             self.assertEqual(data[key], subset[key])
         for key in notexpected:
@@ -370,6 +371,25 @@ class Test(unittest.TestCase):
                 {'msg_type' : "fetch_request",
                  'domain' : "126.92.194.77.zen.spamhaus.org",
                  'program' : 'named'})
+
+    def test_symantec8(self):
+        """Test Symantec version 8 normalization"""
+        self.aS("""200A13080122,23,2,8,TRAVEL00,SYSTEM,,,,,,,16777216,"Symantec AntiVirus Realtime Protection Loaded.",0,,0,,,,,0,,,,,,,,,,SAMPLE_COMPUTER,,,,Parent,GROUP,,8.0.93330""",
+                {"program" : "symantec",
+                 "date" : datetime(2002, 11, 19, 8, 1, 34),
+                 "category" : "Summary",
+                 "computer" : "TRAVEL00",
+                 "domain_name" : "GROUP",
+                 "event_logger_type" : "System",
+                 "event_number" : "GL_EVENT_RTS_LOAD",
+                 "eventblock_action" : "EB_LOG",
+                 "group_id" : "0",
+                 "operation_flags" : "0",
+                 "parent" : "SAMPLE_COMPUTER",
+                 "scan_id" : "0",
+                 "server_group" : "Parent",
+                 "username" : "SYSTEM",
+                 "version" : "8.0.93330"})
 
 if __name__ == "__main__":
     unittest.main()

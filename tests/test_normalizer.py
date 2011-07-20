@@ -111,7 +111,7 @@ newdate = datetime(currentyear,
 log["date"] = newdate
 """, name = 'formatsyslogdate')
 
-    def test_001(self):
+    def test_normalize_csv_pattern_001(self):
         t1 = Tag(name='date',
                 tagtype = 'Anything',
                 substitute = 'DATE')
@@ -132,7 +132,7 @@ log["date"] = newdate
         self.assertEqual(ret['id'], '83')
         self.assertEqual(ret['msg'], 'start listening on 127.0.0.1, pam auth started')
         
-    def test_002(self):
+    def test_normalize_csv_pattern_002(self):
         t1 = Tag(name='date',
                 tagtype = 'SyslogDate',
                 substitute = 'DATE')
@@ -157,7 +157,7 @@ log["date"] = newdate
         ret = p.normalize('2011 Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
         self.assertEqual(ret, None)
         
-    def test_003(self):
+    def test_normalize_csv_pattern_003(self):
         t1 = Tag(name='date',
                tagtype = 'SyslogDate',
                substitute = 'DATE',

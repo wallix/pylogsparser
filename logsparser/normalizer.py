@@ -590,7 +590,7 @@ class Normalizer(object):
                     for csv_pattern in csv_patterns:
                         ret = csv_pattern.normalize(temp_wl[self.appliedTo])
                         if ret:
-                            log = ret
+                            log.update(ret)
                             break
         return log
 
