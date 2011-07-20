@@ -22,7 +22,7 @@
 import os
 import unittest
 from datetime import datetime
-from logsparser.normalizer import Normalizer, TagType, Tag, CallbackFunction, CSVPattern
+from logsparser.normalizer import Normalizer, TagType, Tag, CallbackFunction, CSVPattern, get_generic_tagTypes
 from lxml.etree import parse, DTD
 
 class TestSample(unittest.TestCase):
@@ -76,12 +76,22 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_011_named2(self):
         self.normalize_samples('named-2.xml', 'named-2', 0.99)
 
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
-    tt1 = TagType(name='AnyThing', ttype=str, regexp='.*')
+    normalizer_path = os.environ['NORMALIZERS_PATH']
+   
+    tt1 = TagType(name='Anything', ttype=str, regexp='.*')
 
     tt2 = TagType(name='SyslogDate', ttype=datetime,
                   regexp='[A-Z][a-z]{2} [ 0-9]\d \d{2}:\d{2}:\d{2}')
+        
+    tag_types = {}
+    for tt in (tt1, tt2):
+        tag_types[tt.name] = tt
+
+    generic_tagTypes = get_generic_tagTypes(path = os.path.join(normalizer_path,
+                                                 'common_tagTypes.xml'))
 
     cb_syslogdate = CallbackFunction("""
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -100,20 +110,20 @@ log["date"] = newdate
 
     def test_001(self):
         t1 = Tag(name='date',
-                tagtype = self.tt1,
+                tagtype = 'Anything',
                 substitute = 'DATE')
         t2 = Tag(name='id',
-                tagtype = self.tt1,
+                tagtype = 'Anything',
                 substitute = 'ID')
         t3 = Tag(name='msg',
-                tagtype = self.tt1,
+                tagtype = 'Anything',
                 substitute = 'MSG')
 
         p_tags = {}
         for t in (t1, t2, t3):
             p_tags[t.name] = t
 
-        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags)
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags, tagTypes = self.tag_types, genericTagTypes = self.generic_tagTypes)
         ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
         self.assertEqual(ret['date'], 'Jul 18 08:55:35')
         self.assertEqual(ret['id'], '83')
@@ -121,20 +131,20 @@ log["date"] = newdate
         
     def test_002(self):
         t1 = Tag(name='date',
-                tagtype = self.tt2,
+                tagtype = 'SyslogDate',
                 substitute = 'DATE')
         t2 = Tag(name='id',
-                tagtype = self.tt1,
+                tagtype = 'Anything',
                 substitute = 'ID')
         t3 = Tag(name='msg',
-                tagtype = self.tt1,
+                tagtype = 'Anything',
                 substitute = 'MSG')
 
         p_tags = {}
         for t in (t1, t2, t3):
             p_tags[t.name] = t
-
-        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags)
+        
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags, tagTypes = self.tag_types, genericTagTypes = self.generic_tagTypes)
 
         ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
         self.assertEqual(ret['date'], 'Jul 18 08:55:35')
@@ -146,21 +156,23 @@ log["date"] = newdate
         
     def test_003(self):
         t1 = Tag(name='date',
-               tagtype = self.tt2,
+               tagtype = 'SyslogDate',
                substitute = 'DATE',
                callbacks = ['formatsyslogdate'])
         t2 = Tag(name='id',
-               tagtype = self.tt1,
+               tagtype = 'Anything',
                substitute = 'ID')
         t3 = Tag(name='msg',
-               tagtype = self.tt1,
+               tagtype = 'Anything',
                substitute = 'MSG')
 
         p_tags = {}
         for t in (t1, t2, t3):
             p_tags[t.name] = t
-
-        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags, callBacks = [self.cb_syslogdate])
+        
+        p = CSVPattern('test', 'DATE,ID,MSG', tags = p_tags,
+                        tagTypes = self.tag_types, callBacks = [self.cb_syslogdate],
+                        genericTagTypes = self.generic_tagTypes)
 
         ret = p.normalize('Jul 18 08:55:35,83,"start listening on 127.0.0.1, pam auth started"')
         self.assertEqual(ret['date'], datetime(datetime.now().year, 7, 18, 8, 55, 35))

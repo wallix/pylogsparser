@@ -59,7 +59,7 @@ class Tag(object):
                  description = {},
                  callbacks = []):
         """@param name: the tag's name
-        @param tagtype: the tag's type, instance of L{TagType}
+        @param tagtype: the tag's type name
         @param substitute: the string chain representing the tag in a log pattern
         @param description = a dictionary holding multilingual descriptions of
         the tag
@@ -184,6 +184,8 @@ class CSVPattern(object):
                  quotechar = '"',
                  tags = {},
                  callBacks = [],
+                 tagTypes = {},
+                 genericTagTypes = {},
                  description = '',
                  commonTags = {},
                  examples = []):
@@ -194,6 +196,8 @@ class CSVPattern(object):
         @param quotechar: the CSV quote character
         @param tags: a dict of L{Tag} instance with Tag name as key
         @param callBacks: a list of L{CallbackFunction}
+        @param tagTypes: a dict of L{TagType} instance with TagType name as key
+        @param genericTagTypes: a dict of L{TagType} instance from common_tags xml definition with TagType name as key
         @param description: a pattern description
         @param commonTags: a Dict of tags to add to the final normalisation
         @param examples: a list of L{PatternExample}
@@ -204,6 +208,8 @@ class CSVPattern(object):
         self.quotechar = quotechar
         self.tags = tags
         self.callBacks = callBacks
+        self.tagTypes = tagTypes
+        self.genericTagTypes = genericTagTypes
         self.description = description
         self.examples = examples
         self.commonTags = commonTags
@@ -213,7 +219,12 @@ class CSVPattern(object):
 
     def postprocess(self, data):
         for tag in self.tags:
-            r = re.compile(self.tags[tag].tagtype.regexp)
+            # tagTypes defined in the conf file take precedence on the
+            # generic ones. If nothing found either way, fall back to
+            # Anything.
+            tag_regexp = self.tagTypes.get(self.tags[tag].tagtype,
+                               self.genericTagTypes.get(self.tags[tag].tagtype, self.genericTagTypes['Anything'])).regexp
+            r = re.compile(tag_regexp)
             field = self.tags[tag].substitute
             if field not in data.keys():
                 continue
@@ -225,13 +236,14 @@ class CSVPattern(object):
                 del data[field]
                 data[tag] = value
                 # try to apply callbacks
-                for cbname in self.tags[tag].callbacks:
+                callbacks_names = self.tags[tag].callbacks
+                for cbname in callbacks_names:
                     callback = [cb for cb in self.callBacks if cb.name == cbname][0]
                     try:
                         callback(data[tag], data)
                     except Exception, e:
                         raise Exception("Error on callback %s in pattern %s : %s - skipping" %
-                                       (callback.name,
+                                       (cbname,
                                         self.name, e))
         return data
 
@@ -404,12 +416,21 @@ class Normalizer(object):
             p_tags = {}
             p_commonTags = {}
             p_examples = []
+            p_csv = {}
             for p_node in pattern:
                 if p_node.tag == 'description':
                     for desc in p_node:
                         p_description[desc.get('language')] = desc.text
                 elif p_node.tag == 'text':
                     p_pattern = p_node.text
+                    if 'type' in p_node.attrib:
+                        p_type = p_node.get('type')
+                        if p_type == 'csv':
+                            p_csv = {'type': 'csv'}
+                            if 'separator' in p_node.attrib:
+                                p_csv['separator'] = p_node.get('separator')
+                            if 'quotechar' in p_node.attrib:
+                                p_csv['quotechar'] = p_node.get('quotechar')
                 elif p_node.tag == 'tags':
                     for tag in p_node:
                         t_cb = []
@@ -443,7 +464,12 @@ class Normalizer(object):
                                 for etag in child:
                                     e_expectedTags[etag.get('name')] = etag.text
                         p_examples.append(PatternExample(e_rawline, e_expectedTags, e_description))
-            self.patterns[p_name] = Pattern(p_name, p_pattern, p_tags, p_description, p_commonTags, p_examples)
+            if not p_csv:
+                self.patterns[p_name] = Pattern(p_name, p_pattern, p_tags, p_description, p_commonTags, p_examples)
+            else:
+                self.patterns[p_name] = CSVPattern(p_name, p_pattern, p_csv['separator'], p_csv['quotechar'], p_tags,
+                                                   self.callbacks, self.tagTypes, self.genericTagTypes, p_description,
+                                                   p_commonTags, p_examples)
 
     def get_description(self, language = "en"):
         return "%s v. %s" % (self.name, self.version)
@@ -478,6 +504,8 @@ class Normalizer(object):
         if isinstance(patterns, basestring):
             patterns = [patterns]
         for pattern in patterns:
+            if isinstance(self.patterns[pattern], CSVPattern):
+                continue
             regexp = self.patterns[pattern].pattern
             for tagname, tag in self.patterns[pattern].tags.items():
                 # tagTypes defined in the conf file take precedence on the
@@ -507,10 +535,12 @@ class Normalizer(object):
         if all( [ re.match(value, log.get(prereq, ''))
                   for prereq, value in self.prerequisites.items() ]) or\
            do_not_check_prereq:
+            csv_patterns = [csv_pattern for csv_pattern in self.patterns.values() if isinstance(csv_pattern, CSVPattern)]
             if self.appliedTo in log.keys():
                 m = getattr(self.full_regexp, self.matchtype)(log[self.appliedTo])
-                if m:
+                if m is not None:
                     m = m.groupdict()
+                if m:
                     # this little trick makes the following line not type dependent
                     temp_wl = dict([ (u, log[u]) for u in log.keys() ])
                     for tag in m:
@@ -537,6 +567,14 @@ class Normalizer(object):
                     log.update(matched_pattern.commonTags)
                     # and finally, add the normalizer's common Tags
                     log.update(self.commonTags) 
+                elif csv_patterns:
+                    # this little trick makes the following line not type dependent
+                    temp_wl = dict([ (u, log[u]) for u in log.keys() ])
+                    for csv_pattern in csv_patterns:
+                        ret = csv_pattern.normalize(temp_wl[self.appliedTo])
+                        if ret:
+                            log = ret
+                            break
         return log
 
     def validate(self):
@@ -550,7 +588,10 @@ class Normalizer(object):
         for p in self.patterns:
             for example in self.patterns[p].examples:
                 w = { self.appliedTo : example.raw_line }
-                w = self.normalize(w, do_not_check_prereq = True)
+                if isinstance(self.patterns[p], Pattern):
+                    w = self.normalize(w, do_not_check_prereq = True)
+                elif isinstance(self.patterns[p], CSVPattern):
+                    w = self.patterns[p].normalize(example.raw_line)
                 for expectedTag in example.expected_tags.keys():
                     if isinstance(w.get(expectedTag), datetime):
                         svalue = str(w.get(expectedTag))

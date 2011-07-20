@@ -87,6 +87,9 @@
      Regular expressions' metacharacters are not escaped by default, to provide
      their full power without the hassle.-->
 <!ELEMENT text (#PCDATA)> 
+ <!ATTLIST text type CDATA #IMPLIED>
+ <!ATTLIST text separator CDATA #IMPLIED>
+ <!ATTLIST text quotechar CDATA #IMPLIED>
 <!-- a list of real-life examples that can be used for auto-generating some
      documentation and unit testing. -->
 <!ELEMENT examples (example+)> 
