@@ -393,7 +393,7 @@ class Test(unittest.TestCase):
 
     # Need to find real symantec version 9 log lines
     def test_symantec9(self):
-        """Test Symantec version 8 normalization"""
+        """Test Symantec version 9 normalization"""
         self.aS("""200A13080122,23,2,8,TRAVEL00,SYSTEM,,,,,,,16777216,"Symantec AntiVirus Realtime Protection Loaded.",0,,0,,,,,0,,,,,,,,,,SAMPLE_COMPUTER,,,,Parent,GROUP,,9.0.93330,,,,,,,,,,,,,,,,,,,,""",
                 {"program" : "symantec",
                  "date" : datetime(2002, 11, 19, 8, 1, 34),
