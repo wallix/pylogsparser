@@ -181,6 +181,70 @@ log["date"] = newdate
         self.assertEqual(ret['date'], datetime(datetime.now().year, 7, 18, 8, 55, 35))
         self.assertEqual(ret['id'], '83')
         self.assertEqual(ret['msg'], 'start listening on 127.0.0.1, pam auth started')
+    
+    def test_normalize_csv_pattern_004(self):
+        t1 = Tag(name='date',
+                tagtype = 'Anything',
+                substitute = 'DATE')
+        t2 = Tag(name='id',
+                tagtype = 'Anything',
+                substitute = 'ID')
+        t3 = Tag(name='msg',
+                tagtype = 'Anything',
+                substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', ' DATE; ID ;MSG ', separator = ';', quotechar = '=', tags = p_tags, tagTypes = self.tag_types, genericTagTypes = self.generic_tagTypes)
+        ret = p.normalize('Jul 18 08:55:35;83;=start listening on 127.0.0.1; pam auth started=')
+        self.assertEqual(ret['date'], 'Jul 18 08:55:35')
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on 127.0.0.1; pam auth started')
+    
+    def test_normalize_csv_pattern_005(self):
+        t1 = Tag(name='date',
+                tagtype = 'Anything',
+                substitute = 'DATE')
+        t2 = Tag(name='id',
+                tagtype = 'Anything',
+                substitute = 'ID')
+        t3 = Tag(name='msg',
+                tagtype = 'Anything',
+                substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', 'DATE ID MSG', separator = ' ', quotechar = '=', tags = p_tags, tagTypes = self.tag_types, genericTagTypes = self.generic_tagTypes)
+        ret = p.normalize('=Jul 18 08:55:35= 83 =start listening on 127.0.0.1 pam auth started=')
+        self.assertEqual(ret['date'], 'Jul 18 08:55:35')
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on 127.0.0.1 pam auth started')
+    
+    def test_normalize_csv_pattern_006(self):
+        t1 = Tag(name='date',
+                tagtype = 'Anything',
+                substitute = 'DATE')
+        t2 = Tag(name='id',
+                tagtype = 'Anything',
+                substitute = 'ID')
+        t3 = Tag(name='msg',
+                tagtype = 'Anything',
+                substitute = 'MSG')
+
+        p_tags = {}
+        for t in (t1, t2, t3):
+            p_tags[t.name] = t
+
+        p = CSVPattern('test', 'DATE ID MSG', separator = ' ', quotechar = '=', tags = p_tags, tagTypes = self.tag_types, genericTagTypes = self.generic_tagTypes)
+        # Default behaviour of csv reader is doublequote for escape a quotechar.
+        ret = p.normalize('=Jul 18 08:55:35= 83 =start listening on ==127.0.0.1 pam auth started=')
+        self.assertEqual(ret['date'], 'Jul 18 08:55:35')
+        self.assertEqual(ret['id'], '83')
+        self.assertEqual(ret['msg'], 'start listening on =127.0.0.1 pam auth started')
 
 if __name__ == "__main__":
     unittest.main()

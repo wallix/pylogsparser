@@ -215,7 +215,10 @@ class CSVPattern(object):
         self.examples = examples
         self.commonTags = commonTags
         _fields = self.pattern.split(self.separator)
-        self.fields = [f.strip() for f in _fields]
+        if self.separator != ' ':
+            self.fields = [f.strip() for f in _fields]
+        else:
+            self.fields = _fields
         self.check_count = len(self.fields)
 
     def postprocess(self, data):
