@@ -1,0 +1,1259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="symantec"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en">This normalizer parses messages issued by the Symantec Antivirus.</localized_desc>
+  <localized_desc language="fr">Ce normaliser analyse les messages émis par Symantec Antivirus.</localized_desc>
+ </description>
+ <authors>
+  <author>fbo@wallix.com</author>
+ </authors>
+ <tagTypes>
+  <tagType name="SymantecDate" type="basestring">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>^(?:[A-F0-9]{2}){6}$</regexp>
+  </tagType>
+  <tagType name="SymantecCategory" type="basestring">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>[1-4]</regexp>
+  </tagType>
+  <tagType name="SymantecEvent" type="basestring">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>\d{1,3}</regexp>
+  </tagType>
+  <tagType name="SymantecQAS" type="basestring">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>[012]?</regexp>
+  </tagType>
+ </tagTypes>
+ <callbacks>
+  <callback name="decode_date">
+    date_params = [ int(value[2*i : 2*(i+1)], 16) for i in range(6) ]
+    date_params[0] += 1970
+    date_params[1] += 1
+    log['date'] = datetime(*date_params)
+  </callback>
+  <callback name="event_translator">
+# the list below is compliant up to Symantec Endpoint Protection 11.0
+events = [ '',
+'GL_EVENT_IS_ALERT',
+'GL_EVENT_SCAN_STOP',
+'GL_EVENT_SCAN_START',
+'GL_EVENT_PATTERN_UPDATE',
+'GL_EVENT_INFECTION',
+'GL_EVENT_FILE_NOT_OPEN',
+'GL_EVENT_LOAD_PATTERN',
+'GL_STD_MESSAGE_INFO NOT USED',
+'GL_STD_MESSAGE_ERROR NOT USED',
+'GL_EVENT_CHECKSUM',
+'GL_EVENT_TRAP',
+'GL_EVENT_CONFIG_CHANGE',
+'GL_EVENT_SHUTDOWN',
+'GL_EVENT_STARTUP',
+'UNDOCUMENTED',
+'GL_EVENT_PATTERN_DOWNLOAD',
+'GL_EVENT_TOO_MANY_VIRUSES',
+'GL_EVENT_FWD_TO_QSERVER',
+'GL_EVENT_SCANDLVR',
+'GL_EVENT_BACKUP',
+'GL_EVENT_SCAN_ABORT',
+'GL_EVENT_RTS_LOAD_ERROR',
+'GL_EVENT_RTS_LOAD',
+'GL_EVENT_RTS_UNLOAD',
+'GL_EVENT_REMOVE_CLIENT',
+'GL_EVENT_SCAN_DELAYED',
+'GL_EVENT_SCAN_RESTART',
+'GL_EVENT_ADD_SAVROAMCLIENT_TOSERVER',
+'GL_EVENT_REMOVE_SAVROAMCLIENT_FROMSERVER',
+'GL_EVENT_LICENSE_WARNING',
+'GL_EVENT_LICENSE_ERROR',
+'GL_EVENT_LICENSE_GRACE',
+'GL_EVENT_UNAUTHORIZED_COMM',
+'GL_EVENT_LOG_FWD_THRD_ERR',
+'GL_EVENT_LICENSE_INSTALLED',
+'GL_EVENT_LICENSE_ALLOCATED',
+'GL_EVENT_LICENSE_OK',
+'GL_EVENT_LICENSE_DEALLOCATED',
+'GL_EVENT_BAD_DEFS_ROLLBACK',
+'GL_EVENT_BAD_DEFS_UNPROTECTED',
+'GL_EVENT_SAV_PROVIDER_PARSING_ERROR',
+'GL_EVENT_RTS_ERROR',
+'GL_EVENT_COMPLIANCE_FAIL',
+'GL_EVENT_COMPLIANCE_SUCCESS',
+'GL_EVENT_SECURITY_SYMPROTECT_POLICYVIOLATION',
+'GL_EVENT_ANOMALY_START',
+'GL_EVENT_DETECTION_ACTION_TAKEN',
+'GL_EVENT_REMEDIATION_ACTION_PENDING',
+'GL_EVENT_REMEDIATION_ACTION_FAILED',
+'GL_EVENT_REMEDIATION_ACTION_SUCCESSFUL',
+'GL_EVENT_ANOMALY_FINISH',
+'GL_EVENT_COMMS_LOGIN_FAILED',
+'GL_EVENT_COMMS_LOGIN_SUCCESS',
+'GL_EVENT_COMMS_UNAUTHORIZED_COMM',
+'GL_EVENT_CLIENT_INSTALL_AV',
+'GL_EVENT_CLIENT_INSTALL_FW',
+'GL_EVENT_CLIENT_UNINSTALL',
+'GL_EVENT_CLIENT_UNINSTALL_ROLLBACK',
+'GL_EVENT_COMMS_SERVER_GROUP_ROOT_CERT_ISSUE',
+'GL_EVENT_COMMS_SERVER_CERT_ISSUE',
+'GL_EVENT_COMMS_TRUSTED_ROOT_CHANGE',
+'GL_EVENT_COMMS_SERVER_CERT_STARTUP_FAILED',
+'GL_EVENT_CLIENT_CHECKIN',
+'GL_EVENT_CLIENT_NO_CHECKIN',
+'GL_EVENT_SCAN_SUSPENDED',
+'GL_EVENT_SCAN_RESUMED',
+'GL_EVENT_SCAN_DURATION_INSUFFICIENT',
+'GL_EVENT_CLIENT_MOVE',
+'GL_EVENT_SCAN_FAILED_ENHANCED',
+'GL_EVENT_MAX_EVENT_NUMBER',
+'GL_EVENT_HEUR_THREAT_NOW_WHITELISTED',
+'GL_EVENT_INTERESTING_PROCESS_DETECTED_START',
+'GL_EVENT_LOAD_ERROR_COH',
+'GL_EVENT_LOAD_ERROR_SYKNAPPS',
+'GL_EVENT_INTERESTING_PROCESS_DETECTED_FINISH',
+'GL_EVENT_HPP_SCAN_NOT_SUPPORTED_FOR_OS',
+'GL_EVENT_HEUR_THREAT_NOW_KNOWN',
+'UNDOCUMENTED',
+'UNDOCUMENTED',
+'GL_EVENT_MAX_EVENT_NUMBER'] # not super sure about the last one ... ? The kb article seems pasted out of code
+log['event_number'] = events[int(value)]
+  </callback>
+  <callback name="category_translator">
+categories = ['','Infection', 'Summary', 'Pattern', 'Security']
+log['category'] = categories[int(value)]
+  </callback>
+  <callback name="logger_translator">
+loggers = { '0' : 'Scheduled',
+            '1' : 'Manual',
+            '2' : 'Real Time',
+            '6' : 'Console',
+            '7' : 'VPDOWN',
+            '8' : 'System',
+            '9' : 'Startup',
+            '101' : 'Client',
+            '102' : 'Forwarded',
+            '65637' : 'Manual Scan',
+            '131173' : 'Real Time',
+            '524389' : 'System',
+            '720997' : 'Defwatch',
+            '6619237' : 'Client', 
+          }
+log['event_logger_type'] = loggers.get(value, value)
+  </callback>
+  <callback name="action1_translator">
+actions = ['',
+           'Quarantine infected file',
+           'Rename infected file',
+           'Delete infected file',
+           'Leave alone (log only)',
+           'Clean virus from file',
+           'Clean or delete macros']
+try:
+    trans = actions[int(value)]
+except:
+    trans = "Unknown action"
+log['primary_action_configuration'] = trans
+  </callback>
+  <callback name="action2_translator">
+actions = ['',
+           'Quarantine infected file',
+           'Rename infected file',
+           'Delete infected file',
+           'Leave alone (log only)',
+           'Clean virus from file',
+           'Clean or delete macros']
+try:
+    trans = actions[int(value)]
+except:
+    trans = "Unknown action"
+log['secondary_action_configuration'] = trans
+  </callback>
+  <callback name="action0_translator">
+actions = ['',
+ 'Quarantined',
+ 'Renamed',
+ 'Deleted',
+ 'Left alone',
+ 'Cleaned',
+ 'Cleaned or macros deleted',
+ 'Saved file as...',
+ 'Sent to Intel (AMS)',
+ 'Moved to backup location',
+ 'Renamed backup file',
+ 'Undo action in Quarantine View',
+ 'Write protected or lack of permissions - Unable to act on file',
+ 'Backed up file',
+ 'Pending analysis',
+ 'First action was partially successful; second action was Leave Alone. Results of the second action are not mentioned.',
+ 'A process needs to be terminated to remove a risk',
+ 'Prevent a risk from being loggged or a user interface from being displayed',
+ 'Performing a request to restart the computer',
+ 'Shows as Cleaned by Deletion in the Risk History in the UI and the Logs in the SSC',
+ 'Auto-Protect prevented a file from being created; reported "Access denied."']
+log['action_taken'] = actions[int(value)]
+  </callback>
+  <callback name="virustype_translator">
+virus_index = hex(int(value))[2:]
+expanded_threat_index = 0
+if len(virus_index) >= 2:
+    expanded_threat_index = int(virus_index[-2], 16)
+virus_types = { '1' : 'VEBOOTVIRUS',
+                '3' : 'VEBOOT1VIRUS',
+                '5' : 'VEBOOT2VIRUS',
+                '9' : 'VEBOOT3VIRUS',
+                '100' : 'VEFILEVIRUS',
+                '300' : 'VEMUTATIONVIRUS',
+                '500' : 'VEFILEMACROVIRUS',
+                '900' : 'VEFILE2VIRUS',
+                '1100' : 'VEFIL3VIRUS',
+                '10000' : 'VEMEMORYVIRUS',
+                '30000' : 'VEMEMOSVIRUS',
+                '50000' : 'VEMEMMCBVIRUS',
+                '90000' : 'VEMEMHIGHESTVIRUS',
+                '1000000' : 'VEVIRUSBEHAVIOR',
+                '3000000' : 'VEVIRUS1BEHAVIOR',
+                '8000000' : 'VEFILECOMPRESSED',
+                '10000000' : 'VEHURISTIC',
+             }
+expanded_threats = ['',
+                    ' + VE_NON_VIRAL_MALICIOUS',
+                    ' + VE_RESERVED_MALICIOUS',
+                    ' + VE_HEURISTIC',
+                    ' + VE_SECURITY_RISK_ON',
+                    ' + VE_HACKER_TOOLS',
+                    ' + VE_SPYWARE',
+                    ' + VE_TRACKWARE',
+                    ' + VE_DIALERS',
+                    ' + VE_REMOTE_ACCESS',
+                    ' + VE_ADWARE',
+                    ' + VE_JOKE_PROGRAMS',
+                    ' + VE_SECURITY_RISK_OFF',
+                    ' + UNDOCUMENTED',
+                    ' + UNDOCUMENTED',
+                    ' + UNDOCUMENTED',]
+res = virus_types.get(virus_index, "UNDOCUMENTED") +\
+                      expanded_threats[expanded_threat_index]
+log['virus_type'] = res
+  </callback>
+  <callback name="flag_translator">
+flags = {
+ '4194304': 'EB_ACCESS_DENIED',
+ '268435456': 'EB_NO_LOG',
+ '536870912': 'EB_FROM_CLIENT',
+ '134217728': 'EB_LAST_ITEM',
+ '16777216': 'EB_LOG',
+ '33554432': 'EB_REAL_CLIENT',
+ '4095': 'EB_FA_OVERLAYS',
+ '4190208': 'EB_N_OVERLAYS',
+ '67108864': 'EB_FIRST_ITEM',
+ '8388608': 'EB_REPORT'}
+log['eventblock_action'] = flags.get(value, "UNDOCUMENTED")
+  </callback>
+  <callback name="quarantinest_translator">
+status = {'0' : 'QF_NONE',
+          '1' : 'QF_FAILED',
+          '2' : 'QF_OK'}
+log['quarantine_attempt_status'] = status.get(value)
+  </callback>
+  <callback name="access_translator">
+def bits(x):
+    # helper function to decrypt the mask
+    if x == 0:
+        return ()
+    else:
+        top_pow = int(math.log(x, 2))
+        return (top_pow,) + bits(x - 2**top_pow)
+
+flags = ['FA_READ',
+ 'FA_WRITE',
+ 'FA_EXEC',
+ 'FA_IN_TABLE',
+ 'FA_REJECT_ACTION',
+ 'FA_ACTION_COMPLETE',
+ 'FA_DELETE_WHEN_COMPLETE',
+ 'FA_CLIENT_REQUEST',
+ 'FA_OWNED_BY_USER',
+ 'FA_DELETE',
+ 'FA_OWNED_BY_QUEUE',
+ 'FA_FILE_IN_CACHE',
+ 'FA_SCAN',
+ 'FA_GET_TRAP_DATA',
+ 'FA_USE_TRAP_DATA',
+ 'FA_FILE_NEEDS_SCAN',
+ 'FA_BEFORE_OPEN',
+ 'FA_AFTER_OPEN',
+ 'FA_SCAN_BOOT_SECTOR',
+ 'FA_COMING_FROM_NAVAP',
+ 'FA_BACKUP_TO_QUARANTINE']
+
+if value != '0':
+    ret = ' + '.join( [ flags[i] for i in bits(int(value)) ] )
+else:
+    ret = value
+log['operation_flags'] = ret
+  </callback>
+  <callback name="compressed_translator">
+if value == '0':
+    ret = "No"
+elif value == '1':
+    ret = "Yes"
+else:
+    ret = "UNDOCUMENTED"
+log['compressed_file'] = ret
+  </callback>
+  <callback name="clean_translator">
+status = {'0' : 'VECLEANABLE',
+          '1' : 'VENOCLEANPATTERN',
+          '2' : 'VENOTCLEANABLE'}
+log['cleanable'] = status.get(value, "UNDOCUMENTED")
+  </callback>
+  <callback name="delete_translator">
+status = {'0' : 'VEDELETABLE',
+          '1' : 'VENOTDELETABLE'}
+log['deletable'] = status.get(value, "UNDOCUMENTED")
+  </callback>
+  <callback name="action1s9_translator">
+def bits(x):
+    # helper function to decrypt the mask
+    if x == 0:
+        return ()
+    else:
+        top_pow = int(math.log(x, 2))
+        return (top_pow,) + bits(x - 2**top_pow)
+
+meanings = {
+ 0: 'The file could not be opened',
+ 1: 'The file was wiped clean of data',
+ 2: 'The file was truncated to 0 bytes',
+ 3: 'The file could not be deleted',
+ 8: 'Flag created files due to special handling',
+ 9: 'The just created infected file was deleted',
+ 10: 'Dir2-type infected files are not quarantined',
+ 11: 'Dir2-type infected files are deleted if the file is being created',
+ 12: 'Dir2-type infected files are not deleted',
+ 16: 'File was deleted due to the DESTROY flag',
+          }
+if value == '0':
+    ret = "No information"
+else:
+    ret = " + ".join( [ meanings[i] for i in bits(int(value)) ] ) 
+log['action1_status'] = ret
+  </callback>
+  <callback name="action2s9_translator">
+def bits(x):
+    # helper function to decrypt the mask
+    if x == 0:
+        return ()
+    else:
+        top_pow = int(math.log(x, 2))
+        return (top_pow,) + bits(x - 2**top_pow)
+
+meanings = {
+ 0: 'The file could not be opened',
+ 1: 'The file was wiped clean of data',
+ 2: 'The file was truncated to 0 bytes',
+ 3: 'The file could not be deleted',
+ 8: 'Flag created files due to special handling',
+ 9: 'The just created infected file was deleted',
+ 10: 'Dir2-type infected files are not quarantined',
+ 11: 'Dir2-type infected files are deleted if the file is being created',
+ 12: 'Dir2-type infected files are not deleted',
+ 16: 'File was deleted due to the DESTROY flag',
+          }
+if value == '0':
+    ret = "No information"
+else:
+    ret = " + ".join( [ meanings[i] for i in bits(int(value)) ] ) 
+log['action2_status'] = ret
+  </callback>
+</callbacks>
+ <patterns>
+  <pattern name="symantec-001">
+   <description>
+    <localized_desc language="en">Pattern definition for Symantec Antivirus version 8</localized_desc>
+    <localized_desc language="fr">Definition de pattern pour Symantec Antivirus version 8</localized_desc>
+   </description>
+   <text type="csv" separator="," quotechar='"' >DATE,EVENT_NUMBER,CATEGORY,EVENT_LOGGER_TYPE,COMPUTER,USERNAME,VIRUS_NAME,VIRUS_LOCATION,PRIMARY_ACTION_CONFIGURATION,SECONDARY_ACTION_CONFIGURATION,ACTION_TAKEN,VIRUS_TYPE,EVENTBLOCK_ACTION,BODY,SCAN_ID,UNKNOWN1,GROUP_ID,EVENT_DATA,QUARANTINED_FILE_ID,VIRUS_ID,QUARANTINE_ATTEMPT_STATUS,OPERATION_FLAGS,UNKNOWN2,COMPRESSED_FILE,VIRUS_DEPTH_IN_COMPRESSED_FILE,AMOUNT_OF_REMAINING_INFECTED_FILES,VIRUS_DEFINITIONS_VERSION,VIRUS_DEFINITION_SEQUENCE_NUMBER,CLEANABLE,DELETABLE,BACKUP_ID,PARENT,GUID,CLIENT_GROUP,ADDRESS,SERVER_GROUP,DOMAIN_NAME,MAC_ADDRESS,VERSION</text>
+   <tags>
+    <tag name="__date" tagType="SymantecDate">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>decode_date</callback>
+     </callbacks>
+    </tag>
+    <tag name="__event_number" tagType="SymantecEvent">
+     <description>
+      <localized_desc language="en">Category</localized_desc>
+      <localized_desc language="fr">Catégorie</localized_desc>
+     </description>
+     <substitute>EVENT_NUMBER</substitute>
+     <callbacks>
+      <callback>event_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__category" tagType="SymantecCategory">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CATEGORY</substitute>
+     <callbacks>
+      <callback>category_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__event_logger_type" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENT_LOGGER_TYPE</substitute>
+     <callbacks>
+      <callback>logger_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="computer" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>COMPUTER</substitute>
+    </tag>
+    <tag name="username" tagType="Anything">
+     <description>
+      <localized_desc language="en">Utilisateur</localized_desc>
+      <localized_desc language="fr">Utilisateur</localized_desc>
+     </description>
+     <substitute>USERNAME</substitute>
+    </tag>
+    <tag name="virus_name" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus name</localized_desc>
+      <localized_desc language="fr">Nom du virus'</localized_desc>
+     </description>
+     <substitute>VIRUS_NAME</substitute>
+    </tag>
+    <tag name="virus_location" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus location</localized_desc>
+      <localized_desc language="fr">Emplacement du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_LOCATION</substitute>
+    </tag>
+    <tag name="__primary_action_configuration" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PRIMARY_ACTION_CONFIGURATION</substitute>
+     <callbacks>
+      <callback>action1_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__secondary_action_configuration" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SECONDARY_ACTION_CONFIGURATION</substitute>
+     <callbacks>
+      <callback>action2_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__action_taken" tagType="Anything">
+     <description>
+      <localized_desc language="en">Action taken</localized_desc>
+      <localized_desc language="fr">Action effectuée</localized_desc>
+     </description>
+     <substitute>ACTION_TAKEN</substitute>
+     <callbacks>
+      <callback>action0_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__virus_type" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus type</localized_desc>
+      <localized_desc language="fr">Type du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_TYPE</substitute>
+     <callbacks>
+      <callback>virustype_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__eventblock_action" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENTBLOCK_ACTION</substitute>
+     <callbacks>
+      <callback>flag_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+      <localized_desc language="en">Message body describing the event</localized_desc>
+      <localized_desc language="fr">Corps du message, décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+    <tag name="scan_id" tagType="Anything">
+     <description>
+      <localized_desc language="en">Scan identifier</localized_desc>
+      <localized_desc language="fr">Identifiant du scan</localized_desc>
+     </description>
+     <substitute>SCAN_ID</substitute>
+    </tag>
+    <tag name="unknown1" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>UNKNOWN1</substitute>
+    </tag>
+    <tag name="group_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>GROUP_ID</substitute>
+    </tag>
+    <tag name="event_data" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENT_DATA</substitute>
+    </tag>
+    <tag name="quarantined_file_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>QUARANTINED_FILE_ID</substitute>
+    </tag>
+    <tag name="virus_id" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus identifier</localized_desc>
+      <localized_desc language="fr">Identifiant du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_ID</substitute>
+    </tag>
+    <tag name="__quarantine_attempt_status" tagType="SymantecQAS">
+     <description>
+      <localized_desc language="en">Quarantine attempt status</localized_desc>
+      <localized_desc language="fr">Statut de la tentative de mise en quarantaine</localized_desc>
+     </description>
+     <substitute>QUARANTINE_ATTEMPT_STATUS</substitute>
+     <callbacks>
+      <callback>quarantinest_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__operation_flags" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>OPERATION_FLAGS</substitute>
+     <callbacks>
+      <callback>access_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="unknown2" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>UNKNOWN2</substitute>
+    </tag>
+    <tag name="__compressed_file" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>COMPRESSED_FILE</substitute>
+     <callbacks>
+      <callback>compressed_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="virus_depth_in_compressed_file" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>VIRUS_DEPTH_IN_COMPRESSED_FILE</substitute>
+    </tag>
+    <tag name="amount_of_remaining_infected_files" tagType="Anything">
+     <description>
+      <localized_desc language="en">Amount of remaining infected files</localized_desc>
+      <localized_desc language="fr">Nombre de fichiers encore infectés</localized_desc>
+     </description>
+     <substitute>AMOUNT_OF_REMAINING_INFECTED_FILES</substitute>
+    </tag>
+    <tag name="virus_definition_version" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus definition file version</localized_desc>
+      <localized_desc language="fr">Version du fichier de définitions des virus</localized_desc>
+     </description>
+     <substitute>VIRUS_DEFINITIONS_VERSION</substitute>
+    </tag>
+    <tag name="virus_definition_sequence_number" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>VIRUS_DEFINITION_SEQUENCE_NUMBER</substitute>
+    </tag>
+    <tag name="__cleanable" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CLEANABLE</substitute>
+     <callbacks>
+      <callback>clean_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__deletable" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DELETABLE</substitute>
+     <callbacks>
+      <callback>delete_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="backup_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>BACKUP_ID</substitute>
+    </tag>
+    <tag name="parent" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PARENT</substitute>
+    </tag>
+    <tag name="guid" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>GUID</substitute>
+    </tag>
+    <tag name="client_group" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CLIENT_GROUP</substitute>
+    </tag>
+    <tag name="address" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ADDRESS</substitute>
+    </tag>
+    <tag name="server_group" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SERVER_GROUP</substitute>
+    </tag>
+    <tag name="domain_name" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DOMAIN_NAME</substitute>
+    </tag>
+    <tag name="mac_address" tagType="Anything">
+     <description>
+      <localized_desc language="en">MAC Address</localized_desc>
+      <localized_desc language="fr">Adresse MAC</localized_desc>
+     </description>
+     <substitute>MAC_ADDRESS</substitute>
+    </tag>
+    <tag name="version" tagType="Anything">
+     <description>
+      <localized_desc language="en">Version</localized_desc>
+      <localized_desc language="fr">Version</localized_desc>
+     </description>
+     <substitute>VERSION</substitute>
+    </tag>
+   </tags>
+   <commonTags>
+    <commonTag name="program">symantec</commonTag>
+   </commonTags>
+   <examples>
+    <example>
+     <text>200A13080122,23,2,8,TRAVEL00,SYSTEM,,,,,,,16777216,"Symantec AntiVirus Realtime Protection Loaded.",0,,0,,,,,0,,,,,,,,,,SAMPLE_COMPUTER,,,,Parent,GROUP,,8.0.93330</text>
+     <expectedTags>
+      <expectedTag name="program">symantec</expectedTag>
+      <expectedTag name="date">2002-11-19 08:01:34</expectedTag>
+      <expectedTag name="category">Summary</expectedTag>
+      <expectedTag name="computer">TRAVEL00</expectedTag>
+      <expectedTag name="domain_name">GROUP</expectedTag>
+      <expectedTag name="event_logger_type">System</expectedTag>
+      <expectedTag name="event_number">GL_EVENT_RTS_LOAD</expectedTag>
+      <expectedTag name="eventblock_action">EB_LOG</expectedTag>
+      <expectedTag name="group_id">0</expectedTag>
+      <expectedTag name="operation_flags">0</expectedTag>
+      <expectedTag name="parent">SAMPLE_COMPUTER</expectedTag>
+      <expectedTag name="scan_id">0</expectedTag>
+      <expectedTag name="server_group">Parent</expectedTag>
+      <expectedTag name="username">SYSTEM</expectedTag>
+      <expectedTag name="version">8.0.93330</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="symantec-002">
+   <description>
+    <localized_desc language="en">Pattern definition for Symantec Antivirus version 9</localized_desc>
+    <localized_desc language="fr">Definition de pattern pour Symantec Antivirus version 9</localized_desc>
+   </description>
+   <text type="csv" separator="," quotechar='"' >DATE,EVENT_NUMBER,CATEGORY,EVENT_LOGGER_TYPE,COMPUTER,USERNAME,VIRUS_NAME,VIRUS_LOCATION,PRIMARY_ACTION_CONFIGURATION,SECONDARY_ACTION_CONFIGURATION,ACTION_TAKEN,VIRUS_TYPE,EVENTBLOCK_ACTION,BODY,SCAN_ID,UNKNOWN1,GROUP_ID,EVENT_DATA,QUARANTINED_FILE_ID,VIRUS_ID,QUARANTINE_ATTEMPT_STATUS,OPERATION_FLAGS,UNKNOWN2,COMPRESSED_FILE,VIRUS_DEPTH_IN_COMPRESSED_FILE,AMOUNT_OF_REMAINING_INFECTED_FILES,VIRUS_DEFINITIONS_VERSION,VIRUS_DEFINITION_SEQUENCE_NUMBER,CLEANABLE,DELETABLE,BACKUP_ID,PARENT,GUID,CLIENT_GROUP,ADDRESS,SERVER_GROUP,DOMAIN_NAME,MAC_ADDRESS,VERSION,REMOTE_MACHINE,REMOTE_MACHINE_IP,ACTION1_STATUS,ACTION2_STATUS,LICENSE_FEATURE_NAME,LICENSE_FEATURE_VER,LICENSE_SERIAL_NUM,LICENSE_FULFILLMENT_ID,LICENSE_START_DT,LICENSE_EXPIRATION_DT,LICENSE_LIFECYCLE,LICENSE_SEATS_TOTAL,LICENSE_SEATS,ERR_CODE,LICENSE_SEATS_DELTA,STATUS,DOMAIN_GUID,LOG_SESSION_GUID,VBIN_SESSION_GUID,LOGIN_DOMAIN</text>
+   <tags>
+    <tag name="__date" tagType="SymantecDate">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>decode_date</callback>
+     </callbacks>
+    </tag>
+    <tag name="__event_number" tagType="SymantecEvent">
+     <description>
+      <localized_desc language="en">Category</localized_desc>
+      <localized_desc language="fr">Catégorie</localized_desc>
+     </description>
+     <substitute>EVENT_NUMBER</substitute>
+     <callbacks>
+      <callback>event_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__category" tagType="SymantecCategory">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CATEGORY</substitute>
+     <callbacks>
+      <callback>category_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__event_logger_type" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENT_LOGGER_TYPE</substitute>
+     <callbacks>
+      <callback>logger_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="computer" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>COMPUTER</substitute>
+    </tag>
+    <tag name="username" tagType="Anything">
+     <description>
+      <localized_desc language="en">Utilisateur</localized_desc>
+      <localized_desc language="fr">Utilisateur</localized_desc>
+     </description>
+     <substitute>USERNAME</substitute>
+    </tag>
+    <tag name="virus_name" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus name</localized_desc>
+      <localized_desc language="fr">Nom du virus'</localized_desc>
+     </description>
+     <substitute>VIRUS_NAME</substitute>
+    </tag>
+    <tag name="virus_location" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus location</localized_desc>
+      <localized_desc language="fr">Emplacement du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_LOCATION</substitute>
+    </tag>
+    <tag name="__primary_action_configuration" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PRIMARY_ACTION_CONFIGURATION</substitute>
+     <callbacks>
+      <callback>action1_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__secondary_action_configuration" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SECONDARY_ACTION_CONFIGURATION</substitute>
+     <callbacks>
+      <callback>action2_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__action_taken" tagType="Anything">
+     <description>
+      <localized_desc language="en">Action taken</localized_desc>
+      <localized_desc language="fr">Action effectuée</localized_desc>
+     </description>
+     <substitute>ACTION_TAKEN</substitute>
+     <callbacks>
+      <callback>action0_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__virus_type" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus type</localized_desc>
+      <localized_desc language="fr">Type du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_TYPE</substitute>
+     <callbacks>
+      <callback>virustype_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__eventblock_action" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENTBLOCK_ACTION</substitute>
+     <callbacks>
+      <callback>flag_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+      <localized_desc language="en">Message body describing the event</localized_desc>
+      <localized_desc language="fr">Corps du message, décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+    <tag name="scan_id" tagType="Anything">
+     <description>
+      <localized_desc language="en">Scan identifier</localized_desc>
+      <localized_desc language="fr">Identifiant du scan</localized_desc>
+     </description>
+     <substitute>SCAN_ID</substitute>
+    </tag>
+    <tag name="unknown1" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>UNKNOWN1</substitute>
+    </tag>
+    <tag name="group_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>GROUP_ID</substitute>
+    </tag>
+    <tag name="event_data" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>EVENT_DATA</substitute>
+    </tag>
+    <tag name="quarantined_file_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>QUARANTINED_FILE_ID</substitute>
+    </tag>
+    <tag name="virus_id" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus identifier</localized_desc>
+      <localized_desc language="fr">Identifiant du virus</localized_desc>
+     </description>
+     <substitute>VIRUS_ID</substitute>
+    </tag>
+    <tag name="__quarantine_attempt_status" tagType="SymantecQAS">
+     <description>
+      <localized_desc language="en">Quarantine attempt status</localized_desc>
+      <localized_desc language="fr">Statut de la tentative de mise en quarantaine</localized_desc>
+     </description>
+     <substitute>QUARANTINE_ATTEMPT_STATUS</substitute>
+     <callbacks>
+      <callback>quarantinest_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__operation_flags" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>OPERATION_FLAGS</substitute>
+     <callbacks>
+      <callback>access_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="unknown2" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>UNKNOWN2</substitute>
+    </tag>
+    <tag name="__compressed_file" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>COMPRESSED_FILE</substitute>
+     <callbacks>
+      <callback>compressed_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="virus_depth_in_compressed_file" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>VIRUS_DEPTH_IN_COMPRESSED_FILE</substitute>
+    </tag>
+    <tag name="amount_of_remaining_infected_files" tagType="Anything">
+     <description>
+      <localized_desc language="en">Amount of remaining infected files</localized_desc>
+      <localized_desc language="fr">Nombre de fichiers encore infectés</localized_desc>
+     </description>
+     <substitute>AMOUNT_OF_REMAINING_INFECTED_FILES</substitute>
+    </tag>
+    <tag name="virus_definition_version" tagType="Anything">
+     <description>
+      <localized_desc language="en">Virus definition file version</localized_desc>
+      <localized_desc language="fr">Version du fichier de définitions des virus</localized_desc>
+     </description>
+     <substitute>VIRUS_DEFINITIONS_VERSION</substitute>
+    </tag>
+    <tag name="virus_definition_sequence_number" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>VIRUS_DEFINITION_SEQUENCE_NUMBER</substitute>
+    </tag>
+    <tag name="__cleanable" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CLEANABLE</substitute>
+     <callbacks>
+      <callback>clean_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__deletable" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DELETABLE</substitute>
+     <callbacks>
+      <callback>delete_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="backup_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>BACKUP_ID</substitute>
+    </tag>
+    <tag name="parent" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PARENT</substitute>
+    </tag>
+    <tag name="guid" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>GUID</substitute>
+    </tag>
+    <tag name="client_group" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>CLIENT_GROUP</substitute>
+    </tag>
+    <tag name="address" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ADDRESS</substitute>
+    </tag>
+    <tag name="server_group" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SERVER_GROUP</substitute>
+    </tag>
+    <tag name="domain_name" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DOMAIN_NAME</substitute>
+    </tag>
+    <tag name="mac_address" tagType="Anything">
+     <description>
+      <localized_desc language="en">MAC Address</localized_desc>
+      <localized_desc language="fr">Adresse MAC</localized_desc>
+     </description>
+     <substitute>MAC_ADDRESS</substitute>
+    </tag>
+    <tag name="version" tagType="Anything">
+     <description>
+      <localized_desc language="en">Version</localized_desc>
+      <localized_desc language="fr">Version</localized_desc>
+     </description>
+     <substitute>VERSION</substitute>
+    </tag>
+    <tag name="remote_machine" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>REMOTE_MACHINE</substitute>
+    </tag>
+    <tag name="remote_machine_ip" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>REMOTE_MACHINE_IP</substitute>
+    </tag>
+    <tag name="__action1_status" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION1_STATUS</substitute>
+     <callbacks>
+      <callback>action1s9_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="__action2_status" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION2_STATUS</substitute>
+     <callbacks>
+      <callback>action2s9_translator</callback>
+     </callbacks>
+    </tag>
+    <tag name="license_feature_name" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_FEATURE_NAME</substitute>
+    </tag>
+    <tag name="license_feature_ver" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_FEATURE_VER</substitute>
+    </tag>
+    <tag name="license_serial_num" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_SERIAL_NUM</substitute>
+    </tag>
+    <tag name="license_fulfillment_id" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_FULFILLMENT_ID</substitute>
+    </tag>
+    <tag name="license_start_dt" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_START_DT</substitute>
+    </tag>
+    <tag name="license_expiration_dt" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_EXPIRATION_DT</substitute>
+    </tag>
+    <tag name="license_lifecycle" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_LIFECYCLE</substitute>
+    </tag>
+    <tag name="license_seats_total" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_SEATS_TOTAL</substitute>
+    </tag>
+    <tag name="license_seats" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_SEATS</substitute>
+    </tag>
+    <tag name="err_code" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ERR_CODE</substitute>
+    </tag>
+    <tag name="license_seats_delta" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LICENSE_SEATS_DELTA</substitute>
+    </tag>
+    <tag name="status" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>STATUS</substitute>
+    </tag>
+    <tag name="domain_guid" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DOMAIN_GUID</substitute>
+    </tag>
+    <tag name="log_session_guid" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LOG_SESSION_GUID</substitute>
+    </tag>
+    <tag name="vbin_session_guid" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>VBIN_SESSION_GUID</substitute>
+    </tag>
+    <tag name="login_domain" tagType="Anything">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>LOGIN_DOMAIN</substitute>
+    </tag>
+   </tags>
+   <commonTags>
+    <commonTag name="program">symantec</commonTag>
+   </commonTags>
+   <examples>
+    <example>
+     <text>200A13080122,23,2,8,TRAVEL00,SYSTEM,,,,,,,16777216,"Symantec AntiVirus Realtime Protection Loaded.",0,,0,,,,,0,,,,,,,,,,SAMPLE_COMPUTER,,,,Parent,GROUP,,9.0.93330,,,,,,,,,,,,,,,,,,,,</text>
+     <expectedTags>
+      <expectedTag name="program">symantec</expectedTag>
+      <expectedTag name="date">2002-11-19 08:01:34</expectedTag>
+      <expectedTag name="category">Summary</expectedTag>
+      <expectedTag name="computer">TRAVEL00</expectedTag>
+      <expectedTag name="domain_name">GROUP</expectedTag>
+      <expectedTag name="event_logger_type">System</expectedTag>
+      <expectedTag name="event_number">GL_EVENT_RTS_LOAD</expectedTag>
+      <expectedTag name="eventblock_action">EB_LOG</expectedTag>
+      <expectedTag name="group_id">0</expectedTag>
+      <expectedTag name="operation_flags">0</expectedTag>
+      <expectedTag name="parent">SAMPLE_COMPUTER</expectedTag>
+      <expectedTag name="scan_id">0</expectedTag>
+      <expectedTag name="server_group">Parent</expectedTag>
+      <expectedTag name="username">SYSTEM</expectedTag>
+      <expectedTag name="version">9.0.93330</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>
+

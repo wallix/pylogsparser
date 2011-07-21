@@ -236,5 +236,5 @@ class LogNormalizer():
         deactivated."""
         for norm in self._cache:
             log = norm.normalize(log, do_not_check_prereq = True)
-        return
+        return log
         

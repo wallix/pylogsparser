@@ -87,6 +87,18 @@
      Regular expressions' metacharacters are not escaped by default, to provide
      their full power without the hassle.-->
 <!ELEMENT text (#PCDATA)> 
+<!-- The type of pattern. The default if type is not specified
+     is a regexp pattern. "type" attribute can be "csv" to force normalizer engine
+     to use csv python module in order to extract fields. The meta description
+     for a csv pattern type must be as follow DATE,IP,USER,BODY where fields
+     will be substitute by defined tags.-->
+ <!ATTLIST text type CDATA #IMPLIED>
+<!-- If attribute "type" is "csv" this attribute is used to define the csv separator.
+     By default separator is a comma.-->
+ <!ATTLIST text separator CDATA #IMPLIED>
+<!-- If attribute "type" is "csv" this attribute is used to define the csv quotechar.
+     By default quotechar is a quote.-->
+ <!ATTLIST text quotechar CDATA #IMPLIED>
 <!-- a list of real-life examples that can be used for auto-generating some
      documentation and unit testing. -->
 <!ELEMENT examples (example+)> 
