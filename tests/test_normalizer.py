@@ -79,6 +79,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_012_symantec(self):
         self.normalize_samples('symantec.xml', 'symantec', 0.99)
 
+    def test_normalize_samples_013_msexchange2007MTL(self):
+        self.normalize_samples('MSExchange2007MessageTracking.xml', 'MSExchange2007MessageTracking', 0.99)
+
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""

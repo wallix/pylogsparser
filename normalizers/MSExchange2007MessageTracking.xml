@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="MSExchange2007MessageTracking"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en">This parser defines how to normalize specific MS Exchange flat files based on observed behavior of MS Exchange 2007 (trial version); while it would have to be confirmed that it is consistent with other versions, it is likely that it won't cause any trouble.
+
+This parser describes the format of Exchange 2007's Message Tracking Log (something similar to Postfix logs), a CSV-like flat file that can be found at 
+C:\Program Files\Microsoft\Exchange Server\TransportRoles\Logs\MessageTracking on a standard install.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse certains fichiers de logs générés par MS Exchange 2007. Bien que ce normaliseur ait été écrit par rétro-analyse du comportement d'une version d'évaluation, il devrait être adapté aux versions complètes d'Exchange.
+        
+Ce normaliseur décrit le format du "Message Tracking Log" (un journal d'événements similaire à celui d'un serveur Postfix), un fichier plat de type CSV qui se trouve à l'emplacement suivant dans une installation standard : C:\Program Files\Microsoft\Exchange Server\TransportRoles\Logs\MessageTracking .</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="MTLDate" type="datetime">
+            <description>
+                <localized_desc language="en">The log's specific dateformat</localized_desc>
+                <localized_desc language="fr">Le format d'horodatage spécifique à ce type de log</localized_desc>
+            </description>
+            <regexp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[.]\d{3}Z</regexp>
+        </tagType>
+        <tagType name="MTLMessageID" type="basestring">
+            <description>
+                <localized_desc language="en">the message ID</localized_desc>
+                <localized_desc language="fr">l'identifiant de message</localized_desc>
+            </description>
+            <regexp>&lt;.+@.+&gt;</regexp>
+        </tagType>
+        <tagType name="MTLSourceContext" type="basestring">
+            <description>
+                <localized_desc language="en">the source context</localized_desc>
+                <localized_desc language="fr">le contexte de la source</localized_desc>
+            </description>
+            <regexp>"?(?:[^,]+, )*[^,]+"?</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_MTLMessageID">
+log['message_id'] = value[1:-1]</callback>
+        <callback name="decode_MTLDate">
+r = re.compile("""
+(?P&lt;year&gt;\d{4})-
+(?P&lt;month&gt;\d{2})-
+(?P&lt;day&gt;\d{2})
+T(?P&lt;hour&gt;\d{2}):
+(?P&lt;minute&gt;\d{2}):
+(?P&lt;second&gt;\d{2})\.
+(?P&lt;microsecond&gt;\d{1,3})?Z""", re.VERBOSE)
+m = r.match(value).groupdict()
+m.setdefault('microsecond', 0)
+m = dict( [ (u, int(v)) for u,v in m.items() ] )
+m['microsecond'] = m['microsecond'] * 1000
+log['date'] = datetime(**m)</callback>
+        <callback name="decode_MTLSourceContext">
+if value.startswith('"'):
+    value = value[1:-1]
+d = dict( [ u.split(':', 1) for u in value.split(', ') ] )
+# convert camelCase fields into underscore names
+r = re.compile('[A-Z][a-z0-9]+')
+rdate = re.compile("""
+(?P&lt;year&gt;\d{4})-
+(?P&lt;month&gt;\d{2})-
+(?P&lt;day&gt;\d{2})
+T(?P&lt;hour&gt;\d{2}):
+(?P&lt;minute&gt;\d{2}):
+(?P&lt;second&gt;\d{2})\.
+(?P&lt;microsecond&gt;\d{1,3})?Z""", re.VERBOSE)
+for name, v in d.items():
+    new_name = name
+    words = r.findall(name)
+    if words:
+        new_name = ('_'.join(words)).lower()
+    new_value = v
+    if rdate.match(v):
+        m = rdate.match(v).groupdict()
+        m.setdefault('microsecond', 0)
+        m = dict( [ (u, int(v)) for u,v in m.items() ] )
+        m['microsecond'] = m['microsecond'] * 1000
+        new_value = datetime( **m ).ctime()
+    del d[name]
+    d[new_name] = new_value
+log.update(d)
+</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="MSExchange2007MTL-001">
+            <description>
+                <localized_desc language="en">The Message Tracking Log Format as described in the first line of the log file</localized_desc>
+                <localized_desc language="fr">Le format du Message Tracking Log, tel qu'il apparaît en première ligne du journal d'événements</localized_desc>
+            </description>
+            <text type="csv" separator="," quotechar='"' >DATE,CLIENT_IP,CLIENT_HOSTNAME,SERVER_IP,SERVER_HOSTNAME,CONTEXT_EXCHANGE_SOURCE,CONNECTOR_ID,EXCHANGE_SOURCE,EVENT_ID,INTERNAL_MESSAGE_ID,MESSAGE_ID,RECIPIENT_ADDRESS,RECIPIENT_STATUS,TOTAL_BYTES,RECIPIENT_COUNT,RELATED_RECIPIENT_ADDRESS,REFERENCE,MESSAGE_SUBJECT,SENDER_ADDRESS,RETURN_PATH,MESSAGE_INFO</text>
+            <tags>
+                <tag name="__date" tagType="MTLDate">
+                    <description>
+                        <localized_desc language="en">the log's timestamp</localized_desc>
+                        <localized_desc language="fr">l'horodatage de l'événement</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_MTLDate</callback>
+                    </callbacks>
+                </tag>
+                <tag name="client_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the client's IP address</localized_desc>
+                        <localized_desc language="fr">l'adresse IP du client</localized_desc>
+                    </description>
+                    <substitute>CLIENT_IP</substitute>
+                </tag>
+                <tag name="client_hostname" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the client's hostname</localized_desc>
+                        <localized_desc language="fr">le nom d'hôte du client</localized_desc>
+                    </description>
+                    <substitute>CLIENT_HOSTNAME</substitute>
+                </tag>
+                <tag name="server_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the server's IP address</localized_desc>
+                        <localized_desc language="fr">l'adresse IP du serveur</localized_desc>
+                    </description>
+                    <substitute>SERVER_IP</substitute>
+                </tag>
+                <tag name="server_hostname" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the server's hostname</localized_desc>
+                        <localized_desc language="fr">le nom d'hôte du serveur</localized_desc>
+                    </description>
+                    <substitute>SERVER_HOSTNAME</substitute>
+                </tag>
+                <tag name="__exchange_source_context" tagType="MTLSourceContext">
+                    <description>
+                        <localized_desc language="en">the source context</localized_desc>
+                        <localized_desc language="fr">le contexte de la source</localized_desc>
+                    </description>
+                    <substitute>CONTEXT_EXCHANGE_SOURCE</substitute>
+                    <callbacks>
+                        <callback>decode_MTLSourceContext</callback>
+                    </callbacks>
+                </tag>
+                <tag name="connector_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the connector ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant du connecteur</localized_desc>
+                    </description>
+                    <substitute>CONNECTOR_ID</substitute>
+                </tag>
+                <tag name="exchange_source" tagType="Anything">
+                    <substitute>EXCHANGE_SOURCE</substitute>
+                </tag>
+                <tag name="event_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the event ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant d'événement</localized_desc>
+                    </description>
+                    <substitute>EVENT_ID</substitute>
+                </tag>
+                <tag name="internal_message_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the internal message ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant interne du message</localized_desc>
+                    </description>
+                    <substitute>INTERNAL_MESSAGE_ID</substitute>
+                </tag>
+                <tag name="__message_id" tagType="MTLMessageID">
+                    <description>
+                        <localized_desc language="en">the message ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant du message</localized_desc>
+                    </description>
+                    <substitute>MESSAGE_ID</substitute>
+                    <callbacks>
+                        <callback>decode_MTLMessageID</callback>
+                    </callbacks>
+                </tag>
+                <tag name="recipient_address" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the recipient's address</localized_desc>
+                        <localized_desc language="fr">l'adresse du destinataire</localized_desc>
+                    </description>
+                    <substitute>RECIPIENT_ADDRESS</substitute>
+                </tag>
+                <tag name="recipient_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the recipient's status</localized_desc>
+                        <localized_desc language="fr">le statut du destinataire</localized_desc>
+                    </description>
+                    <substitute>RECIPIENT_STATUS</substitute>
+                </tag>
+                <tag name="total_bytes" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">total bytes in the transaction</localized_desc>
+                        <localized_desc language="fr">le nombre de bits total pour la transaction</localized_desc>
+                    </description>
+                    <substitute>TOTAL_BYTES</substitute>
+                </tag>
+                <tag name="recipient_count" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>RECIPIENT_COUNT</substitute>
+                </tag>
+                <tag name="related_recipient_address" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>RELATED_RECIPIENT_ADDRESS</substitute>
+                </tag>
+                <tag name="reference" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>REFERENCE</substitute>
+                </tag>
+                <tag name="message_subject" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message's subject</localized_desc>
+                        <localized_desc language="fr">le sujet du message</localized_desc>
+                    </description>
+                    <substitute>MESSAGE_SUBJECT</substitute>
+                </tag>
+                <tag name="sender_address" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the sender's address</localized_desc>
+                        <localized_desc language="fr">l'adresse de l'expéditeur</localized_desc>
+                    </description>
+                    <substitute>SENDER_ADDRESS</substitute>
+                </tag>
+                <tag name="return_path" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the return path</localized_desc>
+                        <localized_desc language="fr">l'adresse de retour</localized_desc>
+                    </description>
+                    <substitute>RETURN_PATH</substitute>
+                </tag>
+                <tag name="message_info" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">some additional information about the message</localized_desc>
+                        <localized_desc language="fr">de l'information supplémentaire sur le message</localized_desc>
+                    </description>
+                    <substitute>MESSAGE_INFO</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="program">MS Exchange 2007 Message Tracking</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>2010-04-19T12:29:07.390Z,10.10.14.73,WIN2K3DC,,WIN2K3DC,"MDB:ada3d2c3-6f32-45db-b1ee-a68dbcc86664, Mailbox:68cf09c1-1344-4639-b013-3c6f8a588504, Event:1440, MessageClass:IPM.Note, CreationTime:2010-04-19T12:28:51.312Z, ClientType:User",,STOREDRIVER,SUBMIT,,&lt;C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan&gt;,,,,,,,Coucou !,user7@qa.ifr.lan,,</text>
+                     <expectedTags>
+                          <expectedTag name="program">MS Exchange 2007 Message Tracking</expectedTag>
+                          <expectedTag name="client_ip">10.10.14.73</expectedTag>
+                          <expectedTag name="client_hostname">WIN2K3DC</expectedTag>
+                          <expectedTag name="server_hostname">WIN2K3DC</expectedTag>
+                          <expectedTag name="mailbox">68cf09c1-1344-4639-b013-3c6f8a588504</expectedTag>
+                          <expectedTag name="client_type">User</expectedTag>
+                          <expectedTag name="exchange_source">STOREDRIVER</expectedTag>
+                          <expectedTag name="event_id">SUBMIT</expectedTag>
+                          <expectedTag name="message_id">C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan</expectedTag>
+                          <expectedTag name="message_subject">Coucou !</expectedTag>
+                          <expectedTag name="sender_address">user7@qa.ifr.lan</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

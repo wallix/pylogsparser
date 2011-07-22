@@ -411,5 +411,24 @@ class Test(unittest.TestCase):
                  "username" : "SYSTEM",
                  "version" : "9.0.93330"})
 
+    def test_MSExchange2007MTL(self):
+        """Test Exchange 2007 message tracking log normalization"""
+        self.aS("""2010-04-19T12:29:07.390Z,10.10.14.73,WIN2K3DC,,WIN2K3DC,"MDB:ada3d2c3-6f32-45db-b1ee-a68dbcc86664, Mailbox:68cf09c1-1344-4639-b013-3c6f8a588504, Event:1440, MessageClass:IPM.Note, CreationTime:2010-04-19T12:28:51.312Z, ClientType:User",,STOREDRIVER,SUBMIT,,<C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan>,,,,,,,Coucou !,user7@qa.ifr.lan,,""",
+                {'MDB': 'ada3d2c3-6f32-45db-b1ee-a68dbcc86664',
+                 'client_hostname': 'WIN2K3DC',
+                 'client_ip': '10.10.14.73',
+                 'client_type': 'User',
+                 'creation_time': 'Mon Apr 19 12:28:51 2010',
+                 'date': datetime(2010, 4, 19, 12, 29, 7, 390000),
+                 'event': '1440',
+                 'event_id': 'SUBMIT',
+                 'exchange_source': 'STOREDRIVER',
+                 'mailbox': '68cf09c1-1344-4639-b013-3c6f8a588504',
+                 'message_class': 'IPM.Note',
+                 'message_id': 'C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan',
+                 'message_subject': 'Coucou !',
+                 'program': 'MS Exchange 2007 Message Tracking',
+                 'server_hostname': 'WIN2K3DC'})
+
 if __name__ == "__main__":
     unittest.main()
