@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="arkoonFAST360"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en"></localized_desc>
+  <localized_desc language="fr"></localized_desc>
+ </description>
+ <authors>
+  <author>fbo@wallix.com</author>
+ </authors>
+ <tagTypes>
+  <tagType name="ArkoonKV" type="basestring">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>.*$</regexp>
+  </tagType>
+ </tagTypes>
+ <callbacks>
+  <callback name="decode_priority">
+# define facilities
+FACILITIES = { 0: "kernel",
+               1: "user",
+               2: "mail",
+               3: "daemon",
+               4: "auth",
+               5: "syslog",
+               6: "print",
+               7: "news",
+               8: "uucp",
+               9: "ntp",
+               10: "secure",
+               11: "ftp",
+               12: "ntp",
+               13: "audit",
+               14: "alert",
+               15: "ntp" }
+for i in range(0, 8):
+    FACILITIES[i+16] = "local%d" % i
+
+# define severities
+SEVERITIES = { 0: "emerg",
+               1: "alert",
+               2: "crit",
+               3: "error",
+               4: "warn",
+               5: "notice",
+               6: "info",
+               7: "debug" }
+facility = int(value) / 8
+severity = int(value) % 8
+if facility not in FACILITIES or severity not in SEVERITIES:
+    raise ValueError('facility or severity is out of range')
+log["facility"] = "%s" % FACILITIES[facility]
+log["severity"] = "%s" % SEVERITIES[severity]
+log["facility_code"] = "%d" % facility
+log["severity_code"] = "%d" % severity
+  </callback>
+  <callback name="extractAKkv">
+# Key that must be found in log
+mandatory_keys = ('id', 'time', 'gmtime',
+                  'fw', 'aktype',
+                  )
+key_modifiers = {'fw' : 'source',
+                 'pri' : 'priority',
+                 'op' : 'method'}
+
+def quote_stripper(data):
+    for k in data.keys():
+        data[k] = data[k].strip('"')
+
+def extract_date(data):
+    data['date'] = datetime.fromtimestamp(float(data['gmtime']))
+    for key in ('time', 'gmtime'):
+        del data[key]
+
+def alert_description_modify(data):
+    messages = [
+             re.compile("TCP from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
+             re.compile("UDP from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
+             re.compile('ICMP:(?P&lt;destination_port&gt;.+)\.(?P&lt;source_port&gt;.+) from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('PROTO:(?P&lt;protocol&gt;.+) from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('Unsequenced packet on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('Unsequenced TCP packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
+             re.compile('ACK unsequenced packet on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('ACK unsequenced TCP packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
+             re.compile('Bad flags on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('Bad TCP flags (?P&lt;flags&gt;.+) from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
+             re.compile('Bad packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('Land attack from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+)'),
+             re.compile('New value: (?P&lt;source_IP&gt;.+)/(?P&lt;network_mask&gt;.+) \[(?P&lt;ports&gt;.+)\]'),
+               ]
+    if 'alert_desc' in data.keys():
+        for m in messages:
+            values = m.match(data['alert_desc'])
+            if values:
+                data.update(values.groupdict())
+
+def profile_modifier(data):
+    profiles = {
+                 1: 'FTP_BADFILES',
+                 2: 'FTP_SCAN',
+                 3: 'FTP',
+                 4: 'HTTP',
+                 5: 'HTTP_BADURL',
+                 6: 'HTTP_COLDFUSION',
+                 7: 'HTTP_FRONTPAGE',
+                 8: 'HTTP_IIS',
+                 9: 'HTTP_PHP',
+                 10: 'HTTP_NETSCAPE',
+                 11: 'HTTP_TOMCAT',
+                 12: 'HTTP_APACHE',
+                 13: 'HTTP_WINDOWS',
+                 14: 'HTTP_ORACLE',
+                 15: 'HTTP_TALENTSOFT',
+                 16: 'HTTP_LOTUS',
+                 17: 'HTTP_UNIX',
+                 18: 'HTTP_CISCO',
+                 19: 'HTTP_WEBLOGIC',
+                 20: 'HTTP_MYSQL',
+                 21: 'HTTP_MACOS',
+                 22: 'HTTP_VIRUSWALL',
+                 23: 'SMTP',
+                 24: 'IMAP4',
+                 25: 'POP3',
+                 26: 'DNS'}
+    if 'profile' in data.keys():
+        data['profile'] = profiles.get(int(data['profile']), data['profile'])
+
+def reason_modify(data):
+    messages = [
+            re.compile('Virus (?P&lt;virus_name&gt;.+) found in (?P&lt;file_name&gt;.+)'),
+            re.compile('File (?P&lt;file_name&gt;.+) encrypted'),
+            re.compile('File (?P&lt;file_name&gt;.+): analyze error'),
+            re.compile('Denied by rule (?P&lt;rule_name&gt;.+)'),
+            re.compile('Denied by rule (?P&lt;rule_name&gt;.+), put mail in quarantine')
+    ]
+    if 'reason' in data.keys():
+        for m in messages:
+            values = m.match(data['reason'])
+            if values:
+                data.update(values.groupdict())
+
+kvre = '(?P&lt;key&gt;[A-Za-z_\-]{2,})=(?P&lt;val&gt;[^" ]+|"[^"]*")'
+reg = re.compile(kvre)
+data = reg.findall(value)
+data = dict(data)
+
+# Verify it is the expected log
+if not set(mandatory_keys).issubset(set(data.keys())):
+    return log
+if data['id'] != 'firewall':
+    return log
+
+# Remove quoted values
+quote_stripper(data)
+
+# Add a date field from gmtime field
+extract_date(data)
+
+# Extract useful fields from alert description
+alert_description_modify(data)
+
+# Convert IDPS profile
+profile_modifier(data)
+
+# SMTP reason modifier
+reason_modify(data)
+
+# Apply keys modifiers
+for k, v in key_modifiers.items():
+    if k in data.keys():
+        s_val = data[k]
+        del data[k]
+        data[v] = s_val
+
+# Remove tag with empty value
+for k, v in data.items():
+    if not v:
+        del data[k]
+
+# Convert tag name with hyphen to underscore
+for k, v in data.items():
+    if k.find('-') > -1:
+        del data[k]
+        k = k.replace('-', '_')
+        data[k] = v
+
+log['program'] = 'arkoon'
+log.update(data)
+  </callback>
+</callbacks>
+ <patterns>
+  <pattern name="arkoon-001">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?.*AKLOG\s*-\s*KEYVALUES</text>
+   <tags>
+    <tag name="__keyvalues" tagType="ArkoonKV">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>KEYVALUES</substitute>
+     <callbacks>
+      <callback>extractAKkv</callback>
+     </callbacks>
+    </tag>
+    <tag name="__priority" tagType="ArkoonPR">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>AKLOG - id=firewall time="2004-02-25 17:38:51" pri=4 fw=myArkoon aktype=ALERT gmtime=1077727131 alert_type="Blocked by application control" user="userName" alert_level="Low" alert_desc="TCP from 10.10.192.61:33027 to 10.10.192.156:25 [default rule]"</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">ALERT</expectedTag>
+      <expectedTag name="priority">4</expectedTag>
+      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="user">userName</expectedTag>
+      <expectedTag name="alert_level">Low</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">IP</expectedTag>
+      <expectedTag name="priority">3</expectedTag>
+      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="user">userName</expectedTag>
+      <expectedTag name="dst">10.10.192.255</expectedTag>
+      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="reason">Blocked by filter</expectedTag>
+      <expectedTag name="ip_log_type">ENDCONN</expectedTag>
+      <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSMATCH gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 sid=123 score=50</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">IDPSMATCH</expectedTag>
+      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="dst">10.10.192.255</expectedTag>
+      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="score">50</expectedTag>
+      <expectedTag name="profile">FTP_BADFILES</expectedTag>
+      <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSALERT gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 endcnx_score=100 ch=1 reaction=0</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">IDPSALERT</expectedTag>
+      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="dst">10.10.192.255</expectedTag>
+      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="ch">1</expectedTag>
+      <expectedTag name="profile">FTP_BADFILES</expectedTag>
+      <expectedTag name="proto">137/udp</expectedTag>
+      <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>AKLOG-id=firewall time="2004-02-25 17:42:54" fw=myArkoon pri=6 aktype=HTTP gmtime=1077727374 src=10.10.192.61 proto=http user="userName" op="GET" dstname=www arg="http://www/ HTTP/1.1" ref="" agent="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.0.0) Gecko/20020623 Debian/1.0.0-0.woody.1" rcvd=355 result=407</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">HTTP</expectedTag>
+      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="arg">http://www/ HTTP/1.1</expectedTag>
+      <expectedTag name="result">407</expectedTag>
+      <expectedTag name="method">GET</expectedTag>
+      <expectedTag name="dstname">www</expectedTag>
+      <expectedTag name="date">2004-02-25 17:42:54</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>&lt;134&gt;IP-Logs: AKLOG - id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT</text>
+     <expectedTags>
+      <expectedTag name="program">arkoon</expectedTag>
+      <expectedTag name="aktype">IP</expectedTag>
+      <expectedTag name="source">doberman.jurassic.ta</expectedTag>
+      <expectedTag name="proto">http</expectedTag>
+      <expectedTag name="rule">surf_normal</expectedTag>
+      <expectedTag name="action">ACCEPT</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>
+

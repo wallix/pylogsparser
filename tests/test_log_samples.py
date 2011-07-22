@@ -410,6 +410,20 @@ class Test(unittest.TestCase):
                  "server_group" : "Parent",
                  "username" : "SYSTEM",
                  "version" : "9.0.93330"})
+    
+    def test_arkoonFAST360(self):
+        """Test Arkoon FAST360 normalization"""
+        self.aS('AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"',
+                {"program" : "arkoon",
+                 "date" : datetime(2004, 02, 25, 17, 38, 57),
+                 "aktype" : "IP",
+                 "priority" : "3",
+                 "source" : "myArkoon",
+                 "user" : "userName",
+                 "dst" : "10.10.192.255",
+                 "src" : "10.10.192.61",
+                 "reason" : "Blocked by filter",
+                 "ip_log_type" : "ENDCONN"})
 
 if __name__ == "__main__":
     unittest.main()

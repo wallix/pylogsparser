@@ -78,6 +78,9 @@ class TestSample(unittest.TestCase):
     
     def test_normalize_samples_012_symantec(self):
         self.normalize_samples('symantec.xml', 'symantec', 0.99)
+    
+    def test_normalize_samples_014_arkoonfast360(self):
+        self.normalize_samples('arkoonFAST360.xml', 'arkoonFAST360', 0.99)
 
 
 class TestCSVPattern(unittest.TestCase):
