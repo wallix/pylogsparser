@@ -252,5 +252,8 @@ log["date"] = newdate
         self.assertEqual(ret['id'], '83')
         self.assertEqual(ret['msg'], 'start listening on =127.0.0.1 pam auth started')
 
+    def test_normalize_samples_012_s3(self):
+        self.normalize_samples('s3.xml', 's3', 0.99)
+
 if __name__ == "__main__":
     unittest.main()
