@@ -1,23 +1,22 @@
-# French translations for PACKAGE package.
-# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# matthieu <mhu@wallix.com>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-21 10:55+0200\n"
-"PO-Revision-Date: 2011-06-21 10:56+0200\n"
-"Last-Translator: matthieu <mhu@wallix.com>\n"
-"Language-Team: French\n"
-"Language: fr\n"
+"POT-Creation-Date: 2011-07-25 15:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: normalizer.py:433
+#: normalizer.py:652
 #, python-format
 msgid ""
 "%(title)s\n"
@@ -27,7 +26,7 @@ msgid ""
 "%(authors)s\n"
 "\n"
 "Description\n"
-",,,,,,,,,,,\n"
+":::::::::::\n"
 "\n"
 "%(description)s\n"
 "\n"
@@ -36,7 +35,7 @@ msgid ""
 "%(patterns)s\n"
 "\n"
 "Examples\n"
-",,,,,,,,\n"
+"::::::::\n"
 "\n"
 "%(examples)s"
 msgstr ""
@@ -47,7 +46,7 @@ msgstr ""
 "%(authors)s\n"
 "\n"
 "Description\n"
-",,,,,,,,,,,\n"
+":::::::::::\n"
 "\n"
 "%(description)s\n"
 "\n"
@@ -56,11 +55,11 @@ msgstr ""
 "%(patterns)s\n"
 "\n"
 "Exemples\n"
-",,,,,,,,\n"
+"::::::::\n"
 "\n"
 "%(examples)s"
 
-#: normalizer.py:463
+#: normalizer.py:681
 msgid ""
 ", where\n"
 "\n"
@@ -68,34 +67,34 @@ msgstr ""
 ", où\n"
 "\n"
 
-#: normalizer.py:465
+#: normalizer.py:683
 #, python-format
-msgid "  * *%s* is %s "
-msgstr "  * *%s* est %s "
+msgid "  * **%s** is %s "
+msgstr "  * **%s** est %s "
 
-#: normalizer.py:465
+#: normalizer.py:683
 msgid "undocumented"
 msgstr "non documenté"
 
-#: normalizer.py:467
+#: normalizer.py:685
 #, python-format
 msgid "(normalized as *%s*)"
 msgstr "(tag associé : *%s*)"
 
-#: normalizer.py:473
-#, python-format
-msgid ""
-"* **%s**, normalized as\n"
-"\n"
-msgstr ""
-"* **%s**, tags associés :\n"
-"\n"
-
-#: normalizer.py:520
+#: normalizer.py:688
 msgid ""
 "\n"
 "  Additionally, The following tags are automatically set:\n"
 "\n"
 msgstr "\n"
 "  Les tags additionnels suivants sont définis automatiquement :\n"
+"\n"
+
+#: normalizer.py:698
+#, python-format
+msgid ""
+"* *%s*, normalized as\n"
+"\n"
+msgstr ""
+"* *%s*, dont les tags suivants sont extraits:\n"
 "\n"

@@ -642,6 +642,12 @@ def doc2RST(description, lang = 'fr'):
     """ Returns a RestructuredText documentation from
         a parser description.
     """
+    
+    def escape(text):
+        if isinstance(text, basestring):
+            for c in "*\\":
+                text.replace(c, "\\" + c)
+        return text
 
     template = _("""%(title)s
 
@@ -650,7 +656,7 @@ def doc2RST(description, lang = 'fr'):
 %(authors)s
 
 Description
-,,,,,,,,,,,
+:::::::::::
 
 %(description)s
 
@@ -659,22 +665,22 @@ This normalizer can parse logs of the following structure(s):
 %(patterns)s
 
 Examples
-,,,,,,,,
+::::::::
 
 %(examples)s""")
 
     d = {}
     d['title'] = description['name'] + ' v.' + str(description['version'])
     d['title'] += '\n' + '-'*len(d['title'])
-    d['authors'] = '\n'.join( ['* **%s**' % a for a in description['authors'] ] )
-    d['description'] = description['description']
+    d['authors'] = '\n'.join( ['* *%s*' % a for a in description['authors'] ] )
+    d['description'] = escape(description['description']) or _('undocumented')
     d['patterns'] = ''
     d['examples'] = ''
     for p in description['patterns']:
-        d['patterns'] +="""* *%s*""" % p['pattern']
+        d['patterns'] +="""* **%s**""" % escape(p['pattern'])
         d['patterns'] += _(", where\n\n")
         for sub in p['substitutes']:
-            d['patterns'] += _("  * *%s* is %s ") % (sub, (p['tags'][p['substitutes'][sub]] or _('undocumented') ))
+            d['patterns'] += _("  * **%s** is %s ") % (escape(sub), (p['tags'][p['substitutes'][sub]] or _('undocumented') ))
             if not p['substitutes'][sub].startswith('__'):
                 d['patterns'] += _("(normalized as *%s*)") % p['substitutes'][sub]
             d['patterns'] += "\n"
@@ -683,15 +689,15 @@ Examples
             for name, value in sum([description['commonTags'].items(),
                                     p['commonTags'].items()],
                                    []):
-                d['patterns'] += "  * *%s* : %s\n" % (name, value)
+                d['patterns'] += "  * *%s* : %s\n" % (escape(name), value)
             d['patterns'] += "\n"
         if p.get('description') :
             d['patterns'] += "\n  %s\n" % p['description']
         d['patterns'] += "\n"
         for example in p['examples']:
-            d['examples'] += _("* **%s**, normalized as\n\n") % example['sample']
+            d['examples'] += _("* *%s*, normalized as\n\n") % escape(example['sample'])
             for tag, value in example['normalization'].items():
-                d['examples'] += "  * *%s* -> %s\n" % (tag, value)
+                d['examples'] += "  * **%s** -> %s\n" % (escape(tag), value)
             d['examples'] += '\n'
     return template % d
 
