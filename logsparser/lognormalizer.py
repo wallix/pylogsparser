@@ -29,7 +29,6 @@ for further integration in a wider project (web services, ...).
 
 import os
 import uuid as _UUID_
-import pytz
 import warnings
 
 from normalizer import Normalizer
@@ -181,10 +180,6 @@ class LogNormalizer():
         and extra tagging occurs accordingly.
         
         data receives also an extra uuid tag.
-        
-        If data contains a key called _timezone, its value is used to convert
-        any date into UTC. This value must be a valid timezone name; see
-        the pytz module for more information.
 
         @param data: must be a dictionary with at least a key 'raw' or 'body'
                      with BaseString values (preferably Unicode).
@@ -206,18 +201,7 @@ class LogNormalizer():
         """
         data = self.uuidify(data)
         data = self.normalize(data)
-        # convert date to UTC
-        if '_timezone' in data.keys():
-            try:    
-                timezone = pytz.timezone(data['_timezone'])
-                loc_date = timezone.localize(data['date'])
-                data['date'] = loc_date.astimezone(pytz.utc)
-                # turn the date into a "naive" object
-                data['date'] = data['date'].replace(tzinfo=None)
-                del data['_timezone']
-            except:
-                warnings.warn('Invalid timezone %s, skipping UTC conversion' % \
-                              data['_timezone'])
+
     
     # some more functions for clarity
     def uuidify(self, log):
