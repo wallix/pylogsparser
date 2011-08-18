@@ -162,14 +162,38 @@ A log pattern has the following components:
 
 * A name.
 * A non-mandatory description of the pattern's context.
-* The pattern itself.
+* The pattern itself, under the tag "text".
 * The tags as they appear in the pattern, the associated name once the normalization
   is over, and the callback functions to eventually call on their raw values
-* Non-mandatory log samples
+* Non-mandatory log samples. These can be used for self-validation.
 
 If a tag name starts with __ (double underscore), this tag won't be added to the
 final normalized dictionary. This allows to create temporary tags that will
 typically be used in conjunction to a series of callback functions, when the
 original raw value has no actual interest.
 
+To define log patterns describing a CSV-formatted message, one must add the
+following attributes in the tag "text":
 
+* type="csv"
+* separator="," or the relevant separator character
+* quotechar='"' or the relevant quotation character
+
+Tags are then defined normally. Pylogsparser will deal automatically with missing
+fields.
+
+
+Best practices
+..............
+
+* Order your patterns in decreasing order of specificity. Not doing so might
+  trigger errors, as more generic patterns will match earlier.
+* The more precise your tagTypes' regular expressions, the more accurate your
+  parser will be.
+* The tag naming convention is lowercase, underscore separated words. It is strongly
+  recommended to stick to that naming convention when writing new normalizers
+  for consistency's sake. In case of dynamic fields, it is advised to make sure
+  dynamic naming follows the convention. There's an example of this in 
+  MSExchange2007MessageTracking.xml; see the callback named "decode_MTLSourceContext".
+* Use description tags liberally. The more documented a log format, the better.
+  Examples are also invaluable.
