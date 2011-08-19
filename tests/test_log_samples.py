@@ -425,6 +425,19 @@ class Test(unittest.TestCase):
                  "reason" : "Blocked by filter",
                  "ip_log_type" : "ENDCONN"})
 
+        # Assuming this kind of log with syslog like header is typically sent over the wire.
+        self.aS('<134>IP-Logs: AKLOG - id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT',
+                {'program': 'arkoon',
+                 'aktype': 'IP',
+                 'rule': 'surf_normal',
+                 'ip_log_type': 'NEWCONN'})
+        
+        # This one must not match the arkoonFAST360 parser
+        # Assuming this king of log does not exist
+        self.aS('<40>Dec 21 08:42:17 hosting arkoon: <134>IP-Logs: AKLOG - id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT',
+                {'program': 'arkoon'}, # program is set by syslog parser
+                ('aktype', 'rule', 'ip_log_type'))
+    
     def test_MSExchange2007MTL(self):
         """Test Exchange 2007 message tracking log normalization"""
         self.aS("""2010-04-19T12:29:07.390Z,10.10.14.73,WIN2K3DC,,WIN2K3DC,"MDB:ada3d2c3-6f32-45db-b1ee-a68dbcc86664, Mailbox:68cf09c1-1344-4639-b013-3c6f8a588504, Event:1440, MessageClass:IPM.Note, CreationTime:2010-04-19T12:28:51.312Z, ClientType:User",,STOREDRIVER,SUBMIT,,<C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan>,,,,,,,Coucou !,user7@qa.ifr.lan,,""",

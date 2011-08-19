@@ -46,6 +46,13 @@
    </description>
    <regexp>.*$</regexp>
   </tagType>
+  <tagType name="ArkoonPR" type="integer">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <regexp>\d+</regexp>
+  </tagType>
  </tagTypes>
  <callbacks>
   <callback name="decode_priority">
@@ -227,7 +234,7 @@ log.update(data)
     <localized_desc language="en"></localized_desc>
     <localized_desc language="fr"></localized_desc>
    </description>
-   <text>(?:&lt;PRIORITY&gt;)?.*AKLOG\s*-\s*KEYVALUES</text>
+   <text>(?:&lt;PRIORITY&gt;[^\s]+:\s)?AKLOG\s*-\s*KEYVALUES</text>
    <tags>
     <tag name="__keyvalues" tagType="ArkoonKV">
      <description>
