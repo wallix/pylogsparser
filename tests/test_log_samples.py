@@ -22,6 +22,12 @@
 """Testing that normalization work as excepted
 
 Here you can add samples logs to test existing or new normalizers.
+
+In addition to examples validation defined in each normalizer xml definition
+you should add validation tests here.
+In this test all normalizer definitions are loaded and therefore
+it is useful to detect normalization conflicts.
+
 """
 import os
 import unittest
@@ -29,12 +35,13 @@ from datetime import datetime
 
 from logsparser import lognormalizer
 
+normalizer_path = os.environ['NORMALIZERS_PATH']
+ln = lognormalizer.LogNormalizer(normalizer_path)
+
 class Test(unittest.TestCase):
 
     def aS(self, log, subset, notexpected = ()):
         """Assert that the result of normalization of a given line log has the given subset."""
-        normalizer_path = os.environ['NORMALIZERS_PATH']
-        ln = lognormalizer.LogNormalizer(normalizer_path)
         data = {'raw' : log}
         ln.lognormalize(data)
         #print data
