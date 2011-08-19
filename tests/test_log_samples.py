@@ -457,5 +457,15 @@ class Test(unittest.TestCase):
                  'program': 'MS Exchange 2007 Message Tracking',
                  'server_hostname': 'WIN2K3DC'})
 
+    def test_S3(self):
+        """Test Amazon S3 bucket log normalization"""
+        self.aS("""DEADBEEF testbucket [19/Jul/2011:13:17:11 +0000] 10.194.22.16 FACEDEAD CAFEDECA REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 951 - 397 - "-" "Jakarta Commons-HttpClient/3.0" -""",
+                {'ip': '10.194.22.16',
+                 'http_method': 'GET',
+                 'http_proto': 'HTTP/1.1',
+                 'http_status': '200',
+                 'bucket_owner': 'DEADBEEF',
+                 'program': 's3'})
+
 if __name__ == "__main__":
     unittest.main()

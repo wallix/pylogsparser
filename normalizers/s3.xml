@@ -235,6 +235,9 @@ log['user_agent'] = value
 	  <substitute>VID</substitute>
 	</tag>
       </tags>
+        <commonTags>
+            <commonTag name="program">s3</commonTag>
+        </commonTags>
       <examples>
         <example>
           <text>DEADBEEF testbucket [19/Jul/2011:13:17:11 +0000] 10.194.22.16 FACEDEAD CAFEDECA REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 951 - 397 - "-" "Jakarta Commons-HttpClient/3.0" -</text>
