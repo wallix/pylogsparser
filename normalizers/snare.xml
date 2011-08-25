@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- -->
+<!-- pylogparser - Logs parsers python library -->
+<!-- Copyright (C) 2011 Wallix Inc. -->
+<!-- -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- -->
+<!-- This package is free software; you can redistribute -->
+<!-- it and/or modify it under the terms of the GNU Lesser -->
+<!-- General Public License as published by the Free Software -->
+<!-- Foundation; either version 2.1 of the License, or (at -->
+<!-- your option) any later version. -->
+<!-- -->
+<!-- This package is distributed in the hope that it will be -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR -->
+<!-- PURPOSE. See the GNU Lesser General Public License for -->
+<!-- more details. -->
+<!-- -->
+<!-- You should have received a copy of the GNU Lesser General -->
+<!-- Public License along with this package; if not, write -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place, -->
+<!-- Suite 330, Boston, MA 02111-1307 USA -->
+<!-- -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+
+<normalizer name="SnareConvertedLog"
+	    version="0.99"
+	    unicode="yes"
+	    ignorecase="yes"
+	    matchtype= "search"
+	    appliedTo= "raw">
+  
+  <description>
+    <localized_desc language="en">This normalizer parses event logs sent by Snare agent for Windows.</localized_desc>
+    <localized_desc language="fr">Ce normaliser analyse les logs envoyés par Snare agent for Windows</localized_desc>
+  </description>
+
+  <authors>
+    <author>clo@wallix.com</author>
+  </authors>
+  
+  <tagTypes>
+    
+    <tagType name="snare_event_log_type" type="basestring">
+      <description>
+	<localized_desc language="en">'MSWinEventLog' for Snare for Windows.</localized_desc>
+	<localized_desc language="fr">'MSWinEventLog' pour Snare for Windows.</localized_desc>
+      </description>
+      <regexp>MSWinEventLog</regexp>
+    </tagType>
+    
+    <tagType name="criticality" type="number">
+      <description>
+	<localized_desc language="en">Criticality tag is a number between 0 and 4.</localized_desc>
+	<localized_desc language="fr">Le tag criticité est un nombre entre 0 et 4.</localized_desc>
+      </description>
+      <regexp>[0-4]</regexp>
+    </tagType>
+    
+    <tagType name="event_log_source" type="basestring">
+      <description>
+	<localized_desc language="en">After different tests, event_log_source is a string containing [a-zA-Z-]+, but it may be able to contain more than those characters. Change regexp in that case.</localized_desc>
+	<localized_desc language="fr">Après plusieurs tests, event_log_source est une chaîne contenant [a-zA-Z-]+ mais elle pourrait contenir d'autres caracrères, il faudra changer la regexp dans ce cas.</localized_desc>
+      </description>
+      <regexp>[a-zA-Z-]+</regexp>
+    </tagType>
+
+    <tagType name="host_date" type="date">
+      <description>
+	<localized_desc language="en">This is the date sent by host, in host language.</localized_desc>
+	<localized_desc language="fr">La date envoyée par l'hôte, dans son language.</localized_desc>
+      </description>
+	<regexp>\w{3}. \w+ \d{1,2} \d{1,2}:\d{1,2}:\d{1,2} \d{1,4}</regexp>
+    </tagType>
+    
+    <tagType name="event_id" type="integer">
+      <description>
+	<localized_desc language="en">Event id is define by one integer.</localized_desc>
+	<localized_desc language="fr">L'id de l'évènement est défini par un entier.</localized_desc>
+      </description>
+      <regexp>\d+</regexp>
+    </tagType>
+    
+    <tagType name="windows_names" type="basestring">
+      <description>
+	<localized_desc language="en">String containing Windows' authorized characters for computers, users, etc...</localized_desc>
+	<localized_desc language="fr">Chaîne contenant les caractères autorisés de Windows pour les noms d'ordinateur, utilisateurs etc..</localized_desc>
+      </description>
+      <regexp>/[a-zA-Z0-9_-]+</regexp>
+    </tagType>
+
+    <tagType name="event_log_type" type="basestring">
+      <description>
+	<localized_desc language="en">String that can be anyone of the following regexp.</localized_desc>
+	<localized_desc language="fr">Chaîne pouvant être une des regexp suivantes.</localized_desc>
+      </description>
+      <regexp>Success Audit|Failure Audit|Error|Warning|Information</regexp>
+    </tagType>
+    
+    <tagType name="little_hexa" type="hexa_number">
+      <description>
+	<localized_desc language="en">MD5 checksum are hexadecimal keys.</localized_desc>
+	<localized_desc language="fr">Les empreintes MD5 sont des clés héxadécimales.</localized_desc>
+      </description>
+      <regexp>[0-9a-z]+</regexp>
+    </tagType>
+    
+  </tagTypes>
+  
+    <patterns>
+    
+    <pattern name="Snare-001">
+      <description>
+	    <localized_desc language="en"></localized_desc>
+	    <localized_desc language="fr"></localized_desc>
+      </description>
+      <text>(?:HOST_NAME)?[ ]+SNARE_EVENT_LOG_TYPE[\t]CRITICALITY[\t]SOURCE_NAME[\t]SNARE_EVENT_COUNTER[\t]DATETIME[\t]EVENT_ID EXPANDED_SOURCENAME USER_NAME[$]?[\t]SID_TYPE[\t]EVENT_LOGTYPE[\t]COMPUTER_NAME[\t]CATEGORY_STRING[\t]DATA_STRING[\t]EXPANDED_STRING[\t](?:MD5_CHECKSUM)?
+      </text>
+      <tags>
+
+	<tag name="host_name" tagType="windows_names">
+	  <description>
+	    <localized_desc language="en">This is the sender's host name.</localized_desc>
+	    <localized_desc language="fr">Le nom d'hôte du destinateur.</localized_desc>
+	  </description>
+	  <substitute>HOST_NAME</substitute>
+	</tag>
+	
+	<tag name="snare_event_log_type" tagType="snare_event_log_type">
+	  <description>
+	    <localized_desc language="en">'MSWinEventLog' for Snare for Windows.</localized_desc>
+	    <localized_desc language="fr">'MSWinEventLog' pour Snare for Windows.</localized_desc>
+	  </description>
+	  <substitute>SNARE_EVENT_LOG_TYPE</substitute>
+	</tag>
+	
+	<tag name="criticality" tagType="criticality">
+	  <description>
+	    <localized_desc language="en">This is determinated by the Alert level given to the objective by the user. (In Snare Agent)</localized_desc>
+	    <localized_desc language="fr">Niveau d'alerte configuré depuis les objectives de l'agent Snare.</localized_desc>
+	  </description>
+	  <substitute>CRITICALITY</substitute>
+	</tag>
+	
+	<tag name="event_log_source_name" tagType="event_log_source">
+	  <description>
+	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
+	    <localized_desc language="fr">Nom du journal Windows d'où vient l'évènement.</localized_desc>
+	  </description>
+	  <substitute>SOURCE_NAME</substitute>
+	</tag>
+	
+	<tag name="snare_event_counter" tagType="Integer">
+	  <description>
+	    <localized_desc language="en">Based on the internal Snare event counter.</localized_desc>
+	    <localized_desc language="fr">Basé sur le compteur interne des évènements de Snare.</localized_desc>
+	  </description>
+	  <substitute>SNARE_EVENT_COUNTER</substitute>
+	</tag>
+	
+	<tag name="date" tagType="host_date">
+	  <description>
+	    <localized_desc language="en">This is the date time stamp of the event record.</localized_desc>
+	    <localized_desc language="fr">Date d'enregistrement de l'évènement.</localized_desc>
+	  </description>
+	  <substitute>DATETIME</substitute>
+	</tag>
+	
+	<tag name="event_id" tagType="event_id">
+	  <description>
+	    <localized_desc language="en">This is the Windows event ID.</localized_desc>
+	    <localized_desc language="fr">ID de l'évènement Windows.</localized_desc>
+	  </description>
+	  <substitute>EVENT_ID</substitute>
+	</tag>
+	
+	<tag name="event_log_expanded_source_name" tagType="event_log_source">
+	  <description>
+	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
+	    <localized_desc language="fr">Nom du journal Windows d'où vient l'évènement.</localized_desc>
+	  </description>
+	  <substitute>EXPANDED_SOURCENAME</substitute>
+	</tag>
+
+	<tag name="user_name" tagType="windows_names">
+	  <description>
+	    <localized_desc language="en">This is the Windows' user name.</localized_desc>
+	    <localized_desc language="fr">Nom d'utilisateur Windows.</localized_desc>
+	  </description>
+	  <substitute>USER_NAME</substitute>
+	</tag>
+	
+	<tag name="sid_used" tagType="sid_type">
+	  <description>
+	    <localized_desc language="en">This is the type of SID used.</localized_desc>
+	    <localized_desc language="fr">Type de SID utilisé.</localized_desc>
+	  </description>
+	  <substitute>SID_TYPE</substitute>
+	</tag>
+
+	<tag name="event_log_type" tagType="event_log_type">
+	  <description>
+	    <localized_desc language="en">This can be anyone of 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
+	    <localized_desc language="fr">Peut être un des suivants: 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
+	  </description>
+	  <substitute>EVENT_LOGTYPE</substitute>
+	</tag>
+	
+	<tag name="computer_name" tagType="windows_names">
+	  <description>
+	    <localized_desc language="en">This is the Windows computer name.</localized_desc>
+	    <localized_desc language="fr">Nom de l'ordinateur.</localized_desc>
+	  </description>
+	  <substitute>COMPUTER_NAME</substitute>
+	</tag>
+	
+	<tag name="category_name" tagType="Anything">
+	  <description>
+	    <localized_desc language="en">This is the category of audit event, as detailled by the Windows event logging system.</localized_desc>
+	    <localized_desc language="fr"></localized_desc>
+	  </description>
+	  <substitute>CATEGORY_STRING</substitute>
+	</tag>
+	
+	<tag name="event_data" tagType="Anything">
+	  <description>
+	    <localized_desc language="en">This contains the data strings.</localized_desc>
+	    <localized_desc language="fr">Contient les données de l'évènement.</localized_desc>
+	  </description>
+	  <substitute>DATA_STRING</substitute>
+	</tag>
+	
+	<tag name="event_expanded_data" tagType="Anything">
+	  <description>
+	    <localized_desc language="en">This contains the expanded data dtrings.</localized_desc>
+	    <localized_desc language="fr">Contient les données étendues.</localized_desc>
+	  </description>
+	  <substitute>EXPANDED_STRING</substitute>
+	</tag>
+	
+	<tag name="md5_check_sum" tagType="little_hexa">
+	  <description>
+	    <localized_desc language="en">(optional)An MD5 checksum of the event.</localized_desc>
+	    <localized_desc language="fr">(optionnel)Empreinte MD5 de l'évènement.</localized_desc>
+	  </description>
+	  <substitute>MD5_CHECKSUM</substitute>
+	</tag>
+	
+      </tags>
+
+      <examples>
+	<example>
+	  <text>TEST_HOST MSWinEventLog 4 System 255 mer.août 24 14:20:21 201 7036 Service Control Manager N/A N/A Information TEST_NAME None Le service Client de stratégie de groupe est entré dans l'état : arrêté. 40</text>
+	  <expectedTags>
+	    <expectedTag name="host_name">TEST_HOST</expectedTag>
+	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
+	    <expectedTag name="criticality">4</expectedTag>
+	    <expectedTag name="event_log_source_name">System</expectedTag>
+	    <expectedTag name="snare_event_counter">255</expectedTag>
+	    <expectedTag name="date">mer. août 24 14:20:21 201</expectedTag>
+	    <expectedTag name="event_id">7036</expectedTag>
+	    <expectedTag name="event_log_expanded_source_name">Service Control Manager</expectedTag>
+	    <expectedTag name="user_name">N/A</expectedTag>
+	    <expectedTag name="sid_used">N/A</expectedTag>
+	    <expectedTag name="event_log_type">Information</expectedTag>
+	    <expectedTag name="computer_name">TEST_NAME</expectedTag>
+	    <expectedTag name="category_name">None</expectedTag>
+	    <expectedTag name="event_data">Le service Client de stratégie de groupe est entré dans l'état : arrêté.</expectedTag>
+	    <expectedTag name="event_expanded_data"></expectedTag>
+	    <expectedTag name="md5_check_sum">40</expectedTag>
+	  </expectedTags>
+	</example>
+
+	<example>
+	  <text>clo-PC MSWinEventLog 0 Security 191 mer. août 24 14:20:19 201 4688 Microsoft-Windows-Security-Auditing WORKGROUP\CLO-PC$ N/A Success Audit clo-PC Création du processus Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur. 133
+	  </text>
+	  <expectedTags>
+	    <expectedTag name="host_name">clo-PC</expectedTag>
+	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
+	    <expectedTag name="criticality">0</expectedTag>
+	    <expectedTag name="event_log_source_name">Security</expectedTag>
+	    <expectedTag name="snare_event_counter">191</expectedTag>
+	    <expectedTag name="date">mer. août 24 14:20:19 201</expectedTag>
+	    <expectedTag name="event_id">4688</expectedTag>
+	    <expectedTag name="event_log_source_name">Microsoft-Windows-Security-Auditing</expectedTag>
+	    <expectedTag name="user_name">WORKGROUP/CLO_PC$</expectedTag>
+	    <expectedTag name="sid_used">N/A</expectedTag>
+	    <expectedTag name="event_log_type">Success Audit</expectedTag>
+	    <expectedTag name="computer_name">clo-PC</expectedTag>
+	    <expectedTag name="category_name">Création du processus</expectedTag>
+	    <expectedTag name="event_data">Un nouveau processus a été créé.</expectedTag>
+	    <expectedTag name="event_expanded_data">Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.</expectedTag>
+	    <expectedTag name="md5_check_sum">40</expectedTag>
+	  </expectedTags>
+	</example>
+      </examples>
+    </pattern>
+
+  </patterns>
+  
+</normalizer>
