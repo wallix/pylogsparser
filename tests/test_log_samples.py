@@ -252,43 +252,43 @@ class Test(unittest.TestCase):
                   'action': 'fail',
                   'user': 'bernat',
                   'method': 'password',
-                  'ip': '127.0.0.1' })
+                  'source_ip': '127.0.0.1' })
         self.aS("<40>Dec 26 10:32:40 naruto sshd[2274]: Failed password for invalid user jfdghfg from 127.0.0.1 port 37234 ssh2",
                 { 'program': 'sshd',
                   'action': 'fail',
                   'user': 'jfdghfg',
                   'method': 'password',
-                  'ip': '127.0.0.1' })
+                  'source_ip': '127.0.0.1' })
         self.aS("<40>Dec 26 10:32:40 naruto sshd[2274]: Failed none for invalid user kgjfk from 127.0.0.1 port 37233 ssh2",
                 { 'program': 'sshd',
                   'action': 'fail',
                   'user': 'kgjfk',
                   'method': 'none',
-                  'ip': '127.0.0.1' })
+                  'source_ip': '127.0.0.1' })
         self.aS("<40>Dec 26 10:32:40 naruto sshd[2274]: Accepted password for bernat from 127.0.0.1 port 37234 ssh2",
                 { 'program': 'sshd',
                   'action': 'accept',
                   'user': 'bernat',
                   'method': 'password',
-                  'ip': '127.0.0.1' })
+                  'source_ip': '127.0.0.1' })
         self.aS("<40>Dec 26 10:32:40 naruto sshd[2274]: Accepted publickey for bernat from 192.168.251.2 port 60429 ssh2",
                 { 'program': 'sshd',
                   'action': 'accept',
                   'user': 'bernat',
                   'method': 'publickey',
-                  'ip': '192.168.251.2' })
+                  'source_ip': '192.168.251.2' })
         # See http://www.ossec.net/en/attacking-loganalysis.html
         self.aS("<40>Dec 26 10:32:40 naruto sshd[2274]: Failed password for invalid user myfakeuser from 10.1.1.1 port 123 ssh2 from 192.168.50.65 port 34813 ssh2",
                { 'program': 'sshd',
                   'action': 'fail',
                   'user': 'myfakeuser from 10.1.1.1 port 123 ssh2',
                   'method': 'password',
-                  'ip': '192.168.50.65' })
+                  'source_ip': '192.168.50.65' })
 #        self.aS("Aug  1 18:30:05 knight sshd[20439]: Illegal user guest from 218.49.183.17",
 #               {'program': 'sshd',
 #                'source' : 'knight',
 #                'user' : 'guest',
-#                'ip': '218.49.183.17',
+#                'source_ip': '218.49.183.17',
 #                'body' : 'Illegal user guest from 218.49.183.17',
 #                })
 
