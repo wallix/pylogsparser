@@ -97,9 +97,9 @@ class Test(unittest.TestCase):
         self.aS("<40>Dec 21 07:49:02 hosting03 postfix/cleanup[23416]: 2BD731B4017: message-id=<20071221073237.5244419B327@paris.office.wallix.com>",
                 {'program': 'postfix',
                  'component': 'cleanup',
-                 'uid': '2BD731B4017',
+                 'queue_id': '2BD731B4017',
                  'pid': '23416',
-                 'message-id': '20071221073237.5244419B327@paris.office.wallix.com'})
+                 'message_id': '20071221073237.5244419B327@paris.office.wallix.com'})
 
 #        self.aS("<40>Dec 21 07:49:01 hosting03 postfix/anvil[32717]: statistics: max connection rate 2/60s for (smtp:64.14.54.229) at Dec 21 07:40:04",
 #                {'program': 'postfix',
@@ -110,16 +110,19 @@ class Test(unittest.TestCase):
         self.aS("<40>Dec 21 07:49:01 hosting03 postfix/pipe[23417]: 1E83E1B4017: to=<gloubi@wallix.com>, relay=vmail, delay=0.13, delays=0.11/0/0/0.02, dsn=2.0.0, status=sent (delivered via vmail service)",
                 {'program': 'postfix',
                  'component': 'pipe',
-                 'uid': '1E83E1B4017',
-                 'to': 'gloubi@wallix.com',
+                 'queue_id': '1E83E1B4017',
+                 'message_recipient': 'gloubi@wallix.com',
                  'relay': 'vmail',
+                 'dest_host': 'vmail',
                  'status': 'sent'})
 
         self.aS("<40>Dec 21 07:49:04 hosting03 postfix/smtpd[23446]: C43971B4019: client=paris.office.wallix.com[82.238.42.70]",
                 {'program': 'postfix',
                  'component': 'smtpd',
-                 'uid': 'C43971B4019',
-                 'client': 'paris.office.wallix.com[82.238.42.70]'})
+                 'queue_id': 'C43971B4019',
+                 'client': 'paris.office.wallix.com[82.238.42.70]',
+                 'source_host': 'paris.office.wallix.com',
+                 'source_ip': '82.238.42.70'})
 
 #        self.aS("<40>Dec 21 07:52:56 hosting03 postfix/smtpd[23485]: connect from mail.gloubi.com[65.45.12.22]",
 #                {'program': 'postfix',
@@ -129,9 +132,10 @@ class Test(unittest.TestCase):
         self.aS("<40>Dec 21 08:42:17 hosting03 postfix/pipe[26065]: CEFFB1B4020: to=<gloubi@wallix.com@autoreply.wallix.com>, orig_to=<gloubi@wallix.com>, relay=vacation, delay=4.1, delays=4/0/0/0.08, dsn=2.0.0, status=sent (delivered via vacation service)",
                 {'program': 'postfix',
                  'component': 'pipe',
-                 'to': 'gloubi@wallix.com@autoreply.wallix.com',
+                 'message_recipient': 'gloubi@wallix.com@autoreply.wallix.com',
                  'orig_to': 'gloubi@wallix.com',
                  'relay': 'vacation',
+                 'dest_host': 'vacation',
                  'status': 'sent'})
 
     def test_squid(self):

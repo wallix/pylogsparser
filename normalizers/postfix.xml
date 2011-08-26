@@ -64,6 +64,9 @@ ACCEPTED = [ "client",
              "size",
              "message-id",
              "status" ]
+# re to trying to match client and relay address
+r=re.compile('(?P&lt;host&gt;[A-Za-z0-9\-\.]+)(?P&lt;ip&gt;\[.*\])?(?P&lt;port&gt;\:\d+)?$')
+
 couples = value.split(', ')
 for couple in couples:
     tagname, tagvalue = couple.split('=', 1)
@@ -72,6 +75,35 @@ for couple in couples:
         log[tagname] = tagvalue
         if tagname == 'status':
             log[tagname] = log[tagname].split()[0]
+
+TRANSLATE = {"to": "message_recipient",
+             "from": "message_sender",
+             "size": "len",
+             "message-id": "message_id"}
+for k,v in TRANSLATE.items():
+    if k in log.keys():
+        val = log[k]
+        del log[k]
+        log[v] = val
+
+if 'client' in log.keys():
+    host, ip, port = r.match(log['client']).groups()
+    if host:
+        log['source_host'] = host
+    if ip:
+        log['source_ip'] = ip.strip("[]")
+    if port:
+        log['source_port'] = port.strip(':')
+
+if 'relay' in log.keys():
+    host, ip, port = r.match(log['relay']).groups()
+    if host:
+        log['dest_host'] = host
+    if ip:
+        log['dest_ip'] = ip.strip("[]")
+    if port:
+        log['dest_port'] = port.strip(':')
+
     </callback>
     </callbacks>
     <prerequisites>
@@ -84,7 +116,7 @@ for couple in couples:
         <localized_desc language="fr">Message Postfix générique comportant un UID et plusieurs couples clé-valeur.</localized_desc></description>
             <text>UID: KEYVALUES</text>
             <tags>
-                <tag name="uid" tagType="postfixUID">
+                <tag name="queue_id" tagType="postfixUID">
                  <description>
         <localized_desc language="en">the Postfix message UID</localized_desc>
         <localized_desc language="fr">l'UID du message</localized_desc></description>
@@ -104,8 +136,8 @@ for couple in couples:
                 <example>
                      <text>74275790B06: to=&lt;root@ubuntu&gt;, orig_to=&lt;root&gt;, relay=none, delay=0.91, delays=0.31/0.07/0.53/0, dsn=5.4.4, status=bounced (Host or domain name not found. Name service error for name=ubuntu type=A: Host not found)</text>
                      <expectedTags>
-                          <expectedTag name="uid">74275790B06</expectedTag>
-                          <expectedTag name="to">root@ubuntu</expectedTag>
+                          <expectedTag name="queue_id">74275790B06</expectedTag>
+                          <expectedTag name="message_recipient">root@ubuntu</expectedTag>
                           <expectedTag name="orig_to">root</expectedTag>
                           <expectedTag name="relay">none</expectedTag>
                           <expectedTag name="status">bounced</expectedTag>
