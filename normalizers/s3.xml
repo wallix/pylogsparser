@@ -76,7 +76,7 @@ else:
 value = value[1:-1].split(' ')
 log['http_method'] = value[0]
 log['http_target'] = value[1]
-log['http_proto'] = value[2]
+log['protocol'] = value[2]
 	</callback>
 	<callback name="refer_unquote">
 value = value[1:-1]
@@ -96,7 +96,7 @@ log['user_agent'] = value
       </description>
       <text>OWNER NAME DATE IP REQUESTOR REQUESTID OP KEY HTTP_METHOD HTTP_STATUS S3ERR SENT SIZE TOTAL TAT REF AGENT VID</text> 
       <tags>
-        <tag name="bucket_owner" tagType="Anything">
+        <tag name="user" tagType="Anything">
           <description>
             <localized_desc language="en">The canonical user id of the owner of the source bucket</localized_desc>
             <localized_desc language="fr">Identifiant canonique du propriétaire du bucket</localized_desc>
@@ -120,7 +120,7 @@ log['user_agent'] = value
             <callback>decode_ctf</callback>
           </callbacks>
         </tag>
-        <tag name="ip" tagType="Anything">
+        <tag name="source_ip" tagType="Anything">
           <description>
             <localized_desc language="en">The apparent Internet address of the requester.</localized_desc>
             <localized_desc language="fr">Adresse IP apparente de la requête.</localized_desc>
@@ -141,7 +141,7 @@ log['user_agent'] = value
           </description>
 	  <substitute>REQUESTID</substitute>
 	</tag>
-        <tag name="operation" tagType="Anything">
+        <tag name="method" tagType="Anything">
           <description>
             <localized_desc language="en">operation type</localized_desc>
             <localized_desc language="fr">type de l'opération</localized_desc>
@@ -165,7 +165,7 @@ log['user_agent'] = value
             <callback>split_s3_info</callback>
 	  </callbacks>
 	</tag>
-        <tag name="http_status" tagType="Integer">
+        <tag name="status" tagType="Integer">
           <description>
             <localized_desc language="en">The numeric HTTP status code of the response.</localized_desc>
             <localized_desc language="fr">Code numérique de retour de la requête HTTP.</localized_desc>
@@ -179,7 +179,7 @@ log['user_agent'] = value
           </description>
 	  <substitute>S3ERR</substitute>
 	</tag>
-	<tag name="sent" tagType="Anything">
+	<tag name="len" tagType="Anything">
           <description>
             <localized_desc language="en">The number of response bytes sent, excluding HTTP protocol overhead, or "-" if zero.</localized_desc>
             <localized_desc language="fr"></localized_desc>
@@ -242,19 +242,19 @@ log['user_agent'] = value
         <example>
           <text>DEADBEEF testbucket [19/Jul/2011:13:17:11 +0000] 10.194.22.16 FACEDEAD CAFEDECA REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 951 - 397 - "-" "Jakarta Commons-HttpClient/3.0" -</text>
           <expectedTags>
-            <expectedTag name="bucket_owner">DEADBEEF</expectedTag>
+            <expectedTag name="user">DEADBEEF</expectedTag>
             <expectedTag name="bucket">testbucket</expectedTag>
-	    <expectedTag name="ip">10.194.22.16</expectedTag>
+	    <expectedTag name="source_ip">10.194.22.16</expectedTag>
 	    <expectedTag name="requestor">FACEDEAD</expectedTag>
 	    <expectedTag name="requestid">CAFEDECA</expectedTag>
-	    <expectedTag name="operation">REST.GET.ACL</expectedTag>
+	    <expectedTag name="method">REST.GET.ACL</expectedTag>
 	    <expectedTag name="key">-</expectedTag>
 	    <expectedTag name="http_method">GET</expectedTag>
 	    <expectedTag name="http_target">/?acl</expectedTag>
-	    <expectedTag name="http_proto">HTTP/1.1</expectedTag>
-	    <expectedTag name="http_status">200</expectedTag>
+	    <expectedTag name="protocol">HTTP/1.1</expectedTag>
+	    <expectedTag name="status">200</expectedTag>
 	    <expectedTag name="s3err">-</expectedTag>
-	    <expectedTag name="sent">951</expectedTag>
+	    <expectedTag name="len">951</expectedTag>
 	    <expectedTag name="object_size">-</expectedTag>
 	    <expectedTag name="total_request_time">397</expectedTag>
 	    <expectedTag name="turn_around_time">-</expectedTag>
