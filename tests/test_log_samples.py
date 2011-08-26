@@ -181,42 +181,43 @@ class Test(unittest.TestCase):
         """Test netfilter logs"""
         self.aS("<40>Dec 26 09:30:07 dedibox kernel: FROM_INTERNET_DENY IN=eth0 OUT= MAC=00:40:63:e7:b2:17:00:15:fa:80:47:3f:08:00 SRC=88.252.4.37 DST=88.191.34.16 LEN=48 TOS=0x00 PREC=0x00 TTL=117 ID=56818 DF PROTO=TCP SPT=1184 DPT=445 WINDOW=65535 RES=0x00 SYN URGP=0",
                 { 'program': 'netfilter',
-                  'in': 'eth0',
-                  'mac': '00:40:63:e7:b2:17:00:15:fa:80:47:3f:08:00',
-                  'src': '88.252.4.37',
-                  'dst': '88.191.34.16',
+                  'inbound_int': 'eth0',
+                  'dest_mac': '00:40:63:e7:b2:17',
+                  'source_mac': '00:15:fa:80:47:3f',
+                  'source_ip': '88.252.4.37',
+                  'dest_ip': '88.191.34.16',
                   'len': '48',
-                  'proto': 'TCP',
-                  'spt': '1184',
+                  'protocol': 'TCP',
+                  'source_port': '1184',
                   'prefix': 'FROM_INTERNET_DENY',
-                  'dpt': '445' })
+                  'dest_port': '445' })
         self.aS("<40>Dec 26 08:45:23 dedibox kernel: TO_INTERNET_DENY IN=vif2.0 OUT=eth0 SRC=10.116.128.6 DST=82.225.197.239 LEN=121 TOS=0x00 PREC=0x00 TTL=63 ID=15592 DF PROTO=TCP SPT=993 DPT=56248 WINDOW=4006 RES=0x00 ACK PSH FIN URGP=0 ",
                 { 'program': 'netfilter',
-                  'in': 'vif2.0',
-                  'out': 'eth0',
-                  'src': '10.116.128.6',
-                  'dst': '82.225.197.239',
+                  'inbound_int': 'vif2.0',
+                  'outbound_int': 'eth0',
+                  'source_ip': '10.116.128.6',
+                  'dest_ip': '82.225.197.239',
                   'len': '121',
-                  'proto': 'TCP',
-                  'spt': '993',
-                  'dpt': '56248' })
+                  'protocol': 'TCP',
+                  'source_port': '993',
+                  'dest_port': '56248' })
         
         # One malformed log
-        # We must improve aS to handle tags that must not appear in normalization result
         self.aS("<40>Dec 26 08:45:23 dedibox kernel: TO_INTERNET_DENY IN=vif2.0 OUT=eth0 DST=82.225.197.239 LEN=121 TOS=0x00 PREC=0x00 TTL=63 ID=15592 DF PROTO=TCP SPT=993 DPT=56248 WINDOW=4006 RES=0x00 ACK PSH FIN URGP=0 ",
                 { 'program': 'kernel' },
-                ('in', 'len'))
+                ('inbound_int', 'len'))
 
         self.aS("Sep 28 15:19:59 tulipe-input kernel: [1655854.311830] DROPPED: IN=eth0 OUT= MAC=32:42:cd:02:72:30:00:23:7d:c6:35:e6:08:00 SRC=10.10.4.7 DST=10.10.4.86 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=20805 DF PROTO=TCP SPT=34259 DPT=111 WINDOW=5840 RES=0x00 SYN URGP=0",
                 {'program': 'netfilter',
-                 'in' : "eth0",
-                 'src' : "10.10.4.7",
-                 'dst' : "10.10.4.86",
+                 'inbound_int' : "eth0",
+                 'source_ip' : "10.10.4.7",
+                 'dest_ip' : "10.10.4.86",
                  'len' : "60",
-                 'proto' : 'TCP',
-                 'spt' : '34259',
-                 'dpt' : '111',
-                 'mac' : '32:42:cd:02:72:30:00:23:7d:c6:35:e6:08:00',
+                 'protocol' : 'TCP',
+                 'source_port' : '34259',
+                 'dest_port' : '111',
+                 'dest_mac' : '32:42:cd:02:72:30',
+                 'source_mac' : '00:23:7d:c6:35:e6',
                  'prefix' : '[1655854.311830] DROPPED:' })
 
 
