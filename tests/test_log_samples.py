@@ -385,17 +385,17 @@ class Test(unittest.TestCase):
                 {"program" : "symantec",
                  "date" : datetime(2002, 11, 19, 8, 1, 34),
                  "category" : "Summary",
-                 "computer" : "TRAVEL00",
+                 "local_host" : "TRAVEL00",
                  "domain_name" : "GROUP",
                  "event_logger_type" : "System",
-                 "event_number" : "GL_EVENT_RTS_LOAD",
+                 "event_id" : "GL_EVENT_RTS_LOAD",
                  "eventblock_action" : "EB_LOG",
                  "group_id" : "0",
                  "operation_flags" : "0",
                  "parent" : "SAMPLE_COMPUTER",
                  "scan_id" : "0",
                  "server_group" : "Parent",
-                 "username" : "SYSTEM",
+                 "user" : "SYSTEM",
                  "version" : "8.0.93330"})
 
     # Need to find real symantec version 9 log lines
@@ -405,17 +405,17 @@ class Test(unittest.TestCase):
                 {"program" : "symantec",
                  "date" : datetime(2002, 11, 19, 8, 1, 34),
                  "category" : "Summary",
-                 "computer" : "TRAVEL00",
+                 "local_host" : "TRAVEL00",
                  "domain_name" : "GROUP",
                  "event_logger_type" : "System",
-                 "event_number" : "GL_EVENT_RTS_LOAD",
+                 "event_id" : "GL_EVENT_RTS_LOAD",
                  "eventblock_action" : "EB_LOG",
                  "group_id" : "0",
                  "operation_flags" : "0",
                  "parent" : "SAMPLE_COMPUTER",
                  "scan_id" : "0",
                  "server_group" : "Parent",
-                 "username" : "SYSTEM",
+                 "user" : "SYSTEM",
                  "version" : "9.0.93330"})
     
     def test_arkoonFAST360(self):
