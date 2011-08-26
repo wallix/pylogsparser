@@ -85,13 +85,13 @@ if value != "-":
         <localized_desc language="fr">le temps écoulé pour la requête</localized_desc></description>
                  <substitute>ELAPSED</substitute>
                 </tag>
-                <tag name="ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                  <description>        
         <localized_desc language="en">the remote host's IP</localized_desc>
         <localized_desc language="fr">l'adresse IP de l'hôte distant</localized_desc></description>
                  <substitute>IP</substitute>
                 </tag>
-                <tag name="code" tagType="NoSpace">
+                <tag name="event_id" tagType="NoSpace">
                  <description>        
         <localized_desc language="en">the code returned by the proxy</localized_desc>
         <localized_desc language="fr">le code de la réponse émise par le proxy</localized_desc></description>
@@ -103,7 +103,7 @@ if value != "-":
         <localized_desc language="fr">le statut de la requête</localized_desc></description>
                  <substitute>REQUESTSTATUS</substitute>
                 </tag>
-                <tag name="size" tagType="Integer">
+                <tag name="len" tagType="Integer">
                  <description>        
         <localized_desc language="en">the size of the request's result</localized_desc>
         <localized_desc language="fr">la taille du résultat de la requête</localized_desc></description>
@@ -144,14 +144,14 @@ if value != "-":
                 <example>
                      <text>1259844091.407    307 82.238.42.70 TCP_MISS/200 1015 GET http://www.ietf.org/css/ietf.css fbo DIRECT/64.170.98.32 text/css</text>
                      <expectedTags>
-                          <expectedTag name="code">TCP_MISS</expectedTag>
+                          <expectedTag name="event_id">TCP_MISS</expectedTag>
                           <expectedTag name="elapsed">307</expectedTag>
-                          <expectedTag name="ip">82.238.42.70</expectedTag>
+                          <expectedTag name="source_ip">82.238.42.70</expectedTag>
                           <expectedTag name="method">GET</expectedTag>
                           <expectedTag name="mime_type">text/css</expectedTag>
                           <expectedTag name="peer_host">64.170.98.32</expectedTag>
                           <expectedTag name="peer_status">DIRECT</expectedTag>
-                          <expectedTag name="size">1015</expectedTag>
+                          <expectedTag name="len">1015</expectedTag>
                           <expectedTag name="status">200</expectedTag>
                           <expectedTag name="url">http://www.ietf.org/css/ietf.css</expectedTag>
                           <expectedTag name="user">fbo</expectedTag>
