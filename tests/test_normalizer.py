@@ -88,6 +88,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_015_s3(self):
         self.normalize_samples('s3.xml', 's3', 0.99)
 
+    def test_normalize_samples_015_s3(self):
+        self.normalize_samples('snare.xml', 'snare', 0.99)
+
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""

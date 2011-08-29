@@ -76,7 +76,8 @@ class LogNormalizer():
         for path in self.iter_normalizer():
             norm = parse(open(path))
             if not self.dtd.validate(norm):
-                warnings.warn('Skipping %s : invalid DTD' % path)
+#                warnings.warn('Skipping %s : invalid DTD' % path)
+		print 'invalid normalizer ', path
             else:
                 normalizer = Normalizer(norm, os.path.join(self.normalizers_path,
                                                         'common_tagTypes.xml'))
