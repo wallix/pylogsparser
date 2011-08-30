@@ -366,21 +366,21 @@ class Test(unittest.TestCase):
     def test_bind9(self):
         """Test Bind9 normalization"""
         self.aS("Oct 22 01:27:16 pluto named: client 192.168.198.130#4532: bad zone transfer request: 'www.abc.com/IN': non-authoritative zone (NOTAUTH)",
-                {'msg_type' : "zone_transfer_bad",
+                {'event_id' : "zone_transfer_bad",
                  'zone' : "www.abc.com",
-                 'client_ip' : '192.168.198.130',
+                 'source_ip' : '192.168.198.130',
                  'class' : 'IN',
                  'program' : 'named'})
         self.aS("Oct 22 01:27:16 pluto named: general: notice: client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +",
-                {'msg_type' : "client_query",
+                {'event_id' : "client_query",
                  'domain' : "tpf.qa.ifr.lan",
                  'category' : "general",
                  'severity' : "notice",
                  'class' : "IN",
-                 'client_ip' : "10.10.4.4",
+                 'source_ip' : "10.10.4.4",
                  'program' : 'named'})
         self.aS("Oct 22 01:27:16 pluto named: createfetch: 126.92.194.77.zen.spamhaus.org A",
-                {'msg_type' : "fetch_request",
+                {'event_id' : "fetch_request",
                  'domain' : "126.92.194.77.zen.spamhaus.org",
                  'program' : 'named'})
 

@@ -177,14 +177,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: (?:VIEW )?query: DOMAIN CLASS TYPE \S+$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">Client IP address related to this request</localized_desc>
                         <localized_desc language="fr">Adresse IP du client ayant généré la requête</localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en">UDP client port</localized_desc>
                         <localized_desc language="fr">Port UDP du client</localized_desc>
@@ -254,17 +254,17 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">client_query</commonTag>
+                <commonTag name="event_id">client_query</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -273,10 +273,10 @@ log["view"] = view
                 <example>
                      <text>client 10.10.4.4#39583: view external: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -286,10 +286,10 @@ log["view"] = view
                 <example>
                      <text>28-Feb-2000 15:05:32.863 client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -299,10 +299,10 @@ log["view"] = view
                 <example>
                      <text>28-Feb-2000 15:05:32.863 general: client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -313,10 +313,10 @@ log["view"] = view
                 <example>
                      <text>28-Feb-2000 15:05:32.863 general: client 10.10.4.4#39583: view external: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -328,10 +328,10 @@ log["view"] = view
                 <example>
                      <text>queries: client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -341,10 +341,10 @@ log["view"] = view
                 <example>
                      <text>28-Feb-2000 15:05:32.863 general: crit: client 10.10.4.4#39583: query: tpf.qa.ifr.lan IN SOA +</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query</expectedTag>
+                          <expectedTag name="event_id">client_query</expectedTag>
                           <expectedTag name="domain">tpf.qa.ifr.lan</expectedTag>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="client_sport">39583</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="source_port">39583</expectedTag>
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -363,14 +363,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: query 'DOMAIN/TYPE/CLASS' denied$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -430,7 +430,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">client_query_denied</commonTag>
+                <commonTag name="event_id">client_query_denied</commonTag>
                 <commonTag name="action">denied</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
@@ -438,10 +438,10 @@ log["view"] = view
                 <example>
                      <text>client 127.0.0.1#44063: query 'www.example.com/A/IN' denied</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query_denied</expectedTag>
+                          <expectedTag name="event_id">client_query_denied</expectedTag>
                           <expectedTag name="domain">www.example.com</expectedTag>
-                          <expectedTag name="client_ip">127.0.0.1</expectedTag>
-                          <expectedTag name="client_sport">44063</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_port">44063</expectedTag>
                           <expectedTag name="type">A</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -456,14 +456,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: query denied$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -502,7 +502,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">client_query_denied</commonTag>
+                <commonTag name="event_id">client_query_denied</commonTag>
                 <commonTag name="action">denied</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
@@ -510,9 +510,9 @@ log["view"] = view
                 <example>
                      <text>client 127.0.0.1#1126: query denied</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query_denied</expectedTag>
-                          <expectedTag name="client_ip">127.0.0.1</expectedTag>
-                          <expectedTag name="client_sport">1126</expectedTag>
+                          <expectedTag name="event_id">client_query_denied</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_port">1126</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                      </expectedTags>
@@ -526,14 +526,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: query \(cache\) denied$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -572,7 +572,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">client_query_denied</commonTag>
+                <commonTag name="event_id">client_query_denied</commonTag>
                 <commonTag name="action">denied</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
@@ -580,9 +580,9 @@ log["view"] = view
                 <example>
                      <text>client 127.0.0.1#1126: query (cache) denied</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query_denied</expectedTag>
-                          <expectedTag name="client_ip">127.0.0.1</expectedTag>
-                          <expectedTag name="client_sport">1126</expectedTag>
+                          <expectedTag name="event_id">client_query_denied</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_port">1126</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                      </expectedTags>
@@ -596,14 +596,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: query \(cache\) 'DOMAIN/TYPE/CLASS' denied$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -663,7 +663,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">client_query_denied</commonTag>
+                <commonTag name="event_id">client_query_denied</commonTag>
                 <commonTag name="action">denied</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
@@ -671,10 +671,10 @@ log["view"] = view
                 <example>
                      <text>client 219.135.228.103#17635: query (cache) 'mycompany.com.cn/MX/IN' denied</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">client_query_denied</expectedTag>
+                          <expectedTag name="event_id">client_query_denied</expectedTag>
                           <expectedTag name="domain">mycompany.com.cn</expectedTag>
-                          <expectedTag name="client_ip">219.135.228.103</expectedTag>
-                          <expectedTag name="client_sport">17635</expectedTag>
+                          <expectedTag name="source_ip">219.135.228.103</expectedTag>
+                          <expectedTag name="source_port">17635</expectedTag>
                           <expectedTag name="type">MX</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -735,14 +735,14 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">fetch_request</commonTag>
+                <commonTag name="event_id">fetch_request</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>createfetch: 126.92.194.77.zen.spamhaus.org A</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">fetch_request</expectedTag>
+                          <expectedTag name="event_id">fetch_request</expectedTag>
                           <expectedTag name="domain">126.92.194.77.zen.spamhaus.org</expectedTag>
                           <expectedTag name="type">A</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -810,14 +810,14 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer</commonTag>
+                <commonTag name="event_id">zone_transfer</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>zone localdomain/IN: transferred serial 2006070304</text>
                      <expectedTags>
-                          <expectedTag name="msg_type">zone_transfer</expectedTag>
+                          <expectedTag name="event_id">zone_transfer</expectedTag>
                           <expectedTag name="zone">localdomain</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="serial">2006070304</expectedTag>
@@ -833,14 +833,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: zone transfer 'ZONE/CLASS' denied$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -893,7 +893,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer_denied</commonTag>
+                <commonTag name="event_id">zone_transfer_denied</commonTag>
                 <commonTag name="action">denied</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
@@ -901,9 +901,9 @@ log["view"] = view
                 <example>
                      <text>client 219.135.228.103#17635: zone transfer 'somedomain.com/IN' denied</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">219.135.228.103</expectedTag>
-                          <expectedTag name="client_sport">17635</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer_denied</expectedTag>
+                          <expectedTag name="source_ip">219.135.228.103</expectedTag>
+                          <expectedTag name="source_port">17635</expectedTag>
+                          <expectedTag name="event_id">zone_transfer_denied</expectedTag>
                           <expectedTag name="zone">somedomain.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -919,14 +919,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: bad zone transfer request: 'ZONE/CLASS': .*</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -979,16 +979,16 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer_bad</commonTag>
+                <commonTag name="event_id">zone_transfer_bad</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>client 192.168.198.130#4532: bad zone transfer request: 'www.abc.com/IN': non-authoritative zone (NOTAUTH)</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">192.168.198.130</expectedTag>
-                          <expectedTag name="client_sport">4532</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer_bad</expectedTag>
+                          <expectedTag name="source_ip">192.168.198.130</expectedTag>
+                          <expectedTag name="source_port">4532</expectedTag>
+                          <expectedTag name="event_id">zone_transfer_bad</expectedTag>
                           <expectedTag name="zone">www.abc.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -1003,14 +1003,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?zone ZONE/CLASS: refresh: failure trying master IP#PORT: timed out$</text>
             <tags>
-                <tag name="master_ip" tagType="IP">
+                <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">DNS master IP address</localized_desc>
                         <localized_desc language="fr">Adresse IP du master DNS</localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="master_port" tagType="Integer">
+                <tag name="dest_port" tagType="Integer">
                     <description>
                         <localized_desc language="en">DNS master PORT</localized_desc>
                         <localized_desc language="fr">Port du master DNS</localized_desc>
@@ -1063,7 +1063,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer_timeout</commonTag>
+                <commonTag name="event_id">zone_transfer_timeout</commonTag>
                 <commonTag name="program">named</commonTag>
                 <commonTag name="action">failure</commonTag>
             </commonTags>
@@ -1071,9 +1071,9 @@ log["view"] = view
                 <example>
                      <text>zone example.com/IN: refresh: failure trying master 1.2.3.4#53: timed out</text>
                      <expectedTags>
-                          <expectedTag name="master_ip">1.2.3.4</expectedTag>
-                          <expectedTag name="master_port">53</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer_timeout</expectedTag>
+                          <expectedTag name="dest_ip">1.2.3.4</expectedTag>
+                          <expectedTag name="dest_port">53</expectedTag>
+                          <expectedTag name="event_id">zone_transfer_timeout</expectedTag>
                           <expectedTag name="zone">example.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -1088,14 +1088,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?zone ZONE/CLASS: refresh: retry limit for master IP#PORT exceeded$</text>
             <tags>
-                <tag name="master_ip" tagType="IP">
+                <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="master_port" tagType="Integer">
+                <tag name="dest_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -1148,7 +1148,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_refresh_limit</commonTag>
+                <commonTag name="event_id">zone_refresh_limit</commonTag>
                 <commonTag name="program">named</commonTag>
                 <commonTag name="action">retry</commonTag>
             </commonTags>
@@ -1156,9 +1156,9 @@ log["view"] = view
                 <example>
                      <text>zone somedomain.com.au/IN: refresh: retry limit for master 1.2.3.4#53 exceeded</text>
                      <expectedTags>
-                          <expectedTag name="master_ip">1.2.3.4</expectedTag>
-                          <expectedTag name="master_port">53</expectedTag>
-                          <expectedTag name="msg_type">zone_refresh_limit</expectedTag>
+                          <expectedTag name="dest_ip">1.2.3.4</expectedTag>
+                          <expectedTag name="dest_port">53</expectedTag>
+                          <expectedTag name="event_id">zone_refresh_limit</expectedTag>
                           <expectedTag name="zone">somedomain.com.au</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
@@ -1173,14 +1173,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: updating zone 'ZONE/CLASS': ACTION an \S+ at 'DOMAIN' TYPE$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -1254,15 +1254,15 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_update</commonTag>
+                <commonTag name="event_id">zone_update</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>client 127.0.0.1#32839: updating zone 'home.whootis.com/IN': adding an RR at 'pianogirl.home.whootis.com' TXT</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">127.0.0.1</expectedTag>
-                          <expectedTag name="msg_type">zone_update</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="event_id">zone_update</expectedTag>
                           <expectedTag name="zone">home.whootis.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="type">TXT</expectedTag>
@@ -1280,14 +1280,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: updating zone 'ZONE/CLASS': update failed: .*</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -1340,7 +1340,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_update_failure</commonTag>
+                <commonTag name="event_id">zone_update_failure</commonTag>
                 <commonTag name="program">named</commonTag>
                 <commonTag name="action">failed</commonTag>
             </commonTags>
@@ -1348,8 +1348,8 @@ log["view"] = view
                 <example>
                      <text>client 10.10.1.8#53147: updating zone 'clima-tech.com/IN': update failed: rejected by secure update (REFUSED)</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">10.10.1.8</expectedTag>
-                          <expectedTag name="msg_type">zone_update_failure</expectedTag>
+                          <expectedTag name="source_ip">10.10.1.8</expectedTag>
+                          <expectedTag name="event_id">zone_update_failure</expectedTag>
                           <expectedTag name="zone">clima-tech.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">failed</expectedTag>
@@ -1365,14 +1365,14 @@ log["view"] = view
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: update 'ZONE/CLASS' denied</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -1425,7 +1425,7 @@ log["view"] = view
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_update_failure</commonTag>
+                <commonTag name="event_id">zone_update_failure</commonTag>
                 <commonTag name="program">named</commonTag>
                 <commonTag name="action">denied</commonTag>
             </commonTags>
@@ -1433,8 +1433,8 @@ log["view"] = view
                 <example>
                      <text>client 10.10.1.8#53147: update 'clima-tech.com/IN' denied</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">10.10.1.8</expectedTag>
-                          <expectedTag name="msg_type">zone_update_failure</expectedTag>
+                          <expectedTag name="source_ip">10.10.1.8</expectedTag>
+                          <expectedTag name="event_id">zone_update_failure</expectedTag>
                           <expectedTag name="zone">clima-tech.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
