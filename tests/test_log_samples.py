@@ -325,14 +325,13 @@ class Test(unittest.TestCase):
                 {'program' : 'lea',
                  'id' : "7803",
                  'action' : "accept",
-                 'src' : "naruto",
-                 'spt' : "36973",
-                 'dst' : "fw1",
-                 'dpt' : "941",
+                 'source_host' : "naruto",
+                 'source_port' : "36973",
+                 'dest_host' : "fw1",
+                 'dest_port' : "941",
                  'protocol' : "tcp",
                  'product' : "VPN-1 & FireWall-1",
-                 'dir' : "inbound",
-                 'interface' : "PCnet1" })
+                 'inbound_int' : "PCnet1"})
 
     def test_apache(self):
         """Test Apache normalization"""
