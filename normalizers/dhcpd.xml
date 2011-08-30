@@ -69,7 +69,7 @@ log["action"] = value[4:]
                         <callback>decode_action</callback>
                     </callbacks>
                 </tag>
-                <tag name="mac" tagType="MACAddress">
+                <tag name="source_mac" tagType="MACAddress">
                     <substitute>MACADDRESS</substitute>
                 </tag>
                 <tag name="via" tagType="AnythingWithoutSpace">
@@ -81,7 +81,7 @@ log["action"] = value[4:]
                     <text>DHCPDISCOVER from 02:1c:25:a3:32:76 via 183.213.184.122</text>
                     <expectedTags>
                         <expectedTag name="action">DISCOVER</expectedTag>
-                        <expectedTag name="mac">02:1c:25:a3:32:76</expectedTag>
+                        <expectedTag name="source_mac">02:1c:25:a3:32:76</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
                     </expectedTags>
                 </example>
@@ -99,7 +99,7 @@ log["action"] = value[4:]
                         <callback>decode_action</callback>
                     </callbacks>
                 </tag>
-                <tag name="ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <substitute>IP</substitute>
                 </tag>
             </tags>
@@ -108,7 +108,7 @@ log["action"] = value[4:]
                     <text>DHCPINFORM from 183.231.184.122</text>
                     <expectedTags>
                         <expectedTag name="action">INFORM</expectedTag>
-                        <expectedTag name="ip">183.231.184.122</expectedTag>
+                        <expectedTag name="source_ip">183.231.184.122</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -125,10 +125,10 @@ log["action"] = value[4:]
                         <callback>decode_action</callback>
                     </callbacks>
                 </tag>
-                <tag name="ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="mac" tagType="MACAddress">
+                <tag name="source_mac" tagType="MACAddress">
                     <substitute>MACADDRESS</substitute>
                 </tag>
                 <tag name="via" tagType="AnythingWithoutSpace">
@@ -140,8 +140,8 @@ log["action"] = value[4:]
                     <text>DHCPOFFER on 183.231.184.122 to 00:13:ec:1c:06:5b via 183.213.184.122</text>
                     <expectedTags>
                         <expectedTag name="action">OFFER</expectedTag>
-                        <expectedTag name="ip">183.231.184.122</expectedTag>
-                        <expectedTag name="mac">00:13:ec:1c:06:5b</expectedTag>
+                        <expectedTag name="source_ip">183.231.184.122</expectedTag>
+                        <expectedTag name="source_mac">00:13:ec:1c:06:5b</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
                     </expectedTags>
                 </example>
@@ -149,8 +149,8 @@ log["action"] = value[4:]
                     <text>DHCPREQUEST for 183.231.184.122 from 00:13:ec:1c:06:5b via 183.213.184.122</text>
                     <expectedTags>
                         <expectedTag name="action">REQUEST</expectedTag>
-                        <expectedTag name="ip">183.231.184.122</expectedTag>
-                        <expectedTag name="mac">00:13:ec:1c:06:5b</expectedTag>
+                        <expectedTag name="source_ip">183.231.184.122</expectedTag>
+                        <expectedTag name="source_mac">00:13:ec:1c:06:5b</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
                     </expectedTags>
                 </example>

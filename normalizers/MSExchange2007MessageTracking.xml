@@ -101,7 +101,7 @@ for name, v in d.items():
     new_name = name
     words = r.findall(name)
     if words:
-        new_name = ('_'.join(words)).lower()
+        new_name = '_'.join(words)
     new_value = v
     if rdate.match(v):
         m = rdate.match(v).groupdict()
@@ -110,7 +110,7 @@ for name, v in d.items():
         m['microsecond'] = m['microsecond'] * 1000
         new_value = datetime( **m ).ctime()
     del d[name]
-    d[new_name] = new_value
+    d[new_name.lower()] = new_value
 log.update(d)
 </callback>
     </callbacks>
@@ -132,28 +132,28 @@ log.update(d)
                         <callback>decode_MTLDate</callback>
                     </callbacks>
                 </tag>
-                <tag name="client_ip" tagType="Anything">
+                <tag name="source_ip" tagType="Anything">
                     <description>
                         <localized_desc language="en">the client's IP address</localized_desc>
                         <localized_desc language="fr">l'adresse IP du client</localized_desc>
                     </description>
                     <substitute>CLIENT_IP</substitute>
                 </tag>
-                <tag name="client_hostname" tagType="Anything">
+                <tag name="source_host" tagType="Anything">
                     <description>
                         <localized_desc language="en">the client's hostname</localized_desc>
                         <localized_desc language="fr">le nom d'hôte du client</localized_desc>
                     </description>
                     <substitute>CLIENT_HOSTNAME</substitute>
                 </tag>
-                <tag name="server_ip" tagType="Anything">
+                <tag name="dest_ip" tagType="Anything">
                     <description>
                         <localized_desc language="en">the server's IP address</localized_desc>
                         <localized_desc language="fr">l'adresse IP du serveur</localized_desc>
                     </description>
                     <substitute>SERVER_IP</substitute>
                 </tag>
-                <tag name="server_hostname" tagType="Anything">
+                <tag name="dest_host" tagType="Anything">
                     <description>
                         <localized_desc language="en">the server's hostname</localized_desc>
                         <localized_desc language="fr">le nom d'hôte du serveur</localized_desc>
@@ -204,7 +204,7 @@ log.update(d)
                         <callback>decode_MTLMessageID</callback>
                     </callbacks>
                 </tag>
-                <tag name="recipient_address" tagType="Anything">
+                <tag name="message_recipient" tagType="Anything">
                     <description>
                         <localized_desc language="en">the recipient's address</localized_desc>
                         <localized_desc language="fr">l'adresse du destinataire</localized_desc>
@@ -218,7 +218,7 @@ log.update(d)
                     </description>
                     <substitute>RECIPIENT_STATUS</substitute>
                 </tag>
-                <tag name="total_bytes" tagType="Anything">
+                <tag name="len" tagType="Anything">
                     <description>
                         <localized_desc language="en">total bytes in the transaction</localized_desc>
                         <localized_desc language="fr">le nombre de bits total pour la transaction</localized_desc>
@@ -253,7 +253,7 @@ log.update(d)
                     </description>
                     <substitute>MESSAGE_SUBJECT</substitute>
                 </tag>
-                <tag name="sender_address" tagType="Anything">
+                <tag name="message_sender" tagType="Anything">
                     <description>
                         <localized_desc language="en">the sender's address</localized_desc>
                         <localized_desc language="fr">l'adresse de l'expéditeur</localized_desc>
@@ -283,16 +283,16 @@ log.update(d)
                      <text>2010-04-19T12:29:07.390Z,10.10.14.73,WIN2K3DC,,WIN2K3DC,"MDB:ada3d2c3-6f32-45db-b1ee-a68dbcc86664, Mailbox:68cf09c1-1344-4639-b013-3c6f8a588504, Event:1440, MessageClass:IPM.Note, CreationTime:2010-04-19T12:28:51.312Z, ClientType:User",,STOREDRIVER,SUBMIT,,&lt;C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan&gt;,,,,,,,Coucou !,user7@qa.ifr.lan,,</text>
                      <expectedTags>
                           <expectedTag name="program">MS Exchange 2007 Message Tracking</expectedTag>
-                          <expectedTag name="client_ip">10.10.14.73</expectedTag>
-                          <expectedTag name="client_hostname">WIN2K3DC</expectedTag>
-                          <expectedTag name="server_hostname">WIN2K3DC</expectedTag>
+                          <expectedTag name="source_ip">10.10.14.73</expectedTag>
+                          <expectedTag name="source_host">WIN2K3DC</expectedTag>
+                          <expectedTag name="dest_host">WIN2K3DC</expectedTag>
                           <expectedTag name="mailbox">68cf09c1-1344-4639-b013-3c6f8a588504</expectedTag>
                           <expectedTag name="client_type">User</expectedTag>
                           <expectedTag name="exchange_source">STOREDRIVER</expectedTag>
                           <expectedTag name="event_id">SUBMIT</expectedTag>
                           <expectedTag name="message_id">C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan</expectedTag>
                           <expectedTag name="message_subject">Coucou !</expectedTag>
-                          <expectedTag name="sender_address">user7@qa.ifr.lan</expectedTag>
+                          <expectedTag name="message_sender">user7@qa.ifr.lan</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

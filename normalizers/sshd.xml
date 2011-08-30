@@ -79,7 +79,7 @@ else:
         <localized_desc language="fr">l'utilisateur à l'origine de la connexion</localized_desc></description>
                  <substitute>USER</substitute>
                 </tag>
-                <tag name="ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                  <description>
         <localized_desc language="en">the inbound connection's IP address</localized_desc>
         <localized_desc language="fr">l'IP entrante de la connexion</localized_desc></description>
@@ -93,7 +93,7 @@ else:
                           <expectedTag name="action">fail</expectedTag>
                           <expectedTag name="method">password</expectedTag>
                           <expectedTag name="user">admin</expectedTag>
-                          <expectedTag name="ip">218.49.183.17</expectedTag>
+                          <expectedTag name="source_ip">218.49.183.17</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

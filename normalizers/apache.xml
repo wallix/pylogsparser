@@ -84,19 +84,19 @@ else:
         <localized_desc language="fr">Structure des logs selon le schéma "Common Log Format".</localized_desc></description>
             <text>%h %l %u %t "%r" %&gt;s %b$</text>
             <tags>
-                <tag name="remote_host" tagType="ApacheWord">
+                <tag name="source_ip" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote host initiating the request</localized_desc>
         <localized_desc language="fr">l'hôte distant à l'initiative de la requête</localized_desc></description>
                  <substitute>%h</substitute>
                 </tag>
-                <tag name="remote_logname" tagType="ApacheWord">
+                <tag name="source_logname" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote logname used to initiate the request</localized_desc>
         <localized_desc language="fr">l'identifiant distant à l'initiative de la requête</localized_desc></description>
                  <substitute>%l</substitute>
                 </tag>
-                <tag name="remote_user" tagType="ApacheWord">
+                <tag name="user" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote user initiating the request</localized_desc>
         <localized_desc language="fr">l'utilisateur distant à l'initiative de la requête</localized_desc></description>
@@ -117,13 +117,13 @@ else:
         <localized_desc language="fr">la première ligne de la requête</localized_desc></description>
                  <substitute>%r</substitute>
                 </tag>
-                <tag name="final_request_status" tagType="ApacheNumVal">
+                <tag name="status" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the final status code for the request</localized_desc>
         <localized_desc language="fr">le code de statut final pour la requête</localized_desc></description>
                  <substitute>%&gt;s</substitute>
                 </tag>
-                <tag name="response_size" tagType="ApacheNumVal">
+                <tag name="len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
         <localized_desc language="fr">la taille de la réponse émise en octets, en-têtes HTTP inclus</localized_desc></description>
@@ -134,12 +134,12 @@ else:
                 <example>
                      <text>127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889</text>
                      <expectedTags>
-                          <expectedTag name="remote_host">127.0.0.1</expectedTag>
-                          <expectedTag name="remote_logname">-</expectedTag>
-                          <expectedTag name="remote_user">-</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_logname">-</expectedTag>
+                          <expectedTag name="user">-</expectedTag>
                           <expectedTag name="request">GET /index/helper/test HTTP/1.1</expectedTag>
-                          <expectedTag name="final_request_status">200</expectedTag>
-                          <expectedTag name="response_size">889</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="len">889</expectedTag>
                           <expectedTag name="program">apache</expectedTag>
                      </expectedTags>
                 </example>
@@ -151,19 +151,19 @@ else:
         <localized_desc language="fr">Structure des logs selon le schéma "Combined".</localized_desc></description>
             <text>%h %l %u %t "%r" %&gt;s %b "%{Referer}i" "%{User-agent}i"$</text>
             <tags>
-                <tag name="remote_host" tagType="ApacheWord">
+                <tag name="source_ip" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote host initiating the request</localized_desc>
         <localized_desc language="fr">l'hôte distant à l'initiative de la requête</localized_desc></description>
                  <substitute>%h</substitute>
                 </tag>
-                <tag name="remote_logname" tagType="ApacheWord">
+                <tag name="source_logname" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote logname used to initiate the request</localized_desc>
         <localized_desc language="fr">l'identifiant distant à l'initiative de la requête</localized_desc></description>
                  <substitute>%l</substitute>
                 </tag>
-                <tag name="remote_user" tagType="ApacheWord">
+                <tag name="user" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote user initiating the request</localized_desc>
         <localized_desc language="fr">l'utilisateur distant à l'initiative de la requête</localized_desc></description>
@@ -184,25 +184,25 @@ else:
         <localized_desc language="fr">la première ligne de la requête</localized_desc></description>
                  <substitute>%r</substitute>
                 </tag>
-                <tag name="final_request_status" tagType="ApacheNumVal">
+                <tag name="status" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the final status code for the request</localized_desc>
         <localized_desc language="fr">le code de statut final pour la requête</localized_desc></description>
                  <substitute>%&gt;s</substitute>
                 </tag>
-                <tag name="response_size" tagType="ApacheNumVal">
+                <tag name="len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
         <localized_desc language="fr">la taille de la réponse émise en octets, en-têtes HTTP inclus</localized_desc></description>
                  <substitute>%b</substitute>
                 </tag>
-                <tag name="request_header_Referer_contents" tagType="Anything">
+                <tag name="request_header_referer_contents" tagType="Anything">
                  <description>
         <localized_desc language="en">the contents of the "Referer" request header</localized_desc>
         <localized_desc language="fr">le contenu de l'en-tête "Referer" de la requête</localized_desc></description>
                  <substitute>%{Referer}i</substitute>
                 </tag>
-                <tag name="request_header_Useragent_contents" tagType="Anything">
+                <tag name="request_header_useragent_contents" tagType="Anything">
                  <description>
         <localized_desc language="en">the contents of the "User-agent" request header</localized_desc>
         <localized_desc language="fr">le contenu de l'en-tête "User-agent" de la requête</localized_desc></description>
@@ -213,15 +213,15 @@ else:
                 <example>
                      <text>127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "http://www.example.com/start.html" "Mozilla/4.08 [en] (Win98; I ;Nav)"</text>
                      <expectedTags>
-                          <expectedTag name="remote_host">127.0.0.1</expectedTag>
-                          <expectedTag name="remote_logname">-</expectedTag>
-                          <expectedTag name="remote_user">frank</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_logname">-</expectedTag>
+                          <expectedTag name="user">frank</expectedTag>
                           <expectedTag name="request">GET /apache_pb.gif HTTP/1.0</expectedTag>
-                          <expectedTag name="final_request_status">200</expectedTag>
-                          <expectedTag name="response_size">2326</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="len">2326</expectedTag>
                           <expectedTag name="program">apache</expectedTag>
-                          <expectedTag name="request_header_Referer_contents">http://www.example.com/start.html</expectedTag>
-                          <expectedTag name="request_header_Useragent_contents">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
+                          <expectedTag name="request_header_referer_contents">http://www.example.com/start.html</expectedTag>
+                          <expectedTag name="request_header_useragent_contents">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

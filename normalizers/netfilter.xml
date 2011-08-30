@@ -63,6 +63,26 @@ for k,v in kv_dict.items():
     kl = k.lower()
     if kl in ACCEPTED:
         log[kl] = v
+
+TRANSLATE = {'in': 'inbound_int',
+             'out': 'outbound_int',
+             'src': 'source_ip',
+             'dst': 'dest_ip',
+             'proto': 'protocol',
+             'spt': 'source_port',
+             'dpt': 'dest_port'}
+
+for k, v in TRANSLATE.items():
+    if k in log.keys():
+        val = log[k]
+        del log[k]
+        log[v] = val
+
+if 'mac' in log.keys():
+    log['dest_mac'] = log['mac'][:17]
+    log['source_mac'] = log['mac'][18:-6]
+    del log['mac']
+
 log['program'] = 'netfilter'
         </callback>
     </callbacks>
@@ -100,14 +120,16 @@ log['program'] = 'netfilter'
                      <text>*UDP_IN Blocked* IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:15:5d:20:c2:06:08:00 SRC=69.10.39.115 DST=255.255.255.255 LEN=166 TOS=0x00 PREC=0x00 TTL=128 ID=22557 PROTO=UDP SPT=55439 DPT=6112</text>
                      <expectedTags>
                           <expectedTag name="program">netfilter</expectedTag>
-                          <expectedTag name="in">eth0</expectedTag>
-                          <expectedTag name="mac">ff:ff:ff:ff:ff:ff:00:15:5d:20:c2:06:08:00</expectedTag>
-                          <expectedTag name="src">69.10.39.115</expectedTag>
-                          <expectedTag name="dst">255.255.255.255</expectedTag>
+                          <expectedTag name="prefix">*UDP_IN Blocked*</expectedTag>
+                          <expectedTag name="inbound_int">eth0</expectedTag>
+                          <expectedTag name="dest_mac">ff:ff:ff:ff:ff:ff</expectedTag>
+                          <expectedTag name="source_mac">00:15:5d:20:c2:06</expectedTag>
+                          <expectedTag name="source_ip">69.10.39.115</expectedTag>
+                          <expectedTag name="dest_ip">255.255.255.255</expectedTag>
                           <expectedTag name="len">166</expectedTag>
-                          <expectedTag name="proto">UDP</expectedTag>
-                          <expectedTag name="spt">55439</expectedTag>
-                          <expectedTag name="dpt">6112</expectedTag>
+                          <expectedTag name="protocol">UDP</expectedTag>
+                          <expectedTag name="source_port">55439</expectedTag>
+                          <expectedTag name="dest_port">6112</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

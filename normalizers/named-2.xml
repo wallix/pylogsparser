@@ -134,14 +134,14 @@ log["severity_code"] = SEVERITIES.index(severity)
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?client IP#PORT: transfer of 'ZONE/CLASS': TYPE ACTION$</text>
             <tags>
-                <tag name="client_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">Client IP address related to this request</localized_desc>
                         <localized_desc language="fr">Adresse IP du client ayant généré la requête</localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="client_sport" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en">UDP client port</localized_desc>
                         <localized_desc language="fr">Port UDP du client</localized_desc>
@@ -208,15 +208,15 @@ log["severity_code"] = SEVERITIES.index(severity)
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer</commonTag>
+                <commonTag name="event_id">zone_transfer</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>client 10.10.4.4#35129: transfer of 'qa.ifr.lan/IN': AXFR started</text>
                      <expectedTags>
-                          <expectedTag name="client_ip">10.10.4.4</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer</expectedTag>
+                          <expectedTag name="source_ip">10.10.4.4</expectedTag>
+                          <expectedTag name="event_id">zone_transfer</expectedTag>
                           <expectedTag name="zone">qa.ifr.lan</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">started</expectedTag>
@@ -233,14 +233,14 @@ log["severity_code"] = SEVERITIES.index(severity)
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?transfer of 'ZONE/CLASS' from IP#PORT: ACTION of transfer</text>
             <tags>
-                <tag name="master_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="master_port" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -300,15 +300,15 @@ log["severity_code"] = SEVERITIES.index(severity)
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer</commonTag>
+                <commonTag name="event_id">zone_transfer</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>transfer of 'localdomain/IN' from 192.168.1.3#53: end of transfer</text>
                      <expectedTags>
-                          <expectedTag name="master_ip">192.168.1.3</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer</expectedTag>
+                          <expectedTag name="source_ip">192.168.1.3</expectedTag>
+                          <expectedTag name="event_id">zone_transfer</expectedTag>
                           <expectedTag name="zone">localdomain</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">end</expectedTag>
@@ -324,14 +324,14 @@ log["severity_code"] = SEVERITIES.index(severity)
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?transfer of 'ZONE/CLASS' from IP#PORT: failed while receiving responses: REFUSED</text>
             <tags>
-                <tag name="master_ip" tagType="IP">
+                <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="master_port" tagType="Integer">
+                <tag name="source_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -384,7 +384,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">zone_transfer_failure</commonTag>
+                <commonTag name="event_id">zone_transfer_failure</commonTag>
                 <commonTag name="program">named</commonTag>
                 <commonTag name="action">failed</commonTag>
             </commonTags>
@@ -392,8 +392,8 @@ log["severity_code"] = SEVERITIES.index(severity)
                 <example>
                      <text>transfer of 'ns2.domain.de/IN' from 192.168.0.5#53: failed while receiving responses: REFUSED</text>
                      <expectedTags>
-                          <expectedTag name="master_ip">192.168.0.5</expectedTag>
-                          <expectedTag name="msg_type">zone_transfer_failure</expectedTag>
+                          <expectedTag name="source_ip">192.168.0.5</expectedTag>
+                          <expectedTag name="event_id">zone_transfer_failure</expectedTag>
                           <expectedTag name="zone">ns2.domain.de</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">failed</expectedTag>
@@ -409,14 +409,14 @@ log["severity_code"] = SEVERITIES.index(severity)
             </description>
             <text>(?:DATE )?(?:CATEGORY )?(?:SEVERITY )?lame server resolving 'DOMAIN' \(in 'ZONE'\?\): IP#PORT</text>
             <tags>
-                <tag name="master_ip" tagType="IP">
+                <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP</substitute>
                 </tag>
-                <tag name="master_port" tagType="Integer">
+                <tag name="dest_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -469,15 +469,15 @@ log["severity_code"] = SEVERITIES.index(severity)
                 </tag>
             </tags>
             <commonTags>
-                <commonTag name="msg_type">lame_server_report</commonTag>
+                <commonTag name="event_id">lame_server_report</commonTag>
                 <commonTag name="program">named</commonTag>
             </commonTags>
             <examples>
                 <example>
                      <text>lame server resolving 'www.cadenhead.org' (in 'cadenhead.org'?): 67.19.3.218#53</text>
                      <expectedTags>
-                          <expectedTag name="master_ip">67.19.3.218</expectedTag>
-                          <expectedTag name="msg_type">lame_server_report</expectedTag>
+                          <expectedTag name="dest_ip">67.19.3.218</expectedTag>
+                          <expectedTag name="event_id">lame_server_report</expectedTag>
                           <expectedTag name="zone">cadenhead.org</expectedTag>
                           <expectedTag name="domain">www.cadenhead.org</expectedTag>
                           <expectedTag name="program">named</expectedTag>

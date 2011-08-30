@@ -24,6 +24,11 @@
 <!-- Suite 330, Boston, MA  02111-1307  USA                     -->
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- http://updates.checkpoint.com/fileserver/ID/7460/FILE/LEA_fields_draft.pdf   -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+ 
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
 <normalizer name="LEA"
             version="0.99"
@@ -56,18 +61,46 @@ En raison de la nature dynamique de ce format de log, les tags extraits peuvent 
 # These are the only tags we extract
 KNOWN = [ ("loc", "id"),
           "product",
-          ("i/f_dir", "dir"),
-          ("i/f_name", "interface"),
-          ("orig","origin"),
+          "i/f_dir",
+          "i/f_name",
+          "orig",
           "type",
           "action",
           ("proto", "protocol"),
           "rule",
           "src",
           "dst",
-          ("s_port", "spt"),
-          ("service", "dpt"),
+          ("s_port", "source_port"),
+          ("service", "dest_port"),
           ("uuid", "lea_uuid") ]
+
+def src_dst_extract(data):
+    ip_re = re.compile("(?&lt;![.0-9])((?:[0-9]{1,3}[.]){3}[0-9]{1,3})(?![.0-9])")
+    if ip_re.match(data['src']):
+        data['source_ip'] = data['src']
+    else:
+        data['source_host'] = data['src']
+    if ip_re.match(data['dst']):
+        data['dest_ip'] = data['dst']
+    else:
+        data['dest_host'] = data['dst']
+    if ip_re.match(data['orig']):
+        data['local_ip'] = data['orig']
+    else:
+        data['local_host'] = data['orig']
+    del data['src']
+    del data['dst']
+    del data['orig']
+
+def int_extract(data):
+    if 'i/f_dir' in data.keys():
+        if data['i/f_dir'] == 'inbound':
+            data['inbound_int'] = data['i/f_name']
+        if data['i/f_dir'] == 'outbound':
+            data['outbound_int'] = data['i/f_name']
+    del data['i/f_dir']
+    del data['i/f_name']
+
 dic = {}
 body = value.split('|')
 for l in body:
@@ -91,6 +124,10 @@ except:
     except:
         # cannot parse it, keep it safe
         log['time'] = dic['time']
+
+src_dst_extract(log)
+int_extract(log)
+
 </callback>
     </callbacks>
     <prerequisites>
@@ -120,15 +157,14 @@ except:
                           <expectedTag name="id">3707</expectedTag>
                           <expectedTag name="action">accept</expectedTag>
                           <expectedTag name="product">VPN-1 &amp; FireWall-1</expectedTag>
-                          <expectedTag name="dir">inbound</expectedTag>
-                          <expectedTag name="interface">PCnet1</expectedTag>
-                          <expectedTag name="origin">fw1</expectedTag>
+                          <expectedTag name="inbound_int">PCnet1</expectedTag>
+                          <expectedTag name="local_host">fw1</expectedTag>
                           <expectedTag name="protocol">tcp</expectedTag>
                           <expectedTag name="rule">1</expectedTag>
-                          <expectedTag name="src">naruto</expectedTag>
-                          <expectedTag name="dst">fw1</expectedTag>
-                          <expectedTag name="spt">56840</expectedTag>
-                          <expectedTag name="dpt">https</expectedTag>
+                          <expectedTag name="source_host">naruto</expectedTag>
+                          <expectedTag name="dest_host">fw1</expectedTag>
+                          <expectedTag name="source_port">56840</expectedTag>
+                          <expectedTag name="dest_port">https</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
