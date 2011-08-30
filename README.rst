@@ -202,10 +202,10 @@ for consistency's sake. In case of dynamic fields, it is advised to make sure
 dynamic naming follows the convention. There's an example of this in 
 MSExchange2007MessageTracking.xml; see the callback named "decode_MTLSourceContext".
 
-Follow the naming convention will ease log post-processing indeed log contains common
-informations such as username, IP address, informations about transport protocol then we must
-define a common method to name those tags and not deal for example with a series of
-"login, user, username, userid" all describing a user id.
+Log contains common informations such as username, IP address, informations about
+transport protocol... In order to ease log post-processing we must define a common
+method to name those tags and not deal for example with a series of "login, user,
+username, userid" all describing a user id.
 The list bellow is a series of tag names that must be used when relevant.
 
 - local_mac : MAC address of the local host.
