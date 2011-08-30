@@ -226,12 +226,12 @@ class Test(unittest.TestCase):
         self.aS("<40>Dec 25 15:00:15 gnaganok dhcpd: DHCPDISCOVER from 02:1c:25:a3:32:76 via 183.213.184.122",
                 { 'program': 'dhcpd',
                   'action': 'DISCOVER',
-                  'mac': '02:1c:25:a3:32:76',
+                  'source_mac': '02:1c:25:a3:32:76',
                   'via': '183.213.184.122' })
         self.aS("<40>Dec 25 15:00:15 gnaganok dhcpd: DHCPDISCOVER from 02:1c:25:a3:32:76 via vlan18.5",
                 { 'program': 'dhcpd',
                   'action': 'DISCOVER',
-                  'mac': '02:1c:25:a3:32:76',
+                  'source_mac': '02:1c:25:a3:32:76',
                   'via': 'vlan18.5' })
         for log in [
             "DHCPOFFER on 183.231.184.122 to 00:13:ec:1c:06:5b via 183.213.184.122",
@@ -242,12 +242,12 @@ class Test(unittest.TestCase):
             "DHCPRELEASE of 183.231.184.122 from 00:13:ec:1c:06:5b via 183.213.184.122 for nonexistent lease" ]:
             self.aS("<40>Dec 25 15:00:15 gnaganok dhcpd: %s" % log,
                 { 'program': 'dhcpd',
-                  'ip': '183.231.184.122',
-                  'mac': '00:13:ec:1c:06:5b',
+                  'source_ip': '183.231.184.122',
+                  'source_mac': '00:13:ec:1c:06:5b',
                   'via': '183.213.184.122' })
         self.aS("<40>Dec 25 15:00:15 gnaganok dhcpd: DHCPINFORM from 183.231.184.122",
                 { 'program': 'dhcpd',
-                  'ip': '183.231.184.122',
+                  'source_ip': '183.231.184.122',
                   'action': 'INFORM' })
 
     def test_sshd(self):
