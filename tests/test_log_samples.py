@@ -339,24 +339,24 @@ class Test(unittest.TestCase):
         # Test Common Log Format (CLF) "%h %l %u %t \"%r\" %>s %O"
         self.aS("""Oct 22 01:27:16 pluto apache: 127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889""",
                 {'program' : "apache",
-                 'remote_host' : "127.0.0.1",
+                 'source_ip' : "127.0.0.1",
                  'request' : 'GET /index/helper/test HTTP/1.1',
-                 'response_size' : "889",
+                 'len' : "889",
                  'date' : datetime(2009, 7, 20, 0, 29, 39), 
                  'body' : '127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889'})
 
         # Test "combined" log format  "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\""
         self.aS('Oct 22 01:27:16 pluto apache: 10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"',
                 {'program' : "apache",
-                 'remote_host' : "10.10.4.4",
-                 'remote_logname' : "-",
-                 'remote_user' : "-",
+                 'source_ip' : "10.10.4.4",
+                 'source_logname' : "-",
+                 'user' : "-",
                  'date' : datetime(2009, 12, 4, 16, 23, 13),
                  'request' : 'GET /tulipe.core.persistent.persistent-module.html HTTP/1.1',
-                 'final_request_status' : "200",
-                 'response_size' : "2937",
-                 'request_header_Referer_contents' : "http://10.10.4.86/toc.html",
-                 'request_header_Useragent_contents' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
+                 'status' : "200",
+                 'len' : "2937",
+                 'request_header_referer_contents' : "http://10.10.4.86/toc.html",
+                 'request_header_useragent_contents' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
                  'body' : '10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"'})
 
         # Test "vhost_combined" log format "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\""
