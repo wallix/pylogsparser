@@ -71,7 +71,7 @@
       </description>
       <regexp>[a-zA-Z]+(?:[ -][a-zA-Z]+)*</regexp>
     </tagType>
-    <tagType name="host_date" type="basetring">
+    <tagType name="host_date" type="basestring">
       <description>
 	<localized_desc language="en">This is the date sent by host, in host language.</localized_desc>
 	<localized_desc language="fr">La date envoyée par l'hôte, dans son language.</localized_desc>
