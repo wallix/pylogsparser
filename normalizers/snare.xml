@@ -231,7 +231,7 @@
       </tags>
       <examples>
 	<example>
-	  <text>MSWinEventLog	1	Application	194	jeu. août 25 11:36:29 201	10	Microsoft-Windows-WMI	N/A	N/A	Error	a-zA-Z0-9_	Nône	 Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15 </text>
+	  <text>MSWinEventLog	1	Application	194	jeu. août 25 11:36:29 201	10	Microsoft-Windows-WMI	N/A	N/A	Error	a-zA-Z0-9_	None	 Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15 </text>
 	  <expectedTags>
 	    <expectedTag name="host_name"></expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
@@ -245,7 +245,7 @@
 	    <expectedTag name="sid_used">N/A</expectedTag>
 	    <expectedTag name="event_log_type">Error</expectedTag>
 	    <expectedTag name="computer_name">a-zA-Z0-9_</expectedTag>
-	    <expectedTag name="audit_event_category">Nône</expectedTag>
+	    <expectedTag name="audit_event_category">None</expectedTag>
 	    <expectedTag name="data_string">Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15</expectedTag>      
 	</expectedTags>
 	</example>
