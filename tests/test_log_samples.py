@@ -496,8 +496,7 @@ class Test(unittest.TestCase):
                  'event_log_type': 'Information',
                  'computer_name': 'a-zA-Z0-9_',
                  'audit_event_category': 'None',
-                 'data_string': unicode('Le service s’est arrêté.', 'utf8'),
-                 'expanded_datastring': '119'})
+                 'data_string': unicode('Le service s’est arrêté.	119', 'utf8')})
 
 	self.aS(unicode("""a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01 201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
                 {'host_name': 'a-zA-Z0-9_',
@@ -513,8 +512,7 @@ class Test(unittest.TestCase):
                  'event_log_type': 'Success Audit',
                  'computer_name': 'a-zA-Z0-9_',
                  'audit_event_category': 'Fin du processus',
-                 'data_string': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0', 'utf8'),
-                 'expanded_datastring': '138'})
+                 'data_string': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138', 'utf8')})
 
 if __name__ == "__main__":
     unittest.main()
