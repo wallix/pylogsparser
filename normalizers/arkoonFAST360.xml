@@ -99,10 +99,33 @@ log["severity_code"] = "%d" % severity
 mandatory_keys = ('id', 'time', 'gmtime',
                   'fw', 'aktype',
                   )
-key_modifiers = {'fw' : 'source',
-                 'pri' : 'priority',
-                 'op' : 'method'}
+key_modifiers = {'pri' : 'priority',
+                 'op' : 'method',
+                 'aktype': 'event_id',
+                 'src': 'source_ip',
+                 'dst': 'dest_ip',
+                 'port_src': 'source_port',
+                 'port_dest': 'dest_port',
+                 'dstname': 'dest_host',
+                 'intf_in': 'inbound_int',
+                 'intf_out': 'outbound_int'}
 
+def extract_fw(data):
+    ip_re = re.compile("(?&lt;![.0-9])((?:[0-9]{1,3}[.]){3}[0-9]{1,3})(?![.0-9])")
+    if ip_re.match(data['fw']):
+        data['local_ip'] = data['fw']
+    else:
+        data['local_host'] = data['fw']
+
+def extract_protocol(data):
+    if 'proto' in data.keys():
+        if data['proto'].find('/') > 0:
+            nump, protocol = data['proto'].split('/')
+        else:
+            protocol = data['proto']
+        data['protocol'] = protocol
+        del data['proto']
+            
 def quote_stripper(data):
     for k in data.keys():
         data[k] = data[k].strip('"')
@@ -114,19 +137,19 @@ def extract_date(data):
 
 def alert_description_modify(data):
     messages = [
-             re.compile("TCP from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
-             re.compile("UDP from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
-             re.compile('ICMP:(?P&lt;destination_port&gt;.+)\.(?P&lt;source_port&gt;.+) from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+) \[(?P&lt;description&gt;.*)\]'),
-             re.compile('PROTO:(?P&lt;protocol&gt;.+) from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+) \[(?P&lt;description&gt;.*)\]'),
-             re.compile('Unsequenced packet on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
-             re.compile('Unsequenced TCP packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
-             re.compile('ACK unsequenced packet on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
-             re.compile('ACK unsequenced TCP packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
-             re.compile('Bad flags on non-TCP proto from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+)'),
-             re.compile('Bad TCP flags (?P&lt;flags&gt;.+) from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+)'),
-             re.compile('Bad packet from (?P&lt;source_IP&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;destination_IP&gt;.+):(?P&lt;destination_port&gt;.+) \[(?P&lt;description&gt;.*)\]'),
-             re.compile('Land attack from (?P&lt;source_IP&gt;.+) to (?P&lt;destination_IP&gt;.+)'),
-             re.compile('New value: (?P&lt;source_IP&gt;.+)/(?P&lt;network_mask&gt;.+) \[(?P&lt;ports&gt;.+)\]'),
+             re.compile("TCP from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
+             re.compile("UDP from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+)\s+\[(?P&lt;description&gt;.*)\]"),
+             re.compile('ICMP:(?P&lt;dest_port&gt;.+)\.(?P&lt;source_port&gt;.+) from (?P&lt;source_ip&gt;.+) to (?P&lt;dest_ip&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('PROTO:(?P&lt;protocol&gt;.+) from (?P&lt;source_ip&gt;.+) to (?P&lt;dest_ip&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('Unsequenced packet on non-TCP proto from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('Unsequenced TCP packet from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+)'),
+             re.compile('ACK unsequenced packet on non-TCP proto from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('ACK unsequenced TCP packet from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+)'),
+             re.compile('Bad flags on non-TCP proto from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+)'),
+             re.compile('Bad TCP flags (?P&lt;flags&gt;.+) from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+)'),
+             re.compile('Bad packet from (?P&lt;source_ip&gt;.+):(?P&lt;source_port&gt;.+) to (?P&lt;dest_ip&gt;.+):(?P&lt;dest_port&gt;.+) \[(?P&lt;description&gt;.*)\]'),
+             re.compile('Land attack from (?P&lt;source_ip&gt;.+) to (?P&lt;dest_ip&gt;.+)'),
+             re.compile('New value: (?P&lt;source_ip&gt;.+)/(?P&lt;network_mask&gt;.+) \[(?P&lt;ports&gt;.+)\]'),
                ]
     if 'alert_desc' in data.keys():
         for m in messages:
@@ -212,6 +235,12 @@ for k, v in key_modifiers.items():
         del data[k]
         data[v] = s_val
 
+# Process fw tag
+extract_fw(data)
+
+# Process proto field
+extract_protocol(data)
+
 # Remove tag with empty value
 for k, v in data.items():
     if not v:
@@ -262,10 +291,16 @@ log.update(data)
      <text>AKLOG - id=firewall time="2004-02-25 17:38:51" pri=4 fw=myArkoon aktype=ALERT gmtime=1077727131 alert_type="Blocked by application control" user="userName" alert_level="Low" alert_desc="TCP from 10.10.192.61:33027 to 10.10.192.156:25 [default rule]"</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">ALERT</expectedTag>
+      <expectedTag name="event_id">ALERT</expectedTag>
       <expectedTag name="priority">4</expectedTag>
-      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="local_host">myArkoon</expectedTag>
       <expectedTag name="user">userName</expectedTag>
+      <expectedTag name="alert_level">Low</expectedTag>
+      <expectedTag name="dest_ip">10.10.192.156</expectedTag>
+      <expectedTag name="dest_port">25</expectedTag>
+      <expectedTag name="source_ip">10.10.192.61</expectedTag>
+      <expectedTag name="source_port">33027</expectedTag>
+      <expectedTag name="description">default rule</expectedTag>
       <expectedTag name="alert_level">Low</expectedTag>
      </expectedTags>
     </example>
@@ -273,14 +308,16 @@ log.update(data)
      <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">IP</expectedTag>
+      <expectedTag name="event_id">IP</expectedTag>
       <expectedTag name="priority">3</expectedTag>
-      <expectedTag name="source">myArkoon</expectedTag>
+      <expectedTag name="local_host">myArkoon</expectedTag>
       <expectedTag name="user">userName</expectedTag>
-      <expectedTag name="dst">10.10.192.255</expectedTag>
-      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="dest_ip">10.10.192.255</expectedTag>
+      <expectedTag name="source_ip">10.10.192.61</expectedTag>
       <expectedTag name="reason">Blocked by filter</expectedTag>
       <expectedTag name="ip_log_type">ENDCONN</expectedTag>
+      <expectedTag name="inbound_int">eth0</expectedTag>
+      <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
      </expectedTags>
     </example>
@@ -288,12 +325,13 @@ log.update(data)
      <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSMATCH gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 sid=123 score=50</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">IDPSMATCH</expectedTag>
-      <expectedTag name="source">myArkoon</expectedTag>
-      <expectedTag name="dst">10.10.192.255</expectedTag>
-      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="event_id">IDPSMATCH</expectedTag>
+      <expectedTag name="local_host">myArkoon</expectedTag>
+      <expectedTag name="dest_ip">10.10.192.255</expectedTag>
+      <expectedTag name="source_ip">10.10.192.61</expectedTag>
       <expectedTag name="score">50</expectedTag>
       <expectedTag name="profile">FTP_BADFILES</expectedTag>
+      <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
      </expectedTags>
     </example>
@@ -301,13 +339,15 @@ log.update(data)
      <text>AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSALERT gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 endcnx_score=100 ch=1 reaction=0</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">IDPSALERT</expectedTag>
-      <expectedTag name="source">myArkoon</expectedTag>
-      <expectedTag name="dst">10.10.192.255</expectedTag>
-      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="event_id">IDPSALERT</expectedTag>
+      <expectedTag name="local_host">myArkoon</expectedTag>
+      <expectedTag name="dest_ip">10.10.192.255</expectedTag>
+      <expectedTag name="source_ip">10.10.192.61</expectedTag>
+      <expectedTag name="source_port">137</expectedTag>
+      <expectedTag name="dest_port">137</expectedTag>
       <expectedTag name="ch">1</expectedTag>
       <expectedTag name="profile">FTP_BADFILES</expectedTag>
-      <expectedTag name="proto">137/udp</expectedTag>
+      <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 17:38:57</expectedTag>
      </expectedTags>
     </example>
@@ -315,13 +355,14 @@ log.update(data)
      <text>AKLOG-id=firewall time="2004-02-25 17:42:54" fw=myArkoon pri=6 aktype=HTTP gmtime=1077727374 src=10.10.192.61 proto=http user="userName" op="GET" dstname=www arg="http://www/ HTTP/1.1" ref="" agent="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.0.0) Gecko/20020623 Debian/1.0.0-0.woody.1" rcvd=355 result=407</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">HTTP</expectedTag>
-      <expectedTag name="source">myArkoon</expectedTag>
-      <expectedTag name="src">10.10.192.61</expectedTag>
+      <expectedTag name="event_id">HTTP</expectedTag>
+      <expectedTag name="local_host">myArkoon</expectedTag>
+      <expectedTag name="source_ip">10.10.192.61</expectedTag>
       <expectedTag name="arg">http://www/ HTTP/1.1</expectedTag>
       <expectedTag name="result">407</expectedTag>
       <expectedTag name="method">GET</expectedTag>
-      <expectedTag name="dstname">www</expectedTag>
+      <expectedTag name="dest_host">www</expectedTag>
+      <expectedTag name="protocol">http</expectedTag>
       <expectedTag name="date">2004-02-25 17:42:54</expectedTag>
      </expectedTags>
     </example>
@@ -329,9 +370,9 @@ log.update(data)
      <text>&lt;134&gt;IP-Logs: AKLOG - id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT</text>
      <expectedTags>
       <expectedTag name="program">arkoon</expectedTag>
-      <expectedTag name="aktype">IP</expectedTag>
-      <expectedTag name="source">doberman.jurassic.ta</expectedTag>
-      <expectedTag name="proto">http</expectedTag>
+      <expectedTag name="event_id">IP</expectedTag>
+      <expectedTag name="local_host">doberman.jurassic.ta</expectedTag>
+      <expectedTag name="protocol">http</expectedTag>
       <expectedTag name="rule">surf_normal</expectedTag>
       <expectedTag name="action">ACCEPT</expectedTag>
      </expectedTags>

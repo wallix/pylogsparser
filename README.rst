@@ -74,7 +74,7 @@ The definition file's root must hold the following elements :
 * the tag value to parse (raw, body...)
 
 Default tag types
------------------
+.................
 
 A few basic tag types are defined in the file common_tagTypes.xml . In order
 to use it, it has to be loaded when instantiating the Normalizer class; see the
@@ -190,10 +190,48 @@ Best practices
   trigger errors, as more generic patterns will match earlier.
 * The more precise your tagTypes' regular expressions, the more accurate your
   parser will be.
-* The tag naming convention is lowercase, underscore separated words. It is strongly
-  recommended to stick to that naming convention when writing new normalizers
-  for consistency's sake. In case of dynamic fields, it is advised to make sure
-  dynamic naming follows the convention. There's an example of this in 
-  MSExchange2007MessageTracking.xml; see the callback named "decode_MTLSourceContext".
 * Use description tags liberally. The more documented a log format, the better.
   Examples are also invaluable.
+
+Tag naming convention
+.....................
+
+The tag naming convention is lowercase, underscore separated words. It is strongly
+recommended to stick to that naming convention when writing new normalizers
+for consistency's sake. In case of dynamic fields, it is advised to make sure
+dynamic naming follows the convention. There's an example of this in 
+MSExchange2007MessageTracking.xml; see the callback named "decode_MTLSourceContext".
+
+Log contains common informations such as username, IP address, informations about
+transport protocol... In order to ease log post-processing we must define a common
+method to name those tags and not deal for example with a series of "login, user,
+username, userid" all describing a user id.
+The list bellow is a series of tag names that must be used when relevant.
+
+- local_mac : MAC address of the local host.
+- local_ip : IP adress of the local host.
+- local_host : hostname or FQDN of the local host.
+- local_port : listening port of a local service.
+- source_mac : MAC address of a source host.
+- source_ip : IP address of a source host.
+- source_host : hostname or FQDN of a source host.
+- source_port : source port of a network connection.
+- dest_mac : MAC address of a destination host.
+- dest_ip : IP address of a destination host.
+- dest_host : hostname or FQDN of a destination host.
+- dest_port : destination port of a network connection.
+- protocol : network or software protocol name or numeric id such as TCP, NTP, SMTP.
+- inbound_int : network interface for incoming data.
+- outbound_int : network interface for outgoing data.
+- bind_int : binding interface for a network service.
+- message_id : message or transaction id.
+- message_sender : message sender id.
+- message_recipient : message recipient id.
+- status : component status such as FAIL, success, 404.
+- action : action taken by a component such as DELETED, migrated, DROP, open.
+- method : component access method such as GET, key_auth.
+- event_id : id describing an event.
+- user : a user id.
+- len : a data size.
+- url : an URL as defined in rfc1738. (scheme://netloc/path;parameters?query#fragment)
+

@@ -158,7 +158,7 @@ events = [ '',
 'UNDOCUMENTED',
 'UNDOCUMENTED',
 'GL_EVENT_MAX_EVENT_NUMBER'] # not super sure about the last one ... ? The kb article seems pasted out of code
-log['event_number'] = events[int(value)]
+log['event_id'] = events[int(value)]
   </callback>
   <callback name="category_translator">
 categories = ['','Infection', 'Summary', 'Pattern', 'Security']
@@ -232,7 +232,7 @@ actions = ['',
  'Performing a request to restart the computer',
  'Shows as Cleaned by Deletion in the Risk History in the UI and the Logs in the SSC',
  'Auto-Protect prevented a file from being created; reported "Access denied."']
-log['action_taken'] = actions[int(value)]
+log['action'] = actions[int(value)]
   </callback>
   <callback name="virustype_translator">
 virus_index = hex(int(value))[2:]
@@ -457,14 +457,14 @@ log['action2_status'] = ret
       <callback>logger_translator</callback>
      </callbacks>
     </tag>
-    <tag name="computer" tagType="Anything">
+    <tag name="local_host" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>COMPUTER</substitute>
     </tag>
-    <tag name="username" tagType="Anything">
+    <tag name="user" tagType="Anything">
      <description>
       <localized_desc language="en">Utilisateur</localized_desc>
       <localized_desc language="fr">Utilisateur</localized_desc>
@@ -697,7 +697,7 @@ log['action2_status'] = ret
      </description>
      <substitute>CLIENT_GROUP</substitute>
     </tag>
-    <tag name="address" tagType="Anything">
+    <tag name="local_ip" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
@@ -718,7 +718,7 @@ log['action2_status'] = ret
      </description>
      <substitute>DOMAIN_NAME</substitute>
     </tag>
-    <tag name="mac_address" tagType="Anything">
+    <tag name="local_mac" tagType="Anything">
      <description>
       <localized_desc language="en">MAC Address</localized_desc>
       <localized_desc language="fr">Adresse MAC</localized_desc>
@@ -743,17 +743,17 @@ log['action2_status'] = ret
       <expectedTag name="program">symantec</expectedTag>
       <expectedTag name="date">2002-11-19 08:01:34</expectedTag>
       <expectedTag name="category">Summary</expectedTag>
-      <expectedTag name="computer">TRAVEL00</expectedTag>
+      <expectedTag name="local_host">TRAVEL00</expectedTag>
       <expectedTag name="domain_name">GROUP</expectedTag>
       <expectedTag name="event_logger_type">System</expectedTag>
-      <expectedTag name="event_number">GL_EVENT_RTS_LOAD</expectedTag>
+      <expectedTag name="event_id">GL_EVENT_RTS_LOAD</expectedTag>
       <expectedTag name="eventblock_action">EB_LOG</expectedTag>
       <expectedTag name="group_id">0</expectedTag>
       <expectedTag name="operation_flags">0</expectedTag>
       <expectedTag name="parent">SAMPLE_COMPUTER</expectedTag>
       <expectedTag name="scan_id">0</expectedTag>
       <expectedTag name="server_group">Parent</expectedTag>
-      <expectedTag name="username">SYSTEM</expectedTag>
+      <expectedTag name="user">SYSTEM</expectedTag>
       <expectedTag name="version">8.0.93330</expectedTag>
      </expectedTags>
     </example>
@@ -806,14 +806,14 @@ log['action2_status'] = ret
       <callback>logger_translator</callback>
      </callbacks>
     </tag>
-    <tag name="computer" tagType="Anything">
+    <tag name="local_host" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>COMPUTER</substitute>
     </tag>
-    <tag name="username" tagType="Anything">
+    <tag name="user" tagType="Anything">
      <description>
       <localized_desc language="en">Utilisateur</localized_desc>
       <localized_desc language="fr">Utilisateur</localized_desc>
@@ -1046,7 +1046,7 @@ log['action2_status'] = ret
      </description>
      <substitute>CLIENT_GROUP</substitute>
     </tag>
-    <tag name="address" tagType="Anything">
+    <tag name="local_ip" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
@@ -1067,7 +1067,7 @@ log['action2_status'] = ret
      </description>
      <substitute>DOMAIN_NAME</substitute>
     </tag>
-    <tag name="mac_address" tagType="Anything">
+    <tag name="local_mac" tagType="Anything">
      <description>
       <localized_desc language="en">MAC Address</localized_desc>
       <localized_desc language="fr">Adresse MAC</localized_desc>
@@ -1081,14 +1081,14 @@ log['action2_status'] = ret
      </description>
      <substitute>VERSION</substitute>
     </tag>
-    <tag name="remote_machine" tagType="Anything">
+    <tag name="source_host" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>REMOTE_MACHINE</substitute>
     </tag>
-    <tag name="remote_machine_ip" tagType="Anything">
+    <tag name="source_ip" tagType="Anything">
      <description>
       <localized_desc language="en"></localized_desc>
       <localized_desc language="fr"></localized_desc>
@@ -1238,17 +1238,17 @@ log['action2_status'] = ret
       <expectedTag name="program">symantec</expectedTag>
       <expectedTag name="date">2002-11-19 08:01:34</expectedTag>
       <expectedTag name="category">Summary</expectedTag>
-      <expectedTag name="computer">TRAVEL00</expectedTag>
+      <expectedTag name="local_host">TRAVEL00</expectedTag>
       <expectedTag name="domain_name">GROUP</expectedTag>
       <expectedTag name="event_logger_type">System</expectedTag>
-      <expectedTag name="event_number">GL_EVENT_RTS_LOAD</expectedTag>
+      <expectedTag name="event_id">GL_EVENT_RTS_LOAD</expectedTag>
       <expectedTag name="eventblock_action">EB_LOG</expectedTag>
       <expectedTag name="group_id">0</expectedTag>
       <expectedTag name="operation_flags">0</expectedTag>
       <expectedTag name="parent">SAMPLE_COMPUTER</expectedTag>
       <expectedTag name="scan_id">0</expectedTag>
       <expectedTag name="server_group">Parent</expectedTag>
-      <expectedTag name="username">SYSTEM</expectedTag>
+      <expectedTag name="user">SYSTEM</expectedTag>
       <expectedTag name="version">9.0.93330</expectedTag>
      </expectedTags>
     </example>
