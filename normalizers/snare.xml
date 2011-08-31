@@ -99,13 +99,6 @@
       </description>
       <regexp>(?:\w+(?: \w+)*)|(?:N/A)</regexp>
     </tagType>
-    <tagType name="string" type="basestring">
-      <description>
-	<localized_desc language="en">String.</localized_desc>
-	<localized_desc language="fr">Chaîne de caractères.</localized_desc>
-      </description>
-      <regexp>[^\t\n\r\f\v]+</regexp>
-    </tagType>
     <tagType name="md5_hexa" type="integer">
       <description>
 	<localized_desc language="en">Hexadecimal number.</localized_desc>
