@@ -106,15 +106,8 @@
 	<localized_desc language="en"></localized_desc>
 	<localized_desc language="fr"></localized_desc>
       </description>
-      <text>(?:HOST_NAME\s+)?SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+.*\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING\s+(?:MD5_CHECKSUM)?.*</text>
+      <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+.*\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING\s+(?:MD5_CHECKSUM)?</text>
       <tags>
-	<tag name="snare_host_name" tagType="windows_names">
-	  <description>
-	    <localized_desc language="en">This is the sender's host name.</localized_desc>
-	    <localized_desc language="fr">Le nom d'hôte du destinateur.</localized_desc>
-	  </description>
-	  <substitute>HOST_NAME</substitute>
-	</tag>
 	<tag name="snare_event_log_type" tagType="snare_event_log_type">
 	  <description>
 	    <localized_desc language="en">'MSWinEventLog' for Snare for Windows.</localized_desc>
@@ -199,7 +192,7 @@
 	  </description>
 	  <substitute>CATEGORY_STRING</substitute>
 	</tag>
-	<tag name="data_string" tagType="Anything">
+	<tag name="body" tagType="Anything">
 	  <description>
 	    <localized_desc language="en">This contains the data string.</localized_desc>
 	    <localized_desc language="fr">Contient la chaîne de donnée.</localized_desc>
@@ -218,7 +211,6 @@
 	<example>
 	  <text>MSWinEventLog	1	Application	194	jeu. août 25 11:36:29 201	10	Microsoft-Windows-WMI	N/A	N/A	Error	a-zA-Z0-9_	None	 Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_host_name"></expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
 	    <expectedTag name="criticality">1</expectedTag>
 	    <expectedTag name="event_log_source_name">Application</expectedTag>
@@ -230,13 +222,12 @@
 	    <expectedTag name="event_log_type">Error</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="audit_event_category">None</expectedTag>
-	    <expectedTag name="data_string">Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15</expectedTag>      
+	    <expectedTag name="body">Le filtre d’événement avec la requête « SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA "Win32_Processor" AND TargetInstance.LoadPercentage &gt; 99 » n’a pas pu être réactivé dans l’espace de noms « //./root/CIMV2 » à cause de l’erreur 0x80041003. Les événements ne peuvent pas être délivrés à travers ce filtre tant que le problème ne sera pas corrigé.	15</expectedTag>      
 	</expectedTags>
 	</example>
 	<example>
 	  <text>clo-PC	MSWinEventLog	0	Security	191	mer. août 24 14:20:19 201	4688	Microsoft-Windows-Security-Auditing WORKGROUP\CLO-PC$	N/A	Success Audit	clo-PC	Création du processus	 Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_host_name">clo-PC</expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
             <expectedTag name="criticality">0</expectedTag>
 	    <expectedTag name="event_log_source_name">Security</expectedTag>
@@ -248,13 +239,12 @@
 	    <expectedTag name="event_log_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">clo-PC</expectedTag>
 	    <expectedTag name="audit_event_category">Création du processus</expectedTag>
-	    <expectedTag name="data_string">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133</expectedTag>
+	    <expectedTag name="body">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133</expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
 	  <text>MSWinEventLog	0	Security	313	ven. août 26 15:42:40 201	4689	Microsoft-Windows-Security-Auditing	AUTORITE NT\SERVICE LOCAL	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_host_name"></expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
             <expectedTag name="criticality">0</expectedTag>
 	    <expectedTag name="event_log_source_name">Security</expectedTag>
@@ -266,13 +256,12 @@
 	    <expectedTag name="event_log_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="audit_event_category">Fin du processus</expectedTag>
-	    <expectedTag name="data_string">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189</expectedTag>
+	    <expectedTag name="body">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189</expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
 	  <text>a-zA-Z0-9_ MSWinEventLog	1	Application	281	ven. août 26 16:37:55 201	258	Microsoft-Windows-Defrag	N/A	N/A	Information	a-zA-Z0-9_	None	 Le défragmenteur de disque a terminé estimation de la réduction sur (C:)	26 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_host_name">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
 	    <expectedTag name="criticality">1</expectedTag>
 	    <expectedTag name="event_log_source_name">Application</expectedTag>
@@ -284,13 +273,12 @@
 	    <expectedTag name="event_log_type">Information</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="audit_event_category">None</expectedTag>
-	    <expectedTag name="data_string">Le défragmenteur de disque a terminé estimation de la réduction sur (C:)	26</expectedTag>
+	    <expectedTag name="body">Le défragmenteur de disque a terminé estimation de la réduction sur (C:)	26</expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
 	  <text>a-zA-Z0-9_ MSWinEventLog	1	System	287	ven. août 26 16:45:45 201	4	Virtual Disk Service Constantin	N/A	Information	a-zA-Z0-9_	None	 Le service s’est arrêté.	119 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_host_name">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
 	    <expectedTag name="criticality">1</expectedTag>
 	    <expectedTag name="event_log_source_name">System</expectedTag>
@@ -302,7 +290,7 @@
 	    <expectedTag name="event_log_type">Information</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="audit_event_category">None</expectedTag>
-	    <expectedTag name="data_string">Le service s’est arrêté.	119</expectedTag>
+	    <expectedTag name="body">Le service s’est arrêté.	119</expectedTag>
 	  </expectedTags>
 	</example>
       </examples>

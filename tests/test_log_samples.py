@@ -482,9 +482,8 @@ class Test(unittest.TestCase):
 
     def test_Snare(self):
         """Test Snare for Windows log normalization"""
-	self.aS(unicode("""a-zA-Z0-9_ MSWinEventLog	1	System	287	ven. août 26 16:45:45 201	4	Virtual Disk Service	Constantin	N/A	Information	a-zA-Z0-9_	None	 Le service s’est arrêté.	119 """, 'utf8'),
-                {'snare_host_name': 'a-zA-Z0-9_',
-                 'snare_event_log_type': 'MSWinEventLog',
+	self.aS(unicode("""<13> Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	1	System	287	ven. août 26 16:45:45 201	4	Virtual Disk Service	Constantin	N/A	Information	a-zA-Z0-9_	None	 Le service s’est arrêté.	119 """, 'utf8'),
+                {'snare_event_log_type': 'MSWinEventLog',
                  'criticality': '1',
                  'event_log_source_name': 'System',
                  'snare_event_counter': '287',
@@ -495,11 +494,10 @@ class Test(unittest.TestCase):
                  'event_log_type': 'Information',
                  'source_host': 'a-zA-Z0-9_',
                  'audit_event_category': 'None',
-                 'data_string': unicode('Le service s’est arrêté.	119', 'utf8')})
+                 'body': unicode('Le service s’est arrêté.	119', 'utf8')})
 
-	self.aS(unicode("""a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01 201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
-                {'snare_host_name': 'a-zA-Z0-9_',
-                 'snare_event_log_type': 'MSWinEventLog',
+	self.aS(unicode("""<13> Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01 201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
+                {'snare_event_log_type': 'MSWinEventLog',
                  'criticality': '0',
                  'event_log_source_name': 'Security',
                  'snare_event_counter': '284',
@@ -510,7 +508,10 @@ class Test(unittest.TestCase):
                  'event_log_type': 'Success Audit',
                  'source_host': 'a-zA-Z0-9_',
                  'audit_event_category': 'Fin du processus',
-                 'data_string': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138', 'utf8')})
+                 'body': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138', 'utf8')})
+
+#	self.aS(unicode("""clo-vbox-win-7 MSWinEventLog	0	Security	201	mer. août 31 15:46:45 201	4689	Microsoft-Windows-Security-Auditing	CLO-VBOX-WIN-7\clo	N/A	Success Audit	clo-vbox-win-7	Fin du processus		Un processus est terminé.    Sujet :   ID de sécurité :  S-1-5-21-2423214773-420032381-3839276281-1000   Nom du compte :  clo   Domaine du compte :  CLO-VBOX-WIN-7   ID d’ouverture de session :  0x260060    Informations sur le processus :   ID du processus : 0xb10   Nom du processus : C:\Windows\System32\SearchProtocolHost.exe   État de fin : 0x0	158 """, 'utf8'),
+#{}
 
 if __name__ == "__main__":
     unittest.main()
