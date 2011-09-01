@@ -90,7 +90,7 @@
 	<localized_desc language="en">String of the different Windows' audit event category.</localized_desc>
 	<localized_desc language="fr">Chaîne d'une des catégories d'audit event de Windows.</localized_desc>
       </description>
-      <regexp>(?:\w+(?: \w+)*)|(?:N/A)</regexp>
+      <regexp>(?:\w+(?: [^\t]+)*)|(?:N/A)</regexp>
     </tagType>
     <tagType name="md5_hexa" type="integer">
       <description>
@@ -293,6 +293,25 @@
 	    <expectedTag name="body">Le service s’est arrêté.	119</expectedTag>
 	  </expectedTags>
 	</example>
+	<example>
+	<text>&gt;13&lt;Aug 31 15:42:55 clo-vbox-win-7 MSWinEventLog	1	Security	103	mer. août 31 15:42:54 201	4776	Microsoft-Windows-Security-Auditing	clo	N/A	Failure Audit	clo-vbox-win-7	Validation des informations d’identification	 L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77 </text>
+	<expectedTags>
+	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
+	    <expectedTag name="criticality">1</expectedTag>
+	    <expectedTag name="event_log_source_name">Security</expectedTag>
+	    <expectedTag name="snare_event_counter">103</expectedTag>
+	    <expectedTag name="event_id">4776</expectedTag>
+	    <expectedTag name="event_log_expanded_source_name">Microsoft-Windows-Security-Auditing</expectedTag>
+	    <expectedTag name="user">clo</expectedTag>
+	    <expectedTag name="sid_used">N/A</expectedTag>
+	    <expectedTag name="event_log_type">Failure Audit</expectedTag>
+	    <expectedTag name="source_host">clo-vbox-win-7</expectedTag>
+	    <expectedTag name="audit_event_category">Validation des informations d’identification</expectedTag>
+	    <expectedTag name="body">L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77</expectedTag>
+	  </expectedTags>
+	</example>
+
+
       </examples>
     </pattern>
   </patterns>  
