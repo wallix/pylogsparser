@@ -373,6 +373,7 @@ class Normalizer(object):
         @param genericTagTypes: path to generic tags definition xml file
         """
         self.text_source = tostring(xmlconf, pretty_print = True)
+        self.sys_path = xmlconf.docinfo.URL
         normalizer = xmlconf.getroot()
         self.genericTagTypes = get_generic_tagTypes(genericTagTypes)
         self.description = {}

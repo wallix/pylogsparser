@@ -21,6 +21,8 @@
 
 import os
 import unittest
+import tempfile
+import shutil
 from logsparser.lognormalizer import LogNormalizer
 from lxml.etree import fromstring as XMLfromstring
 
@@ -104,13 +106,38 @@ class Test(unittest.TestCase):
         self.assertFalse('date' in testlog.keys())
         self.assertFalse('program' in testlog.keys())
 
-    def test_004_normalizer_getsource(self):
+    def test_007_normalizer_getsource(self):
         """ Verify we can retreive XML source
         of a normalizer.
         """
         ln = LogNormalizer(self.normalizer_path)
         source = ln.get_normalizer_source('syslog')
         self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'syslog')
+
+    def test_008_normalizer_multiple_paths(self):
+        """ Verify we can can deal with multiple normalizer paths.
+        """
+        fdir = tempfile.mkdtemp()
+        sdir = tempfile.mkdtemp()
+        for f in os.listdir(self.normalizer_path):
+            path_f = os.path.join(self.normalizer_path, f)
+            if os.path.isfile(path_f):
+                shutil.copyfile(path_f, os.path.join(fdir, f))
+        shutil.move(os.path.join(fdir, 'postfix.xml'), 
+                    os.path.join(sdir, 'postfix.xml'))
+        ln = LogNormalizer([fdir, sdir])
+        source = ln.get_normalizer_source('postfix')
+        self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'postfix')
+        self.assertTrue(ln.get_normalizer_path('postfix').startswith(sdir))
+        self.assertTrue(ln.get_normalizer_path('syslog').startswith(fdir))
+        xml_src = ln.get_normalizer_source('syslog')
+        os.unlink(os.path.join(fdir, 'syslog.xml'))
+        ln.reload()
+        self.assertRaises(ValueError, ln.get_normalizer_path, 'syslog')
+        ln.update_normalizer(xml_src, dir_path = sdir)
+        self.assertTrue(ln.get_normalizer_path('syslog').startswith(sdir))
+        shutil.rmtree(fdir)
+        shutil.rmtree(sdir)
 
 if __name__ == "__main__":
     unittest.main()

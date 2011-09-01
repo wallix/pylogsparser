@@ -53,20 +53,28 @@ class LogNormalizer():
     * Conversion of date tags to UTC, if the "_timezone" was set prior to
       the normalization process."""
     
-    def __init__(self, normalizers_path, active_normalizers = {}):
+    def __init__(self, normalizers_paths, active_normalizers = {}):
         """
         Instantiates a flow manager. The default behavior is to activate every
         available normalizer.
         
-        @param normalizer_path: absolute path to the normalizer XML definitions
-        to use.
+        @param normalizers_paths: a list of absolute paths to the normalizer
+        XML definitions to use or a just a single path as str.
         @param active_normalizers: a dictionary of active normalizers
         in the form {name: [True|False]}.
         """
-        self.normalizers_path = normalizers_path
+        if not isinstance(normalizers_paths, list or tuple):
+            normalizers_paths = [normalizers_paths,]
+        self.normalizers_paths = normalizers_paths
         self.active_normalizers = active_normalizers
-        self.dtd = DTD(open(os.path.join(self.normalizers_path,
-                                         'normalizer.dtd')))
+        # Walk through paths for normalizer.dtd and common_tagTypes.xml
+        for norm_path in self.normalizers_paths:
+            dtd = os.path.join(norm_path, 'normalizer.dtd')
+            ctt = os.path.join(norm_path, 'common_tagTypes.xml')
+            if os.path.isfile(dtd):
+                self.dtd = DTD(open(dtd))
+            if os.path.isfile(ctt):
+                self.ctt = ctt
         self._cache = []
         self.reload()
         
@@ -76,11 +84,10 @@ class LogNormalizer():
         for path in self.iter_normalizer():
             norm = parse(open(path))
             if not self.dtd.validate(norm):
-#                warnings.warn('Skipping %s : invalid DTD' % path)
-		print 'invalid normalizer ', path
+                warnings.warn('Skipping %s : invalid DTD' % path)
+                #print 'invalid normalizer ', path
             else:
-                normalizer = Normalizer(norm, os.path.join(self.normalizers_path,
-                                                        'common_tagTypes.xml'))
+                normalizer = Normalizer(norm, self.ctt)
                 self.normalizers.setdefault(normalizer.appliedTo, [])
                 self.normalizers[normalizer.appliedTo].append(normalizer)
         self.activate_normalizers()
@@ -90,25 +97,31 @@ class LogNormalizer():
         
         @return: a generator of absolute paths.
         """
-        path = self.normalizers_path
-        for root, dirs, files in os.walk(path):
-            for name in files:
-                if not name.startswith('common_tagTypes') and \
-                       name.endswith('.xml'):
-                    yield os.path.join(root, name)
+        for path in self.normalizers_paths:
+            for root, dirs, files in os.walk(path):
+                for name in files:
+                    if not name.startswith('common_tagTypes') and \
+                           name.endswith('.xml'):
+                        yield os.path.join(root, name)
 
     def __len__(self):
         """ Returns the amount of available normalizers.
         """
         return len([n for n in self.iter_normalizer()])
 
-    def update_normalizer(self, raw_xml_contents, name = None ):
+    def update_normalizer(self, raw_xml_contents, name = None, dir_path = None ):
         """used to add or update a normalizer.
         @param raw_xml_contents: XML description of normalizer as flat XML. It
         must comply to the DTD.
         @param name: if set, the XML description will be saved as name.xml.
         If left blank, name will be fetched from the XML description.
+        @param dir_path: the path to the directory where to copy the given
+        normalizer.
         """
+        path = self.normalizers_paths[0]
+        if dir_path:
+            if dir_path in self.normalizers_paths:
+                path = dir_path
         xmlconf = XMLfromstring(raw_xml_contents).getroottree()
         if not self.dtd.validate(xmlconf):
             raise ValueError, "This definition file does not follow the normalizers DTD :\n\n%s" % \
@@ -117,7 +130,6 @@ class LogNormalizer():
             name = xmlconf.getroot().get('name')
         if not name.endswith('.xml'):
             name += '.xml'
-        path = self.normalizers_path
         xmlconf.write(open(os.path.join(path, name), 'w'),
                       encoding = 'utf8',
                       method = 'xml',
@@ -131,7 +143,16 @@ class LogNormalizer():
             return norm.get_source()
         except:
             raise ValueError, "Normalizer %s not found" % name
+    
+    def get_normalizer_path(self, name):
+        """Returns the filesystem path of a normalizer."""
+        try:
+            norm = [ u for u in sum(self.normalizers.values(), []) if u.name == name][0]
+            return norm.sys_path
+        except:
+            raise ValueError, "Normalizer %s not found" % name
         
+    
     def activate_normalizers(self):
         """Activates normalizers according to what was set by calling
         set_active_normalizers. If no call to the latter function has been
