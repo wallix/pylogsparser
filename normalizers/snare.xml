@@ -90,7 +90,7 @@
 	<localized_desc language="en">String of the different Windows' audit event category.</localized_desc>
 	<localized_desc language="fr">Chaîne d'une des catégories d'audit event de Windows.</localized_desc>
       </description>
-      <regexp>(?:\w+(?: [^\t]+)*)|(?:N/A)</regexp>
+      <regexp>[^\t]+|(?:N/A)</regexp>
     </tagType>
     <tagType name="md5_hexa" type="integer">
       <description>
