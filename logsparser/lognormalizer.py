@@ -88,9 +88,13 @@ class LogNormalizer():
                 #print 'invalid normalizer ', path
             else:
                 normalizer = Normalizer(norm, self.ctt)
+                normalizer.uuid = self._compute_norm_uuid(normalizer)
                 self.normalizers.setdefault(normalizer.appliedTo, [])
                 self.normalizers[normalizer.appliedTo].append(normalizer)
         self.activate_normalizers()
+
+    def _compute_norm_uuid(self, normalizer):
+        return "%s-%s" % (normalizer.name, normalizer.version)
 
     def iter_normalizer(self):
         """ Iterates through normalizers and returns the normalizers' paths.
@@ -135,30 +139,29 @@ class LogNormalizer():
                       method = 'xml',
                       pretty_print = True)
         self.reload()
-        
-    def get_normalizer_source(self, name):
-        """Returns the raw XML source of normalizer name."""
+
+    def get_normalizer_by_uuid(self, uuid):
         try:
-            norm = [ u for u in sum(self.normalizers.values(), []) if u.name == name][0]
-            return norm.get_source()
+            norm = [ u for u in sum(self.normalizers.values(), []) if u.uuid == uuid][0]
+            return norm
         except:
-            raise ValueError, "Normalizer %s not found" % name
+            raise ValueError, "Normalizer uuid : %s not found" % uuid
+        
+    def get_normalizer_source(self, uuid):
+        """Returns the raw XML source of normalizer uuid."""
+        return self.get_normalizer_by_uuid(uuid).get_source()
     
-    def get_normalizer_path(self, name):
+    def get_normalizer_path(self, uuid):
         """Returns the filesystem path of a normalizer."""
-        try:
-            norm = [ u for u in sum(self.normalizers.values(), []) if u.name == name][0]
-            return norm.sys_path
-        except:
-            raise ValueError, "Normalizer %s not found" % name
-        
+        return self.get_normalizer_by_uuid(uuid).sys_path
+
     
     def activate_normalizers(self):
         """Activates normalizers according to what was set by calling
         set_active_normalizers. If no call to the latter function has been
         made so far, this method activates every normalizer."""
         if not self.active_normalizers:
-            self.active_normalizers = dict([ (n.name, True) for n in \
+            self.active_normalizers = dict([ (n.uuid, True) for n in \
                         sum([ v for v in self.normalizers.values()], []) ])
         # fool-proof the list
         self.set_active_normalizers(self.active_normalizers)
@@ -168,11 +171,11 @@ class LogNormalizer():
         for norm in self.normalizers['raw']:
             # consider the normalizer to be inactive if not
             # explicitly in our list
-            if self.active_normalizers.get(norm.name, False):
+            if self.active_normalizers.get(norm.uuid, False):
                 self._cache.append(norm)
         # Then, apply the applicative normalization on "body":
         for norm in self.normalizers['body']:
-            if self.active_normalizers.get(norm.name, False):
+            if self.active_normalizers.get(norm.uuid, False):
                 self._cache.append(norm)
         # Then, apply everything else
         for norm in sum([ self.normalizers[u] for u in self.normalizers 
@@ -180,7 +183,7 @@ class LogNormalizer():
             self._cache.append(norm)
 
     def get_active_normalizers(self):
-        """Returns a dictionary of normalizers; keys are normalizers' names and
+        """Returns a dictionary of normalizers; keys are normalizers' uuid and
         values are True|False according to the normalizer's activation state."""
         return self.active_normalizers
 
@@ -190,7 +193,7 @@ class LogNormalizer():
         
         @param norms: a dictionary, similar to the one returned by
         get_active_normalizers."""
-        default = dict([ (n.name, False) for n in \
+        default = dict([ (n.uuid, False) for n in \
                             sum([ v for v in self.normalizers.values()], []) ])
         default.update(norms)
         self.active_normalizers = default
