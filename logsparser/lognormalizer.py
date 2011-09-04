@@ -141,6 +141,7 @@ class LogNormalizer():
         self.reload()
 
     def get_normalizer_by_uuid(self, uuid):
+        """Returns normalizer by uuid."""
         try:
             norm = [ u for u in sum(self.normalizers.values(), []) if u.uuid == uuid][0]
             return norm
