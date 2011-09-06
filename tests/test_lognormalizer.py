@@ -24,7 +24,7 @@ import unittest
 import tempfile
 import shutil
 from logsparser.lognormalizer import LogNormalizer
-from lxml.etree import fromstring as XMLfromstring
+from lxml.etree import parse, fromstring as XMLfromstring
 
 class Test(unittest.TestCase):
     """Unit tests for logsparser.lognormalizer"""
@@ -50,7 +50,7 @@ class Test(unittest.TestCase):
             del active_n[to_d]
         ln.set_active_normalizers(active_n)
         ln.reload()
-        self.assertEqual(len([an[0] for an in ln.get_active_normalizers() if an[1]]), len(ln))
+        self.assertEqual(len([an[0] for an in ln.get_active_normalizers().items() if an[1]]), len(ln)-2)
         self.assertEqual(len(ln._cache), len(ln)-2)
 
     def test_003_activate_normalizer(self):
@@ -98,7 +98,9 @@ class Test(unittest.TestCase):
         testlog = {'raw': 'Jul 18 08:55:35 naruto app[3245]: body message'}
         ln = LogNormalizer(self.normalizer_path)
         active_n = ln.get_active_normalizers()
-        del active_n['syslog']
+        to_deactivate = [n for n in active_n.keys() if n.find('syslog') >= 0]
+        for n in to_deactivate:
+            del active_n[n]
         ln.set_active_normalizers(active_n)
         ln.reload()
         ln.lognormalize(testlog)
@@ -111,7 +113,7 @@ class Test(unittest.TestCase):
         of a normalizer.
         """
         ln = LogNormalizer(self.normalizer_path)
-        source = ln.get_normalizer_source('syslog')
+        source = ln.get_normalizer_source('syslog-0.99')
         self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'syslog')
 
     def test_008_normalizer_multiple_paths(self):
@@ -126,18 +128,34 @@ class Test(unittest.TestCase):
         shutil.move(os.path.join(fdir, 'postfix.xml'), 
                     os.path.join(sdir, 'postfix.xml'))
         ln = LogNormalizer([fdir, sdir])
-        source = ln.get_normalizer_source('postfix')
+        source = ln.get_normalizer_source('postfix-0.99')
         self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'postfix')
-        self.assertTrue(ln.get_normalizer_path('postfix').startswith(sdir))
-        self.assertTrue(ln.get_normalizer_path('syslog').startswith(fdir))
-        xml_src = ln.get_normalizer_source('syslog')
+        self.assertTrue(ln.get_normalizer_path('postfix-0.99').startswith(sdir))
+        self.assertTrue(ln.get_normalizer_path('syslog-0.99').startswith(fdir))
+        xml_src = ln.get_normalizer_source('syslog-0.99')
         os.unlink(os.path.join(fdir, 'syslog.xml'))
         ln.reload()
-        self.assertRaises(ValueError, ln.get_normalizer_path, 'syslog')
+        self.assertRaises(ValueError, ln.get_normalizer_path, 'syslog-0.99')
         ln.update_normalizer(xml_src, dir_path = sdir)
-        self.assertTrue(ln.get_normalizer_path('syslog').startswith(sdir))
+        self.assertTrue(ln.get_normalizer_path('syslog-0.99').startswith(sdir))
         shutil.rmtree(fdir)
         shutil.rmtree(sdir)
+
+    def test_009_normalizer_multiple_version(self):
+        """ Verify we can can deal with a normalizer with more than one version.
+        """
+        fdir = tempfile.mkdtemp()
+        shutil.copyfile(os.path.join(self.normalizer_path, 'postfix.xml'),
+                        os.path.join(fdir, 'postfix.xml'))
+        # Change normalizer version in fdir path
+        xml = parse(os.path.join(fdir, 'postfix.xml'))
+        xmln = xml.getroot()
+        xmln.set('version', '1.0')
+        xml.write(os.path.join(fdir, 'postfix.xml'))
+        ln = LogNormalizer([self.normalizer_path, fdir])
+        self.assertEquals(XMLfromstring(ln.get_normalizer_source('postfix-0.99')).getroottree().getroot().get('version'), '0.99')
+        self.assertEquals(XMLfromstring(ln.get_normalizer_source('postfix-1.0')).getroottree().getroot().get('version'), '1.0')
+        shutil.rmtree(fdir)
 
 if __name__ == "__main__":
     unittest.main()
