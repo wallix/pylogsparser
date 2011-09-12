@@ -106,7 +106,7 @@
 	<localized_desc language="en"></localized_desc>
 	<localized_desc language="fr"></localized_desc>
       </description>
-      <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+.*\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING\s+(?:MD5_CHECKSUM)?</text>
+      <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+[a-zA-Z]{3}. \w+ [0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{3}\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING\s+(?:MD5_CHECKSUM)?</text>
       <tags>
 	<tag name="snare_event_log_type" tagType="snare_event_log_type">
 	  <description>
@@ -135,13 +135,6 @@
 	    <localized_desc language="fr">Basé sur le compteur interne des évènements de Snare.</localized_desc>
 	  </description>
 	  <substitute>SNARE_EVENT_COUNTER</substitute>
-	</tag>
-	<tag name="date" tagType="host_date">
-	  <description>
-	    <localized_desc language="en">This is the date time stamp of the event record.</localized_desc>
-	    <localized_desc language="fr">Date d'enregistrement de l'évènement.</localized_desc>
-	  </description>
-	  <substitute>DATETIME</substitute>
 	</tag>
 	<tag name="event_id" tagType="Integer">
 	  <description>

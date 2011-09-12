@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- -->
+<!-- pylogparser - Logs parsers python library -->
+<!-- Copyright (C) 2011 Wallix Inc. -->
+<!-- -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- -->
+<!-- This package is free software; you can redistribute -->
+<!-- it and/or modify it under the terms of the GNU Lesser -->
+<!-- General Public License as published by the Free Software -->
+<!-- Foundation; either version 2.1 of the License, or (at -->
+<!-- your option) any later version. -->
+<!-- -->
+<!-- This package is distributed in the hope that it will be -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR -->
+<!-- PURPOSE. See the GNU Lesser General Public License for -->
+<!-- more details. -->
+<!-- -->
+<!-- You should have received a copy of the GNU Lesser General -->
+<!-- Public License along with this package; if not, write -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place, -->
+<!-- Suite 330, Boston, MA 02111-1307 USA -->
+<!-- -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+
+<normalizer name="VMWare_ESX4-ESXi4"
+	    version="0.99"
+	    unicode="yes"
+	    ignorecase="yes"
+	    matchtype= "search"
+	    appliedTo= "raw">
+  
+  <description>
+    <localized_desc language="en">This normalizer parses VMware ESX 4.x and ESXi 4.x logs.</localized_desc>
+    <localized_desc language="fr">Ce normaliser analyse les logs de VMware ESX 4.x et ESXi 4.x.</localized_desc>
+  </description>
+  <authors>
+    <author>clo@wallix.com</author>
+  </authors>
+  <tagTypes>
+    <tagType name="date" type="datetime">
+      <description>
+	<localized_desc language="en"></localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}</regexp>
+    </tagType>
+    <tagType name="hexa_num" type="integer">
+      <description>
+	<localized_desc language="en"></localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <regexp>[A-F0-9]{8}</regexp>
+    </tagType>
+    <tagType name="words" type="basestring">
+      <description>
+	<localized_desc language="en"></localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <regexp>\w+(?: \w+)*</regexp>
+    </tagType>
+  </tagTypes>
+ <callbacks>
+  <callback name="modify_date">
+    date = str(value)
+    date = date[:10] + 'T' + date[11:]
+    log["date"] = date
+  </callback>
+ </callbacks>
+  <patterns>
+     <pattern name="VMWare-001">
+      <description>
+	<localized_desc language="en">Hostd.log and vpxa.log logs' pattern. (Both agent)</localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <text>\[DATE NUMERIC LEVEL 'ALPHA'[^\]]*\] BODY</text>
+      <tags>
+	<tag name="__date" tagType="date">
+	  <description>
+	    <localized_desc language="en">the time at which the request was issued - please note that the timezone information is not carried over.</localized_desc>
+	    <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte.</localized_desc>
+	  </description>
+	  <substitute>DATE</substitute>
+	  <callbacks>
+    	    <callback>modify_date</callback>
+   	  </callbacks>
+	</tag>
+	<tag name="numeric" tagType="hexa_num">
+	  <description>
+	    <localized_desc language="en"></localized_desc>
+	    <localized_desc language="fr"></localized_desc>
+	  </description>
+	  <substitute>NUMERIC</substitute>
+	</tag>
+	<tag name="level" tagType="words">
+	  <description>
+	    <localized_desc language="en"></localized_desc>
+	    <localized_desc language="fr"></localized_desc>
+	  </description>
+	  <substitute>LEVEL</substitute>
+	</tag>
+	<tag name="alpha" tagType="words">
+	  <description>
+	    <localized_desc language="en"></localized_desc>
+	    <localized_desc language="fr"></localized_desc>
+	  </description>
+	  <substitute>ALPHA</substitute>
+	</tag>
+	<tag name="body" tagType="Anything">
+	  <description>
+     	    <localized_desc language="en">the actual event message</localized_desc>
+     	    <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+	  </description>
+	  <substitute>BODY</substitute>
+	</tag>
+      </tags>
+      <examples>
+	<example>
+	  <text>[2011-09-05 17:03:15.220 F6F74B90 verbose 'App'] [VpxaMoVm::CheckMoVm] did not find a VM with ID 67 in the vmList</text>
+	  <expectedTags>
+	    <expectedTag name="numeric">F6F74B90</expectedTag>
+	    <expectedTag name="level">verbose</expectedTag>
+	    <expectedTag name="alpha">App</expectedTag>
+	    <expectedTag name="body">[VpxaMoVm::CheckMoVm] did not find a VM with ID 67 in the vmList</expectedTag>
+	  </expectedTags>
+	</example>
+	<example>
+	  <text>[2011-09-05 17:19:21.741 F63E6900 info 'Vmomi' opID=996867CC-0000030B] Throw vmodl.fault.RequestCanceled</text>
+	  <expectedTags>
+	    <expectedTag name="numeric">F63E6900</expectedTag>
+	    <expectedTag name="level">info</expectedTag>
+	    <expectedTag name="alpha">Vmomi</expectedTag>
+	    <expectedTag name="body">Throw vmodl.fault.RequestCanceled</expectedTag>
+	  </expectedTags>
+	</example>
+      </examples>
+    </pattern>
+    <pattern name="VMWare-002">
+      <description>
+	<localized_desc language="en">Log from sysboot.log file.</localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <text>sysboot: EVENT</text>
+      <tags>
+	<tag name="event" tagType="Anything">
+	  <description>
+     	    <localized_desc language="en">the actual event message</localized_desc>
+     	    <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+	  </description>
+	  <substitute>EVENT</substitute>
+	</tag>
+      </tags>
+      <examples>
+	<example>
+	  <text>sysboot: Executing 'esxcfg-init --set-boot-progress done'</text>
+	  <expectedTags>
+	    <expectedTag name="event">Executing 'esxcfg-init --set-boot-progress done'</expectedTag>
+	  </expectedTags>
+	</example>
+      </examples>
+    </pattern>
+  </patterns>  
+</normalizer>
