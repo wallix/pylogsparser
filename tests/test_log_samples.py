@@ -522,7 +522,7 @@ class Test(unittest.TestCase):
 	 	'body': 'Default resource used for \'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary\' expected in module \'enum\'.'})
 
 	self.aS("""sysboot: Executing 'kill -TERM 314'""",
-		{'event': 'Executing \'kill -TERM 314\''})
+		{'body': 'Executing \'kill -TERM 314\''})
 
 if __name__ == "__main__":
     unittest.main()

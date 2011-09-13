@@ -62,8 +62,16 @@
 	<localized_desc language="en"></localized_desc>
 	<localized_desc language="fr"></localized_desc>
       </description>
-      <regexp>\w+(?: \w+)*</regexp>
+      <regexp>[^']+(?: [^']+)*</regexp>
     </tagType>
+    <tagType name="level_word" type="basestring">
+      <description>
+	<localized_desc language="en"></localized_desc>
+	<localized_desc language="fr"></localized_desc>
+      </description>
+      <regexp>[^\s]+</regexp>
+    </tagType>
+
   </tagTypes>
  <callbacks>
   <callback name="modify_date">
@@ -97,7 +105,7 @@
 	  </description>
 	  <substitute>NUMERIC</substitute>
 	</tag>
-	<tag name="level" tagType="words">
+	<tag name="level" tagType="level_word">
 	  <description>
 	    <localized_desc language="en"></localized_desc>
 	    <localized_desc language="fr"></localized_desc>
@@ -147,7 +155,7 @@
       </description>
       <text>sysboot: EVENT</text>
       <tags>
-	<tag name="event" tagType="Anything">
+	<tag name="body" tagType="Anything">
 	  <description>
      	    <localized_desc language="en">the actual event message</localized_desc>
      	    <localized_desc language="fr">le message décrivant l'événement</localized_desc>
@@ -159,7 +167,7 @@
 	<example>
 	  <text>sysboot: Executing 'esxcfg-init --set-boot-progress done'</text>
 	  <expectedTags>
-	    <expectedTag name="event">Executing 'esxcfg-init --set-boot-progress done'</expectedTag>
+	    <expectedTag name="body">Executing 'esxcfg-init --set-boot-progress done'</expectedTag>
 	  </expectedTags>
 	</example>
       </examples>
