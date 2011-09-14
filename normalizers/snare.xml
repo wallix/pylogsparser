@@ -112,7 +112,7 @@ log['technet_link'] = url + str(value)
 	<localized_desc language="en"></localized_desc>
 	<localized_desc language="fr"></localized_desc>
       </description>
-      <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+.*\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING\s+(?:MD5_CHECKSUM)?</text>
+      <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+.*\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING(?:\s+MD5_CHECKSUM)?</text>
       <tags>
 	<tag name="snare_event_log_type" tagType="snare_event_log_type">
 	  <description>
@@ -231,7 +231,7 @@ log['technet_link'] = url + str(value)
 	    <expectedTag name="event_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">clo-PC</expectedTag>
 	    <expectedTag name="audit_event_category">Création du processus</expectedTag>
-	    <expectedTag name="body">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133</expectedTag>
+	    <expectedTag name="body">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133 </expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
@@ -248,7 +248,7 @@ log['technet_link'] = url + str(value)
 	    <expectedTag name="event_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
 	    <expectedTag name="audit_event_category">Fin du processus</expectedTag>
-	    <expectedTag name="body">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189</expectedTag>
+	    <expectedTag name="body">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
@@ -265,7 +265,7 @@ log['technet_link'] = url + str(value)
 	    <expectedTag name="event_type">Failure Audit</expectedTag>
 	    <expectedTag name="source_host">clo-vbox-win-7</expectedTag>
 	    <expectedTag name="audit_event_category">Validation des informations d’identification</expectedTag>
-	    <expectedTag name="body">L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77</expectedTag>
+	    <expectedTag name="body">L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77 </expectedTag>
 	  </expectedTags>
 	</example>
       </examples>
