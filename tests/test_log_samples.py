@@ -512,8 +512,17 @@ class Test(unittest.TestCase):
                  'program' : "EventLog",
                  'body': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 ', 'utf8')})
 
-#	self.aS(unicode("""clo-vbox-win-7 MSWinEventLog	0	Security	201	mer. août 31 15:46:45 201	4689	Microsoft-Windows-Security-Auditing	CLO-VBOX-WIN-7\clo	N/A	Success Audit	clo-vbox-win-7	Fin du processus		Un processus est terminé.    Sujet :   ID de sécurité :  S-1-5-21-2423214773-420032381-3839276281-1000   Nom du compte :  clo   Domaine du compte :  CLO-VBOX-WIN-7   ID d’ouverture de session :  0x260060    Informations sur le processus :   ID du processus : 0xb10   Nom du processus : C:\Windows\System32\SearchProtocolHost.exe   État de fin : 0x0	158 """, 'utf8'),
-#{}
+    def test_vmwareESX4_ESXi4(self):
+	"""Test VMware ESX 4.x and VMware ESXi 4.x log normalization"""
+	self.aS("""[2011-09-05 16:06:30.016 F4CD1B90 verbose 'Locale' opID=996867CC-000002A6] Default resource used for 'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary' expected in module 'enum'.""",
+		{'date': '2011-09-05T16:06:30.016',
+	 	'numeric': 'F4CD1B90',
+	 	'level': 'verbose',
+	 	'alpha': 'Locale',
+	 	'body': 'Default resource used for \'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary\' expected in module \'enum\'.'})
+
+	self.aS("""sysboot: Executing 'kill -TERM 314'""",
+		{'body': 'Executing \'kill -TERM 314\''})
 
 if __name__ == "__main__":
     unittest.main()

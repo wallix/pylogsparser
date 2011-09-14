@@ -85,7 +85,7 @@ class LogNormalizer():
             norm = parse(open(path))
             if not self.dtd.validate(norm):
                 warnings.warn('Skipping %s : invalid DTD' % path)
-                #print 'invalid normalizer ', path
+                print 'invalid normalizer ', path
             else:
                 normalizer = Normalizer(norm, self.ctt)
                 normalizer.uuid = self._compute_norm_uuid(normalizer)
