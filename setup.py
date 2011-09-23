@@ -33,10 +33,11 @@ def read(fname):
 data = glob.glob('normalizers/*.xml')
 data.extend(glob.glob('normalizers/*.template'))
 data.extend(glob.glob('normalizers/*.dtd'))
+fr_trans = glob.glob('logsparser/i18n/fr_FR/LC_MESSAGES/normalizer.*')
 
 setup(
     name = "pylogsparser",
-    version = "0.1",
+    version = "0.3",
     author = "Wallix",
     author_email = "opensource@wallix.org",
     description = ("A log parser library packaged with a set of ready to use parsers (DHCPd, Squid, Apache, ...)"),
@@ -45,7 +46,8 @@ setup(
     url = "http://www.wallix.org/pylogsparser-project/",
     package_dir={'logsparser.tests':'tests'}, 
     packages=['logsparser', 'logsparser.tests'],
-    data_files=[('share/normalizers', data)],
+    data_files=[('share/logsparser/normalizers', data),
+                ('share/logsparser/i18n/fr_FR/LC_MESSAGES/', fr_trans),],
     requires=['lxml', 'pytz'],
     long_description=read('README.rst'),
     # http://pypi.python.org/pypi?:action=list_classifiers

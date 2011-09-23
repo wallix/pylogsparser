@@ -29,17 +29,11 @@ by the Normalizer class.
 
 import re
 import csv
-import gettext
 import warnings
 import math
 
 from lxml.etree import parse, tostring
 from datetime import datetime # pyflakes:ignore
-
-try:
-    _ = gettext.translation('normalizer', 'i18n').ugettext
-except:
-    _ = lambda x: x #pyflakes:ignore
 
 # the following symbols and modules are allowed for use in callbacks.
 SAFE_SYMBOLS = ["list", "dict", "tuple", "set", "long", "float", "object",
@@ -639,9 +633,14 @@ class Normalizer(object):
         return self.description.keys()
         
 # Documentation generator
-def doc2RST(description, lang = 'fr'):
+def doc2RST(description, gettext = None):
     """ Returns a RestructuredText documentation from
         a parser description.
+        @param description: the long description of the parser.
+        @param gettext: is the gettext method to use.
+                        You must configure gettext to use the domain 'normalizer' and
+                        select a language.
+                        eg. gettext.translation('normalizer', 'i18n', ['fr_FR']).ugettext
     """
     
     def escape(text):
@@ -649,6 +648,11 @@ def doc2RST(description, lang = 'fr'):
             for c in "*\\":
                 text.replace(c, "\\" + c)
         return text
+
+    if not gettext:
+        _ = lambda x: x
+    else:
+        _ = gettext
 
     template = _("""%(title)s
 
