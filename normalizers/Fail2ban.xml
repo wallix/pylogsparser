@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="Fail2ban"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en">This normalizer can parse Fail2ban logs (version 0.8.4).</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs de l'applicatif Fail2ban (version 0.8.4).</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="f2bTimeStamp" type="basestring">
+            <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}</regexp>
+        </tagType>
+        <tagType name="f2bProgram" type="basestring">
+            <regexp>fail2ban</regexp>
+        </tagType>
+        <tagType name="SimpleWord" type="basestring">
+            <regexp>\w+</regexp>
+        </tagType>
+        <tagType name="f2bAction" type="basestring">
+            <regexp>(?:Ban)|(?:Unban)</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decodeF2bTimeStamp">
+timestamp, milliseconds = value.split(',', 1)
+newdate = datetime(int(timestamp[:4]),
+                   int(timestamp[5:7]),
+                   int(timestamp[8:10]),
+                   int(timestamp[11:13]),
+                   int(timestamp[14:16]),
+                   int(timestamp[17:19]))
+log["date"] = newdate.replace(microsecond = int(milliseconds) * 1000 )
+        </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="FAIL2BAN-INFO">
+            <description>
+                <localized_desc language="en">An information message about the application's general status.</localized_desc>
+                <localized_desc language="fr">Un message informatif concernant le statut général de l'application.</localized_desc>
+            </description>
+            <text>TIMESTAMP PROGRAM\.COMPONENT\s*: INFO\s+BODY</text>
+            <tags>
+                <tag name="__date" tagType="f2bTimeStamp">
+                    <substitute>TIMESTAMP</substitute>
+                    <callbacks>
+                        <callback>decodeF2bTimeStamp</callback>
+                    </callbacks>
+                </tag>
+                <tag name="program" tagType="f2bProgram">
+                    <description>
+                        <localized_desc language="en">the program, set to "fail2ban"</localized_desc>
+                        <localized_desc language="fr">le programme, cette métadonnée est toujours évaluée à "fail2ban"</localized_desc>
+                    </description>
+                    <substitute>PROGRAM</substitute>
+                </tag>
+                <tag name="component" tagType="SimpleWord">
+                    <description>
+                        <localized_desc language="en">the program's component emitting the log</localized_desc>
+                        <localized_desc language="fr">le composant du programme à l'origine du message</localized_desc>
+                    </description>
+                    <substitute>COMPONENT</substitute>
+                </tag>
+                <tag name="body" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the body of the message</localized_desc>
+                        <localized_desc language="fr">le descriptif de l'événement</localized_desc>
+                    </description>
+                    <substitute>BODY</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2011-09-27 05:02:26,908 fail2ban.server : INFO   Changed logging target to /var/log/fail2ban.log for Fail2ban v0.8.4</text>
+                     <expectedTags>
+                          <expectedTag name="program">fail2ban</expectedTag>
+                          <expectedTag name="component">server</expectedTag>
+                          <expectedTag name="body">Changed logging target to /var/log/fail2ban.log for Fail2ban v0.8.4</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="FAIL2BAN-WARNING">
+            <text>TIMESTAMP PROGRAM\.COMPONENT\s*: WARNING\s+\[PROTOCOL\] ACTION SOURCE_IP</text>
+            <tags>
+                <tag name="__date" tagType="f2bTimeStamp">
+                    <substitute>TIMESTAMP</substitute>
+                    <callbacks>
+                        <callback>decodeF2bTimeStamp</callback>
+                    </callbacks>
+                </tag>
+                <tag name="program" tagType="f2bProgram">
+                    <description>
+                        <localized_desc language="en">the program, set to "fail2ban"</localized_desc>
+                        <localized_desc language="fr">le programme, cette métadonnée est toujours évaluée à "fail2ban"</localized_desc>
+                    </description>
+                    <substitute>PROGRAM</substitute>
+                </tag>
+                <tag name="component" tagType="SimpleWord">
+                    <description>
+                        <localized_desc language="en">the program's component emitting the log</localized_desc>
+                        <localized_desc language="fr">le composant du programme à l'origine du message</localized_desc>
+                    </description>
+                    <substitute>COMPONENT</substitute>
+                </tag>
+                <tag name="protocol" tagType="SimpleWord">
+                    <description>
+                        <localized_desc language="en">the protocol for which an action was taken</localized_desc>
+                        <localized_desc language="fr">le protocole pour lequel une action a été appliquée</localized_desc>
+                    </description>
+                    <substitute>PROTOCOL</substitute>
+                </tag>
+                <tag name="action" tagType="f2bAction">
+                    <description>
+                        <localized_desc language="en">the action taken : ban, or unban</localized_desc>
+                        <localized_desc language="fr">l'action appliquée : bannissement (ban) ou levée du bannissement (unban)</localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">the IP address for which the action was taken</localized_desc>
+                        <localized_desc language="fr">l'adresse IP à l'origine de l'action appliquée</localized_desc>
+                    </description>
+                    <substitute>SOURCE_IP</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2011-09-26 15:12:58,388 fail2ban.actions: WARNING [ssh] Ban 213.65.93.82</text>
+                     <expectedTags>
+                          <expectedTag name="program">fail2ban</expectedTag>
+                          <expectedTag name="component">actions</expectedTag>
+                          <expectedTag name="protocol">ssh</expectedTag>
+                          <expectedTag name="action">Ban</expectedTag>
+                          <expectedTag name="source_ip">213.65.93.82</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>

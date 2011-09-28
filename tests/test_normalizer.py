@@ -94,6 +94,8 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_017_vmware(self):
         self.normalize_samples('VMWare_ESX4-ESXi4.xml', 'VMWare_ESX4-ESXi4', 0.99)
 
+    def test_normalize_samples_018_fail2ban(self):
+        self.normalize_samples('Fail2ban.xml', 'Fail2ban', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
