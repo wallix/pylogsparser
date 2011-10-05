@@ -515,14 +515,69 @@ class Test(unittest.TestCase):
     def test_vmwareESX4_ESXi4(self):
 	"""Test VMware ESX 4.x and VMware ESXi 4.x log normalization"""
 	self.aS("""[2011-09-05 16:06:30.016 F4CD1B90 verbose 'Locale' opID=996867CC-000002A6] Default resource used for 'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary' expected in module 'enum'.""",
-		{'date': '2011-09-05T16:06:30.016',
-	 	'numeric': 'F4CD1B90',
-	 	'level': 'verbose',
-	 	'alpha': 'Locale',
-	 	'body': 'Default resource used for \'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary\' expected in module \'enum\'.'})
+		{'date': datetime(2011, 9, 5, 16, 6, 30),
+	 	 'numeric': 'F4CD1B90',
+	 	 'level': 'verbose',
+	 	 'alpha': 'Locale',
+	 	 'body': 'Default resource used for \'host.SystemIdentificationInfo.IdentifierType.ServiceTag.summary\' expected in module \'enum\'.'})
 
 	self.aS("""sysboot: Executing 'kill -TERM 314'""",
 		{'body': 'Executing \'kill -TERM 314\''})
 
+    def test_mysql(self):
+	"""Test mysql log normalization"""
+	self.aS("""110923 11:04:58	   36 Query	show databases""",
+		{'date': datetime(2011, 9, 23, 11, 4, 58),
+		 'id': '36',
+	 	 'type': 'Query',
+	 	 'event': 'show databases'})
+
+	self.aS("""110923 10:09:11 [Note] Plugin 'FEDERATED' is disabled.""",
+		{'date': datetime(2011, 9, 23, 10, 9, 11),
+	 	 'component': 'Note',
+	 	 'event': 'Plugin \'FEDERATED\' is disabled.'})
+
+    def test_IIS(self):
+	"""Test IIS log normalization"""
+	self.aS("""172.16.255.255, anonymous, 03/20/01, 23:58:11, MSFTPSVC, SALES1, 172.16.255.255, 60, 275, 0, 0, 0, PASS, /Intro.htm, -,""",
+		{'source_ip': '172.16.255.255',
+		 'user': 'anonymous',
+		 'date': datetime(2001, 3, 20, 23, 58, 11),
+		 'service': 'MSFTPSVC',
+		 'dest_host': 'SALES1',
+		 'dest_ip': '172.16.255.255',
+		 'time_taken': 0.06,
+		 'sent_bytes_number': '275',
+		 'returned_bytes_number': '0',
+		 'status': '0',
+		 'windows_status_code': '0',
+		 'method': 'PASS',
+		 'target': '/Intro.htm',
+		 'script_parameters': '-'})
+
+	self.aS("""2011-09-26 13:57:48 W3SVC1 127.0.0.1 GET /tapage.asp - 80 - 127.0.0.1 Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322) 404 0 2""",
+		{'date': datetime(2011, 9, 26, 13, 57, 48),
+		'service': 'W3SVC1',
+		'dest_ip': '127.0.0.1',
+		'method': 'GET',
+		'target': '/tapage.asp',
+		'query': '-',
+		'port': '80',
+		'user': '-',
+		'source_ip': '127.0.0.1',
+		'browser': 'Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)',
+		'status': '404',
+		'substatus': '0',
+		'win_status': '2'})
+
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+

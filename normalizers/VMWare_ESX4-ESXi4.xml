@@ -32,12 +32,12 @@
 	    version="0.99"
 	    unicode="yes"
 	    ignorecase="yes"
-	    matchtype= "search"
+	    matchtype= "match"
 	    appliedTo= "raw">
   
   <description>
-    <localized_desc language="en">This normalizer parses VMware ESX 4.x and ESXi 4.x logs.</localized_desc>
-    <localized_desc language="fr">Ce normaliser analyse les logs de VMware ESX 4.x et ESXi 4.x.</localized_desc>
+    <localized_desc language="en">This normalizer parses VMware ESX 4.x and ESXi 4.x logs that are not handled by the Syslog normalizer.</localized_desc>
+    <localized_desc language="fr">Ce normaliseur analyse les logs de VMware ESX 4.x et ESXi 4.x. qui ne sont pas gérés pas le normaliseur Syslog.</localized_desc>
   </description>
   <authors>
     <author>clo@wallix.com</author>
@@ -45,53 +45,65 @@
   <tagTypes>
     <tagType name="date" type="datetime">
       <description>
-	<localized_desc language="en"></localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Expression matching a date in the format yyyy-mm-dd hh:mm:ss.</localized_desc>
+	<localized_desc language="fr">Expression correspondant à une date au format yyyy-mm-dd hh:mm:ss.</localized_desc>
       </description>
       <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}</regexp>
     </tagType>
     <tagType name="hexa_num" type="integer">
       <description>
-	<localized_desc language="en"></localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Expression matching a hexadecimal number.</localized_desc>
+	<localized_desc language="fr">Expression correspondant à un nombre héxadécimal.</localized_desc>
       </description>
       <regexp>[A-F0-9]{8}</regexp>
     </tagType>
-    <tagType name="words" type="basestring">
+    <tagType name="alpha_words" type="basestring">
       <description>
-	<localized_desc language="en"></localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Expression matching the 'alpha' field, words between '.</localized_desc>
+	<localized_desc language="fr">Expression correspondant au champ 'alpha', qui contient les mots entre '.</localized_desc>
       </description>
       <regexp>[^']+(?: [^']+)*</regexp>
     </tagType>
     <tagType name="level_word" type="basestring">
       <description>
-	<localized_desc language="en"></localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Expression matching the 'level' field.</localized_desc>
+	<localized_desc language="fr">Expression correspondant au champ 'level'.</localized_desc>
       </description>
       <regexp>[^\s]+</regexp>
     </tagType>
-
   </tagTypes>
  <callbacks>
   <callback name="modify_date">
-    date = str(value)
-    date = date[:10] + 'T' + date[11:]
-    log["date"] = date
+reg = re.compile('(?P&lt;year&gt;\d{4})-(?P&lt;month&gt;\d{2})-(?P&lt;day&gt;\d{2}) (?P&lt;hours&gt;\d{2}):(?P&lt;minutes&gt;\d{2}):(?P&lt;seconds&gt;\d{2})')
+
+date = reg.search(value)
+
+date = date.groupdict()
+
+year= int(date.get('year'))
+month = int(date.get('month'))
+day = int(date.get('day'))
+hours = int(date.get('hours'))
+minutes = int(date.get('minutes'))
+seconds = int(date.get('seconds'))
+
+newdate = datetime(year, month, day, hours, minutes, seconds)
+
+log["date"] = newdate
   </callback>
  </callbacks>
   <patterns>
      <pattern name="VMWare-001">
       <description>
-	<localized_desc language="en">Hostd.log and vpxa.log logs' pattern. (Both agent)</localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Logs contained in hostd.log file.</localized_desc>
+	<localized_desc language="fr">Logs contenus dans le fichier hostd.log.</localized_desc>
       </description>
       <text>\[DATE NUMERIC LEVEL 'ALPHA'[^\]]*\] BODY</text>
       <tags>
 	<tag name="__date" tagType="date">
 	  <description>
-	    <localized_desc language="en">the time at which the request was issued - please note that the timezone information is not carried over.</localized_desc>
-	    <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte.</localized_desc>
+	    <localized_desc language="en">The time at which the request was issued - please note that the timezone information is not carried over.</localized_desc>
+	    <localized_desc language="fr">La date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte.</localized_desc>
 	  </description>
 	  <substitute>DATE</substitute>
 	  <callbacks>
@@ -107,12 +119,12 @@
 	</tag>
 	<tag name="level" tagType="level_word">
 	  <description>
-	    <localized_desc language="en"></localized_desc>
-	    <localized_desc language="fr"></localized_desc>
+	    <localized_desc language="en">The level is the type of the log.</localized_desc>
+	    <localized_desc language="fr">Le level correspond au type du log.</localized_desc>
 	  </description>
 	  <substitute>LEVEL</substitute>
 	</tag>
-	<tag name="alpha" tagType="words">
+	<tag name="alpha" tagType="alpha_words">
 	  <description>
 	    <localized_desc language="en"></localized_desc>
 	    <localized_desc language="fr"></localized_desc>
@@ -121,8 +133,8 @@
 	</tag>
 	<tag name="body" tagType="Anything">
 	  <description>
-     	    <localized_desc language="en">the actual event message</localized_desc>
-     	    <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     	    <localized_desc language="en">The actual event message.</localized_desc>
+     	    <localized_desc language="fr">Le message décrivant l'événement.</localized_desc>
 	  </description>
 	  <substitute>BODY</substitute>
 	</tag>
@@ -150,15 +162,15 @@
     </pattern>
     <pattern name="VMWare-002">
       <description>
-	<localized_desc language="en">Log from sysboot.log file.</localized_desc>
-	<localized_desc language="fr"></localized_desc>
+	<localized_desc language="en">Logs contained in sysboot.log file.</localized_desc>
+	<localized_desc language="fr">Log contenu dans le fichier sysboot.log.</localized_desc>
       </description>
       <text>sysboot: EVENT</text>
       <tags>
 	<tag name="body" tagType="Anything">
 	  <description>
-     	    <localized_desc language="en">the actual event message</localized_desc>
-     	    <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     	    <localized_desc language="en">The actual event message.</localized_desc>
+     	    <localized_desc language="fr">Le message décrivant l'événement.</localized_desc>
 	  </description>
 	  <substitute>EVENT</substitute>
 	</tag>
