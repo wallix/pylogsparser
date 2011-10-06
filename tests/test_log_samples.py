@@ -570,14 +570,20 @@ class Test(unittest.TestCase):
 		'substatus': '0',
 		'win_status': '2'})
 
+    def test_fail2ban(self):
+        """Test fail2ban ssh banishment logs"""
+        self.aS("""2011-09-25 05:09:02,371 fail2ban.filter : INFO   Log rotation detected for /var/log/auth.log""",
+                {'program' : 'fail2ban',
+                 'component' : 'filter',
+                 'body' : "Log rotation detected for /var/log/auth.log",
+                 'date' : datetime(2011,9,25,5,9,2).replace(microsecond = 371000)})
+        self.aS("""2011-09-25 21:59:24,304 fail2ban.actions: WARNING [ssh] Ban 219.117.199.6""",
+                {'program' : 'fail2ban',
+                 'component' : 'actions',
+                 'action' : "Ban",
+                 'protocol' : "ssh",
+                 'source_ip' : "219.117.199.6",
+                 'date' : datetime(2011,9,25,21,59,24).replace(microsecond = 304000)})
+                 
 if __name__ == "__main__":
     unittest.main()
-
-
-
-
-
-
-
-
-

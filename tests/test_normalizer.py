@@ -100,6 +100,10 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_019_IIS(self):
         self.normalize_samples('IIS.xml', 'IIS', 0.99)
 
+    def test_normalize_samples_020_fail2ban(self):
+        self.normalize_samples('Fail2ban.xml', 'Fail2ban', 0.99)
+
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']
