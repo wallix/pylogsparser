@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="IIS"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en">This normalizer handles IIS 6.0 (Internet Information Service) logs, which are in w3c ELFF (Extended Log File Format).</localized_desc>
+        <localized_desc language="fr">Ce normaliseur gère les logs IIS 6.0, qui sont au format w3c ELFF (Extended Log File Format).</localized_desc>
+    </description>
+    <authors>
+        <author>clo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="w3c_field" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a w3c ELFF format field which is any non-whitespace character.</localized_desc>
+                <localized_desc language="fr">Expression correspondant à un champ du format w3c ELFF, correspondant à tous les caractères 'non-espace' (ex.: espace, tabulation, saut de ligne, etc...)</localized_desc>
+            </description>
+            <regexp>[^\s]+|-</regexp>
+        </tagType>
+        <tagType name="separated_datetime" type="datetime">
+            <description>
+                <localized_desc language="en">Expression matching a date in the datetime format.(yyyy-mm-dd hh:mm:ss)</localized_desc>
+                <localized_desc language="fr">Expression correspondant à une date au format datetime.(yyyy-mm-dd hh:mm:ss)</localized_desc>
+            </description>
+            <regexp>[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{1,2}:[0-9]{2}:[0-9]{2}</regexp>
+        </tagType>
+        <tagType name="separated_date" type="datetime">
+            <description>
+                <localized_desc language="en">Expression matching a date in mm/dd/yy format and a time in hh:mm:ss format.</localized_desc>
+                <localized_desc language="fr">Expression correspondant à une date au format mm/dd/yy et une heure au format hh:mm:ss.</localized_desc>
+            </description>
+            <regexp>[0-9]{2}/[0-9]{2}/[0-9]{2}, [0-9]{2}:[0-9]{2}:[0-9]{2}</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="modify_date">
+reg = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{2}), (?P&lt;hours&gt;\d{1,2}):(?P&lt;minutes&gt;\d{2}):(?P&lt;seconds&gt;\d{2})')
+
+date = reg.search(value)
+
+date = date.groupdict()
+
+year= int('20' + date.get('year'))
+month = int(date.get('month'))
+day = int(date.get('day'))
+hours = int(date.get('hours'))
+minutes = int(date.get('minutes'))
+seconds = int(date.get('seconds'))
+
+newdate = datetime(year, month, day, hours, minutes, seconds)
+
+log['date'] = newdate
+	</callback>
+        <callback name="convert_time">
+value = float(value)
+value = value / 1000
+log['time_taken'] = value
+	</callback>
+        <callback name="get_datetime">
+reg = re.compile('(?P&lt;year&gt;\d{4})-(?P&lt;month&gt;\d{2})-(?P&lt;day&gt;\d{2}) (?P&lt;hours&gt;\d{2}):(?P&lt;minutes&gt;\d{2}):(?P&lt;seconds&gt;\d{2})')
+
+date = reg.search(value)
+
+date = date.groupdict()
+
+year= int(date.get('year'))
+month = int(date.get('month'))
+day = int(date.get('day'))
+hours = int(date.get('hours'))
+minutes = int(date.get('minutes'))
+seconds = int(date.get('seconds'))
+
+newdate = datetime(year, month, day, hours, minutes, seconds)
+
+log['date'] = newdate
+	</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="IIS-001">
+            <description>
+                <localized_desc language="en">This is the default log format in w3c ELFF format.</localized_desc>
+                <localized_desc language="fr">Log par défaut au format w3c ELFF.</localized_desc>
+            </description>
+            <text>DATE\s+SERVICE\s+SERVER_IP\s+REQUEST_TYPE\s+RESOURCE\s+QUERY\s+PORT\s+USERNAME\s+CLIENT_IP\s+AGENT\s+ACTION_STATUS\s+SUB_STATUS\s+WIN_STATUS</text>
+            <tags>
+                <tag name="__date" tagType="separated_datetime">
+                    <description>
+                        <localized_desc language="en">The date that the activity occurred.</localized_desc>
+                        <localized_desc language="fr">La date de l'évènement.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>get_datetime</callback>
+                    </callbacks>
+               </tag>
+                <tag name="service" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The Internet service and instance number that was accessed by a client.</localized_desc>
+                        <localized_desc language="fr">Le service et le numéro de la demande du client.</localized_desc>
+                    </description>
+                    <substitute>SERVICE</substitute>
+                </tag>
+                <tag name="dest_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">The IP address of the server on which the log entry was generated.</localized_desc>
+                        <localized_desc language="fr">IP du serveur.</localized_desc>
+                    </description>
+                    <substitute>SERVER_IP</substitute>
+                </tag>
+                <tag name="method" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The action the client was trying to perform.</localized_desc>
+                        <localized_desc language="fr">Nom de la méthode. Comme GET, PASS, etc..</localized_desc>
+                    </description>
+                    <substitute>REQUEST_TYPE</substitute>
+                </tag>
+                <tag name="url_path" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The resource accessed.</localized_desc>
+                        <localized_desc language="fr">La cible de l'opération.</localized_desc>
+                    </description>
+                    <substitute>RESOURCE</substitute>
+                </tag>
+                <tag name="query" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The query, if any, the client was trying to perform.</localized_desc>
+                        <localized_desc language="fr">La requête que le client tenté.</localized_desc>
+                    </description>
+                    <substitute>QUERY</substitute>
+                </tag>
+                <tag name="port" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The port number the client is connected to.</localized_desc>
+                        <localized_desc language="fr">Le port auquel le client est connecté.</localized_desc>
+                    </description>
+                    <substitute>PORT</substitute>
+                </tag>
+                <tag name="user" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The name of the authenticated user who accessed your server. This does not include anonymous users, who are represented by a hyphen (-).</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur ayand accédé au serveur.</localized_desc>
+                    </description>
+                    <substitute>USERNAME</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">The IP address of the client that accessed your server.</localized_desc>
+                        <localized_desc language="fr">L'adresse IP du client.</localized_desc>
+                    </description>
+                    <substitute>CLIENT_IP</substitute>
+                </tag>
+                <tag name="browser" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The browser used on the client.</localized_desc>
+                        <localized_desc language="fr">Le navigateur utilisé.</localized_desc>
+                    </description>
+                    <substitute>AGENT</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The status of the action, in HTTP or FTP terms.</localized_desc>
+                        <localized_desc language="fr">Le status de l'action.</localized_desc>
+                    </description>
+                    <substitute>ACTION_STATUS</substitute>
+                </tag>
+                <tag name="substatus" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The substatus of the action.</localized_desc>
+                        <localized_desc language="fr">Le sous-status de l'action.</localized_desc>
+                    </description>
+                    <substitute>SUB_STATUS</substitute>
+                </tag>
+                <tag name="win_status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The status of the action, in terms used by Microsoft Windows®.</localized_desc>
+                        <localized_desc language="fr">Le status de l'action, avec les termes de Windows.</localized_desc>
+                    </description>
+                    <substitute>WIN_STATUS</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2011-09-26 13:57:48 W3SVC1 127.0.0.1 GET /tapage.asp - 80 - 127.0.0.1 Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322) 404 0 2</text>
+                     <expectedTags>
+                          <expectedTag name="service">W3SVC1</expectedTag>
+                          <expectedTag name="dest_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="url_path">/tapage.asp</expectedTag>
+                          <expectedTag name="query">-</expectedTag>
+                          <expectedTag name="port">80</expectedTag>
+                          <expectedTag name="user">-</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="browser">Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)</expectedTag>
+                          <expectedTag name="status">404</expectedTag>
+                          <expectedTag name="substatus">0</expectedTag>
+                          <expectedTag name="win_status">2</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="IIS-002">
+            <description>
+                <localized_desc language="en">This is a log format in w3c ELFF format.</localized_desc>
+                <localized_desc language="fr">Format de log au format w3c ELFF.</localized_desc>
+            </description>
+            <text>CLIENT_IP,\s*USERNAME,\s*DATE,\s*SERVICE_NAME,\s*SERVER_NAME,\s*SERVER_IP,\s*TIME_TAKEN,\s*CLIENT_BYTES_SENT,\s*SERVER_BYTES_SENT,\s*SERVICE_STATUS_CODE,\s*WINDOWS_STATUS_CODE,\s*REQUEST_TYPE,\s*TARGET_OF_OPERATION,\s*PARAMETERS,\s*</text>
+            <tags>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">The IP address of the client that accessed your server.</localized_desc>
+                        <localized_desc language="fr">L'adresse du client ayant accédé au serveur.</localized_desc>
+                    </description>
+                    <substitute>CLIENT_IP</substitute>
+                </tag>
+                <tag name="user" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The name of the authenticated user who accessed your server. This does not include anonymous users, who are represented by a hyphen (-).</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur ayand accédé au serveur.</localized_desc>
+                    </description>
+                    <substitute>USERNAME</substitute>
+                </tag>
+                <tag name="__date" tagType="separated_date">
+                    <description>
+                        <localized_desc language="en">The date that the activity occurred.</localized_desc>
+                        <localized_desc language="fr">La date de l'évènement.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>modify_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="service" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The Internet service and instance number that was accessed by a client.</localized_desc>
+                        <localized_desc language="fr">Le service et le numéro de la demande du client.</localized_desc>
+                    </description>
+                    <substitute>SERVICE_NAME</substitute>
+                </tag>
+                <tag name="dest_host" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">Server's hostname.</localized_desc>
+                        <localized_desc language="fr">Le nom du serveur.</localized_desc>
+                    </description>
+                    <substitute>SERVER_NAME</substitute>
+                </tag>
+                <tag name="dest_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">The IP address of the server on which the log entry was generated.</localized_desc>
+                        <localized_desc language="fr">IP du serveur.</localized_desc>
+                    </description>
+                    <substitute>SERVER_IP</substitute>
+                </tag>
+                <tag name="__time_taken" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Elapsed time to complete request.</localized_desc>
+                        <localized_desc language="fr">Temps écoulé pour réaliser la requête.</localized_desc>
+                    </description>
+                    <substitute>TIME_TAKEN</substitute>
+                    <callbacks>
+                        <callback>convert_time</callback>
+                    </callbacks>
+                </tag>
+                <tag name="sent_bytes_number" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Number of bytes sent by client. (Request size)</localized_desc>
+                        <localized_desc language="fr">Taille de la requête.</localized_desc>
+                    </description>
+                    <substitute>CLIENT_BYTES_SENT</substitute>
+                </tag>
+                <tag name="returned_bytes_number" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Number of bytes returned by the server.</localized_desc>
+                        <localized_desc language="fr">Nombre d'octets retournés par le serveur.</localized_desc>
+                    </description>
+                    <substitute>SERVER_BYTES_SENT</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Service status code. (A value of 200 indicates that the request was fulfilled successfully.)</localized_desc>
+                        <localized_desc language="fr">Code de status du service.</localized_desc>
+                    </description>
+                    <substitute>SERVICE_STATUS_CODE</substitute>
+                </tag>
+                <tag name="windows_status_code" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Windows status code. (A value of 0 indicates that the request was fulfilled successfully.)</localized_desc>
+                        <localized_desc language="fr">code de status de Windows.</localized_desc>
+                    </description>
+                    <substitute>WINDOWS_STATUS_CODE</substitute>
+                </tag>
+                <tag name="method" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">Method name. Such as GET, PASS, ...</localized_desc>
+                        <localized_desc language="fr">Nom de la méthode. Comme GET, PASS, etc..</localized_desc>
+                    </description>
+                    <substitute>REQUEST_TYPE</substitute>
+                </tag>
+                <tag name="url_path" tagType="w3c_field">
+                    <description>
+                        <localized_desc language="en">The target of the operation.</localized_desc>
+                        <localized_desc language="fr">La cible de l'opération.</localized_desc>
+                    </description>
+                    <substitute>TARGET_OF_OPERATION</substitute>
+                </tag>
+                <tag name="script_parameters" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the parameters that are passed to a script if any.</localized_desc>
+                        <localized_desc language="fr">Les paramètres du script s'il y en a un.</localized_desc>
+                    </description>
+                    <substitute>PARAMETERS</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>172.16.255.255, anonymous, 03/20/01, 23:58:11, MSFTPSVC, SALES1, 172.16.255.255, 60, 275, 0, 0, 0, PASS, /Intro.htm, -,</text>
+                     <expectedTags>
+                          <expectedTag name="source_ip">172.16.255.255</expectedTag>
+                          <expectedTag name="user">anonymous</expectedTag>
+                          <expectedTag name="service">MSFTPSVC</expectedTag>
+                          <expectedTag name="dest_host">SALES1</expectedTag>
+                          <expectedTag name="dest_ip">172.16.255.255</expectedTag>
+                          <expectedTag name="sent_bytes_number">275</expectedTag>
+                          <expectedTag name="returned_bytes_number">0</expectedTag>
+                          <expectedTag name="status">0</expectedTag>
+                          <expectedTag name="windows_status_code">0</expectedTag>
+                          <expectedTag name="method">PASS</expectedTag>
+                          <expectedTag name="url_path">/Intro.htm</expectedTag>
+                          <expectedTag name="script_parameters">-</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

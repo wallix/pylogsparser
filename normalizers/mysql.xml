@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="mysql"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+
+    <description>
+        <localized_desc language="en">This normalizer handles mysql logs, from log and log_error files.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur gère les logs mysql, provenant des fichiers log et log_error.</localized_desc>
+    </description>
+    <authors>
+        <author>clo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="date" type="datetime">
+            <description>
+                <localized_desc language="en">Expression matching a date in the yymmdd hh:mm:ss format.</localized_desc>
+                <localized_desc language="fr">Expression correspondant à une date au format yymmdd hh:mm:ss.</localized_desc>
+            </description>
+            <regexp>[0-9]{6} (?:[0-9]{2}| [0-9]):[0-9]{2}:[0-9]{2}</regexp>
+        </tagType>
+        <tagType name="type_words" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching with the type, separated from the body by the tabulation character.</localized_desc>
+                <localized_desc language="fr">Expression correspondant au type, séparée du 'corps' du message par une tabulation.</localized_desc>
+            </description>
+            <regexp>[^\t]+</regexp>
+        </tagType>
+        <tagType name="component" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>\w+</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="modify_date">
+reg = re.compile('(?P&lt;year&gt;[0-9]{2})(?P&lt;month&gt;[0-9]{2})(?P&lt;day&gt;[0-9]{2}) (?P&lt;hours&gt;(?:[0-9]{2}| [0-9])):(?P&lt;minutes&gt;[0-9]{2}):(?P&lt;seconds&gt;[0-9]{2})')
+
+date = reg.search(value)
+date = date.groupdict()
+
+year= int('20' + date.get('year'))
+month = int(date.get('month'))
+day = int(date.get('day'))
+hours = int(date.get('hours'))
+minutes = int(date.get('minutes'))
+seconds = int(date.get('seconds'))
+
+newdate = datetime(year, month, day, hours, minutes, seconds)
+
+log["date"] = newdate
+	</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="mysql-001">
+            <description>
+                <localized_desc language="en">General log format.</localized_desc>
+                <localized_desc language="fr">Format du log général.</localized_desc>
+            </description>
+            <text>(?:DATE)?\s+ID\s+TYPE\t+BODY</text>
+            <tags>
+                <tag name="__date" tagType="date">
+                    <description>
+                        <localized_desc language="en">The time at which the request was issued.</localized_desc>
+                        <localized_desc language="fr">L'heure à laquelle la requête a été effectué.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>modify_date</callback>
+                    </callbacks>
+                </tag>
+              	<tag name="id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">Log's id.</localized_desc>
+                        <localized_desc language="fr">id du log.</localized_desc>
+                    </description>
+                    <substitute>ID</substitute>
+                </tag>
+              	<tag name="type" tagType="type_words">
+                    <description>
+                        <localized_desc language="en">Request type.</localized_desc>
+                        <localized_desc language="fr">Type de la requête.</localized_desc>
+                    </description>
+                    <substitute>TYPE</substitute>
+                </tag>
+              	<tag name="event" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The actual event message.</localized_desc>
+                        <localized_desc language="fr">Le message de l'évènement.</localized_desc>
+                    </description>
+                    <substitute>BODY</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>110920 17:12:55	   38 Query	show databases</text>
+                     <expectedTags>
+                          <expectedTag name="id">38</expectedTag>
+                          <expectedTag name="type">Query</expectedTag>
+                          <expectedTag name="event">show databases</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>		   36 Init DB	test_database</text>
+                     <expectedTags>
+                          <expectedTag name="id">36</expectedTag>
+                          <expectedTag name="type">Init DB</expectedTag>
+                          <expectedTag name="event">test_database</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>		   34 Quit	</text>
+                     <expectedTags>
+                          <expectedTag name="id">34</expectedTag>
+                          <expectedTag name="type">Quit</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>		   16 Connect	debian-sys-maint@localhost on</text>
+                     <expectedTags>
+                          <expectedTag name="id">16</expectedTag>
+                          <expectedTag name="type">Connect</expectedTag>
+                          <expectedTag name="event">debian-sys-maint@localhost on</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="mysql-002">
+            <description>
+                <localized_desc language="en">Error log format.</localized_desc>
+                <localized_desc language="fr">Format du log d'erreur.</localized_desc>
+            </description>
+            <text>(?:DATE\s+)?\[?COMPONENT\]?:?\s+BODY</text>
+            <tags>
+                <tag name="__date" tagType="date">
+                    <description>
+                        <localized_desc language="en">The time at which the request was issued.</localized_desc>
+                        <localized_desc language="fr">L'heure à laquelle la requête a été effectué.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>modify_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="component" tagType="component">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>COMPONENT</substitute>
+                </tag>
+                <tag name="event" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The actual event message.</localized_desc>
+                        <localized_desc language="fr">Le message de l'évènement.</localized_desc>
+                    </description>
+                    <substitute>BODY</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>110915 10:29:34 [Note] /usr/sbin/mysqld: Shutdown complete</text>
+                     <expectedTags>
+                          <expectedTag name="component">Note</expectedTag>
+                          <expectedTag name="event">/usr/sbin/mysqld: Shutdown complete</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>110923  9:59:31  InnoDB: Initializing buffer pool, size = 8.0M</text>
+                     <expectedTags>
+                          <expectedTag name="component">InnoDB</expectedTag>
+                          <expectedTag name="event">Initializing buffer pool, size = 8.0M</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1</text>
+                     <expectedTags>
+                          <expectedTag name="component">ERROR</expectedTag>
+                          <expectedTag name="event">1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1</expectedTag>
+                     </expectedTags>
+                </example>
+           </examples>
+        </pattern>
+  </patterns>
+</normalizer>
+

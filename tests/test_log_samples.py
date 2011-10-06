@@ -552,7 +552,7 @@ class Test(unittest.TestCase):
 		 'status': '0',
 		 'windows_status_code': '0',
 		 'method': 'PASS',
-		 'target': '/Intro.htm',
+		 'url_path': '/Intro.htm',
 		 'script_parameters': '-'})
 
 	self.aS("""2011-09-26 13:57:48 W3SVC1 127.0.0.1 GET /tapage.asp - 80 - 127.0.0.1 Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322) 404 0 2""",
@@ -560,7 +560,7 @@ class Test(unittest.TestCase):
 		'service': 'W3SVC1',
 		'dest_ip': '127.0.0.1',
 		'method': 'GET',
-		'target': '/tapage.asp',
+		'url_path': '/tapage.asp',
 		'query': '-',
 		'port': '80',
 		'user': '-',
