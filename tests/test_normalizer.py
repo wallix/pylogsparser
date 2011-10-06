@@ -96,6 +96,14 @@ class TestSample(unittest.TestCase):
 
     def test_normalize_samples_018_fail2ban(self):
         self.normalize_samples('Fail2ban.xml', 'Fail2ban', 0.99)
+        
+    def test_normalize_samples_019_GeoIPsource(self):
+        try:
+            import GeoIP #pyflakes:ignore
+            self.normalize_samples('GeoIPsource.xml', 'GeoIPsource', 0.99)
+        except ImportError:
+            # cannot test
+            pass
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
