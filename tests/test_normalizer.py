@@ -105,6 +105,10 @@ class TestSample(unittest.TestCase):
             # cannot test
             pass
 
+    def test_normalize_samples_020_URL_parsers(self):
+        self.normalize_samples('URLparser.xml', 'URLparser', 0.99)
+        self.normalize_samples('RefererParser.xml', 'RefererParser', 0.99)
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']
