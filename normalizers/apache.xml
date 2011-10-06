@@ -80,6 +80,7 @@ else:
 try:
     path = value.split(' ')[1].split('?')[0]
     log['url_path'] = path
+    log['method'] = value.split(' ')[0]
 except:
     pass</callback>
     </callbacks>
@@ -151,6 +152,7 @@ except:
                           <expectedTag name="len">889</expectedTag>
                           <expectedTag name="program">apache</expectedTag>
                           <expectedTag name="url_path">/index/helper/test</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -215,7 +217,7 @@ except:
         <localized_desc language="fr">le contenu de l'en-tête "Referer" de la requête</localized_desc></description>
                  <substitute>%{Referer}i</substitute>
                 </tag>
-                <tag name="request_header_useragent_contents" tagType="Anything">
+                <tag name="useragent" tagType="Anything">
                  <description>
         <localized_desc language="en">the contents of the "User-agent" request header</localized_desc>
         <localized_desc language="fr">le contenu de l'en-tête "User-agent" de la requête</localized_desc></description>
@@ -234,8 +236,9 @@ except:
                           <expectedTag name="len">2326</expectedTag>
                           <expectedTag name="program">apache</expectedTag>
                           <expectedTag name="request_header_referer_contents">http://www.example.com/start.html</expectedTag>
-                          <expectedTag name="request_header_useragent_contents">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
+                          <expectedTag name="useragent">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
                           <expectedTag name="url_path">/apache_pb.gif</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

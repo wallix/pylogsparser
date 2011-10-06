@@ -178,7 +178,7 @@ log['date'] = newdate
                     </description>
                     <substitute>CLIENT_IP</substitute>
                 </tag>
-                <tag name="browser" tagType="w3c_field">
+                <tag name="useragent" tagType="w3c_field">
                     <description>
                         <localized_desc language="en">The browser used on the client.</localized_desc>
                         <localized_desc language="fr">Le navigateur utilisé.</localized_desc>
@@ -219,7 +219,7 @@ log['date'] = newdate
                           <expectedTag name="port">80</expectedTag>
                           <expectedTag name="user">-</expectedTag>
                           <expectedTag name="source_ip">127.0.0.1</expectedTag>
-                          <expectedTag name="browser">Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)</expectedTag>
+                          <expectedTag name="useragent">Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)</expectedTag>
                           <expectedTag name="status">404</expectedTag>
                           <expectedTag name="substatus">0</expectedTag>
                           <expectedTag name="win_status">2</expectedTag>

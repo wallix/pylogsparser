@@ -355,7 +355,7 @@ class Test(unittest.TestCase):
                  'status' : "200",
                  'len' : "2937",
                  'request_header_referer_contents' : "http://10.10.4.86/toc.html",
-                 'request_header_useragent_contents' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
+                 'useragent' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
                  'body' : '10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"'})
 
         # Test "vhost_combined" log format "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\""
@@ -565,7 +565,7 @@ class Test(unittest.TestCase):
 		'port': '80',
 		'user': '-',
 		'source_ip': '127.0.0.1',
-		'browser': 'Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)',
+		'useragent': 'Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)',
 		'status': '404',
 		'substatus': '0',
 		'win_status': '2'})
