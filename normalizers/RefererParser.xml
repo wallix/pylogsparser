@@ -45,7 +45,7 @@ if parsed.hostname:
     log['referer_hostname'] = parsed.hostname
     # naive approach
     domain = '.'.join(parsed.hostname.split('.')[1:])
-    log['referer_domain'] = domain
+    log['referer_domain'] = domain or parsed.hostname
 if parsed.path:
     log['referer_path'] = parsed.path
 </callback>
