@@ -181,7 +181,8 @@ class LogNormalizer():
         # Then, apply everything else
         for norm in sum([ self.normalizers[u] for u in self.normalizers 
                                            if u not in ['raw', 'body']], []):
-            self._cache.append(norm)
+            if self.active_normalizers.get(norm.uuid, False):
+                self._cache.append(norm)
 
     def get_active_normalizers(self):
         """Returns a dictionary of normalizers; keys are normalizers' uuid and

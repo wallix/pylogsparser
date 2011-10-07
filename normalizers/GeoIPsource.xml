@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="GeoIPsource"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="source_ip">
+    <description>
+        <localized_desc language="en">This filter evaluates the country of origin associated to the source_ip tag.</localized_desc>
+        <localized_desc language="fr">Ce filtre détermine le pays d'origine associé à la valeur du tag source_ip.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <callbacks>
+        <callback name="decodeCountryOfOrigin">
+country = country_code_by_address(value)
+if country:
+    log['source_country'] = country</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="GeoIP">
+            <description>
+                <localized_desc language="en">This pattern simply checks the source_ip tag.</localized_desc>
+                <localized_desc language="fr">Ce motif se contente d'analyser le tag source_ip.</localized_desc>
+            </description>
+            <text>IP</text>
+            <tags>
+                <tag name="__ip" tagType="IP">
+                    <substitute>IP</substitute>
+                    <callbacks>
+                        <callback>decodeCountryOfOrigin</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>8.8.8.8</text>
+                     <expectedTags>
+                          <expectedTag name="source_country">US</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>77.207.23.14</text>
+                     <expectedTags>
+                          <expectedTag name="source_country">FR</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
