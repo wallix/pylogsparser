@@ -41,10 +41,13 @@
     <callbacks>
         <callback name="decodeURL">
 parsed = urlparse.urlparse(value)
-log['referer_hostname'] = parsed.hostname
-log['referer_path'] = parsed.path
-# naive approach
-log['referer_domain'] = '.'.join(parsed.hostname.split('.')[1:])
+if parsed.hostname:
+    log['referer_hostname'] = parsed.hostname
+    # naive approach
+    domain = '.'.join(parsed.hostname.split('.')[1:])
+    log['referer_domain'] = domain
+if parsed.path:
+    log['referer_path'] = parsed.path
 </callback>
     </callbacks>
     <patterns>
