@@ -44,7 +44,10 @@ parsed = urlparse.urlparse(value)
 if parsed.hostname:
     log['referer_hostname'] = parsed.hostname
     # naive approach
-    domain = '.'.join(parsed.hostname.split('.')[1:])
+    if len(parsed.hostname.split('.')) &lt; 2:
+        domain = None
+    else:
+        domain = '.'.join(parsed.hostname.split('.')[1:])
     log['referer_domain'] = domain or parsed.hostname
 if parsed.path:
     log['referer_path'] = parsed.path
