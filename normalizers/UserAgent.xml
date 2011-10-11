@@ -30,7 +30,7 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="request_header_useragent_contents">
+            appliedTo="useragent">
     <description>
         <localized_desc language="en">This normalizer extracts additional info from the useragent field in a HTTP request.</localized_desc>
         <localized_desc language="fr">Ce normaliseur extrait des données supplémentaires des du champ useragent présent dans les requêtes HTTP.</localized_desc>
