@@ -103,7 +103,7 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_020_fail2ban(self):
         self.normalize_samples('Fail2ban.xml', 'Fail2ban', 0.99)
         
-    def test_normalize_samples_019_GeoIPsource(self):
+    def test_normalize_samples_021_GeoIPsource(self):
         try:
             import GeoIP #pyflakes:ignore
             self.normalize_samples('GeoIPsource.xml', 'GeoIPsource', 0.99)
@@ -111,7 +111,7 @@ class TestSample(unittest.TestCase):
             # cannot test
             pass
 
-    def test_normalize_samples_020_URL_parsers(self):
+    def test_normalize_samples_022_URL_parsers(self):
         self.normalize_samples('URLparser.xml', 'URLparser', 0.99)
         self.normalize_samples('RefererParser.xml', 'RefererParser', 0.99)
 
