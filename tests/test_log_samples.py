@@ -586,5 +586,20 @@ class Test(unittest.TestCase):
                  'source_ip' : "219.117.199.6",
                  'date' : datetime(2011,9,25,21,59,24).replace(microsecond = 304000)})
                  
+    def test_bitdefender(self):
+        """Test bitdefender spam.log (Mail Server for UNIX version)"""
+        self.aS('10/20/2011 07:24:26 BDMAILD SPAM: sender: marcelo@nitex.com.br, recipients: re@corp.com, sender IP: 127.0.0.1, subject: "Lago para pesca, piscina, charrete, Hotel Fazenda", score: 1000, stamp: " v1, build 2.10.1.12405, blacklisted, total: 1000(750)", agent: Smtp Proxy 3.1.3, action: drop (move-to-quarantine;drop), header recipients: ( "cafe almoço e janta incluso" ), headers: ( "Received: from localhost [127.0.0.1] by BitDefender SMTP Proxy on localhost [127.0.0.1] for localhost [127.0.0.1]; Thu, 20 Oct 2011 07:24:26 +0200 (CEST)" "Received: from paris.office.corp.com (go.corp.lan [10.10.1.254]) by as-bd-64.ifr.lan (Postfix) with ESMTP id 4D23D1C7    for <regis.wira@corp.com>; Thu, 20 Oct 2011 07:24:26 +0200 (CEST)" "Received: from rj50ssp.nitex.com.br (rj154ssp.nitex.com.br [177.47.99.154])    by paris.office.corp.com (Postfix) with ESMTP id 28C0D6A4891    for <re@corp.com>; Thu, 20 Oct 2011 07:17:59 +0200 (CEST)" "Received: from rj154ssp.nitex.com.br (ced-sp.tuavitoria.com.br [177.47.99.13])    by rj50ssp.nitex.com.br (Postfix) with ESMTP id 9B867132C9E;    Wed, 19 Oct 2011 22:29:20 -0200 (BRST)" ), group: "Default"',
+                {'message_sender' : 'marcelo@nitex.com.br',
+                 'program' : 'bitdefender',
+                 'action' : 'drop',
+                 'message_recipients' : 're@corp.com',
+                 'date' : datetime(2011,10,20,07,24,26),
+                 'reason' : 'blacklisted'})
+
+        self.aS('10/24/2011 04:31:39 BDSCAND ERROR: failed to initialize the AV core',
+                {'program' : 'bitdefender',
+                 'body' : 'failed to initialize the AV core',
+                 'date' : datetime(2011,10,24,04,31,39)})
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="bitdefender"
+            version="0.99"
+            unicode="yes"
+            ignorecase="no"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en">This normalizer parses BitDefender (Mail servers UNIX) logs.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les logs de BitDefender (version Mail servers UNIX).</localized_desc>
+    </description>
+    <authors>
+        <author>fbo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="BD_DATE" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>.*</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_date">
+r = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{4}) (?P&lt;hour&gt;\d{2}):(?P&lt;minute&gt;\d{2}):(?P&lt;second&gt;\d{2})')
+date = r.search(value).groupdict()
+date = dict([(u, int(date[u])) for u in date.keys()])
+log['date'] = datetime(**date)
+        </callback>
+        <callback name="decode_action">
+action, action_info = value.split()
+log['action'] = action
+log['action_info'] = action_info
+        </callback>
+        <callback name="extract_spam_reason">
+log['stamp'] = value
+r1 = re.compile('.*, hit signature: (?P&lt;sign&gt;.*), .*')
+m1 = r1.match(value)
+if m1:
+    log['reason_detail'] = m1.groupdict()['sign']
+    log['reason'] = 'signature'
+    return
+r2 = re.compile('.*, blacklisted, .*')
+m2 = r2.match(value)
+if m2:
+    log['reason'] = 'blacklisted'
+    return
+r3 = re.compile('.*, URI DNSBL: \[(?P&lt;reporter&gt;.*)\], .*')
+m3 = r3.match(value)
+if m3:
+    log['reason_detail'] = m3.groupdict()['reporter']
+    log['reason'] = 'URI DNSBL'
+    return
+r4 = re.compile('.*, spam url, .*')
+m4 = r4.match(value)
+if m4:
+    log['reason'] = 'spam url'
+    return
+r5 = re.compile('.*, SQMD Hits: (?P&lt;hits&gt;.*) , .*')
+m5 = r5.match(value)
+if m5:
+    log['reason_detail'] = m5.groupdict()['hits']
+    log['reason'] = 'SQMD Hits'
+    return
+        </callback>
+        <callback name="extract_body">
+log['body'] = log['raw'].split(': ', 1)[1]
+        </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="spam-001">
+            <description>
+                <localized_desc language="en">Logs contained in spam.log file.</localized_desc>
+                <localized_desc language="fr">Logs contenus dans le fichier spam.log.</localized_desc>
+            </description>
+            <text>DATE BDMAILD SPAM: sender: SENDER, recipients: RECIPIENTS, sender IP: SADDR, subject: "SUBJECT", score: SCORE, stamp: "STAMP", agent: AGENT, action: ACTION, header recipients: HRECIPS, headers: HEADERS, group: "GROUP"</text>
+            <tags>
+                <tag name="__date" tagType="BD_DATE">
+                    <description>
+                        <localized_desc language="en">The time at which the spam was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle le spam a été détécté.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_date</callback>
+                        <callback>extract_body</callback>
+                    </callbacks>
+                </tag>
+                <tag name="message_sender" tagType="Email">
+                    <description>
+                        <localized_desc language="en">The mail sender.</localized_desc>
+                        <localized_desc language="fr">L'expéditeur de mail.</localized_desc>
+                    </description>
+                    <substitute>SENDER</substitute>
+                </tag>
+                <tag name="message_recipients" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The mail recipients list.</localized_desc>
+                        <localized_desc language="fr">La liste des mails destinataires.</localized_desc>
+                    </description>
+                    <substitute>RECIPIENTS</substitute>
+                </tag>
+                <tag name="client_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">Client IP address.</localized_desc>
+                        <localized_desc language="fr">L'adresse IP du client.</localized_desc>
+                    </description>
+                    <substitute>SADDR</substitute>
+                </tag>
+                <tag name="message_subject" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The mail subject.</localized_desc>
+                        <localized_desc language="fr">Le sujet du mail.</localized_desc>
+                    </description>
+                    <substitute>SUBJECT</substitute>
+                </tag>
+                <tag name="score" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SCORE</substitute>
+                </tag>
+                <tag name="__stamp" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Spam identification informations.</localized_desc>
+                        <localized_desc language="fr">Informations d'identifications du spam.</localized_desc>
+                    </description>
+                    <substitute>STAMP</substitute>
+                    <callbacks>
+                        <callback>extract_spam_reason</callback>
+                    </callbacks>
+                </tag>
+                <tag name="agent" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>AGENT</substitute>
+                </tag>
+                <tag name="__action" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Action taken by BitDefender.</localized_desc>
+                        <localized_desc language="fr">Action prise par BitDefender.</localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                    <callbacks>
+                        <callback>decode_action</callback>
+                    </callbacks>
+                </tag>
+                <tag name="headers_recipients" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HRECIPS</substitute>
+                </tag>
+                <tag name="headers" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HEADERS</substitute>
+                </tag>
+                <tag name="group" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>GROUP</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="program">bitdefender</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>12/08/2010 11:18:42 BDMAILD SPAM: sender: bounces+333785.61449158.669496@icpbounce.com, recipients: jack@corp.com, sender IP: 127.0.0.1, subject: "=?iso-8859-1?Q?N=B07_sur_7_de_votre_s=E9rie_sur_le_management_du_changeme?= =?iso-8859-1?Q?nt?=", score: 1000, stamp: " v1, build 2.8.60.118893, rbl score: 0(0), hit signature: AUTO_B_IPX_20100613_110223_1_555, total: 1000(775)", agent: Smtp Proxy 3.1.3, action: drop (move-to-quarantine;drop), header recipients: ( "jack@corp.com" ), headers: ( "Received: from localhost [127.0.0.1]  by BitDefender SMTP Proxy on localhost [127.0.0.1]  for localhost [127.0.0.1]; Wed, 8 Dec 2010 11:18:42 +0100 (CET)" "Received: from paris.office.corp.com (unknown [10.10.1.254])    by as-bd-64.ifr.lan (Postfix) with ESMTP id 305B28A001    for &lt;jack@corp.com&gt;; Wed,  8 Dec 2010 11:18:42 +0100 (CET)" "Received: from smtp16.icpbounce.com (smtp16.icpbounce.com [216.27.93.110])    by paris.office.corp.com (Postfix) with ESMTP id 746D86A423B    for &lt;jack@corp.com&gt;; Wed,  8 Dec 2010 11:17:48 +0100 (CET)" "Received: from drone21.rtp.icpbounce.com (agent004.colo.icontact.com [172.27.2.15])    by smtp16.icpbounce.com (Postfix) with ESMTP id 4C5653C7327    for &lt;jack@corp.com&gt;; Wed,  8 Dec 2010 05:15:46 -0500 (EST)" "Received: from localhost.localdomain (unknown [127.0.0.1])    by drone21.rtp.icpbounce.com (Postfix) with ESMTP id 8ED7022BD6    for &lt;jack@corp.com&gt;; Wed,  8 Dec 2010 05:10:39 -0500 (EST)" ), group: "Default"</text>
+                    <expectedTags>
+                        <expectedTag name="date">2010-12-08 11:18:42</expectedTag>
+                        <expectedTag name="score">1000</expectedTag>
+                        <expectedTag name="agent">Smtp Proxy 3.1.3</expectedTag>
+                        <expectedTag name="message_sender">bounces+333785.61449158.669496@icpbounce.com</expectedTag>
+                        <expectedTag name="message_recipients">jack@corp.com</expectedTag>
+                        <expectedTag name="message_subject">=?iso-8859-1?Q?N=B07_sur_7_de_votre_s=E9rie_sur_le_management_du_changeme?= =?iso-8859-1?Q?nt?=</expectedTag>
+                        <expectedTag name="stamp"> v1, build 2.8.60.118893, rbl score: 0(0), hit signature: AUTO_B_IPX_20100613_110223_1_555, total: 1000(775)</expectedTag>
+                        <expectedTag name="action">drop</expectedTag>
+                        <expectedTag name="action_info">(move-to-quarantine;drop)</expectedTag>
+                        <expectedTag name="group">Default</expectedTag>
+                        <expectedTag name="reason_detail">AUTO_B_IPX_20100613_110223_1_555</expectedTag>
+                        <expectedTag name="reason">signature</expectedTag>
+                    </expectedTags>
+                </example>
+                <example>
+                    <text>10/20/2011 10:01:19 BDMAILD SPAM: sender: debimelva@albaad.com, recipients: djoume@corp.com;lchapuis@cpr.com;matallah@corp.com;mhoulbert@corp.com;rca@corp.com;sales@corp.com;sset@corp.com;steph@corp.com;vbe@corp.com, sender IP: 127.0.0.1, subject: "Replica watches - THE MOST POPULAR MODELS All our replica watches have the same look and feel of the original product", score: 1000, stamp: " v1, build 2.10.1.12405, rbl score: 0(0), hit signature: S_REPL_IPX_080830_02, total: 1000(750)", agent: Smtp Proxy 3.1.3, action: drop (move-to-quarantine;drop), header recipients: ( "&lt;sset@corp.com&gt;" ), headers: ( "Received: from localhost [127.0.0.1] by BitDefender SMTP Proxy on localhost [127.0.0.1] for localhost [127.0.0.1]; Thu, 20 Oct 2011 10:01:19 +0200 (CEST)" "Received: from paris.office.corp.com (go.corp.lan [10.10.1.254])    by as-bd-64.ifr.lan (Postfix) with ESMTP id 5AB6E1C7;    Thu, 20 Oct 2011 10:01:19 +0200 (CEST)" "Received: from wfxamsklgv25z.py5nq1lz4i.com (unknown [190.234.5.86])    by paris.office.corp.com (Postfix) with SMTP id 006366A4895;    Thu, 20 Oct 2011 09:54:40 +0200 (CEST)" ), group: "Default"</text>
+                    <expectedTags>
+                        <expectedTag name="date">2011-10-20 10:01:19</expectedTag>
+                        <expectedTag name="score">1000</expectedTag>
+                        <expectedTag name="message_sender">debimelva@albaad.com</expectedTag>
+                        <expectedTag name="message_recipients">djoume@corp.com;lchapuis@cpr.com;matallah@corp.com;mhoulbert@corp.com;rca@corp.com;sales@corp.com;sset@corp.com;steph@corp.com;vbe@corp.com</expectedTag>
+                        <expectedTag name="action">drop</expectedTag>
+                        <expectedTag name="group">Default</expectedTag>
+                        <expectedTag name="stamp"> v1, build 2.10.1.12405, rbl score: 0(0), hit signature: S_REPL_IPX_080830_02, total: 1000(750)</expectedTag>
+                        <expectedTag name="reason_detail">S_REPL_IPX_080830_02</expectedTag>
+                        <expectedTag name="reason">signature</expectedTag>
+                    </expectedTags>
+                </example>
+                <example>
+                    <text>10/20/2011 16:07:40 BDMAILD SPAM: sender: 2363840z15263@bounce.crugeman.net, recipients: presse@corp.com, sender IP: 127.0.0.1, subject: "Conventions collectives nationales", score: 1000, stamp: " v1, build 2.10.1.12405, SQMD Hits: Spam FuzzyHit CRT_BGU , rbl score: 0(0), apm score: 500, SQMD: 6e74b86f401125abf381712e9dcc808e.fuzzy.fzrbl.org, total: 1000(750)", agent: Smtp Proxy 3.1.3, action: drop (move-to-quarantine;drop), header recipients: ( "&lt;presse@corp.com&gt;" ), headers: ( "Received: from localhost [127.0.0.1] by BitDefender SMTP Proxy on localhost [127.0.0.1] for localhost [127.0.0.1]; Thu, 20 Oct 2011 16:07:39 +0200 (CEST)" "Received: from paris.office.corp.com (go.corp.lan [10.10.1.254]) by as-bd-64.ifr.lan (Postfix) with ESMTP id BE4641C7   for &lt;presse@corp.com&gt;; Thu, 20 Oct 2011 16:07:39 +0200 (CEST)" "Received: from mx01.crugeman.net (mx01.crugeman.net [195.43.150.178]) by paris.office.corp.com (Postfix) with ESMTP id DF33E6A42A4  for &lt;presse@corp.com&gt;; Thu, 20 Oct 2011 16:01:10 +0200 (CEST)" "Received: by mx01.crugeman.net (Postfix, from userid 0)   id C57BE89416; Thu, 20 Oct 2011 16:01:09 +0200 (CEST)" ), group: "Default"</text>
+                    <expectedTags>
+                        <expectedTag name="date">2011-10-20 16:07:40</expectedTag>
+                        <expectedTag name="score">1000</expectedTag>
+                        <expectedTag name="message_recipients">presse@corp.com</expectedTag>
+                        <expectedTag name="action">drop</expectedTag>
+                        <expectedTag name="group">Default</expectedTag>
+                        <expectedTag name="stamp"> v1, build 2.10.1.12405, SQMD Hits: Spam FuzzyHit CRT_BGU , rbl score: 0(0), apm score: 500, SQMD: 6e74b86f401125abf381712e9dcc808e.fuzzy.fzrbl.org, total: 1000(750)</expectedTag>
+                        <expectedTag name="reason_detail">Spam FuzzyHit CRT_BGU</expectedTag>
+                        <expectedTag name="reason">SQMD Hits</expectedTag>
+                        <expectedTag name="program">bitdefender</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="update-001">
+            <description>
+                <localized_desc language="en">Logs contained in update.log file.</localized_desc>
+                <localized_desc language="fr">Logs contenus dans le fichier update.log.</localized_desc>
+            </description>
+            <text>DATE BDLIVED INFO: .*</text>
+            <tags>
+                <tag name="__date" tagType="BD_DATE">
+                    <description>
+                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_date</callback>
+                        <callback>extract_body</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="program">bitdefender</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                    <text>10/24/2011 15:33:30 BDLIVED INFO: Downloading files for location 'antispam_sig_nx' from 'upgrade.bitdefender.com'</text>
+                    <expectedTags>
+                        <expectedTag name="date">2011-10-24 15:33:30</expectedTag>
+                        <expectedTag name="program">bitdefender</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="info-001">
+            <description>
+                <localized_desc language="en">Logs contained in mail.log file.</localized_desc>
+                <localized_desc language="fr">Logs contenus dans le fichier mail.log.</localized_desc>
+            </description>
+            <text>DATE BDMAILD INFO: .*</text>
+            <tags>
+                <tag name="__date" tagType="BD_DATE">
+                    <description>
+                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_date</callback>
+                        <callback>extract_body</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="program">bitdefender</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                    <text>10/24/2011 13:33:11 BDMAILD INFO: cannot use an empty footer</text>
+                    <expectedTags>
+                        <expectedTag name="date">2011-10-24 13:33:11</expectedTag>
+                        <expectedTag name="program">bitdefender</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="error-001">
+            <description>
+                <localized_desc language="en">Logs contained in error.log file.</localized_desc>
+                <localized_desc language="fr">Logs contenus dans le fichier error.log.</localized_desc>
+            </description>
+            <text>DATE BDSCAND ERROR: .*</text>
+            <tags>
+                <tag name="__date" tagType="BD_DATE">
+                    <description>
+                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>decode_date</callback>
+                        <callback>extract_body</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="program">bitdefender</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                    <text>10/24/2011 04:31:39 BDSCAND ERROR: failed to initialize the AV core</text>
+                    <expectedTags>
+                        <expectedTag name="date">2011-10-24 04:31:39</expectedTag>
+                        <expectedTag name="program">bitdefender</expectedTag>
+                    </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
