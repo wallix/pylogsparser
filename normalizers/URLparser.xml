@@ -42,15 +42,15 @@
         <callback name="decodeURL">
 parsed = urlparse.urlparse(value)
 if parsed.hostname:
-    log['referer_hostname'] = parsed.hostname
+    log['url_hostname'] = parsed.hostname
     # naive approach
     if len(parsed.hostname.split('.')) &lt; 2:
         domain = None
     else:
         domain = '.'.join(parsed.hostname.split('.')[1:])
-    log['referer_domain'] = domain or parsed.hostname
+    log['url_domain'] = domain or parsed.hostname
 if parsed.path:
-    log['referer_path'] = parsed.path
+    log['url_path'] = parsed.path
 if parsed.scheme:
     log['url_proto'] = parsed.scheme
 </callback>
