@@ -355,7 +355,7 @@ class Test(unittest.TestCase):
                  'status' : "200",
                  'len' : "2937",
                  'request_header_referer_contents' : "http://10.10.4.86/toc.html",
-                 'request_header_useragent_contents' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
+                 'useragent' : "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3",
                  'body' : '10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"'})
 
         # Test "vhost_combined" log format "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\""
@@ -435,7 +435,8 @@ class Test(unittest.TestCase):
                  "dest_ip" : "10.10.192.255",
                  "source_ip" : "10.10.192.61",
                  "reason" : "Blocked by filter",
-                 "ip_log_type" : "ENDCONN"})
+                 "ip_log_type" : "ENDCONN",
+                 "body" : 'id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"'})
 
         # Assuming this kind of log with syslog like header is typically sent over the wire.
         self.aS('<134>IP-Logs: AKLOG - id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT',
@@ -565,19 +566,40 @@ class Test(unittest.TestCase):
 		'port': '80',
 		'user': '-',
 		'source_ip': '127.0.0.1',
-		'browser': 'Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)',
+		'useragent': 'Mozilla/4.0+(compatible;MSIE+6.0;+windows+NT5.2;+SV1;+.NET+CLR+1.1.4322)',
 		'status': '404',
 		'substatus': '0',
 		'win_status': '2'})
 
+    def test_fail2ban(self):
+        """Test fail2ban ssh banishment logs"""
+        self.aS("""2011-09-25 05:09:02,371 fail2ban.filter : INFO   Log rotation detected for /var/log/auth.log""",
+                {'program' : 'fail2ban',
+                 'component' : 'filter',
+                 'body' : "Log rotation detected for /var/log/auth.log",
+                 'date' : datetime(2011,9,25,5,9,2).replace(microsecond = 371000)})
+        self.aS("""2011-09-25 21:59:24,304 fail2ban.actions: WARNING [ssh] Ban 219.117.199.6""",
+                {'program' : 'fail2ban',
+                 'component' : 'actions',
+                 'action' : "Ban",
+                 'protocol' : "ssh",
+                 'source_ip' : "219.117.199.6",
+                 'date' : datetime(2011,9,25,21,59,24).replace(microsecond = 304000)})
+                 
+    def test_bitdefender(self):
+        """Test bitdefender spam.log (Mail Server for UNIX version)"""
+        self.aS('10/20/2011 07:24:26 BDMAILD SPAM: sender: marcelo@nitex.com.br, recipients: re@corp.com, sender IP: 127.0.0.1, subject: "Lago para pesca, piscina, charrete, Hotel Fazenda", score: 1000, stamp: " v1, build 2.10.1.12405, blacklisted, total: 1000(750)", agent: Smtp Proxy 3.1.3, action: drop (move-to-quarantine;drop), header recipients: ( "cafe almoço e janta incluso" ), headers: ( "Received: from localhost [127.0.0.1] by BitDefender SMTP Proxy on localhost [127.0.0.1] for localhost [127.0.0.1]; Thu, 20 Oct 2011 07:24:26 +0200 (CEST)" "Received: from paris.office.corp.com (go.corp.lan [10.10.1.254]) by as-bd-64.ifr.lan (Postfix) with ESMTP id 4D23D1C7    for <regis.wira@corp.com>; Thu, 20 Oct 2011 07:24:26 +0200 (CEST)" "Received: from rj50ssp.nitex.com.br (rj154ssp.nitex.com.br [177.47.99.154])    by paris.office.corp.com (Postfix) with ESMTP id 28C0D6A4891    for <re@corp.com>; Thu, 20 Oct 2011 07:17:59 +0200 (CEST)" "Received: from rj154ssp.nitex.com.br (ced-sp.tuavitoria.com.br [177.47.99.13])    by rj50ssp.nitex.com.br (Postfix) with ESMTP id 9B867132C9E;    Wed, 19 Oct 2011 22:29:20 -0200 (BRST)" ), group: "Default"',
+                {'message_sender' : 'marcelo@nitex.com.br',
+                 'program' : 'bitdefender',
+                 'action' : 'drop',
+                 'message_recipients' : 're@corp.com',
+                 'date' : datetime(2011,10,20,07,24,26),
+                 'reason' : 'blacklisted'})
+
+        self.aS('10/24/2011 04:31:39 BDSCAND ERROR: failed to initialize the AV core',
+                {'program' : 'bitdefender',
+                 'body' : 'failed to initialize the AV core',
+                 'date' : datetime(2011,10,24,04,31,39)})
+
 if __name__ == "__main__":
     unittest.main()
-
-
-
-
-
-
-
-
-

@@ -34,6 +34,12 @@ import math
 
 from lxml.etree import parse, tostring
 from datetime import datetime # pyflakes:ignore
+import urlparse # pyflakes:ignore
+try:
+    import GeoIP #pyflakes:ignore
+    country_code_by_address = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE).country_code_by_addr
+except ImportError, e:
+    country_code_by_address =lambda x: None
 
 # the following symbols and modules are allowed for use in callbacks.
 SAFE_SYMBOLS = ["list", "dict", "tuple", "set", "long", "float", "object",
@@ -43,7 +49,8 @@ SAFE_SYMBOLS = ["list", "dict", "tuple", "set", "long", "float", "object",
                 "hash", "hex", "int", "isinstance", "issubclass", "len",
                 "map", "filter", "max", "min", "oct", "chr", "ord", "range",
                 "reduce", "repr", "str", "unicode", "basestring", "type", "zip",
-                "xrange", "None", "Exception", "re", "datetime", "math"]
+                "xrange", "None", "Exception", "re", "datetime", "math",
+                "urlparse", "country_code_by_address"]
 
 class Tag(object):
     """A tag as defined in a pattern."""

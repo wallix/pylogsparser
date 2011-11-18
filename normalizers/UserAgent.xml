@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="UserAgent"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="useragent">
+    <description>
+        <localized_desc language="en">This normalizer extracts additional info from the useragent field in a HTTP request.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur extrait des données supplémentaires des du champ useragent présent dans les requêtes HTTP.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <callbacks>
+        <callback name="findBot">
+# taken from genrobotlist.pl in the awstats project : http://awstats.cvs.sourceforge.net
+robots = [
+    'antibot',
+    'appie',
+    'architext',
+    'bingbot',
+    'bjaaland',
+    'digout4u',
+    'echo',
+    'fast-webcrawler',
+    'ferret',
+    'googlebot',
+    'gulliver',
+    'harvest',
+    'htdig',
+    'ia_archiver',
+    'askjeeves',
+    'jennybot',
+    'linkwalker',
+    'lycos',
+    'mercator',
+    'moget',
+    'muscatferret',
+    'myweb',
+    'netcraft',
+    'nomad',
+    'petersnews',
+    'scooter',
+    'slurp',
+    'unlost_web_crawler',
+    'voila',
+    'voyager',
+    'webbase',
+    'weblayers',
+    'wisenutbot',
+    'aport',
+    'awbot',
+    'baiduspider',
+    'bobby',
+    'boris',
+    'bumblebee',
+    'cscrawler',
+    'daviesbot',
+    'exactseek',
+    'ezresult',
+    'gigabot',
+    'gnodspider',
+    'grub',
+    'henrythemiragorobot',
+    'holmes',
+    'internetseer',
+    'justview',
+    'linkbot',
+    'metager-linkchecker',
+    'linkchecker',
+    'microsoft_url_control',
+    'msiecrawler',
+    'nagios',
+    'perman',
+    'pompos',
+    'rambler',
+    'redalert',
+    'shoutcast',
+    'slysearch',
+    'surveybot',
+    'turnitinbot',
+    'turtlescanner',
+    'turtle',
+    'ultraseek',
+    'webclipping.com',
+    'webcompass',
+    'yahoo-verticalcrawler',
+    'yandex',
+    'zealbot',
+    'zyborg'
+]
+robot_regex = re.compile("|".join(robots), re.IGNORECASE)
+m = robot_regex.search(value)
+if m:
+    log["search_engine_bot"] = m.group().lower()
+</callback>
+        <callback name="guessOS">
+known_os = {"Mac OS" : "Mac/Apple",
+            "Windows" : "Windows",
+            "Linux" : "Linux"}
+guess = "unknown"
+for i,j in known_os.items():
+    if i in value:
+        guess = j
+        break
+log['source_os'] = guess
+</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="UseragentPattern">
+            <text>USERAGENT</text>
+            <tags>
+                <tag name="__ua" tagType="Anything">
+                    <substitute>USERAGENT</substitute>
+                    <callbacks>
+                        <callback>findBot</callback>
+                        <callback>guessOS</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)</text>
+                     <expectedTags>
+                          <expectedTag name="search_engine_bot">baiduspider</expectedTag>
+                          <expectedTag name="source_os">unknown</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10</text>
+                     <expectedTags>
+                          <expectedTag name="source_os">Mac/Apple</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>Nokia6680/1.0 (4.04.07) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1</text>
+                     <expectedTags>
+                          <expectedTag name="source_os">unknown</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

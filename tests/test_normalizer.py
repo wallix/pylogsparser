@@ -100,6 +100,25 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_019_IIS(self):
         self.normalize_samples('IIS.xml', 'IIS', 0.99)
 
+    def test_normalize_samples_020_fail2ban(self):
+        self.normalize_samples('Fail2ban.xml', 'Fail2ban', 0.99)
+        
+    def test_normalize_samples_021_GeoIPsource(self):
+        try:
+            import GeoIP #pyflakes:ignore
+            self.normalize_samples('GeoIPsource.xml', 'GeoIPsource', 0.99)
+        except ImportError:
+            # cannot test
+            pass
+
+    def test_normalize_samples_022_URL_parsers(self):
+        self.normalize_samples('URLparser.xml', 'URLparser', 0.99)
+        self.normalize_samples('RefererParser.xml', 'RefererParser', 0.99)
+    
+    def test_normalize_samples_023_bitdefender(self):
+        self.normalize_samples('bitdefender.xml', 'bitdefender', 0.99)
+
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']

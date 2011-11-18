@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="RefererParser"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="request_header_referer_contents">
+    <description>
+        <localized_desc language="en">This normalizer extracts additional info from URLs such as domain, protocol, etc.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur extrait des données supplémentaires des URLs telles que le domaine, le protocole, etc.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <callbacks>
+        <callback name="decodeURL">
+parsed = urlparse.urlparse(value)
+if parsed.hostname:
+    log['referer_hostname'] = parsed.hostname
+    # naive approach
+    if len(parsed.hostname.split('.')) &lt; 2:
+        domain = None
+    else:
+        domain = '.'.join(parsed.hostname.split('.')[1:])
+    log['referer_domain'] = domain or parsed.hostname
+if parsed.path:
+    log['referer_path'] = parsed.path
+</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="URLPattern">
+            <text>URL</text>
+            <tags>
+                <tag name="__url" tagType="Anything">
+                    <substitute>URL</substitute>
+                    <callbacks>
+                        <callback>decodeURL</callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>http://www.wallix.org/2011/09/20/how-to-use-linux-containers-lxc-under-debian-squeeze/</text>
+                     <expectedTags>
+                          <expectedTag name="referer_hostname">www.wallix.org</expectedTag>
+                          <expectedTag name="referer_path">/2011/09/20/how-to-use-linux-containers-lxc-under-debian-squeeze/</expectedTag>
+                          <expectedTag name="referer_domain">wallix.org</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
