@@ -142,7 +142,7 @@ class Test(unittest.TestCase):
         """Test squid logs"""
         self.aS("<40>Dec 21 07:49:02 hosting03 squid[54]: 1196341497.777    784 127.0.0.1 TCP_MISS/200 106251 GET http://fr.yahoo.com/ vbe DIRECT/217.146.186.51 text/html",
                 { 'program': 'squid',
-                  'date': datetime(2007, 11, 29, 14, 4, 57, 777000),
+                  'date': datetime(2007, 11, 29, 13, 4, 57, 777000),
                   'elapsed': '784',
                   'source_ip': '127.0.0.1',
                   'event_id': 'TCP_MISS',
@@ -153,7 +153,7 @@ class Test(unittest.TestCase):
                   'user': 'vbe' })
         self.aS("<40>Dec 21 07:49:02 hosting03 : 1196341497.777    784 127.0.0.1 TCP_MISS/404 106251 GET http://fr.yahoo.com/gjkgf/gfgff/ - DIRECT/217.146.186.51 text/html",
                 { 'program': 'squid',
-                  'date': datetime(2007, 11, 29, 14, 4, 57, 777000),
+                  'date': datetime(2007, 11, 29, 13, 4, 57, 777000),
                   'elapsed': '784',
                   'source_ip': '127.0.0.1',
                   'event_id': 'TCP_MISS',
@@ -163,7 +163,7 @@ class Test(unittest.TestCase):
                   'url': 'http://fr.yahoo.com/gjkgf/gfgff/' })
         self.aS("Oct 22 01:27:16 pluto squid: 1259845087.188     10 82.238.42.70 TCP_MISS/200 13121 GET http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/VABT.swf?url_download=&width=300&height=250&vidw=300&vidh=250&startbbanner=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_in.swf&endbanner=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_out.swf&video_hd=http://aak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_hd.flv&video_md=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_md.flv&video_bd=http://ak.bluestreak.comm//adv/sig/%5E16238/%5E7451318/vdo_300x250_bd.flv&url_tracer=http%3A//s0b.bluestreak.com/ix.e%3Fpx%26s%3D8008666%26a%3D7451318%26t%3D&start=2&duration1=3&duration2=4&duration3=5&durration4=6&duration5=7&end=8&hd=9&md=10&bd=11&gif=12&hover1=13&hover2=14&hover3=15&hover4=16&hover5=17&hover6=18&replay=19&sound_state=off&debug=0&playback_controls=off&tracking_objeect=tracking_object_8008666&url=javascript:bluestreak8008666_clic();&rnd=346.2680651591202 fbo DIRECT/92.123.65.129 application/x-shockwave-flash",
                 {'program' : "squid",
-                 'date' : datetime.fromtimestamp(float(1259845087.188)),
+                 'date' : datetime.utcfromtimestamp(float(1259845087.188)),
                  'elapsed' : "10",
                  'source_ip' : "82.238.42.70",
                  'event_id' : "TCP_MISS",
@@ -426,7 +426,7 @@ class Test(unittest.TestCase):
         """Test Arkoon FAST360 normalization"""
         self.aS('AKLOG-id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"',
                 {"program" : "arkoon",
-                 "date" : datetime(2004, 02, 25, 17, 38, 57),
+                 "date" : datetime(2004, 02, 25, 16, 38, 57),
                  "event_id" : "IP",
                  "priority" : "3",
                  "local_host" : "myArkoon",
