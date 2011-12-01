@@ -43,7 +43,8 @@ class Test(unittest.TestCase):
 
     def aS(self, log, subset, notexpected = ()):
         """Assert that the result of normalization of a given line log has the given subset."""
-        data = {'raw' : log}
+        data = {'raw' : log,
+                'body' : log}
         ln.lognormalize(data)
         for key in subset:
             self.assertEqual(data[key], subset[key])
@@ -336,7 +337,7 @@ class Test(unittest.TestCase):
     def test_apache(self):
         """Test Apache normalization"""
         # Test Common Log Format (CLF) "%h %l %u %t \"%r\" %>s %O"
-        self.aS("""Oct 22 01:27:16 pluto apache: 127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889""",
+        self.aS("""127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889""",
                 {'program' : "apache",
                  'source_ip' : "127.0.0.1",
                  'request' : 'GET /index/helper/test HTTP/1.1',
@@ -345,7 +346,7 @@ class Test(unittest.TestCase):
                  'body' : '127.0.0.1 - - [20/Jul/2009:00:29:39 +0300] "GET /index/helper/test HTTP/1.1" 200 889'})
 
         # Test "combined" log format  "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\""
-        self.aS('Oct 22 01:27:16 pluto apache: 10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"',
+        self.aS('10.10.4.4 - - [04/Dec/2009:16:23:13 +0100] "GET /tulipe.core.persistent.persistent-module.html HTTP/1.1" 200 2937 "http://10.10.4.86/toc.html" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3) Gecko/20090910 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3"',
                 {'program' : "apache",
                  'source_ip' : "10.10.4.4",
                  'source_logname' : "-",
