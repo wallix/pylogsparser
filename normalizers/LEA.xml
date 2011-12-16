@@ -117,7 +117,7 @@ for t in KNOWN:
 log['body'] = log['body'].replace("|", " ") 
 # Try to retrieve the date
 try:
-    log['date'] = datetime.fromtimestamp(int(dic['time']))
+    log['date'] = datetime.utcfromtimestamp(int(dic['time']))
 except:
     try:
         log['date'] = datetime.strptime(dic['time'], "%Y-%m-%d %H:%M:%S")
