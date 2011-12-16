@@ -71,10 +71,13 @@ class LogNormalizer():
         for norm_path in self.normalizers_paths:
             dtd = os.path.join(norm_path, 'normalizer.dtd')
             ctt = os.path.join(norm_path, 'common_tagTypes.xml')
+            ccb = os.path.join(norm_path, 'common_callBacks.xml')
             if os.path.isfile(dtd):
                 self.dtd = DTD(open(dtd))
             if os.path.isfile(ctt):
                 self.ctt = ctt
+            if os.path.isfile(ccb):
+                self.ccb = ccb
         self._cache = []
         self.reload()
         
@@ -87,7 +90,7 @@ class LogNormalizer():
                 warnings.warn('Skipping %s : invalid DTD' % path)
                 print 'invalid normalizer ', path
             else:
-                normalizer = Normalizer(norm, self.ctt)
+                normalizer = Normalizer(norm, self.ctt, self.ccb)
                 normalizer.uuid = self._compute_norm_uuid(normalizer)
                 self.normalizers.setdefault(normalizer.appliedTo, [])
                 self.normalizers[normalizer.appliedTo].append(normalizer)
