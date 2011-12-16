@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="vsftpd"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en">This normalizer handles vsftpd (Very Secure FTP Deamon) logs.</localized_desc>
+        <localized_desc language="fr"></localized_desc>
+    </description>
+    <authors>
+        <author>clo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="date" type="datetime">
+            <description>
+                <localized_desc language="en">Expression matching a date in the DDD MMM dd hh:mm:ss YYYY format.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[A-Z]{1}[a-z]{2} [A-Z]{1}[a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2} \d{4}</regexp>
+        </tagType>
+        <tagType name="vsftpd_field" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field (any non-whitespace character).</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>\S+</regexp>
+        </tagType>
+        <tagType name="transfer_type" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are a or b, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>a|b</regexp>
+        </tagType>
+        <tagType name="special_action_flag" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are _, C, U or T, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>_|C|T|U</regexp>
+        </tagType>
+        <tagType name="direction" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are o or i, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>o|i</regexp>
+        </tagType>
+        <tagType name="access_mode" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are a, g or r, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>a|g|r</regexp>
+        </tagType>
+        <tagType name="authentication_method" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are 0 or 1, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>0|1</regexp>
+        </tagType>
+        <tagType name="completion_status" type="basestring">
+            <description>
+                <localized_desc language="en">Expression matching a vsftpd field more accurately than the 'vsftpd field' tagType. Possible values are c or i, see the description of the tag [with the same name] for details.</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>c|i</regexp>
+        </tagType>
+    </tagTypes>
+    <patterns>
+        <pattern name="vsftpd-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>DATE\s+TSF_TIME\s+RMT_HOST\s+BYT_COUNT\s+FILENAME\s+TSF_TYPE\s+SPE_ACT_FLAG\s+DIR\s+ACC_MODE\s+USERNAME\s+SVC_NAME\s+AUTH_METHOD\s+AUTHENTICATED_USER_ID\s+COMPLETION_STATUS</text>
+            <tags>
+                <tag name="__date" tagType="date">
+                    <description>
+                        <localized_desc language="en">The current local time in the form "DDD MMM dd hh:mm:ss YYYY", where DDD is the day of the week, MMM is the month, dd is the day of the month, hh is the hour, mm is the min-utes, ss is the seconds, and YYYY is the year.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>DDD MMM dd hh:mm:ss YYYY</callback>
+                    </callbacks>
+                </tag>
+                <tag name="transfer_time" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The total time of the transfer in seconds.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>TSF_TIME</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">The remote host name.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>RMT_HOST</substitute>
+                </tag>
+                <tag name="len" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The amount of transferred bytes.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>BYT_COUNT</substitute>
+                </tag>
+                <tag name="filename" tagType="vsftpd_field">
+                    <description>
+                        <localized_desc language="en">The canonicalized (all symbolic links are resolved) abso-lute pathname of the transferred file. In case of the chrooted FTP session this field can be interpreted as the pathname in the chrooted environment(the default interpretation) or as the one in the realfile system. The second type of interpretation can be enabled by the command-line options of the ftpd.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>FILENAME</substitute>
+                </tag>
+                <tag name="transfer_type" tagType="transfer_type">
+                    <description>
+                        <localized_desc language="en">he single character that indicates the type of the trans-fer. The set of possible values is: 'a' (an ascii transfer) or 'b' (a binary transfer).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>TSF_TYPE</substitute>
+                </tag>
+                <tag name="special_action_flag" tagType="special_action_flag">
+                    <description>
+                        <localized_desc language="en">One or more single character flags indicating any special action taken. The set of possible values is: '_'(no action was taken), 'C'(the file was compressed [not in use]), 'U'(the file was uncompressed [not in use]) or 'T'(the file was tar'ed [not in use]).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SPE_ACT_FLAG</substitute>
+                </tag>
+                <tag name="direction" tagType="direction">
+                    <description>
+                        <localized_desc language="en">The direction of the transfer. The set of possible values is: 'o'(the outgoing transfer) or 'i'(the incoming transfer)</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DIR</substitute>
+                </tag>
+                <tag name="access_mode" tagType="access_mode">
+                    <description>
+                        <localized_desc language="en">The method by which the user is logged in. The set of possible values is: 'a'[anonymous](the anonymous guest user), 'g'[guest](the real but chrooted user [this capability is guided by ftpchroot(5) file]) or 'r'[real](the real user).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ACC_MODE</substitute>
+                </tag>
+                <tag name="user" tagType="vsftpd_field">
+                    <description>
+                        <localized_desc language="en">The user's login name in case of the real user, or the user's identification string in case of the anonymous user (by convention it is an email address of the user).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>USERNAME</substitute>
+                </tag>
+                <tag name="service_name" tagType="vsftpd_field">
+                    <description>
+                        <localized_desc language="en">The name of the service being invoked. The ftpd (utility uses the 'ftp' keyword).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SVC_NAME</substitute>
+                </tag>
+                <tag name="authentication_method" tagType="authentication_method">
+                    <description>
+                        <localized_desc language="en">The used method of the authentication. The set of possible values is: '0' None or '1' RFC931 Authentication (not in use).</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>AUTH_METHOD</substitute>
+                </tag>
+                <tag name="authenticated_user_id" tagType="vsftpd_field">
+                    <description>
+                        <localized_desc language="en">The user id returned by the authentication method. The '*' symbol is used if an authenticated user id is not available.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>AUTHENTICATED_USER_ID</substitute>
+                </tag>
+                <tag name="completion_status" tagType="completion_status">
+                    <description>
+                        <localized_desc language="en">The single character that indicates the status of the transfer. The set of possible values is: 'c' a complete transfer or 'i' an incomplete transfer.</localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>COMPLETION_STATUS</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Thu Mar 4 08:12:30 2004 1 202.114.40.242 37 /incoming/index.html a _ o a guest@my.net ftp 0 * c</text>
+                     <expectedTags>
+                          <expectedTag name="transfer_time">1</expectedTag>
+                          <expectedTag name="source_ip">202.114.40.242</expectedTag>
+                          <expectedTag name="len">37</expectedTag>
+                          <expectedTag name="filename">/incoming/index.html</expectedTag>
+                          <expectedTag name="transfer_type">a</expectedTag>
+                          <expectedTag name="special_action_flag">_</expectedTag>
+                          <expectedTag name="direction">o</expectedTag>
+                          <expectedTag name="access_mode">a</expectedTag>
+                          <expectedTag name="user">guest@my.net</expectedTag>
+                          <expectedTag name="service_name">ftp</expectedTag>
+                          <expectedTag name="authentication_method">0</expectedTag>
+                          <expectedTag name="authenticated_user_id">*</expectedTag>
+                          <expectedTag name="completion_status">c</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

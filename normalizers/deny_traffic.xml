@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="deny_traffic"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en"></localized_desc>
+        <localized_desc language="fr"></localized_desc>
+    </description>
+    <authors>
+        <author>clo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="application_id_char" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[-a-z0-9]+</regexp>
+        </tagType>
+        <tagType name="http_method" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>GET|OPTIONS|HEAD|POST|PUT|DELETE|TRACE|CONNECT</regexp>
+        </tagType>
+        <tagType name="http_protocol_version" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>HTTP/[0-9]+[.][0-9]+</regexp>
+        </tagType>
+        <tagType name="datetime" type="datetime">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[+]\d{2}</regexp>
+        </tagType>
+        <tagType name="path" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[^,]+</regexp>
+        </tagType>
+    </tagTypes>
+    <patterns>
+        <pattern name="deny_traffic-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>DENYALL_UID\s*,\s*DATE\s*,\s*LOCAL_IP\s*,\s*APP_ID\s*,\s*HOST_RDR\s*,\s*REMOTE_IP\s*,\s*REMOTE_PORT\s*,\s*,\s*,\s*,\s*USER_AGENT\s*,\s*HTTP_FLAGS\s*,\s*,\s*,\s*,\s*,\s*HTTP_METHOD\s*,\s*URL\s*,\s*,\s*HTTP_PROTOCOL_VERSION\s*,\s*HTTP_RESPONSE_CODE\s*,\s*RESPONSE_TIME\s*,\s*BYTES_SENT\s*,\s*BYTES_RECEIVED\s*,\s*,\s*,\s*</text>
+            <tags>
+                <tag name="deny_all_uid" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DENYALL_UID</substitute>
+                </tag>
+                <tag name="__date" tagType="datetime">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>YYYY-MM-DD hh:mm:ss</callback>
+                    </callbacks>
+                </tag>
+                <tag name="local_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>LOCAL_IP</substitute>
+                </tag>
+		<tag name="application_id" tagType="application_id_char">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>APP_ID</substitute>
+                </tag>
+                <tag name="host_reader" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HOST_RDR</substitute>
+                </tag>
+                <tag name="remote_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>REMOTE_IP</substitute>
+                </tag>
+                <tag name="remote_port" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>REMOTE_PORT</substitute>
+                </tag>
+                <tag name="user_agent" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>USER_AGENT</substitute>
+                </tag>
+                <tag name="http_flags" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HTTP_FLAGS</substitute>
+                </tag>
+                <tag name="http_method" tagType="http_method">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HTTP_METHOD</substitute>
+                </tag>
+                <tag name="url" tagType="path">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>URL</substitute>
+                </tag>
+                <tag name="http_protocol_version" tagType="http_protocol_version">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HTTP_PROTOCOL_VERSION</substitute>
+                </tag>
+                <tag name="http_response_code" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HTTP_RESPONSE_CODE</substitute>
+                </tag>
+                <tag name="response_time" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>RESPONSE_TIME</substitute>
+                </tag>
+                <tag name="bytes_sent" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>BYTES_SENT</substitute>
+                </tag>
+                <tag name="bytes_received" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>BYTES_RECEIVED</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>1,2011-01-24 18:07:55+01,192.168.80.10,d74ca776-265b-11e0-a54a-000c298895c5,192.168.80.10,192.168.80.1,57548,,,,Mozilla/5.0 (Windows; U; Windows NT 6.1; fr; rv:1.9.2.13) Gecko/20101203 AskTbTRL2/3.9.1.14019 Firefox/3.6.13,0,,,,,GET,/,,HTTP/1.1,200,215872,1625,409,,,</text>
+                     <expectedTags>
+                          <expectedTag name="deny_all_uid">1</expectedTag>
+                          <expectedTag name="local_ip">192.168.80.10</expectedTag>
+                          <expectedTag name="application_id">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
+                          <expectedTag name="host_reader">192.168.80.10</expectedTag>
+                          <expectedTag name="remote_ip">192.168.80.1</expectedTag>
+                          <expectedTag name="remote_port">57548</expectedTag>
+                          <expectedTag name="user_agent">Mozilla/5.0 (Windows; U; Windows NT 6.1; fr; rv:1.9.2.13) Gecko/20101203 AskTbTRL2/3.9.1.14019 Firefox/3.6.13</expectedTag>
+                          <expectedTag name="http_flags">0</expectedTag>
+                          <expectedTag name="http_method">GET</expectedTag>
+                          <expectedTag name="url">/</expectedTag>
+                          <expectedTag name="http_protocol_version">HTTP/1.1</expectedTag>
+                          <expectedTag name="http_response_code">200</expectedTag>
+                          <expectedTag name="response_time">215872</expectedTag>
+                          <expectedTag name="bytes_sent">1625</expectedTag>
+                          <expectedTag name="bytes_received">409</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+

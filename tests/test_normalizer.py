@@ -38,7 +38,7 @@ class TestSample(unittest.TestCase):
                                     'normalizer.dtd')))
         self.assertTrue(dtd.validate(n))
         # Create normalizer from xml definition
-        normalizer = Normalizer(n, os.path.join(self.normalizer_path, 'common_tagTypes.xml'))
+        normalizer = Normalizer(n, os.path.join(self.normalizer_path, 'common_tagTypes.xml'), os.path.join(self.normalizer_path, 'common_callBacks.xml'))
         self.assertEquals(normalizer.name, name)
         self.assertEquals(normalizer.version, version)
         self.assertTrue(normalizer.validate())
@@ -117,6 +117,15 @@ class TestSample(unittest.TestCase):
     
     def test_normalize_samples_023_bitdefender(self):
         self.normalize_samples('bitdefender.xml', 'bitdefender', 0.99)
+
+    def test_normalize_samples_024_denyall_traffic(self):
+        self.normalize_samples('deny_traffic.xml', 'deny_traffic', 0.99)
+
+    def test_normalize_samples_025_denyall_event(self):
+        self.normalize_samples('deny_event.xml', 'deny_event', 0.99)
+
+    def test_normalize_samples_026_vsftpd(self):
+        self.normalize_samples('vsftpd.xml', 'vsftpd', 0.99)
 
 
 class TestCSVPattern(unittest.TestCase):

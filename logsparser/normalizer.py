@@ -127,6 +127,32 @@ def get_generic_tagTypes(path = 'normalizers/common_tagTypes.xml'):
                        - generic tags will not be available." % err)
         return {}
 
+# import the common callbacks
+def get_generic_callBacks(path = 'normalizers/common_callBacks.xml'):
+    """Imports the common callbacks.
+
+    @return a dictionnary of callbacks."""
+    generic = {}
+    try:
+        callBacks = parse(open(path, 'r')).getroot()
+        for callBack in callBacks:
+            cb_name = callBack.get('name')
+            # cb_desc = {}
+            for child in callBack:
+                if child.tag == 'code':
+                    cb_code = child.text
+		# descriptions are not used yet but implemented in xml and dtd files for later use
+                # elif child.tag == 'description':
+                #     for desc in child:
+                #         lang = desc.get('language')
+                #         cb_desc[lang] = desc.text
+            generic[cb_name] = CallbackFunction(cb_code, cb_name)
+        return generic
+    except StandardError, err:
+        warnings.warn("Could not load generic callbacks definition file : %s \
+                       - generic callbacks will not be available." % err)
+        return {}
+
 class PatternExample(object):
     """Represents an log sample matching a given pattern. expected_tags is a
     dictionary of tag names -> values that should be obtained after the
@@ -367,7 +393,7 @@ class CallbackFunction(object):
 class Normalizer(object):
     """Log Normalizer, based on an XML definition file."""
     
-    def __init__(self, xmlconf, genericTagTypes):
+    def __init__(self, xmlconf, genericTagTypes, genericCallBacks):
         """initializes the normalizer with an lxml ElementTree.
 
         @param xmlconf: lxml ElementTree normalizer definition
@@ -377,6 +403,7 @@ class Normalizer(object):
         self.sys_path = xmlconf.docinfo.URL
         normalizer = xmlconf.getroot()
         self.genericTagTypes = get_generic_tagTypes(genericTagTypes)
+        self.genericCallBacks = get_generic_callBacks(genericCallBacks)
         self.description = {}
         self.authors = []
         self.tagTypes = {}
@@ -575,7 +602,9 @@ class Normalizer(object):
                                 # does not try to change important preset values such as
                                 # 'raw' and 'uuid'.
                                 try:
-                                    temp_wl = self.callbacks[cb](m[tag], temp_wl)
+                                    # if the callback doesn't exist in the normalizer file, it will
+                                    # search in the commonCallBack file.
+                                    temp_wl = self.callbacks.get(cb, self.genericCallBacks.get(cb))(m[tag], temp_wl)
                                 except Exception, e:
                                     pattern_name = self.patterns[self.tags_to_pattern[tag]].name
                                     raise Exception("Error on callback %s in pattern %s : %s - skipping" %

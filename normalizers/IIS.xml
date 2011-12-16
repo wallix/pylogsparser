@@ -48,8 +48,8 @@
         </tagType>
         <tagType name="separated_datetime" type="datetime">
             <description>
-                <localized_desc language="en">Expression matching a date in the datetime format.(yyyy-mm-dd hh:mm:ss)</localized_desc>
-                <localized_desc language="fr">Expression correspondant à une date au format datetime.(yyyy-mm-dd hh:mm:ss)</localized_desc>
+                <localized_desc language="en">Expression matching a date in the yyyy-mm-dd hh:mm:ss format.</localized_desc>
+                <localized_desc language="fr">Expression correspondant à une date au format yyyy-mm-dd hh:mm:ss.</localized_desc>
             </description>
             <regexp>[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{1,2}:[0-9]{2}:[0-9]{2}</regexp>
         </tagType>
@@ -62,46 +62,10 @@
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="modify_date">
-reg = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{2}), (?P&lt;hours&gt;\d{1,2}):(?P&lt;minutes&gt;\d{2}):(?P&lt;seconds&gt;\d{2})')
-
-date = reg.search(value)
-
-date = date.groupdict()
-
-year= int('20' + date.get('year'))
-month = int(date.get('month'))
-day = int(date.get('day'))
-hours = int(date.get('hours'))
-minutes = int(date.get('minutes'))
-seconds = int(date.get('seconds'))
-
-newdate = datetime(year, month, day, hours, minutes, seconds)
-
-log['date'] = newdate
-	</callback>
         <callback name="convert_time">
 value = float(value)
 value = value / 1000
 log['time_taken'] = value
-	</callback>
-        <callback name="get_datetime">
-reg = re.compile('(?P&lt;year&gt;\d{4})-(?P&lt;month&gt;\d{2})-(?P&lt;day&gt;\d{2}) (?P&lt;hours&gt;\d{2}):(?P&lt;minutes&gt;\d{2}):(?P&lt;seconds&gt;\d{2})')
-
-date = reg.search(value)
-
-date = date.groupdict()
-
-year= int(date.get('year'))
-month = int(date.get('month'))
-day = int(date.get('day'))
-hours = int(date.get('hours'))
-minutes = int(date.get('minutes'))
-seconds = int(date.get('seconds'))
-
-newdate = datetime(year, month, day, hours, minutes, seconds)
-
-log['date'] = newdate
 	</callback>
     </callbacks>
     <patterns>
@@ -119,7 +83,7 @@ log['date'] = newdate
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>get_datetime</callback>
+                        <callback>YYYY-MM-DD hh:mm:ss</callback>
                     </callbacks>
                </tag>
                 <tag name="service" tagType="w3c_field">
@@ -255,7 +219,7 @@ log['date'] = newdate
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>modify_date</callback>
+                        <callback>MM/DD/YY, hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="service" tagType="w3c_field">

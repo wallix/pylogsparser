@@ -63,7 +63,7 @@
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="modify_date">
+        <callback name="YYMMDD hh:mm:ss">
 reg = re.compile('(?P&lt;year&gt;[0-9]{2})(?P&lt;month&gt;[0-9]{2})(?P&lt;day&gt;[0-9]{2}) (?P&lt;hours&gt;(?:[0-9]{2}| [0-9])):(?P&lt;minutes&gt;[0-9]{2}):(?P&lt;seconds&gt;[0-9]{2})')
 
 date = reg.search(value)
@@ -96,7 +96,7 @@ log["date"] = newdate
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>modify_date</callback>
+                        <callback>YYMMDD hh:mm:ss</callback>
                     </callbacks>
                 </tag>
               	<tag name="id" tagType="Integer">
@@ -169,7 +169,7 @@ log["date"] = newdate
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>modify_date</callback>
+                        <callback>YYMMDD hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="component" tagType="component">

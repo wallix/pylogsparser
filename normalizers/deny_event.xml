@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="deny_event"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+    <description>
+        <localized_desc language="en"></localized_desc>
+        <localized_desc language="fr"></localized_desc>
+    </description>
+    <authors>
+        <author>clo@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="uuid" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[-0-9a-z]+</regexp>
+        </tagType>
+        <tagType name="dateandtime" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.]\d+</regexp>
+        </tagType>
+        <tagType name="attack_id" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[0-9-]+</regexp>
+        </tagType>
+        <tagType name="deny_field" type="basestring">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>[^,]+</regexp>
+        </tagType>
+    </tagTypes>
+    <patterns>
+        <pattern name="deny_event-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text>EVENT_UID\s*,\s*START_DATE\s*,\s*END_DATE\s*,\s*,\s*,\s*IP_DEVICE\s*,\s*IP_SOURCE\s*,\s*,\s*ALERT_TYPE_ID\s*,\s*ALERT_SUBTYPE_ID\s*,\s*SEVERITY\s*,\s*ALERT_ID\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*UUID_BLACKLIST\s*,\s*UUID_POLICY\s*,\s*UUID_APP\s*,\s*ACTION\s*,\s*HTTP_METHOD_USED\s*,\s*URL\s*,\s*PARAMETERS\s*,\s*URI\s+,\s*ATTACK_ID\s*,\s*,\s*,\s*,\s*,\s*,\s*</text>
+            <tags>
+                <tag name="event_uid" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>EVENT_UID</substitute>
+                </tag>
+                <tag name="__start_date" tagType="dateandtime">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>START_DATE</substitute>
+                    <callbacks>
+                        <callback>YYYY-MM-DD hh:mm:ss</callback>
+                    </callbacks>
+                </tag>
+                <tag name="__end_date" tagType="dateandtime">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>END_DATE</substitute>
+                    <callbacks>
+                        <callback>YYYY-MM-DD hh:mm:ss</callback>
+                    </callbacks>
+                </tag>
+                <tag name="ip_device" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>IP_DEVICE</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>IP_SOURCE</substitute>
+                </tag>
+                <tag name="alert_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ALERT_TYPE_ID</substitute>
+                </tag>
+                <tag name="alert_subtype" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ALERT_SUBTYPE_ID</substitute>
+                </tag>
+                <tag name="alert_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ALERT_ID</substitute>
+                </tag>
+                <tag name="severity" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                </tag>
+                <tag name="blacklist_uuid" tagType="uuid">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UUID_BLACKLIST</substitute>
+                </tag>
+                <tag name="policy_uuid" tagType="uuid">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UUID_POLICY</substitute>
+                </tag>
+                <tag name="application_uuid" tagType="uuid">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UUID_APP</substitute>
+                </tag>
+                <tag name="action" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                </tag>
+                <tag name="http_method" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>HTTP_METHOD_USED</substitute>
+                </tag>
+                <tag name="url" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>URL</substitute>
+                </tag>
+                <tag name="parameters" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PARAMETERS</substitute>
+                </tag>
+                <tag name="uri" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>URI</substitute>
+                </tag>
+                <tag name="attack_id" tagType="attack_id">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ATTACK_ID</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>228,2011-01-24 18:08:06.957252,2011-01-24 18:08:06.957252,,,192.168.80.10,192.168.80.1,,4,1,4,0,,,,,,,,,,,11111111-1111-1111-1111-111111111111,7ed198ca-26d5-11e0-a46f-000c298895c5,d74ca776-265b-11e0-a54a-000c298895c5,deny,GET,/cgi-bin/badstore.cgi?searchquery=1%27+OR+1%3D1+%23&amp;action=search&amp;x=0&amp;y=0,GET /cgi-bin/badstore.cgi?searchquery=1' OR 1=1 #&amp;action=search&amp;x=0&amp;y=0,(uri) ,11230-0 ,,,,,,</text>
+                     <expectedTags>
+                          <expectedTag name="event_uid">228</expectedTag>
+                          <expectedTag name="ip_device">192.168.80.10</expectedTag>
+                          <expectedTag name="source_ip">192.168.80.1</expectedTag>
+                          <expectedTag name="alert_type">4</expectedTag>
+                          <expectedTag name="alert_subtype">1</expectedTag>
+                          <expectedTag name="severity">4</expectedTag>
+                          <expectedTag name="alert_id">0</expectedTag>
+                          <expectedTag name="blacklist_uuid">11111111-1111-1111-1111-111111111111</expectedTag>
+                          <expectedTag name="policy_uuid">7ed198ca-26d5-11e0-a46f-000c298895c5</expectedTag>
+                          <expectedTag name="application_uuid">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
+                          <expectedTag name="action">deny</expectedTag>
+                          <expectedTag name="http_method">GET</expectedTag>
+                          <expectedTag name="url">/cgi-bin/badstore.cgi?searchquery=1%27+OR+1%3D1+%23&amp;action=search&amp;x=0&amp;y=0</expectedTag>
+                          <expectedTag name="parameters">GET /cgi-bin/badstore.cgi?searchquery=1' OR 1=1 #&amp;action=search&amp;x=0&amp;y=0</expectedTag>
+                          <expectedTag name="uri">(uri)</expectedTag>
+                          <expectedTag name="attack_id">11230-0</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
