@@ -48,12 +48,6 @@
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="decode_date">
-r = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{4}) (?P&lt;hour&gt;\d{2}):(?P&lt;minute&gt;\d{2}):(?P&lt;second&gt;\d{2})')
-date = r.search(value).groupdict()
-date = dict([(u, int(date[u])) for u in date.keys()])
-log['date'] = datetime(**date)
-        </callback>
         <callback name="decode_action">
 action, action_info = value.split()
 log['action'] = action
@@ -109,7 +103,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_date</callback>
+                        <callback>dd/MM/YYYY :hh:mm:ss</callback>
                         <callback>extract_body</callback>
                     </callbacks>
                 </tag>
@@ -262,7 +256,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_date</callback>
+                        <callback>dd/MM/YYYY :hh:mm:ss</callback>
                         <callback>extract_body</callback>
                     </callbacks>
                 </tag>
@@ -294,7 +288,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_date</callback>
+                        <callback>dd/MM/YYYY :hh:mm:ss</callback>
                         <callback>extract_body</callback>
                     </callbacks>
                 </tag>
@@ -326,7 +320,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_date</callback>
+                        <callback>dd/MM/YYYY :hh:mm:ss</callback>
                         <callback>extract_body</callback>
                     </callbacks>
                 </tag>

@@ -37,6 +37,67 @@
 <!-- Definition of commmon callbacks. -->
 
 <callBacks>
+	<callback name="dd/MM/YYYY :hh:mm:ss">
+		<description>
+			<localized_desc language="en">
+			dd matches the number of the day (1, 2, 3, etc...)
+			MM matches the name of the month (Jan, Feb, Mar, etc...)
+			YYYY matches the year (2012)
+			hh:mm:ss matches the time (23:54:42)
+			</localized_desc>
+		</description>
+		<code>
+r = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{4}) (?P&lt;hour&gt;\d{2}):(?P&lt;minute&gt;\d{2}):(?P&lt;second&gt;\d{2})')
+date = r.search(value).groupdict()
+date = dict([(u, int(date[u])) for u in date.keys()])
+log['date'] = datetime(**date)
+		</code>
+	</callback>
+	<callback name="dd/MMM/YYYY:hh:mm:ss">
+		<description>
+			<localized_desc language="en">
+			dd matches the number of the day (1, 2, 3, etc...)
+			MMM matches the name of the month (Jan, Feb, Mar, etc...)
+			YYYY matches the year (2012)
+			hh:mm:ss matches the time (23:54:42)
+			</localized_desc>
+		</description>
+		<code>
+english_months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
+ctf = re.compile("(?P&lt;day&gt;\d+)/(?P&lt;month&gt;[a-zA-Z]+)/(?P&lt;year&gt;\d+):(?P&lt;hour&gt;\d+):(?P&lt;minute&gt;\d+):(?P&lt;second&gt;\d+)")
+m = ctf.search(value)
+if m:
+    vals = m.groupdict()
+    vals['month'] = english_months[vals['month']]
+    vals = dict( [ (u, int(vals[u])) for u in vals.keys() ])
+    log['date'] = datetime(**vals)
+else:
+    raise Exception, "invalid date string %s" % value
+		</code>
+	</callback>
+	<callback name="MMM dd hh:mm:ss">
+		<description>
+			<localized_desc language="en">
+			MMM matches the name of the month (Jan, Feb, Mar, etc...)
+			dd matches the number of the day (1, 2, 3, etc...)
+			hh:mm:ss matches the time (23:54:42)
+			</localized_desc>
+		</description>
+		<code>
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']   
+now = datetime.now()
+currentyear = now.year
+# Following line may throw a lot of ValueError
+newdate = datetime(currentyear,
+                   MONTHS.index(value[0:3]) + 1,
+                   int(value[4:6]),
+                   int(value[7:9]),
+                   int(value[10:12]),
+                   int(value[13:15]))
+log["date"] = newdate
+		</code>
+	</callback>
 	<callBack name="DDD MMM dd hh:mm:ss YYYY">
 		<description>
 			<localized_desc language="en">
