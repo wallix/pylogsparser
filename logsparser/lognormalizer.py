@@ -108,6 +108,7 @@ class LogNormalizer():
             for root, dirs, files in os.walk(path):
                 for name in files:
                     if not name.startswith('common_tagTypes') and \
+                       not name.startswith('common_callBacks') and \
                            name.endswith('.xml'):
                         yield os.path.join(root, name)
 

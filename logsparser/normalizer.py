@@ -141,6 +141,7 @@ def get_generic_callBacks(path = 'normalizers/common_callBacks.xml'):
             for child in callBack:
                 if child.tag == 'code':
                     cb_code = child.text
+		# descriptions are not used yet but implemented in xml and dtd files for later use
                 # elif child.tag == 'description':
                 #     for desc in child:
                 #         lang = desc.get('language')
@@ -603,10 +604,7 @@ class Normalizer(object):
                                 try:
                                     # if the callback doesn't exist in the normalizer file, it will
                                     # search in the commonCallBack file.
-                                    temp = self.callbacks.get(cb)
-                                    if temp == None:
-                                        temp = self.genericCallBacks.get(cb)
-                                    temp_wl = temp(m[tag], temp_wl)
+                                    temp_wl = self.callbacks.get(cb, self.genericCallBacks.get(cb))(m[tag], temp_wl)
                                 except Exception, e:
                                     pattern_name = self.patterns[self.tags_to_pattern[tag]].name
                                     raise Exception("Error on callback %s in pattern %s : %s - skipping" %
