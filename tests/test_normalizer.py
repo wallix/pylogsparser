@@ -127,6 +127,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_026_vsftpd(self):
         self.normalize_samples('vsftpd.xml', 'vsftpd', 0.99)
 
+    def test_normalize_samples_027_wabauth(self):
+        self.normalize_samples('wabauth.xml', 'wabauth', 0.99)
+
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""

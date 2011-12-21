@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="wabauth"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="search"
+            appliedTo="body">
+ <description>
+     <localized_desc language="en">This normalizer is used to parse Wallix Admin Bastion authentication logs.</localized_desc>
+     <localized_desc language="fr"></localized_desc>
+ </description>
+ <authors>
+     <author>nba@wallix.com</author>
+ </authors>
+
+ <!-- Most of the following declarations should be unnecessary once we define a pool of generic types. They are here for educational purposes.-->
+ <tagTypes>
+     <tagType name="prim_auth" type="basestring">
+         <description>
+             <localized_desc language="en">primary_authentication</localized_desc>
+         </description>
+         <regexp>primary_authentication</regexp>
+    </tagType>
+    <tagType name="sessionOpened" type="basestring">
+         <description>
+             <localized_desc language="en"></localized_desc>
+         </description>
+         <regexp>session opened</regexp>
+    </tagType>
+         <tagType name="sessionClosed" type="basestring">
+         <description>
+             <localized_desc language="en"></localized_desc>
+         </description>
+         <regexp>session closed</regexp>
+    </tagType>
+    <tagType name="wab_id" type="basestring">
+        <description>
+            <localized_desc language="en">A user name as defined in Wallix Admin Bastion</localized_desc>
+        </description>
+        <regexp>[^: ]+</regexp>
+    </tagType>
+    <tagType name="ip" type="basestring">
+        <description>
+            <localized_desc language="en">an IP</localized_desc>
+        </description>
+        <regexp>[^: ]+</regexp>
+    </tagType>
+    <tagType name="comment" type="basestring">
+        <description>
+            <localized_desc language="en">A arbitrary string</localized_desc>
+        </description>
+        <regexp>[^: ]*</regexp>
+    </tagType>
+    </tagTypes>
+ <patterns>
+     <pattern name="primary_authentication">
+         <description>
+             <localized_desc language="en">an even raised when a user is trying to authenticate itself on the WAB</localized_desc>
+         </description>
+         <text>type='PRIMARY_AUTHENTICATION' timestamp='[^']+' username='USERNAME' client_ip='CLIENT_IP' diagnostic='DIAG'</text>
+         <tags>
+             <tag name="type" tagType="prim_auth">
+                 <description>
+                     <localized_desc language="en">The even type</localized_desc>
+                 </description>
+                 <substitute>PRIMARY_AUTHENTICATION</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user being used.</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The ip of the client being connected.</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+                  <tag name="diagnostic" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Connexion attempt result.</localized_desc>
+                 </description>
+                 <substitute>DIAG</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='primary_authentication' timestamp='2011-12-20 16:21:50.427830' username='admin' client_ip='10.10.4.25' diagnostic='SUCCESS'</text>
+                 <expectedTags>
+                     <expectedTag name="type">primary_authentication</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="client_ip">10.10.4.25</expectedTag>
+                     <expectedTag name="diagnostic">SUCCESS</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+     </pattern>
+     
+     <pattern name="session opened">
+         <description>
+             <localized_desc language="en"></localized_desc>
+         </description>
+         <text>type='SESSION_OPENED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE'</text>
+         <tags>
+             <tag name="type" tagType="sessionOpened">
+                 <description>
+                     <localized_desc language="en">The even type</localized_desc>
+                 </description>
+                 <substitute>SESSION_OPENED</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user being used.</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+             <tag name="account" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target account used.</localized_desc>
+                 </description>
+                 <substitute>ACCOUNT</substitute>
+             </tag>
+             <tag name="resource" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target/resource accessed</localized_desc>
+                 </description>
+                 <substitute>RESOURCE</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The ip of the client being connected.</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+             <tag name="source_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">The protocol used by the client to connect to the wab</localized_desc>
+                 </description>
+                 <substitute>SOURCE_PROTO</substitute>
+             </tag>
+             <tag name="dest_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">the protocol used by the WAB to connect to the target/resource.</localized_desc>
+                 </description>
+                 <substitute>DEST_PROTO</substitute>
+             </tag>
+             <tag name="message" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Other comment.</localized_desc>
+                 </description>
+                 <substitute>MESSAGE</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='session opened' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''</text>
+                 <expectedTags>
+                     <expectedTag name="account">root</expectedTag>
+                     <expectedTag name="client_ip">10.10.4.25</expectedTag>
+                     <expectedTag name="dest_proto">SFTP_SESSION</expectedTag>
+                     <expectedTag name="resource">debian32</expectedTag>
+                     <expectedTag name="source_proto">SFTP_SESSION</expectedTag>
+                     <expectedTag name="type">session opened</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                 </expectedTags>
+            </example>
+        </examples>
+     </pattern>
+
+      <pattern name="session closed">
+         <description>
+             <localized_desc language="en">an even raised when a user is trying to authenticate itself on the WAB</localized_desc>
+         </description>
+         <text>type='SESSION_CLOSED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE'</text>
+         <tags>
+             <tag name="type" tagType="sessionClosed">
+                 <description>
+                     <localized_desc language="en">The even type</localized_desc>
+                 </description>
+                 <substitute>SESSION_CLOSED</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user being used.</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+             <tag name="account" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target account used.</localized_desc>
+                 </description>
+                 <substitute>ACCOUNT</substitute>
+             </tag>
+             <tag name="resource" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target/resource accessed</localized_desc>
+                 </description>
+                 <substitute>RESOURCE</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The ip of the client being connected.</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+             <tag name="source_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">The protocol used by the client to connect to the wab</localized_desc>
+                 </description>
+                 <substitute>SOURCE_PROTO</substitute>
+             </tag>
+             <tag name="dest_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">the protocol used by the WAB to connect to the target/resource.</localized_desc>
+                 </description>
+                 <substitute>DEST_PROTO</substitute>
+             </tag>
+             <tag name="message" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Other comment.</localized_desc>
+                 </description>
+                 <substitute>MESSAGE</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='session closed' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''</text>
+                 <expectedTags>
+                     <expectedTag name="account">root</expectedTag>
+                     <expectedTag name="client_ip">10.10.4.25</expectedTag>
+                     <expectedTag name="dest_proto">SFTP_SESSION</expectedTag>
+                     <expectedTag name="resource">debian32</expectedTag>
+                     <expectedTag name="source_proto">SFTP_SESSION</expectedTag>
+                     <expectedTag name="type">session closed</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                 </expectedTags>
+             </example>
+         </examples>
+     </pattern>
+</patterns>
+</normalizer>
+
+
+

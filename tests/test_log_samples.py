@@ -602,5 +602,45 @@ class Test(unittest.TestCase):
                  'body' : 'failed to initialize the AV core',
                  'date' : datetime(2011,10,24,04,31,39)})
 
+    def test_simple_wabauth(self):
+        """Test syslog logs"""
+        self.aS("Dec 20 17:20:22 wab2 WAB(CORE)[18190]: type='session closed' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''",
+                { 'account': 'root',
+                  'client_ip': '10.10.4.25',
+                  'date': datetime(2011, 12, 20, 17, 20, 22),
+                  'dest_proto': 'SFTP_SESSION',
+                  'message': '',
+                  'pid': '18190',
+                  'program': 'WAB(CORE)',
+                  'resource': 'debian32',
+                  'source': 'wab2',
+                  'source_proto': 'SFTP_SESSION',
+                  'type': 'session closed',
+                  'username': 'admin'})
+
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='primary_authentication' timestamp='2011-12-20 17:19:35.621952' username='admin' client_ip='10.10.4.25' diagnostic='SUCCESS'",
+                {'client_ip': '10.10.4.25',
+                 'date': datetime(2011, 12, 20, 17, 19, 35),
+                 'diagnostic': 'SUCCESS',
+                 'pid': '18190',
+                 'program': 'WAB(CORE)',
+                 'source': 'wab2',
+                 'type': 'primary_authentication',
+                 'username': 'admin'})
+
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='session opened' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''",
+                { 'account': 'root',
+                  'client_ip': '10.10.4.25',
+                  'date': datetime(2011, 12, 20, 17, 19, 35),
+                  'dest_proto': 'SFTP_SESSION',
+                  'message': '',
+                  'pid': '18190',
+                  'program': 'WAB(CORE)',
+                  'resource': 'debian32',
+                  'source': 'wab2',
+                  'source_proto': 'SFTP_SESSION',
+                  'type': 'session opened',
+                  'username': 'admin'})
+       
 if __name__ == "__main__":
     unittest.main()
