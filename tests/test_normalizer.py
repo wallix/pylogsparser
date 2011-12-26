@@ -24,6 +24,7 @@ import unittest
 from datetime import datetime
 from logsparser.normalizer import Normalizer, TagType, Tag, CallbackFunction, CSVPattern, get_generic_tagTypes
 from lxml.etree import parse, DTD
+from StringIO import StringIO
 
 class TestSample(unittest.TestCase):
     """Unit tests for logsparser.normalize. Validate sample log example"""
@@ -296,6 +297,95 @@ log["date"] = newdate
         self.assertEqual(ret['date'], 'Jul 18 08:55:35')
         self.assertEqual(ret['id'], '83')
         self.assertEqual(ret['msg'], 'start listening on =127.0.0.1 pam auth started')
+
+
+class TestCommonElementsPrecedence(unittest.TestCase):
+    """Unit test used to validate that callbacks defined in a normalizer
+    take precedence over common callbacks."""
+
+    normalizer_path = os.environ['NORMALIZERS_PATH']
+    fake_syslog = StringIO("""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="syslog"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en">Uh</localized_desc>
+  <localized_desc language="fr">Ah</localized_desc>
+ </description>
+ <authors>
+  <author>mhu@wallix.com</author>
+ </authors>
+<tagTypes>
+  <tagType name="MACAddress" type="basestring">
+   <description>
+    <localized_desc language="en">Oh</localized_desc>
+    <localized_desc language="fr">Eh</localized_desc>
+   </description>
+   <regexp>\d{1,3}</regexp>
+  </tagType>
+ </tagTypes>
+ <callbacks>
+  <callback name="MMM dd hh:mm:ss">
+log["TEST"] = "TEST"
+  </callback>
+ </callbacks>
+ <patterns>
+  <pattern name="syslog-001">
+   <description>
+    <localized_desc language="en">Hoo</localized_desc>
+    <localized_desc language="fr">Hi</localized_desc>
+   </description>
+   <text>MYMAC MYWHATEVER</text>
+   <tags>
+    <tag name="mac" tagType="MACAddress">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">urrrh</localized_desc>
+     </description>
+     <substitute>MYMAC</substitute>
+    </tag>
+    <tag name="__whatever" tagType="Anything">
+     <description>
+     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="fr">bleeeh</localized_desc></description>
+     <substitute>MYWHATEVER</substitute>
+     <callbacks>
+      <callback>MMM dd hh:mm:ss</callback>
+     </callbacks>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>99 HERPA DERP</text>
+     <expectedTags>
+      <expectedTag name="mac">99</expectedTag>
+      <expectedTag name="TEST">TEST</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>""")
+    n = parse(fake_syslog)
+
+    def test_00_validate_fake_syslog(self):
+        """Validate the fake normalizer"""
+        dtd = DTD(open(os.path.join(self.normalizer_path,
+                                    'normalizer.dtd')))
+        self.assertTrue(dtd.validate(self.n))
+        
+    def test_10_common_elements_precedence(self):
+        """Testing callbacks priority"""
+        normalizer = Normalizer(self.n, 
+                                os.path.join(self.normalizer_path, 'common_tagTypes.xml'), 
+                                os.path.join(self.normalizer_path, 'common_callBacks.xml'))
+        self.assertTrue(normalizer.validate())
+
+
 
 if __name__ == "__main__":
     unittest.main()
