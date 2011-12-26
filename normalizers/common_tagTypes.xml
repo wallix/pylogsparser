@@ -80,7 +80,7 @@
             <localized_desc language="en">Matches a MAC address.</localized_desc>
             <localized_desc language="fr">Correspond à une adresse MAC.</localized_desc>
         </description>
-        <regexp>[0-9a-eA-E]{2}:(?:[0-9a-eA-E]{2}:){4}[0-9a-eA-E]{2}</regexp>
+        <regexp>[0-9a-fA-F]{2}:(?:[0-9a-fA-F]{2}:){4}[0-9a-fA-F]{2}</regexp>
     </tagType>
     <tagType name="Email" type="basestring">
         <description>

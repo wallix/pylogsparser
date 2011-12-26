@@ -21,9 +21,53 @@
 
 import os
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from logsparser.normalizer import get_generic_tagTypes
 from logsparser.normalizer import get_generic_callBacks
+
+
+def get_sensible_year(*args):
+    """args is a list of ordered date elements, from month and day (both 
+    mandatory) to eventual second. The function gives the most sensible 
+    year for that set of values, so that the date is not set in the future."""
+    year = int(datetime.now().year)
+    d = datetime(year, *args)
+    if d > datetime.now():
+        return year - 1
+    return year  
+
+
+def generic_time_callback_test(instance, cb):
+    """Testing time formatting callbacks. This is boilerplate code."""
+    # so far only time related callbacks were written. If it changes, list
+    # here non related functions to skip in this test.
+    DATES_TO_TEST = [ datetime.now() + timedelta(-1),
+                      datetime.now() + timedelta(-180),
+                      datetime.now() + timedelta(1), # will always be considered as in the future unless you're testing on new year's eve...
+                    ]
+    # The pattern translation list. Order is important !
+    translations = [ ("YYYY", "%Y"),
+                     ("YY"  , "%y"),
+                     ("DDD" , "%a"),        # localized day
+                     ("DD"  , "%d"),        # day with eventual leading 0
+                     ("dd"  , "%d"),        
+                     ("MMM" , "%b"),        # localized month
+                     ("MM"  , "%m"),        # month number with eventual leading 0
+                     ("hh"  , "%H"),
+                     ("mm"  , "%M"),
+                     ("ss"  , "%S") ]
+    pattern = cb
+    for old, new in translations:
+        pattern = pattern.replace(old, new)
+    for d in DATES_TO_TEST:
+        value = d.strftime(pattern)
+        expected_result = datetime.strptime(value, pattern)
+        expected_year = get_sensible_year(*expected_result.timetuple()[1:-3])
+        expected_result = expected_result.replace(year = expected_year)
+        log = {}
+        instance.cb[cb](value, log)
+        instance.assertTrue("date" in log.keys())
+        instance.assertEqual(log['date'], expected_result)
 
 
 class TestGenericLibrary(unittest.TestCase):
@@ -32,17 +76,7 @@ class TestGenericLibrary(unittest.TestCase):
     tagTypes = get_generic_tagTypes(os.path.join(normalizer_path,
                                                  'common_tagTypes.xml'))
     cb = get_generic_callBacks(os.path.join(normalizer_path,
-                                            'common_callBacks.xml'))
-                                                
-    def get_sensible_year(*args):
-        """args is a list of ordered date elements, from month and day (both 
-        mandatory) to eventual second. The function gives the most sensible 
-        year for that set of values, so that the date is not set in the future."""
-        year = datetime.now().year
-        d = datetime(year, *args)
-        if d > datetime.now():
-            return year - 1
-        return year         
+                                            'common_callBacks.xml'))       
         
     def test_00_availability(self):
         """Testing libraries' availability"""
@@ -67,6 +101,35 @@ class TestGenericLibrary(unittest.TestCase):
         self.assertTrue(self.tagTypes['MACAddress'].compiled_regexp.match('0e:88:6a:4b:00:ff'))
         self.assertTrue(self.tagTypes['ZuluTime'].compiled_regexp.match('2012-12-21'))
         self.assertTrue(self.tagTypes['ZuluTime'].compiled_regexp.match('2012-12-21T12:34:56.99'))
+
+    # I wish there was a way to create these tests on the fly ...
+    def test_20_test_time_callback(self):
+        """Testing callback MM/dd/YYYY hh:mm:ss"""
+        generic_time_callback_test(self, "MM/dd/YYYY hh:mm:ss")
+
+    def test_30_test_time_callback(self):
+        """Testing callback dd/MMM/YYYY:hh:mm:ss"""
+        generic_time_callback_test(self, "dd/MMM/YYYY:hh:mm:ss")
         
+    def test_40_test_time_callback(self):
+        """Testing callback MMM dd hh:mm:ss"""
+        generic_time_callback_test(self, "MMM dd hh:mm:ss")
+
+    def test_50_test_time_callback(self):
+        """Testing callback DDD MMM dd hh:mm:ss YYYY"""
+        generic_time_callback_test(self, "DDD MMM dd hh:mm:ss YYYY")
+        
+    def test_60_test_time_callback(self):
+        """Testing callback YYYY-MM-DD hh:mm:ss"""
+        generic_time_callback_test(self, "YYYY-MM-DD hh:mm:ss")
+        
+    def test_70_test_time_callback(self):
+        """Testing callback MM/DD/YY, hh:mm:ss"""
+        generic_time_callback_test(self, "MM/DD/YY, hh:mm:ss")
+
+    def test_70_test_time_callback(self):
+        """Testing callback YYMMDD hh:mm:ss"""
+        generic_time_callback_test(self, "YYMMDD hh:mm:ss")
+
 if __name__ == "__main__":
     unittest.main()
