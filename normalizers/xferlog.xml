@@ -33,10 +33,12 @@
             appliedTo="raw">
     <description>
         <localized_desc language="en">This normalizer handles FTP logs in the xferlog format.
-This format is supported by a wide range of FTP servers like Wu-Ftpd, VSFTPd, ProFTPD or standard BSD ftpd.</localized_desc>
+This format is supported by a wide range of FTP servers like Wu-Ftpd, VSFTPd, ProFTPD or standard BSD ftpd.
+The "program" tag is therefore set to the generic value "ftpd".</localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs au format xferlog.
 Le format xferlog est utilisé pour consigner les événements par de nombreux serveurs FTP, tels que 
-Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
+Wu-Ftpd, ProFTPD ou la version BSD de ftpd.
+La métadonnée "program" reçoit de fait la valeur générique "ftpd".</localized_desc>
     </description>
     <authors>
         <author>clo@wallix.com</author>
@@ -99,6 +101,32 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
             <regexp>c|i</regexp>
         </tagType>
     </tagTypes>
+    <callbacks>
+        <callback name="decode_transfer_type">
+decoder = {'a' : 'ascii', 'b' : 'binary'}
+log['transfer_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_special_action_flag">
+decoder = {'C' : 'compressed', 'U' : 'uncompressed', 'T' : "tar'ed", "_" : "none"}
+log['special_action'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_direction">
+decoder = {'o' : 'outgoing', 'i' : 'ingoing'}
+log['direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_access_mode">
+decoder = {'a' : 'anonymous', 'g' : 'guest', 'r' : 'real'}
+log['access_mode'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_authentication_method">
+decoder = {'0' : 'none', '1' : 'RFC931'}
+log['authentication_method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_completion_status">
+decoder = {'c' : 'complete', 'i' : 'incomplete'}
+log['completion_status'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+    </callbacks>
     <patterns>
         <pattern name="vsftpd-001">
             <description>
@@ -145,12 +173,15 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
                     </description>
                     <substitute>FILENAME</substitute>
                 </tag>
-                <tag name="transfer_type" tagType="transfer_type">
+                <tag name="transfer_type_code" tagType="transfer_type">
                     <description>
                         <localized_desc language="en">he single character that indicates the type of the trans-fer. The set of possible values is: 'a' (an ascii transfer) or 'b' (a binary transfer).</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>TSF_TYPE</substitute>
+                    <callbacks>
+                        <callback>decode_transfer_type</callback>
+                    </callbacks>
                 </tag>
                 <tag name="special_action_flag" tagType="special_action_flag">
                     <description>
@@ -158,20 +189,29 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>SPE_ACT_FLAG</substitute>
+                    <callbacks>
+                        <callback>decode_special_action_flag</callback>
+                    </callbacks>
                 </tag>
-                <tag name="direction" tagType="direction">
+                <tag name="direction_code" tagType="direction">
                     <description>
                         <localized_desc language="en">The direction of the transfer. The set of possible values is: 'o'(the outgoing transfer) or 'i'(the incoming transfer)</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>DIR</substitute>
+                    <callbacks>
+                        <callback>decode_direction</callback>
+                    </callbacks>
                 </tag>
-                <tag name="access_mode" tagType="access_mode">
+                <tag name="access_mode_code" tagType="access_mode">
                     <description>
                         <localized_desc language="en">The method by which the user is logged in. The set of possible values is: 'a'[anonymous](the anonymous guest user), 'g'[guest](the real but chrooted user [this capability is guided by ftpchroot(5) file]) or 'r'[real](the real user).</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ACC_MODE</substitute>
+                    <callbacks>
+                        <callback>decode_access_mode</callback>
+                    </callbacks>
                 </tag>
                 <tag name="user" tagType="vsftpd_field">
                     <description>
@@ -187,12 +227,15 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
                     </description>
                     <substitute>SVC_NAME</substitute>
                 </tag>
-                <tag name="authentication_method" tagType="authentication_method">
+                <tag name="authentication_method_code" tagType="authentication_method">
                     <description>
                         <localized_desc language="en">The used method of the authentication. The set of possible values is: '0' None or '1' RFC931 Authentication (not in use).</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>AUTH_METHOD</substitute>
+                    <callbacks>
+                        <callback>decode_authentication_method</callback>
+                    </callbacks>
                 </tag>
                 <tag name="authenticated_user_id" tagType="vsftpd_field">
                     <description>
@@ -201,12 +244,15 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
                     </description>
                     <substitute>AUTHENTICATED_USER_ID</substitute>
                 </tag>
-                <tag name="completion_status" tagType="completion_status">
+                <tag name="completion_status_code" tagType="completion_status">
                     <description>
                         <localized_desc language="en">The single character that indicates the status of the transfer. The set of possible values is: 'c' a complete transfer or 'i' an incomplete transfer.</localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>COMPLETION_STATUS</substitute>
+                    <callbacks>
+                        <callback>decode_completion_status</callback>
+                    </callbacks>
                 </tag>
             </tags>
             <examples>
@@ -217,19 +263,29 @@ Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
                           <expectedTag name="source_ip">202.114.40.242</expectedTag>
                           <expectedTag name="len">37</expectedTag>
                           <expectedTag name="filename">/incoming/index.html</expectedTag>
-                          <expectedTag name="transfer_type">a</expectedTag>
+                          <expectedTag name="transfer_type_code">a</expectedTag>
+                          <expectedTag name="transfer_type">ascii</expectedTag>
                           <expectedTag name="special_action_flag">_</expectedTag>
-                          <expectedTag name="direction">o</expectedTag>
-                          <expectedTag name="access_mode">a</expectedTag>
+                          <expectedTag name="special_action">none</expectedTag>
+                          <expectedTag name="direction_code">o</expectedTag>
+                          <expectedTag name="direction">outgoing</expectedTag>
+                          <expectedTag name="access_mode_code">a</expectedTag>
+                          <expectedTag name="access_mode">anonymous</expectedTag>
                           <expectedTag name="user">guest@my.net</expectedTag>
                           <expectedTag name="service_name">ftp</expectedTag>
-                          <expectedTag name="authentication_method">0</expectedTag>
+                          <expectedTag name="authentication_method_code">0</expectedTag>
+                          <expectedTag name="authentication_method">none</expectedTag>
                           <expectedTag name="authenticated_user_id">*</expectedTag>
-                          <expectedTag name="completion_status">c</expectedTag>
+                          <expectedTag name="completion_status">complete</expectedTag>
+                          <expectedTag name="completion_status_code">c</expectedTag>
+                          <expectedTag name="program">ftpd</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
         </pattern>
     </patterns>
+    <commonTags>
+        <commonTag name="program">ftpd</commonTag>
+    </commonTags>
 </normalizer>
 
