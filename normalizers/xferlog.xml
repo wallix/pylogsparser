@@ -25,15 +25,18 @@
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
-<normalizer name="vsftpd"
+<normalizer name="xferlog"
             version="0.99"
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
             appliedTo="raw">
     <description>
-        <localized_desc language="en">This normalizer handles vsftpd (Very Secure FTP Deamon) logs.</localized_desc>
-        <localized_desc language="fr"></localized_desc>
+        <localized_desc language="en">This normalizer handles FTP logs in the xferlog format.
+This format is supported by a wide range of FTP servers like Wu-Ftpd, VSFTPd, ProFTPD or standard BSD ftpd.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs au format xferlog.
+Le format xferlog est utilisé pour consigner les événements par de nombreux serveurs FTP, tels que 
+Wu-Ftpd, ProFTPD ou la version BSD de ftpd.</localized_desc>
     </description>
     <authors>
         <author>clo@wallix.com</author>

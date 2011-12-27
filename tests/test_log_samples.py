@@ -641,6 +641,39 @@ class Test(unittest.TestCase):
                   'source_proto': 'SFTP_SESSION',
                   'type': 'session opened',
                   'username': 'admin'})
-       
+
+    def test_xferlog(self):
+        """Testing xferlog formatted logs"""
+        self.aS("Thu Sep 2 09:52:00 2004 50 192.168.20.10 896242 /home/test/file1.tgz b _ o r suporte ftp 0 * c ",
+                {'transfer_time' : '50',
+                 'source_ip' : '192.168.20.10',
+                 'len' : '896242',
+                 'filename' : '/home/test/file1.tgz',
+                 'transfer_type' : 'b',
+                 'special_action_flag' : '_',
+                 'direction' : 'o',
+                 'access_mode' : 'r',
+                 'user' : 'suporte',
+                 'service_name' : 'ftp',
+                 'authentication_method' : '0',
+                 'authenticated_user_id' : '*',
+                 'completion_status' : 'c',
+                 'date' : datetime(2004,9,2,9,52),})
+        self.aS("Tue Dec 27 11:24:23 2011 1 127.0.0.1 711074 /home/mhu/Documents/Brooks,_Max_-_World_War_Z.mobi b _ o r mhu ftp 0 * c",
+                {'transfer_time' : '1',
+                 'source_ip' : '127.0.0.1',
+                 'len' : '711074',
+                 'filename' : '/home/mhu/Documents/Brooks,_Max_-_World_War_Z.mobi',
+                 'transfer_type' : 'b',
+                 'special_action_flag' : '_',
+                 'direction' : 'o',
+                 'access_mode' : 'r',
+                 'user' : 'mhu',
+                 'service_name' : 'ftp',
+                 'authentication_method' : '0',
+                 'authenticated_user_id' : '*',
+                 'completion_status' : 'c',
+                 'date' : datetime(2011,12,27,11,24,23),}) 
+                     
 if __name__ == "__main__":
     unittest.main()

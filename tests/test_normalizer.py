@@ -125,8 +125,8 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_025_denyall_event(self):
         self.normalize_samples('deny_event.xml', 'deny_event', 0.99)
 
-    def test_normalize_samples_026_vsftpd(self):
-        self.normalize_samples('vsftpd.xml', 'vsftpd', 0.99)
+    def test_normalize_samples_026_xferlog(self):
+        self.normalize_samples('xferlog.xml', 'xferlog', 0.99)
 
     def test_normalize_samples_027_wabauth(self):
         self.normalize_samples('wabauth.xml', 'wabauth', 0.99)
