@@ -51,9 +51,6 @@ r = re.compile('(?P&lt;month&gt;\d{2})/(?P&lt;day&gt;\d{2})/(?P&lt;year&gt;\d{4}
 date = r.search(value).groupdict()
 date = dict([(u, int(date[u])) for u in date.keys()])
 newdate = datetime(**date)
-if newdate > datetime.today():
-	newdate = newdate.replace(year = newdate.year - 1)
-
 log['date'] = newdate
 		</code>
 	</callback>
@@ -75,8 +72,6 @@ if m:
     vals['month'] = english_months[vals['month']]
     vals = dict( [ (u, int(vals[u])) for u in vals.keys() ])
     newdate = datetime(**vals)
-    if newdate > datetime.today():
-	    newdate = newdate.replace(year = newdate.year - 1)
 
     log['date'] = newdate  
 else:
@@ -145,8 +140,6 @@ minutes = int(date.get('minutes'))
 seconds = int(date.get('seconds'))
 
 newdate = datetime(year, month, day, hours, minutes, seconds)
-if newdate > datetime.today():
-	newdate = newdate.replace(year = newdate.year - 1)
 
 log['date'] = newdate
 		</code>
@@ -173,8 +166,6 @@ minutes = int(date.get('minutes'))
 seconds = int(date.get('seconds'))
 
 newdate = datetime(year, month, day, hours, minutes, seconds)
-if newdate > datetime.today():
-	newdate = newdate.replace(year = newdate.year - 1)
 
 log['date'] = newdate
 		</code>
@@ -186,6 +177,7 @@ log['date'] = newdate
 			DD matches the number of the day (01, 02, 03, etc...)
 			YY matches the year (12)
 			hh:mm:ss matches the time (23:54:42)
+			The year is set arbitrarily in the XXIst century.
 			</localized_desc>
 		</description>
 		<code>
@@ -203,9 +195,6 @@ minutes = int(date.get('minutes'))
 seconds = int(date.get('seconds'))
 
 newdate = datetime(2000 + year, month, day, hours, minutes, seconds)
-
-if newdate > datetime.today():
-	newdate = newdate.replace(year = newdate.year - 1)
 
 log['date'] = newdate
 		</code>
@@ -234,10 +223,40 @@ seconds = int(date.get('seconds'))
 
 newdate = datetime(2000 + year, month, day, hours, minutes, seconds)
 
-if newdate > datetime.today():
-	newdate = newdate.replace(year = newdate.year - 1)
-
 log["date"] = newdate
 		</code>
+	</callback>
+	<callback name="ISO8601">
+	    <description>
+	        <localized_desc language="en">
+Converts a combined date and time in UTC expressed according to the ISO 8601 
+standard. Also commonly referred to as "Zulu Time".
+Precision can be up to the millisecond.
+            </localized_desc>
+	    </description>
+	    <code>
+r = re.compile("""
+(?P&lt;year&gt;\d{4})-
+(?P&lt;month&gt;\d{2})-
+(?P&lt;day&gt;\d{2})
+T(?P&lt;hour&gt;\d{2}):
+(?P&lt;minute&gt;\d{2}):
+(?:(?P&lt;second&gt;\d{2})
+(?:\.(?P&lt;microsecond&gt;\d{3}))?)?Z""", re.VERBOSE)
+m = r.match(value).groupdict()
+m = dict( [ (u, v and int(v) or 0) for u,v in m.items() ] )
+m['microsecond'] = m['microsecond'] * 1000
+log['date'] = datetime(**m)
+	    </code>
+	</callback>
+	<callback name="EPOCH">
+	    <description>
+	        <localized_desc language="en">
+Converts an EPOCH timestamp to a human-readable date.
+	        </localized_desc>
+	    </description>
+	    <code>
+log['date'] = datetime.utcfromtimestamp(float(value))
+	    </code>
 	</callback>
 </callBacks>

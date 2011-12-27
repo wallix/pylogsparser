@@ -41,9 +41,10 @@ def generic_time_callback_test(instance, cb):
     """Testing time formatting callbacks. This is boilerplate code."""
     # so far only time related callbacks were written. If it changes, list
     # here non related functions to skip in this test.
-    DATES_TO_TEST = [ datetime.now() + timedelta(-1),
-                      datetime.now() + timedelta(-180),
-                      datetime.now() + timedelta(1), # will always be considered as in the future unless you're testing on new year's eve...
+    instance.assertTrue(cb in instance.cb.keys())
+    DATES_TO_TEST = [ datetime.utcnow() + timedelta(-1),
+                      datetime.utcnow() + timedelta(-180),
+                      datetime.utcnow() + timedelta(1), # will always be considered as in the future unless you're testing on new year's eve...
                     ]
     # The pattern translation list. Order is important !
     translations = [ ("YYYY", "%Y"),
@@ -59,11 +60,20 @@ def generic_time_callback_test(instance, cb):
     pattern = cb
     for old, new in translations:
         pattern = pattern.replace(old, new)
+    # special cases
+    if pattern == "ISO8601":
+        pattern = "%Y-%m-%dT%H:%M:%SZ"      
     for d in DATES_TO_TEST:
-        value = d.strftime(pattern)
-        expected_result = datetime.strptime(value, pattern)
-        expected_year = get_sensible_year(*expected_result.timetuple()[1:-3])
-        expected_result = expected_result.replace(year = expected_year)
+        if pattern == "EPOCH":
+            value = d.strftime('%s') + ".%i" % (d.microsecond/1000)
+            expected_result = datetime.utcfromtimestamp(float(value))
+        else:
+            value = d.strftime(pattern)
+            expected_result = datetime.strptime(value, pattern)
+            # Deal with time formats that don't define a year explicitly
+            if "%y" not in pattern.lower():
+                expected_year = get_sensible_year(*expected_result.timetuple()[1:-3])
+                expected_result = expected_result.replace(year = expected_year)
         log = {}
         instance.cb[cb](value, log)
         instance.assertTrue("date" in log.keys())
@@ -130,6 +140,15 @@ class TestGenericLibrary(unittest.TestCase):
     def test_70_test_time_callback(self):
         """Testing callback YYMMDD hh:mm:ss"""
         generic_time_callback_test(self, "YYMMDD hh:mm:ss")
+
+    def test_80_test_time_callback(self):
+        """Testing callback ISO8601"""
+        generic_time_callback_test(self, "ISO8601")
+
+    def test_90_test_time_callback(self):
+        """Testing callback EPOCH"""
+        generic_time_callback_test(self, "EPOCH")
+
 
 if __name__ == "__main__":
     unittest.main()
