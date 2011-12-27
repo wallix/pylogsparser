@@ -30,6 +30,7 @@ for further integration in a wider project (web services, ...).
 import os
 import uuid as _UUID_
 import warnings
+import StringIO
 
 from normalizer import Normalizer
 from lxml.etree import parse, DTD, fromstring as XMLfromstring
@@ -67,8 +68,14 @@ class LogNormalizer():
             normalizers_paths = [normalizers_paths,]
         self.normalizers_paths = normalizers_paths
         self.active_normalizers = active_normalizers
+        self.dtd, self.ctt, self.ccb = None, None, None
+        
         # Walk through paths for normalizer.dtd and common_tagTypes.xml
+        # /!\ dtd file and common elements will be overrriden if present in
+        # many directories.
         for norm_path in self.normalizers_paths:
+            if not os.path.isdir(norm_path):
+                raise ValueError, "Invalid normalizer directory : %s" % norm_path
             dtd = os.path.join(norm_path, 'normalizer.dtd')
             ctt = os.path.join(norm_path, 'common_tagTypes.xml')
             ccb = os.path.join(norm_path, 'common_callBacks.xml')
@@ -78,6 +85,10 @@ class LogNormalizer():
                 self.ctt = ctt
             if os.path.isfile(ccb):
                 self.ccb = ccb
+        # Technically the common elements files should NOT be mandatory.
+        # But many normalizers use them, so better safe than sorry.
+        if not self.dtd or not self.ctt or not self.ccb:
+            raise StandardError, "Missing DTD or common library files"
         self._cache = []
         self.reload()
         

@@ -29,6 +29,15 @@ from lxml.etree import parse, fromstring as XMLfromstring
 class Test(unittest.TestCase):
     """Unit tests for logsparser.lognormalizer"""
     normalizer_path = os.environ['NORMALIZERS_PATH']
+
+    def test_000_invalid_paths(self):
+        """Verify that we cannot instanciate LogNormalizer on invalid paths"""
+        def bleh(paths):
+            n = LogNormalizer(paths)
+            return n
+        self.assertRaises(ValueError, bleh, [self.normalizer_path, "/path/to/nowhere"])
+        self.assertRaises(ValueError, bleh, ["/path/to/nowhere",])
+        self.assertRaises(StandardError, bleh, ["/usr/bin/",])
     
     def test_001_all_normalizers_activated(self):
         """ Verify that we have all normalizer
