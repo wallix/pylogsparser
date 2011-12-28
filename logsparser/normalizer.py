@@ -214,6 +214,7 @@ class CSVPattern(object):
                  callBacks = [],
                  tagTypes = {},
                  genericTagTypes = {},
+                 genericCallBacks = {},
                  description = '',
                  commonTags = {},
                  examples = []):
@@ -226,6 +227,7 @@ class CSVPattern(object):
         @param callBacks: a list of L{CallbackFunction}
         @param tagTypes: a dict of L{TagType} instance with TagType name as key
         @param genericTagTypes: a dict of L{TagType} instance from common_tags xml definition with TagType name as key
+        @param genericCallBacks: a dict of L{CallBacks} instance from common_callbacks xml definition with callback name as key
         @param description: a pattern description
         @param commonTags: a Dict of tags to add to the final normalisation
         @param examples: a list of L{PatternExample}
@@ -238,6 +240,7 @@ class CSVPattern(object):
         self.callBacks = callBacks
         self.tagTypes = tagTypes
         self.genericTagTypes = genericTagTypes
+        self.genericCallBacks = genericCallBacks
         self.description = description
         self.examples = examples
         self.commonTags = commonTags
@@ -273,7 +276,10 @@ class CSVPattern(object):
                 callbacks_names = self.tags[tag].callbacks
                 for cbname in callbacks_names:
                     try:
-                        callback = [cb for cb in self.callBacks.values() if cb.name == cbname][0]
+                        # get the callback in the definition file, or look it up in the common library if not found
+                        callback = [cb for cb in self.callBacks.values() if cb.name == cbname] or\
+                                   [cb for cb in self.genericCallBacks.values() if cb.name == cbname]
+                        callback = callback[0]
                     except:
                         warnings.warn("Unable to find callback %s for pattern %s" %
                                      (cbname, self.name))
@@ -517,7 +523,7 @@ class Normalizer(object):
                 self.patterns[p_name] = Pattern(p_name, p_pattern, p_tags, p_description, p_commonTags, p_examples)
             else:
                 self.patterns[p_name] = CSVPattern(p_name, p_pattern, p_csv['separator'], p_csv['quotechar'], p_tags,
-                                                   self.callbacks, self.tagTypes, self.genericTagTypes, p_description,
+                                                   self.callbacks, self.tagTypes, self.genericTagTypes, self.genericCallBacks, p_description,
                                                    p_commonTags, p_examples)
 
     def get_description(self, language = "en"):
