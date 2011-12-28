@@ -143,6 +143,35 @@ When writing a callback function, the following rules must be respected :
    import re
    from datetime import datetime
 
+Default callbacks
+.................
+
+As with default tag types, a few generic callbacks are defined in the file 
+common_callBacks.xml . Currently they are meant to deal with common date 
+formattings. Therefore they will automatically set the "date" tag. In order to 
+use it, the callbacks file has to be loaded when instantiating the Normalizer 
+class; see the class documentation for further information.
+
+In case of name collisions, callbacks defined in a normalizer description file 
+take precedence over common callbacks.
+
+Here is a list of default callbacks shipped with this library. 
+
+* MM/dd/YYYY hh:mm:ss : parses dates such as 04/13/2010 14:23:56
+* dd/MMM/YYYY:hh:mm:ss : parses dates such as 19/Jul/2009 12:02:43
+* MMM dd hh:mm:ss : parses dates such as Oct 23 10:23:12 . The year is guessed 
+  so that the resulting date is the closest in the past.
+* DDD MMM dd hh:mm:ss YYYY : parses dates such as Mon Sep 11 09:13:54 2011
+* YYYY-MM-DD hh:mm:ss : parses dates such as 2012-12-21 00:00:00
+* MM/DD/YY, hh:mm:ss : parses dates such as 10/23/11, 07:24:04 . The year is 
+  assumed to be in the XXIst century.
+* YYMMDD hh:mm:ss:  parses dates such as 070811 17:23:12 . The year is assumed 
+  to be in the XXIst century.
+* ISO8601 : converts a combined date and time in UTC expressed according to the 
+  ISO 8601 standard. Also commonly referred to as "Zulu Time".
+* EPOCH : parses EPOCH timestamps
+* dd-MMM-YYYY hh:mm:ss : parses dates such as 28-Feb-2010 23:15:54
+
 
 Pattern definition
 ..................
