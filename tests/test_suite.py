@@ -30,10 +30,13 @@ import unittest
 import test_normalizer
 import test_lognormalizer
 import test_log_samples
+import test_commonElements
 
-tests = (test_normalizer,
+tests = (test_commonElements,
+         test_normalizer,
          test_lognormalizer,
-         test_log_samples)
+         test_log_samples,
+         )
 
 load = unittest.defaultTestLoader.loadTestsFromModule
 suite = unittest.TestSuite(map(load, tests)) 
