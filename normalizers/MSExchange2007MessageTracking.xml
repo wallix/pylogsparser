@@ -69,20 +69,6 @@ Ce normaliseur décrit le format du "Message Tracking Log" (un journal d'événe
     <callbacks>
         <callback name="decode_MTLMessageID">
 log['message_id'] = value[1:-1]</callback>
-        <callback name="decode_MTLDate">
-r = re.compile("""
-(?P&lt;year&gt;\d{4})-
-(?P&lt;month&gt;\d{2})-
-(?P&lt;day&gt;\d{2})
-T(?P&lt;hour&gt;\d{2}):
-(?P&lt;minute&gt;\d{2}):
-(?P&lt;second&gt;\d{2})\.
-(?P&lt;microsecond&gt;\d{1,3})?Z""", re.VERBOSE)
-m = r.match(value).groupdict()
-m.setdefault('microsecond', 0)
-m = dict( [ (u, int(v)) for u,v in m.items() ] )
-m['microsecond'] = m['microsecond'] * 1000
-log['date'] = datetime(**m)</callback>
         <callback name="decode_MTLSourceContext">
 if value.startswith('"'):
     value = value[1:-1]
@@ -129,7 +115,7 @@ log.update(d)
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_MTLDate</callback>
+                        <callback>ISO8601</callback>
                     </callbacks>
                 </tag>
                 <tag name="source_ip" tagType="Anything">
