@@ -259,4 +259,22 @@ Converts an EPOCH timestamp to a human-readable date.
 log['date'] = datetime.utcfromtimestamp(float(value))
 	    </code>
 	</callback>
+	<callback name="dd-MMM-YYYY hh:mm:ss">
+	    <description>
+	        <localized_desc language="en">
+Converts a date as in 28-Feb-2010 23:15:54 . This format is used in BIND9 logs among others.
+Precision can be up to the millisecond.
+	        </localized_desc>
+	    </description>
+        <code>
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+r = re.compile('(?P&lt;day&gt;\d+)-(?P&lt;month&gt;\w+)-(?P&lt;year&gt;\d{4}) (?P&lt;hour&gt;\d+):(?P&lt;minute&gt;\d+):(?P&lt;second&gt;\d+)(?:\.(?P&lt;microsecond&gt;\d+))?')
+m = r.match(value).groupdict()
+m['month'] = MONTHS.index(m['month']) + 1
+m = dict( [ (u, v and int(v) or 0) for u,v in m.items() ] )
+m['microsecond'] = m['microsecond'] * 1000
+log['date'] = datetime(**m)
+        </code>
+	</callback>
 </callBacks>

@@ -132,21 +132,6 @@ in other logline too ... need to wait for real use cases.
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="decode_named_date">
-MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-r = re.compile('(\d+)-(\w+)-(\d{4}) (\d+):(\d+):(\d+)\.(\d+)')
-ma = r.match(value)
-d, m, y, h, mi, s, ms = ma.groups()
-m = MONTHS.index(m) + 1
-log['date'] = datetime(int(y),
-                       int(m),
-                       int(d),
-                       int(h),
-                       int(mi),
-                       int(s),
-                       int(ms))
-        </callback>
         <callback name="decode_named_category">
 log['category'] = value.rstrip(':')
         </callback>
@@ -219,7 +204,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -293,7 +278,7 @@ log["view"] = view
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
-                          <expectedTag name="date">2000-02-28 15:05:32.000863</expectedTag>
+                          <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -306,7 +291,7 @@ log["view"] = view
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
-                          <expectedTag name="date">2000-02-28 15:05:32.000863</expectedTag>
+                          <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                           <expectedTag name="category">general</expectedTag>
                      </expectedTags>
                 </example>
@@ -320,7 +305,7 @@ log["view"] = view
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
-                          <expectedTag name="date">2000-02-28 15:05:32.000863</expectedTag>
+                          <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                           <expectedTag name="category">general</expectedTag>
                           <expectedTag name="view">external</expectedTag>
                      </expectedTags>
@@ -348,7 +333,7 @@ log["view"] = view
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
-                          <expectedTag name="date">2000-02-28 15:05:32.000863</expectedTag>
+                          <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                           <expectedTag name="category">general</expectedTag>
                           <expectedTag name="severity">crit</expectedTag>
                           <expectedTag name="severity_code">2</expectedTag>
@@ -405,7 +390,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -477,7 +462,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -547,7 +532,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -638,7 +623,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -710,7 +695,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -785,7 +770,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -868,7 +853,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -954,7 +939,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -1038,7 +1023,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -1123,7 +1108,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -1229,7 +1214,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -1315,7 +1300,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -1400,7 +1385,7 @@ log["view"] = view
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">

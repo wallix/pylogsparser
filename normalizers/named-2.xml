@@ -93,21 +93,6 @@ TODO: handle view
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="decode_named_date">
-MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-r = re.compile('(\d+)-(\w+)-(\d{4}) (\d+):(\d+):(\d+)\.(\d+)')
-ma = r.match(value)
-d, m, y, h, mi, s, ms = ma.groups()
-m = MONTHS.index(m) + 1
-log['date'] = datetime(int(y),
-                       int(m),
-                       int(d),
-                       int(h),
-                       int(mi),
-                       int(s),
-                       int(ms))
-        </callback>
         <callback name="decode_named_category">
 log['category'] = value.rstrip(':')
         </callback>
@@ -183,7 +168,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -275,7 +260,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -359,7 +344,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">
@@ -444,7 +429,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
-                        <callback>decode_named_date</callback>
+                        <callback>dd-MMM-YYYY hh:mm:ss</callback>
                     </callbacks>
                 </tag>
                 <tag name="__namedcat" tagType="NamedCategory">

@@ -88,12 +88,12 @@ class TestGenericLibrary(unittest.TestCase):
     cb = get_generic_callBacks(os.path.join(normalizer_path,
                                             'common_callBacks.xml'))       
         
-    def test_00_availability(self):
+    def test_000_availability(self):
         """Testing libraries' availability"""
         self.assertTrue( self.tagTypes != {} )
         self.assertTrue( self.cb != {} )
         
-    def test_10_test_tagTypes(self):
+    def test_010_test_tagTypes(self):
         """Testing tagTypes' accuracy"""
         self.assertTrue(self.tagTypes['EpochTime'].compiled_regexp.match('12934824.134'))
         self.assertTrue(self.tagTypes['EpochTime'].compiled_regexp.match('12934824'))
@@ -113,42 +113,45 @@ class TestGenericLibrary(unittest.TestCase):
         self.assertTrue(self.tagTypes['ZuluTime'].compiled_regexp.match('2012-12-21T12:34:56.99'))
 
     # I wish there was a way to create these tests on the fly ...
-    def test_20_test_time_callback(self):
+    def test_020_test_time_callback(self):
         """Testing callback MM/dd/YYYY hh:mm:ss"""
         generic_time_callback_test(self, "MM/dd/YYYY hh:mm:ss")
 
-    def test_30_test_time_callback(self):
+    def test_030_test_time_callback(self):
         """Testing callback dd/MMM/YYYY:hh:mm:ss"""
         generic_time_callback_test(self, "dd/MMM/YYYY:hh:mm:ss")
         
-    def test_40_test_time_callback(self):
+    def test_040_test_time_callback(self):
         """Testing callback MMM dd hh:mm:ss"""
         generic_time_callback_test(self, "MMM dd hh:mm:ss")
 
-    def test_50_test_time_callback(self):
+    def test_050_test_time_callback(self):
         """Testing callback DDD MMM dd hh:mm:ss YYYY"""
         generic_time_callback_test(self, "DDD MMM dd hh:mm:ss YYYY")
         
-    def test_60_test_time_callback(self):
+    def test_060_test_time_callback(self):
         """Testing callback YYYY-MM-DD hh:mm:ss"""
         generic_time_callback_test(self, "YYYY-MM-DD hh:mm:ss")
         
-    def test_70_test_time_callback(self):
+    def test_070_test_time_callback(self):
         """Testing callback MM/DD/YY, hh:mm:ss"""
         generic_time_callback_test(self, "MM/DD/YY, hh:mm:ss")
 
-    def test_70_test_time_callback(self):
+    def test_070_test_time_callback(self):
         """Testing callback YYMMDD hh:mm:ss"""
         generic_time_callback_test(self, "YYMMDD hh:mm:ss")
 
-    def test_80_test_time_callback(self):
+    def test_080_test_time_callback(self):
         """Testing callback ISO8601"""
         generic_time_callback_test(self, "ISO8601")
 
-    def test_90_test_time_callback(self):
+    def test_090_test_time_callback(self):
         """Testing callback EPOCH"""
         generic_time_callback_test(self, "EPOCH")
 
+    def test_100_test_time_callback(self):
+        """Testing callback dd-MMM-YYYY hh:mm:ss"""
+        generic_time_callback_test(self, "dd-MMM-YYYY hh:mm:ss")
 
 if __name__ == "__main__":
     unittest.main()
