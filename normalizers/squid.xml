@@ -48,8 +48,6 @@ Seul le format "natif" des logs Squid est supporté par ce normaliseur.</localiz
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="decode_epoch">
-log["date"] = datetime.utcfromtimestamp(float(value))</callback>
         <callback name="decode_user">
 if value != "-":
     log["user"] = value</callback>
@@ -67,7 +65,7 @@ if value != "-":
         <localized_desc language="fr">l'horodatage du log au format EPOCH</localized_desc></description>
                  <substitute>EPOCH</substitute>
                  <callbacks>
-                  <callback>decode_epoch</callback>
+                  <callback>EPOCH</callback>
                  </callbacks>
                 </tag>
                 <tag name="__user" tagType="NoSpace">
