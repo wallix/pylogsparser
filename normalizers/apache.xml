@@ -64,18 +64,6 @@
         </tagType>
     </tagTypes>
     <callbacks>
-        <callback name="decode_ctf">
-english_months = { 'Jan' : 1, 'Feb' : 2, 'Mar' : 3, 'Apr' : 4, 'May' : 5, 'Jun' : 6, 'Jul' : 7, 'Aug' : 8, 'Sep' : 9, 'Oct' : 10, 'Nov' : 11, 'Dec' : 12 }
-ctf = re.compile("(?P&lt;day&gt;\d+)/(?P&lt;month&gt;[a-zA-Z]+)/(?P&lt;year&gt;\d+):(?P&lt;hour&gt;\d+):(?P&lt;minute&gt;\d+):(?P&lt;second&gt;\d+)")
-m = ctf.search(value)
-if m:
-    vals = m.groupdict()
-    vals['month'] = english_months[vals['month']]
-    vals = dict( [ (u, int(vals[u])) for u in vals.keys() ])
-    log['date'] = datetime(**vals)
-else:
-    raise Exception, "invalid date string %s" % value
-</callback>
         <callback name="decode_url_path">
 try:
     path = value.split(' ')[1].split('?')[0]
@@ -115,7 +103,7 @@ except:
         <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte</localized_desc></description>
                  <substitute>%t</substitute>
                  <callbacks>
-                  <callback>decode_ctf</callback>
+                  <callback>dd/MMM/YYYY:hh:mm:ss</callback>
                  </callbacks>
                 </tag>
                 <tag name="request" tagType="Anything">
@@ -187,7 +175,7 @@ except:
         <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte</localized_desc></description>
                  <substitute>%t</substitute>
                  <callbacks>
-                  <callback>decode_ctf</callback>
+                  <callback>dd/MMM/YYYY:hh:mm:ss</callback>
                  </callbacks>
                 </tag>
                 <tag name="request" tagType="Anything">
