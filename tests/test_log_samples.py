@@ -688,6 +688,25 @@ class Test(unittest.TestCase):
                  'authenticated_user_id' : '*',
                  'program' : 'ftpd',
                  'date' : datetime(2011,12,27,11,24,23),}) 
+ 
+    def test_dansguardian(self):
+        """Testing dansguardian logs"""
+        self.aS("2011.12.13 10:41:28 10.10.42.23 10.10.42.23 http://safebrowsing.clients.google.com/safebrowsing/downloads?client=Iceweasel&appver=3.5.16&pver=2.2&wrkey=AKEgNityGqylPYNyNETvnRjDjo4mIKcwv7f-8UCJaKERjXG6cXrikbgdA0AG6J8A6zng73h9U1GoE7P5ZPn0dDLmD_t3q1csCw== *EXCEPTION* Site interdit trouv&ecute;. POST 491 0  2 200 -  limited_access -",
+                {'program' : 'dansguardian',
+                 'user' : '10.10.42.23',
+                 'source_ip' : '10.10.42.23',
+                 'url' : 'http://safebrowsing.clients.google.com/safebrowsing/downloads?client=Iceweasel&appver=3.5.16&pver=2.2&wrkey=AKEgNityGqylPYNyNETvnRjDjo4mIKcwv7f-8UCJaKERjXG6cXrikbgdA0AG6J8A6zng73h9U1GoE7P5ZPn0dDLmD_t3q1csCw==',
+                 'actions' : "*EXCEPTION*",
+                 'action' : 'EXCEPTION',
+                 'reason' : "Site interdit trouv&ecute;.",
+                 "method" : "POST",
+                 "len" : "491",
+                 "naughtiness" : "0",
+                 "filter_group_number" : "2",
+                 "status" : "200",
+                 "mime_type" : "-",
+                 "filter_group_name" : "limited_access",
+                 'date' : datetime(2011,12,13,10,41,28),})
                      
 if __name__ == "__main__":
     unittest.main()

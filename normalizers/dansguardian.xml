@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="dansguardian"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+    <description>
+        <localized_desc language="en">This normalizer parses DansGuardian's access.log file. This
+file logs every request made, whether allowed or denied, and gives the reason why a specific action
+was taken.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite le contenu du fichier access.log
+utilisé par DansGuardian pour consigner les requêtes d'accès et le résultat associé.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="DGany" type="basestring">
+            <description>
+                <localized_desc language="en">the standard value format</localized_desc>
+                <localized_desc language="fr">le format utilisé pour les différents champs du log</localized_desc>
+            </description>
+            <regexp>[^\t]+</regexp>
+        </tagType>
+        <tagType name="DGDate" type="basestring">
+            <description>
+                <localized_desc language="en">the date as it is logged by DansGuardian</localized_desc>
+                <localized_desc language="fr">la date telle qu'elle est consignée par DansGuardian</localized_desc>
+            </description>
+            <regexp>\d{4}\.\d{1,2}\.\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}</regexp>
+        </tagType>
+        <tagType name="HTTPmethod" type="basestring">
+            <description>
+                <localized_desc language="en">one of the HTTP methods defined by W3C</localized_desc>
+                <localized_desc language="fr">une méthode HTTP parmi celles définies par le W3C</localized_desc>
+            </description>
+            <regexp>GET|HEAD|CHECKOUT|SHOWMETHOD|PUT|DELETE|POST|LINK|UNLINK|CHECKIN|TEXTSEARCH|SPACEJUMP|SEARCH</regexp>
+        </tagType>
+        <tagType name="DGactions" type="basestring">
+            <description>
+                <localized_desc language="en">the possible actions taken by dansguardian</localized_desc>
+                <localized_desc language="fr">les actions que peut appliquer dansguardian</localized_desc>
+            </description>
+            <regexp>(?:[*][A-Z]+[*] ?)*</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_DGDate">
+r = re.compile("(?P&lt;year&gt;\d{4})\.(?P&lt;month&gt;\d{1,2})\.(?P&lt;day&gt;\d{1,2}) (?P&lt;hour&gt;\d{1,2}):(?P&lt;minute&gt;\d{1,2}):(?P&lt;second&gt;\d{1,2})")
+m = r.match(value).groupdict()
+m = dict( [(u, int(m[u])) for u in m.keys() ] )
+log['date'] = datetime(**m)</callback>
+        <callback name="decode_DGactions">
+if "DENIED" in value:
+    log['action'] = "DENIED"
+elif "EXCEPTION" in value:
+    log['action'] = "EXCEPTION"
+if "INFECTED" in value:
+    log['scan_result'] = "infected"
+# the following tags are not the "official" designation. There is no official designation actually.
+if "SCANNED" in value:
+    log['scan_result'] = "clean"
+if "CONTENTMOD" in value:
+    log['content_modified'] = "true"
+else:
+    log['content_modified'] = "false"
+if "URLMOD" in value:
+    log['url_modified'] = "true"
+else:
+    log['url_modified'] = "false"
+if "HEADERMOD" in value:
+    log['header_modified'] = "true"
+else:
+    log['header_modified'] = "false"
+    </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="DG-001">
+            <description>
+                <localized_desc language="en">The standard access.log line pattern.</localized_desc>
+                <localized_desc language="fr">Le format usuel d'une ligne de log issue du fichier access.log.</localized_desc>
+            </description>
+            <text>WHEN WHO FROM WHERE WHAT WHY HOW SIZE NAUGHTINESS (?:CATEGORY)? FILTERGROUPNUMBER RETURNCODE (?:MIMETYPE)? (?:CLIENTNAME)? (?:FILTERGROUPNAME)? (?:USERAGENT)?</text>
+            <tags>
+                <tag name="__date" tagType="DGDate">
+                    <description>
+                        <localized_desc language="en">the log's date</localized_desc>
+                        <localized_desc language="fr">la date du log</localized_desc>
+                    </description>
+                    <substitute>WHEN</substitute>
+                    <callbacks>
+                        <callback>decode_DGDate</callback>
+                    </callbacks>
+                </tag>
+                <tag name="user" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">a user or a computer, if an "authplugin" has identified it</localized_desc>
+                        <localized_desc language="fr">un nom d'utilisateur ou d'équipement, s'il a été identifié par un "authplugin"</localized_desc>
+                    </description>
+                    <substitute>WHO</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">the IP address of the requestor</localized_desc>
+                        <localized_desc language="fr">l'adresse IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>FROM</substitute>
+                </tag>
+                <tag name="url" tagType="URL">
+                    <description>
+                        <localized_desc language="en">the complete requested URL</localized_desc>
+                        <localized_desc language="fr">l'URL de la requête</localized_desc>
+                    </description>
+                    <substitute>WHERE</substitute>
+                </tag>
+                <tag name="actions" tagType="DGactions">
+                    <description>
+                        <localized_desc language="en">the list of actions taken by dansguardian, as it appears in the log file. This list is refined in relevant tags such as "action", "scan_result", "url_modified", "content_modified" and "header_modified" when applicable.</localized_desc>
+                        <localized_desc language="fr">la liste des actions prises par dansguardian, telle qu'elle apparaît dans le fichier de log. Cette liste sert à définir d'autres tags : "action", "scan_result", "url_modified", "content_modified" et "header_modified" quand cela est pertinent.</localized_desc>
+                    </description>
+                    <substitute>WHAT</substitute>
+                    <callbacks>
+                        <callback>decode_DGactions</callback>
+                    </callbacks>
+                </tag>
+                <tag name="reason" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">why the actions were taken</localized_desc>
+                        <localized_desc language="fr">la raison pour laquelle les actions ont été appliquées</localized_desc>
+                    </description>
+                    <substitute>WHY</substitute>
+                </tag>
+                <tag name="method" tagType="HTTPmethod">
+                    <description>
+                        <localized_desc language="en">the HTTP request verb</localized_desc>
+                        <localized_desc language="fr">la méthode HTTP</localized_desc>
+                    </description>
+                    <substitute>HOW</substitute>
+                </tag>
+                <tag name="len" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                    </description>
+                    <substitute>SIZE</substitute>
+                </tag>
+                <tag name="naughtiness" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the sum of all the weighted phrase scores</localized_desc>
+                        <localized_desc language="fr">le score total d'inadéquation</localized_desc>
+                    </description>
+                    <substitute>NAUGHTINESS</substitute>
+                </tag>
+                <tag name="category" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the contents of the #listcategory tag, if any, in the list that is most relevant to the action</localized_desc>
+                        <localized_desc language="fr">le contenu éventuel de la métadonnée #listcategory la plus pertinente par rapport à l'action</localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                </tag>
+                <tag name="filter_group_number" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNUMBER</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the HTTP return code</localized_desc>
+                        <localized_desc language="fr">le code HTTP de la réponse</localized_desc>
+                    </description>
+                    <substitute>RETURNCODE</substitute>
+                </tag>
+                <tag name="mime_type" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the MIME type, if relevant, of the returned document</localized_desc>
+                        <localized_desc language="fr">le type MIME, si applicable, de la réponse</localized_desc>
+                    </description>
+                    <substitute>MIMETYPE</substitute>
+                </tag>
+                <tag name="source_host" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>CLIENTNAME</substitute>
+                </tag>
+                <tag name="filter_group_name" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the name of the filter group</localized_desc>
+                        <localized_desc language="fr">le nom du groupe de filtrage</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNAME</substitute>
+                </tag>
+                <tag name="user_agent" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the browser's user agent string</localized_desc>
+                        <localized_desc language="fr">la valeur du champ "user agent" exposée par le navigateur</localized_desc>
+                    </description>
+                    <substitute>USERAGENT</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2011.12.13 7:38:50 10.10.42.23 10.10.42.23 http://backports.debian.org/debian-backports/dists/squeeze-backports/main/binary-i386/Packages.diff/2011-12-02-1137.04.gz *DENIED* Type de fichier interdit: .gz GET 0 0 Banned extension 2 403 application/x-gzip  limited_access -</text>
+                     <expectedTags>
+                          <expectedTag name="user">10.10.42.23</expectedTag>
+                          <expectedTag name="source_ip">10.10.42.23</expectedTag>
+                          <expectedTag name="url">http://backports.debian.org/debian-backports/dists/squeeze-backports/main/binary-i386/Packages.diff/2011-12-02-1137.04.gz</expectedTag>
+                          <expectedTag name="actions">*DENIED*</expectedTag>
+                          <expectedTag name="action">DENIED</expectedTag>
+                          <expectedTag name="reason">Type de fichier interdit: .gz</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="len">0</expectedTag>
+                          <expectedTag name="naughtiness">0</expectedTag>
+                          <expectedTag name="category">Banned extension</expectedTag>
+                          <expectedTag name="filter_group_number">2</expectedTag>
+                          <expectedTag name="status">403</expectedTag>
+                          <expectedTag name="mime_type">application/x-gzip</expectedTag>
+                          <expectedTag name="filter_group_name">limited_access</expectedTag>
+                          <expectedTag name="user_agent">-</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>2011.12.13 12:10:48 10.10.42.23 10.10.42.23 http://safebrowsing-cache.google.com/safebrowsing/rd/ChNnb29nLW1hbHdhcmUtc2hhdmFyEAEY9p8EIPafBDIF9g8BAAE *EXCEPTION* Site interdit trouvé. GET 326 0  2 200 -  limited_access -</text>
+                     <expectedTags>
+                          <expectedTag name="user">10.10.42.23</expectedTag>
+                          <expectedTag name="source_ip">10.10.42.23</expectedTag>
+                          <expectedTag name="url">http://safebrowsing-cache.google.com/safebrowsing/rd/ChNnb29nLW1hbHdhcmUtc2hhdmFyEAEY9p8EIPafBDIF9g8BAAE</expectedTag>
+                          <expectedTag name="actions">*EXCEPTION*</expectedTag>
+                          <expectedTag name="action">EXCEPTION</expectedTag>
+                          <expectedTag name="reason">Site interdit trouvé.</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="len">326</expectedTag>
+                          <expectedTag name="naughtiness">0</expectedTag>
+                          <expectedTag name="filter_group_number">2</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="mime_type">-</expectedTag>
+                          <expectedTag name="filter_group_name">limited_access</expectedTag>
+                          <expectedTag name="user_agent">-</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="DG-002">
+            <description>
+                <localized_desc language="en">A variation on the access.log line pattern, as it appears in dansguardian's sourcecode.</localized_desc>
+                <localized_desc language="fr">Une variation sur le format usuel, telle qu'elle apparaît dans le code source de dansguardian.</localized_desc>
+            </description>
+            <text>WHEN\tWHO\tFROM\tWHERE\tWHAT\tWHY\tHOW\tSIZE\tNAUGHTINESS\t(?:CATEGORY)?\tFILTERGROUPNUMBER\tRETURNCODE\t(?:MIMETYPE)?\t(?:CLIENTNAME)?\t(?:FILTERGROUPNAME)?\t(?:USERAGENT)?</text>
+            <tags>
+                <tag name="__date" tagType="DGDate">
+                    <description>
+                        <localized_desc language="en">the log's date</localized_desc>
+                        <localized_desc language="fr">la date du log</localized_desc>
+                    </description>
+                    <substitute>WHEN</substitute>
+                    <callbacks>
+                        <callback>decode_DGDate</callback>
+                    </callbacks>
+                </tag>
+                <tag name="user" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">a user or a computer, if an "authplugin" has identified it</localized_desc>
+                        <localized_desc language="fr">un nom d'utilisateur ou d'équipement, s'il a été identifié par un "authplugin"</localized_desc>
+                    </description>
+                    <substitute>WHO</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">the IP address of the requestor</localized_desc>
+                        <localized_desc language="fr">l'adresse IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>FROM</substitute>
+                </tag>
+                <tag name="url" tagType="URL">
+                    <description>
+                        <localized_desc language="en">the complete requested URL</localized_desc>
+                        <localized_desc language="fr">l'URL de la requête</localized_desc>
+                    </description>
+                    <substitute>WHERE</substitute>
+                </tag>
+                <tag name="actions" tagType="DGactions">
+                    <description>
+                        <localized_desc language="en">the list of actions taken by dansguardian, as it appears in the log file. This list is refined in relevant tags such as "action", "scan_result", "url_modified", "content_modified" and "header_modified" when applicable.</localized_desc>
+                        <localized_desc language="fr">la liste des actions prises par dansguardian, telle qu'elle apparaît dans le fichier de log. Cette liste sert à définir d'autres tags : "action", "scan_result", "url_modified", "content_modified" et "header_modified" quand cela est pertinent.</localized_desc>
+                    </description>
+                    <substitute>WHAT</substitute>
+                    <callbacks>
+                        <callback>decode_DGactions</callback>
+                    </callbacks>
+                </tag>
+                <tag name="reason" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">why the actions were taken</localized_desc>
+                        <localized_desc language="fr">la raison pour laquelle les actions ont été appliquées</localized_desc>
+                    </description>
+                    <substitute>WHY</substitute>
+                </tag>
+                <tag name="method" tagType="HTTPmethod">
+                    <description>
+                        <localized_desc language="en">the HTTP request verb</localized_desc>
+                        <localized_desc language="fr">la méthode HTTP</localized_desc>
+                    </description>
+                    <substitute>HOW</substitute>
+                </tag>
+                <tag name="len" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                    </description>
+                    <substitute>SIZE</substitute>
+                </tag>
+                <tag name="naughtiness" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the sum of all the weighted phrase scores</localized_desc>
+                        <localized_desc language="fr">le score total d'inadéquation</localized_desc>
+                    </description>
+                    <substitute>NAUGHTINESS</substitute>
+                </tag>
+                <tag name="category" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the contents of the #listcategory tag, if any, in the list that is most relevant to the action</localized_desc>
+                        <localized_desc language="fr">le contenu éventuel de la métadonnée #listcategory la plus pertinente par rapport à l'action</localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                </tag>
+                <tag name="filter_group_number" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNUMBER</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the HTTP return code</localized_desc>
+                        <localized_desc language="fr">le code HTTP de la réponse</localized_desc>
+                    </description>
+                    <substitute>RETURNCODE</substitute>
+                </tag>
+                <tag name="mime_type" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the MIME type, if relevant, of the returned document</localized_desc>
+                        <localized_desc language="fr">le type MIME, si applicable, de la réponse</localized_desc>
+                    </description>
+                    <substitute>MIMETYPE</substitute>
+                </tag>
+                <tag name="source_host" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>CLIENTNAME</substitute>
+                </tag>
+                <tag name="filter_group_name" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the name of the filter group</localized_desc>
+                        <localized_desc language="fr">le nom du groupe de filtrage</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNAME</substitute>
+                </tag>
+                <tag name="user_agent" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the browser's user agent string</localized_desc>
+                        <localized_desc language="fr">la valeur du champ "user agent" exposée par le navigateur</localized_desc>
+                    </description>
+                    <substitute>USERAGENT</substitute>
+                </tag>
+            </tags>
+        </pattern>
+        <pattern name="DG-003">
+            <description>
+                <localized_desc language="en">A CSV version on the access.log line pattern, as it appears in dansguardian's sourcecode.</localized_desc>
+                <localized_desc language="fr">Une version CSV de la ligne de log, telle qu'elle apparaît dans le code source de dansguardian.</localized_desc>
+            </description>
+            <text>"WHEN","WHO","FROM","WHERE","WHAT","WHY","HOW","SIZE","NAUGHTINESS","(?:CATEGORY)?","FILTERGROUPNUMBER","RETURNCODE","(?:MIMETYPE)?","(?:CLIENTNAME)?","(?:FILTERGROUPNAME)?","(?:USERAGENT)?"</text>
+            <tags>
+                <tag name="__date" tagType="DGDate">
+                    <description>
+                        <localized_desc language="en">the log's date</localized_desc>
+                        <localized_desc language="fr">la date du log</localized_desc>
+                    </description>
+                    <substitute>WHEN</substitute>
+                    <callbacks>
+                        <callback>decode_DGDate</callback>
+                    </callbacks>
+                </tag>
+                <tag name="user" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">a user or a computer, if an "authplugin" has identified it</localized_desc>
+                        <localized_desc language="fr">un nom d'utilisateur ou d'équipement, s'il a été identifié par un "authplugin"</localized_desc>
+                    </description>
+                    <substitute>WHO</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">the IP address of the requestor</localized_desc>
+                        <localized_desc language="fr">l'adresse IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>FROM</substitute>
+                </tag>
+                <tag name="url" tagType="URL">
+                    <description>
+                        <localized_desc language="en">the complete requested URL</localized_desc>
+                        <localized_desc language="fr">l'URL de la requête</localized_desc>
+                    </description>
+                    <substitute>WHERE</substitute>
+                </tag>
+                <tag name="actions" tagType="DGactions">
+                    <description>
+                        <localized_desc language="en">the list of actions taken by dansguardian, as it appears in the log file. This list is refined in relevant tags such as "action", "scan_result", "url_modified", "content_modified" and "header_modified" when applicable.</localized_desc>
+                        <localized_desc language="fr">la liste des actions prises par dansguardian, telle qu'elle apparaît dans le fichier de log. Cette liste sert à définir d'autres tags : "action", "scan_result", "url_modified", "content_modified" et "header_modified" quand cela est pertinent.</localized_desc>
+                    </description>
+                    <substitute>WHAT</substitute>
+                    <callbacks>
+                        <callback>decode_DGactions</callback>
+                    </callbacks>
+                </tag>
+                <tag name="reason" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">why the actions were taken</localized_desc>
+                        <localized_desc language="fr">la raison pour laquelle les actions ont été appliquées</localized_desc>
+                    </description>
+                    <substitute>WHY</substitute>
+                </tag>
+                <tag name="method" tagType="HTTPmethod">
+                    <description>
+                        <localized_desc language="en">the HTTP request verb</localized_desc>
+                        <localized_desc language="fr">la méthode HTTP</localized_desc>
+                    </description>
+                    <substitute>HOW</substitute>
+                </tag>
+                <tag name="len" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                    </description>
+                    <substitute>SIZE</substitute>
+                </tag>
+                <tag name="naughtiness" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the sum of all the weighted phrase scores</localized_desc>
+                        <localized_desc language="fr">le score total d'inadéquation</localized_desc>
+                    </description>
+                    <substitute>NAUGHTINESS</substitute>
+                </tag>
+                <tag name="category" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the contents of the #listcategory tag, if any, in the list that is most relevant to the action</localized_desc>
+                        <localized_desc language="fr">le contenu éventuel de la métadonnée #listcategory la plus pertinente par rapport à l'action</localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                </tag>
+                <tag name="filter_group_number" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNUMBER</substitute>
+                </tag>
+                <tag name="status" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the HTTP return code</localized_desc>
+                        <localized_desc language="fr">le code HTTP de la réponse</localized_desc>
+                    </description>
+                    <substitute>RETURNCODE</substitute>
+                </tag>
+                <tag name="mime_type" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the MIME type, if relevant, of the returned document</localized_desc>
+                        <localized_desc language="fr">le type MIME, si applicable, de la réponse</localized_desc>
+                    </description>
+                    <substitute>MIMETYPE</substitute>
+                </tag>
+                <tag name="source_host" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>CLIENTNAME</substitute>
+                </tag>
+                <tag name="filter_group_name" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the name of the filter group</localized_desc>
+                        <localized_desc language="fr">le nom du groupe de filtrage</localized_desc>
+                    </description>
+                    <substitute>FILTERGROUPNAME</substitute>
+                </tag>
+                <tag name="user_agent" tagType="DGany">
+                    <description>
+                        <localized_desc language="en">the browser's user agent string</localized_desc>
+                        <localized_desc language="fr">la valeur du champ "user agent" exposée par le navigateur</localized_desc>
+                    </description>
+                    <substitute>USERAGENT</substitute>
+                </tag>
+            </tags>
+        </pattern>
+    </patterns>
+    <commonTags>
+        <commonTag name="program">dansguardian</commonTag>
+    </commonTags>
+</normalizer>
+
