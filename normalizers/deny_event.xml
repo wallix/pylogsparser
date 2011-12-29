@@ -65,7 +65,7 @@
                 <localized_desc language="en"></localized_desc>
                 <localized_desc language="fr"></localized_desc>
             </description>
-            <regexp>[^,]+</regexp>
+            <regexp>[^,]*</regexp>
         </tagType>
     </tagTypes>
     <patterns>
@@ -74,7 +74,7 @@
                 <localized_desc language="en"></localized_desc>
                 <localized_desc language="fr"></localized_desc>
             </description>
-            <text>EVENT_UID\s*,\s*START_DATE\s*,\s*END_DATE\s*,\s*,\s*,\s*IP_DEVICE\s*,\s*IP_SOURCE\s*,\s*,\s*ALERT_TYPE_ID\s*,\s*ALERT_SUBTYPE_ID\s*,\s*SEVERITY\s*,\s*ALERT_ID\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*,\s*UUID_BLACKLIST\s*,\s*UUID_POLICY\s*,\s*UUID_APP\s*,\s*ACTION\s*,\s*HTTP_METHOD_USED\s*,\s*URL\s*,\s*PARAMETERS\s*,\s*URI\s+,\s*ATTACK_ID\s*,\s*,\s*,\s*,\s*,\s*,\s*</text>
+            <text type="csv" separator="," quotechar='"'>EVENT_UID,START_DATE,END_DATE,ACKDATE,ACKUSER,IP_DEVICE,IP_SOURCE,TARGET_IP,ALERT_TYPE_ID,ALERT_SUBTYPE_ID,SEVERITY,ALERT_ID,ALERT_VALUE,USER,INTERFACE,OBJECT_NAME,PARAMETER_CHANGED,PREVIOUS_VALUE,NEW_VALUE,UNKNOWN1,UNKNOWN2,UNKNOWN3,UUID_BLACKLIST,UUID_POLICY,UUID_APP,ACTION,HTTP_METHOD_USED,URL,PARAMETERS,URI,ATTACK_ID,ATTACK_USER,AUTH_MECHANISM,UNKNOWN4,UNKNOWN5,UNKNOWN6,UNKNOWN7</text>
             <tags>
                 <tag name="event_uid" tagType="Integer">
                     <description>
@@ -93,15 +93,26 @@
                         <callback>YYYY-MM-DD hh:mm:ss</callback>
                     </callbacks>
                 </tag>
-                <tag name="__end_date" tagType="dateandtime">
+                <tag name="end_date" tagType="deny_field">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>END_DATE</substitute>
-                    <callbacks>
-                        <callback>YYYY-MM-DD hh:mm:ss</callback>
-                    </callbacks>
+                </tag>
+                <tag name="ack_date" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ACKDATE</substitute>
+                </tag>
+                <tag name="ack_user" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ACKUSER</substitute>
                 </tag>
                 <tag name="ip_device" tagType="IP">
                     <description>
@@ -116,6 +127,13 @@
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>IP_SOURCE</substitute>
+                </tag>
+                <tag name="dest_ip" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>TARGET_IP</substitute>
                 </tag>
                 <tag name="alert_type" tagType="Integer">
                     <description>
@@ -145,6 +163,104 @@
                     </description>
                     <substitute>SEVERITY</substitute>
                 </tag>
+                <tag name="alert_value" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ALERT_VALUE</substitute>
+                </tag>
+                <tag name="user" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>USER</substitute>
+                </tag>
+                <tag name="interface" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>INTERFACE</substitute>
+                </tag>
+                <tag name="object_name" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>OBJECT_NAME</substitute>
+                </tag>
+                <tag name="parameter_changed" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PARAMETER_CHANGED</substitute>
+                </tag>
+                <tag name="previous_value" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>PREVIOUS_VALUE</substitute>
+                </tag>
+                <tag name="new_value" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>NEW_VALUE</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN1</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN2</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN3</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN4</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN5</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN6</substitute>
+                </tag>
+                <tag name="__unknown" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>UNKNOWN7</substitute>
+                </tag>
                 <tag name="blacklist_uuid" tagType="uuid">
                     <description>
                         <localized_desc language="en"></localized_desc>
@@ -173,7 +289,7 @@
                     </description>
                     <substitute>ACTION</substitute>
                 </tag>
-                <tag name="http_method" tagType="deny_field">
+                <tag name="method" tagType="deny_field">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -208,6 +324,20 @@
                     </description>
                     <substitute>ATTACK_ID</substitute>
                 </tag>
+                <tag name="attack_user" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>ATTACK_USER</substitute>
+                </tag>
+                <tag name="auth_mechanism" tagType="deny_field">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>AUTH_MECHANISM</substitute>
+                </tag>
             </tags>
             <examples>
                 <example>
@@ -224,11 +354,11 @@
                           <expectedTag name="policy_uuid">7ed198ca-26d5-11e0-a46f-000c298895c5</expectedTag>
                           <expectedTag name="application_uuid">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
                           <expectedTag name="action">deny</expectedTag>
-                          <expectedTag name="http_method">GET</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
                           <expectedTag name="url">/cgi-bin/badstore.cgi?searchquery=1%27+OR+1%3D1+%23&amp;action=search&amp;x=0&amp;y=0</expectedTag>
                           <expectedTag name="parameters">GET /cgi-bin/badstore.cgi?searchquery=1' OR 1=1 #&amp;action=search&amp;x=0&amp;y=0</expectedTag>
-                          <expectedTag name="uri">(uri)</expectedTag>
-                          <expectedTag name="attack_id">11230-0</expectedTag>
+                          <expectedTag name="uri">(uri) </expectedTag>
+                          <expectedTag name="attack_id">11230-0 </expectedTag>
                      </expectedTags>
                 </example>
             </examples>
