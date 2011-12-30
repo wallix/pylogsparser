@@ -621,9 +621,9 @@ class Normalizer(object):
                                 del temp_wl[self.tags_translation[tag]]
                     log.update(temp_wl)
                     # add the pattern's common Tags
-                    log.update(matched_pattern.commonTags)
+                    log.update(matched_pattern.commonTags) 
                     # and finally, add the normalizer's common Tags
-                    log.update(self.commonTags) 
+                    log.update(self.commonTags)
                 elif csv_patterns:
                     # this little trick makes the following line not type dependent
                     temp_wl = dict([ (u, log[u]) for u in log.keys() ])
@@ -632,6 +632,8 @@ class Normalizer(object):
                         if ret:
                             log.update(ret)
                             break
+                    # and finally, add the normalizer's common Tags
+                    log.update(self.commonTags)
         return log
 
     def validate(self):

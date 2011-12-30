@@ -44,7 +44,7 @@
                 <localized_desc language="en"></localized_desc>
                 <localized_desc language="fr"></localized_desc>
             </description>
-            <regexp>[-0-9a-z]+</regexp>
+            <regexp>[-0-9a-z]*</regexp>
         </tagType>
         <tagType name="dateandtime" type="basestring">
             <description>
@@ -53,13 +53,6 @@
             </description>
             <regexp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.]\d+</regexp>
         </tagType>
-        <tagType name="attack_id" type="basestring">
-            <description>
-                <localized_desc language="en"></localized_desc>
-                <localized_desc language="fr"></localized_desc>
-            </description>
-            <regexp>[0-9-]+</regexp>
-        </tagType>
         <tagType name="deny_field" type="basestring">
             <description>
                 <localized_desc language="en"></localized_desc>
@@ -67,6 +60,13 @@
             </description>
             <regexp>[^,]*</regexp>
         </tagType>
+        <tagType name="IP" type="basestring">
+            <description>
+                <localized_desc language="en">Ugly hack for IPv6, IPv4 addresses</localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <regexp>(?:((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?)?</regexp>
+        </tagType>        
     </tagTypes>
     <callbacks>
         <callback name="decode_alert_type">
@@ -434,7 +434,7 @@ except:
                     </description>
                     <substitute>URL</substitute>
                 </tag>
-                <tag name="parameters" tagType="deny_field">
+                <tag name="parameters" tagType="Anything">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -448,7 +448,7 @@ except:
                     </description>
                     <substitute>URI</substitute>
                 </tag>
-                <tag name="attack_id" tagType="attack_id">
+                <tag name="attack_id" tagType="deny_field">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
