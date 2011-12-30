@@ -68,6 +68,123 @@
             <regexp>[^,]*</regexp>
         </tagType>
     </tagTypes>
+    <callbacks>
+        <callback name="decode_alert_type">
+TYPES = {
+"1" : "Resources",
+"2" : "System",
+"3" : "Configuration",
+"4" : "Security",
+"5" : "Backend",
+"6" : "Acceleration"
+}
+log['alert_type'] = TYPES.get(value, "Unknown")
+        </callback>
+        <callback name="decode_message">
+SUBTYPES = {
+"1.1" : "CPU",
+"1.2" : "Memory",
+"2.1" : "Access",
+"2.2" : "Device Operations",
+"3.1" : "Configuration change",
+"3.2" : "Backup and Restore",
+"4.1" : "HTTP Security",
+"4.2" : "XML Security",
+"4.3" : "Authentication",
+"5.1" : "Backend availability",
+"5.2" : "Backend performances",
+"6.1" : "Server Load-Balancing",
+"6.2" : "Caching"
+}
+MESSAGES = {
+# Resources
+"1.1.6.0" : "CPU utilization below 60%",
+"1.1.4.0" : "CPU utilization over 60%",
+"1.1.2.0" : "CPU utilization over 80%",
+"1.2.6.0" : "Memory utilization below 70%",
+"1.2.4.0" : "Memory utilization over 70%",
+"1.2.2.0" : "Memory utilization over 90%",
+# System
+"2.1.6.0" : "User logout",
+"2.1.4.0" : "User successful login",
+"2.1.2.0" : "User failed login attempts",
+"2.2.6.0" : "Instance started",
+"2.2.5.0" : "rWeb started",
+"2.2.4.0" : "Instance stopped",
+"2.2.2.0" : "rWeb stopped",
+# Configuration
+"3.1.5.0" : "Configuration change successful",
+"3.1.3.0" : "Configuration change failed",
+"3.2.5.0" : "Configuration backup successful",
+"3.2.5.1" : "Configuration restore successful",
+"3.2.3.0" : "Configuration backup failure",
+"3.2.2.0" : "Configuration restore failure",
+# Security
+"4.1.4.0" : "Attack blocked by Blacklist",
+"4.1.4.1" : "Attack blocked by Whitelist",
+"4.1.4.2" : "Attack blocked by Scoringlist",
+"4.1.4.3" : "Attack blocked by UBT (DoS protection)",
+"4.1.4.4" : "Attack blocked by UBT (Site Crawling)",
+"4.1.4.5" : "Attack blocked by UBT (Brute Force)",
+"4.1.4.6" : "Attack blocked by UBT (Cookie Theft)",
+"4.1.4.7" : "Attack blocked by UBT (Direct Access)",
+"4.1.4.8" : "Attack blocked by UBT (Restricted Access)",
+"4.1.4.9" : "Attack blocked by Stateful engine (Link Tracking)",
+"4.1.4.10" : "Attack blocked by Stateful engine (Parameter Tracking)",
+"4.1.4.11" : "Attack blocked by Stateful engine (Cookie Tracking)",
+"4.1.4.12" : "Attack blocked by Canonization engine (URI Wrong Encoding)",
+"4.1.4.13" : "Attack blocked by Canonization engine (URI Decoding)",
+"4.1.4.14" : "Attack blocked by Canonization engine (Parameter Decoding)",
+"4.1.4.15" : "Attack blocked by HTTP requests filter (Forbidden Method)",
+"4.1.4.16" : "Attack blocked by HTTP requests filter (Header Size)",
+"4.1.4.17" : "Attack blocked by HTTP requests filter (Body Size)",
+"4.1.4.18" : "Attack blocked by HTTP requests filter (Number of Request Fields)",
+"4.1.4.19" : "Attack blocked by HTTP requests filter (Size of Request Fields)",
+"4.1.4.20" : "Attack blocked by HTTP requests filter (Number of Request Lines)",
+"4.1.4.21" : "Attack blocked by HTTP responses filter",
+"4.2.4.0" : "Attack blocked by Blacklist",
+"4.2.4.1" : "Attack blocked by Scoringlist",
+"4.2.4.2" : "Attack blocked by XML Schema validation engine",
+"4.2.4.3" : "Attack blocked by Stateful engine",
+"4.2.4.4" : "Attack blocked by Canonization engine",
+"4.2.4.5" : "Attack blocked by Attachment validation engine",
+"4.2.4.6" : "Attack blocked by Source filtering engine",
+"4.3.5.0" : "Authentication successful",
+"4.3.3.1" : "Authentication failed",
+# Backend
+"5.1.6.0" : "Server available",
+"5.1.1.0" : "Server error response",
+"5.1.0.0" : "Server not response",
+"5.2.6.0" : "Response time &lt; 70% of maximum allowed",
+"5.2.4.0" : "Response time 70% of maximum allowed",
+"5.2.2.0" : "Response time 90% of maximum allowed",
+# Acceleration
+"6.1.6.0" : "Server back in farm",
+"6.1.2.0" : "Server down, removed from farm",
+"6.1.0.0" : "All servers down",
+"6.2.6.0" : "Cache utilization &lt; 70%",
+"6.2.4.0" : "Cache 70% full",
+"6.2.2.0" : "Cache 90% full",
+"6.2.1.0" : "Cache 100% full, increase cache size",
+}
+try:
+    event_subtype = log['alert_type_id'] + "." + log['alert_subtype_id']
+    log['alert_subtype'] = SUBTYPES.get(event_subtype, "Unknown")
+    event_id = event_subtype + "." + log['severity_code'] + "." + value
+    log['event'] = MESSAGES.get(event_id, "Unknown")
+except:
+    # try again later
+    pass
+        </callback>
+        <callback name="decode_severity">
+SEVERITIES=["Emerg", "Alert", "Crit", "Error", "Warn", "Notice", "Info", "Debug"]
+try:
+    log['severity'] = SEVERITIES[int(value)]
+except:
+    # no big deal if we don't get this one
+    pass
+        </callback>
+    </callbacks>
     <patterns>
         <pattern name="deny_event-001">
             <description>
@@ -135,19 +252,37 @@
                     </description>
                     <substitute>TARGET_IP</substitute>
                 </tag>
-                <tag name="alert_type" tagType="Integer">
+                <tag name="alert_type_id" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ALERT_TYPE_ID</substitute>
+                    <callbacks>
+                        <callback>decode_alert_type</callback>
+                        <callback>decode_message</callback>
+                    </callbacks>
                 </tag>
-                <tag name="alert_subtype" tagType="Integer">
+                <tag name="alert_subtype_id" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ALERT_SUBTYPE_ID</substitute>
+                    <callbacks>
+                        <callback>decode_message</callback>
+                    </callbacks>
+                </tag>
+                <tag name="severity_code" tagType="Integer">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_severity</callback>
+                        <callback>decode_message</callback>
+                    </callbacks>
                 </tag>
                 <tag name="alert_id" tagType="Integer">
                     <description>
@@ -155,13 +290,9 @@
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ALERT_ID</substitute>
-                </tag>
-                <tag name="severity" tagType="Integer">
-                    <description>
-                        <localized_desc language="en"></localized_desc>
-                        <localized_desc language="fr"></localized_desc>
-                    </description>
-                    <substitute>SEVERITY</substitute>
+                    <callbacks>
+                        <callback>decode_message</callback>
+                    </callbacks>
                 </tag>
                 <tag name="alert_value" tagType="deny_field">
                     <description>
@@ -346,10 +477,13 @@
                           <expectedTag name="event_uid">228</expectedTag>
                           <expectedTag name="ip_device">192.168.80.10</expectedTag>
                           <expectedTag name="source_ip">192.168.80.1</expectedTag>
-                          <expectedTag name="alert_type">4</expectedTag>
-                          <expectedTag name="alert_subtype">1</expectedTag>
-                          <expectedTag name="severity">4</expectedTag>
+                          <expectedTag name="alert_type_id">4</expectedTag>
+                          <expectedTag name="alert_subtype_id">1</expectedTag>
+                          <expectedTag name="severity_code">4</expectedTag>
                           <expectedTag name="alert_id">0</expectedTag>
+                          <expectedTag name="alert_type">Security</expectedTag>
+                          <expectedTag name="alert_subtype">HTTP Security</expectedTag>
+                          <expectedTag name="event">Attack blocked by UBT (Site Crawling)</expectedTag>
                           <expectedTag name="blacklist_uuid">11111111-1111-1111-1111-111111111111</expectedTag>
                           <expectedTag name="policy_uuid">7ed198ca-26d5-11e0-a46f-000c298895c5</expectedTag>
                           <expectedTag name="application_uuid">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
