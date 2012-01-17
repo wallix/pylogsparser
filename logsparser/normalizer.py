@@ -637,19 +637,20 @@ class Normalizer(object):
                 elif csv_patterns:
                     # this little trick makes the following line not type dependent
                     temp_wl = dict([ (u, log[u]) for u in log.keys() ])
+                    ret = None
                     for csv_pattern in csv_patterns:
                         ret = csv_pattern.normalize(temp_wl[self.appliedTo])
                         if ret:
                             log.update(ret)
+                            # then add the normalizer's common Tags
+                            log.update(self.commonTags)
+                            # and finally, apply the final callbacks
+                            for cb in self.finalCallbacks:
+                                try:
+                                    log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
+                                except Exception, e:
+                                    raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
                             break
-                    # then add the normalizer's common Tags
-                    log.update(self.commonTags)
-                    # and finally, apply the final callbacks
-                    for cb in self.finalCallbacks:
-                        try:
-                            log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
-                        except Exception, e:
-                            raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
         return log
 
     def validate(self):
@@ -667,6 +668,13 @@ class Normalizer(object):
                     w = self.normalize(w, do_not_check_prereq = True)
                 elif isinstance(self.patterns[p], CSVPattern):
                     w = self.patterns[p].normalize(example.raw_line)
+                    if w:
+                        w.update(self.commonTags)
+                        for cb in self.finalCallbacks:
+                            try:
+                                w.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, w))
+                            except Exception, e:
+                                raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
                 for expectedTag in example.expected_tags.keys():
                     if isinstance(w.get(expectedTag), datetime):
                         svalue = str(w.get(expectedTag))

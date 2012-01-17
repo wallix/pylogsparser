@@ -172,6 +172,20 @@ Here is a list of default callbacks shipped with this library.
 * EPOCH : parses EPOCH timestamps
 * dd-MMM-YYYY hh:mm:ss : parses dates such as 28-Feb-2010 23:15:54
 
+Final callbacks
+...............
+
+One might want to wait until a pattern has been fully applied before processing
+data : if for example you'd like to tag a log with a value made of a concatenation of
+other values, and so on. It is possible to specify a list of callbacks to apply
+at the end of the parsing with the XML tag "finalCallbacks".
+
+Such callbacks will follow the mechanics described above, with one notable change:
+they will be called with the argument "value" set to None. Therefore, you have
+to make sure your callback will work correctly that way.
+
+There are a few examples of use available : in the test_normalizer.py test code,
+and in the deny_all normalizer.
 
 Pattern definition
 ..................

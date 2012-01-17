@@ -167,14 +167,12 @@ MESSAGES = {
 "6.2.2.0" : "Cache 90% full",
 "6.2.1.0" : "Cache 100% full, increase cache size",
 }
-try:
-    event_subtype = log['alert_type_id'] + "." + log['alert_subtype_id']
-    log['alert_subtype'] = SUBTYPES.get(event_subtype, "Unknown")
-    event_id = event_subtype + "." + log['severity_code'] + "." + value
-    log['event'] = MESSAGES.get(event_id, "Unknown")
-except:
-    # try again later
-    pass
+
+event_subtype = log['alert_type_id'] + "." + log['alert_subtype_id']
+log['alert_subtype'] = SUBTYPES.get(event_subtype, "Unknown")
+event_id = event_subtype + "." + log['severity_code'] + "." + log['alert_id']
+log['event'] = MESSAGES.get(event_id, "Unknown")
+
         </callback>
         <callback name="decode_severity">
 SEVERITIES=["Emerg", "Alert", "Crit", "Error", "Warn", "Notice", "Info", "Debug"]
@@ -260,7 +258,6 @@ except:
                     <substitute>ALERT_TYPE_ID</substitute>
                     <callbacks>
                         <callback>decode_alert_type</callback>
-                        <callback>decode_message</callback>
                     </callbacks>
                 </tag>
                 <tag name="alert_subtype_id" tagType="Integer">
@@ -269,9 +266,6 @@ except:
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ALERT_SUBTYPE_ID</substitute>
-                    <callbacks>
-                        <callback>decode_message</callback>
-                    </callbacks>
                 </tag>
                 <tag name="severity_code" tagType="Integer">
                     <description>
@@ -281,7 +275,6 @@ except:
                     <substitute>SEVERITY</substitute>
                     <callbacks>
                         <callback>decode_severity</callback>
-                        <callback>decode_message</callback>
                     </callbacks>
                 </tag>
                 <tag name="alert_id" tagType="Integer">
@@ -290,9 +283,6 @@ except:
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>ALERT_ID</substitute>
-                    <callbacks>
-                        <callback>decode_message</callback>
-                    </callbacks>
                 </tag>
                 <tag name="alert_value" tagType="deny_field">
                     <description>
@@ -483,7 +473,7 @@ except:
                           <expectedTag name="alert_id">0</expectedTag>
                           <expectedTag name="alert_type">Security</expectedTag>
                           <expectedTag name="alert_subtype">HTTP Security</expectedTag>
-                          <expectedTag name="event">Attack blocked by UBT (Site Crawling)</expectedTag>
+                          <expectedTag name="event">Attack blocked by Blacklist</expectedTag>
                           <expectedTag name="blacklist_uuid">11111111-1111-1111-1111-111111111111</expectedTag>
                           <expectedTag name="policy_uuid">7ed198ca-26d5-11e0-a46f-000c298895c5</expectedTag>
                           <expectedTag name="application_uuid">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
@@ -498,5 +488,8 @@ except:
             </examples>
         </pattern>
     </patterns>
+    <finalCallbacks>
+        <callback>decode_message</callback>
+    </finalCallbacks>
 </normalizer>
 
