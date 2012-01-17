@@ -626,6 +626,14 @@ class Normalizer(object):
                     log.update(temp_wl)
                     # add the pattern's common Tags
                     log.update(matched_pattern.commonTags) 
+                    # then add the normalizer's common Tags
+                    log.update(self.commonTags)
+                    # and finally, apply the final callbacks
+                    for cb in self.finalCallbacks:
+                        try:
+                            log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
+                        except Exception, e:
+                            raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
                 elif csv_patterns:
                     # this little trick makes the following line not type dependent
                     temp_wl = dict([ (u, log[u]) for u in log.keys() ])
@@ -634,14 +642,14 @@ class Normalizer(object):
                         if ret:
                             log.update(ret)
                             break
-                # and finally, add the normalizer's common Tags
-                log.update(self.commonTags)
-                # and finally, apply the final callbacks
-                for cb in self.finalCallbacks:
-                    try:
-                        log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
-                    except Exception, e:
-                        raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
+                    # then add the normalizer's common Tags
+                    log.update(self.commonTags)
+                    # and finally, apply the final callbacks
+                    for cb in self.finalCallbacks:
+                        try:
+                            log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
+                        except Exception, e:
+                            raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
         return log
 
     def validate(self):

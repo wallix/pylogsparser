@@ -84,7 +84,7 @@ class Test(unittest.TestCase):
 
         now = now.replace(month=now.month%12+1, day=1)
         self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
-                {'date': now.replace(microsecond=0),
+                {'date': now.replace(microsecond=0, year=now.year-1),
                  'body': 'tun_wallix: Disabled Privacy Extensions',
                  'severity': 'emerg',
                  'severity_code' : '0',
