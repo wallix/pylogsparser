@@ -707,6 +707,46 @@ class Test(unittest.TestCase):
                  "mime_type" : "-",
                  "filter_group_name" : "limited_access",
                  'date' : datetime(2011,12,13,10,41,28),})
+
+    def test_deny_event(self):
+        """Testing denyAll event logs"""
+        self.aS("""224,2011-01-24 17:44:46.061903,2011-01-24 17:44:46.061903,,,192.168.219.10,127.0.0.1,,2,1,4,0,"Session opened (read-write), Forwarded for 192.168.219.1.",superadmin,gui,,{403ec510-27d9-11e0-bbe7-000c298895c5}Session,,,,,,,,,,,,,,,,,,,,""",
+                {'alert_id': '0',
+                 'alert_subtype': 'Access',
+                 'alert_subtype_id': '1',
+                 'alert_type': 'System',
+                 'alert_type_id': '2',
+                 'alert_value': 'Session opened (read-write), Forwarded for 192.168.219.1.',
+                 'body': '224,2011-01-24 17:44:46.061903,2011-01-24 17:44:46.061903,,,192.168.219.10,127.0.0.1,,2,1,4,0,"Session opened (read-write), Forwarded for 192.168.219.1.",superadmin,gui,,{403ec510-27d9-11e0-bbe7-000c298895c5}Session,,,,,,,,,,,,,,,,,,,,',
+                 'date': datetime(2011, 1, 24, 17, 44, 46),
+                 'end_date': '2011-01-24 17:44:46.061903',
+                 'event': 'User successful login',
+                 'event_uid': '224',
+                 'interface': 'gui',
+                 'ip_device': '192.168.219.10',
+                 'parameter_changed': '{403ec510-27d9-11e0-bbe7-000c298895c5}Session',
+                 'raw': '224,2011-01-24 17:44:46.061903,2011-01-24 17:44:46.061903,,,192.168.219.10,127.0.0.1,,2,1,4,0,"Session opened (read-write), Forwarded for 192.168.219.1.",superadmin,gui,,{403ec510-27d9-11e0-bbe7-000c298895c5}Session,,,,,,,,,,,,,,,,,,,,',
+                 'severity': 'Warn',
+                 'severity_code': '4',
+                 'source_ip': '127.0.0.1',
+                 'user': 'superadmin'})
+        self.aS("""1,2011-01-20 15:09:38.130965,2011-01-20 15:09:38.130965,,,::1,,,2,2,5,0,rWeb started.,,,,,,,,,,,,,,,,,,,,,,,,""",
+               {'alert_id': '0',
+                'alert_subtype': 'Device Operations',
+                'alert_subtype_id': '2',
+                'alert_type': 'System',
+                'alert_type_id': '2',
+                'alert_value': 'rWeb started.',
+                'body': '1,2011-01-20 15:09:38.130965,2011-01-20 15:09:38.130965,,,::1,,,2,2,5,0,rWeb started.,,,,,,,,,,,,,,,,,,,,,,,,',
+                'date': datetime(2011, 1, 20, 15, 9, 38),
+                'end_date': '2011-01-20 15:09:38.130965',
+                'event': 'rWeb started',
+                'event_uid': '1',
+                'ip_device': '::1',
+                'raw': '1,2011-01-20 15:09:38.130965,2011-01-20 15:09:38.130965,,,::1,,,2,2,5,0,rWeb started.,,,,,,,,,,,,,,,,,,,,,,,,',
+                'severity': 'Notice',
+                'severity_code': '5'} )
+        
                      
 if __name__ == "__main__":
     unittest.main()
