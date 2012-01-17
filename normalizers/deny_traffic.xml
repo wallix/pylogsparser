@@ -81,7 +81,7 @@
                 <localized_desc language="en"></localized_desc>
                 <localized_desc language="fr"></localized_desc>
             </description>
-            <text>DENYALL_UID\s*,\s*DATE\s*,\s*LOCAL_IP\s*,\s*APP_ID\s*,\s*HOST_RDR\s*,\s*REMOTE_IP\s*,\s*REMOTE_PORT\s*,\s*,\s*,\s*,\s*USER_AGENT\s*,\s*HTTP_FLAGS\s*,\s*,\s*,\s*,\s*,\s*HTTP_METHOD\s*,\s*URL\s*,\s*,\s*HTTP_PROTOCOL_VERSION\s*,\s*HTTP_RESPONSE_CODE\s*,\s*RESPONSE_TIME\s*,\s*BYTES_SENT\s*,\s*BYTES_RECEIVED\s*,\s*,\s*,\s*</text>
+            <text type="csv" separator="," quotechar='"'>    DENYALL_UID,DATE,LOCAL_IP,APP_ID,HOST_HEADER,REMOTE_IP,REMOTE_PORT,FORWARDED_FOR,VIA,REMOTE_USER,USER_AGENT,HTTPS_FLAGS,SSL_PROTOCOL,DN,CERTIFICATE_START,CERTIFICATE_END,HTTP_METHOD,URL_ADDRESS,URL_OPTIONS,HTTP_PROTOCOL_VERSION,HTTP_RESPONSE_CODE,RESPONSE_TIME,BYTES_SENT,BYTES_RECEIVED,REFERER,XCACHE,GZRATIO</text>
             <tags>
                 <tag name="deny_all_uid" tagType="Integer">
                     <description>
@@ -114,42 +114,91 @@
                     </description>
                     <substitute>APP_ID</substitute>
                 </tag>
-                <tag name="host_reader" tagType="IP">
+                <tag name="host_header" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
-                    <substitute>HOST_RDR</substitute>
+                    <substitute>HOST_HEADER</substitute>
                 </tag>
-                <tag name="remote_ip" tagType="IP">
+                <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>REMOTE_IP</substitute>
                 </tag>
-                <tag name="remote_port" tagType="Integer">
+                <tag name="dest_port" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>REMOTE_PORT</substitute>
                 </tag>
-                <tag name="user_agent" tagType="Anything">
+                <tag name="forwarded_for" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>FORWARDED_FOR</substitute>
+                </tag>
+                <tag name="via" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>VIA</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>REMOTE_USER</substitute>
+                </tag>
+                <tag name="useragent" tagType="Anything">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>USER_AGENT</substitute>
                 </tag>
-                <tag name="http_flags" tagType="Integer">
+                <tag name="https_flags" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
-                    <substitute>HTTP_FLAGS</substitute>
+                    <substitute>HTTPS_FLAGS</substitute>
                 </tag>
-                <tag name="http_method" tagType="http_method">
+                <tag name="ssl_protocol" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>SSL_PROTOCOL</substitute>
+                </tag>
+                <tag name="domain_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>DN</substitute>
+                </tag>
+                <tag name="certificate_start_date" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CERTIFICATE_START</substitute>
+                </tag>
+                <tag name="certificate_end_date" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>CERTIFICATE_END</substitute>
+                </tag>
+                <tag name="method" tagType="http_method">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -161,7 +210,14 @@
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
-                    <substitute>URL</substitute>
+                    <substitute>URL_ADDRESS</substitute>
+                </tag>
+                <tag name="url_options" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>URL_OPTIONS</substitute>
                 </tag>
                 <tag name="http_protocol_version" tagType="http_protocol_version">
                     <description>
@@ -170,7 +226,7 @@
                     </description>
                     <substitute>HTTP_PROTOCOL_VERSION</substitute>
                 </tag>
-                <tag name="http_response_code" tagType="Integer">
+                <tag name="status" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
@@ -191,12 +247,33 @@
                     </description>
                     <substitute>BYTES_SENT</substitute>
                 </tag>
-                <tag name="bytes_received" tagType="Integer">
+                <tag name="len" tagType="Integer">
                     <description>
                         <localized_desc language="en"></localized_desc>
                         <localized_desc language="fr"></localized_desc>
                     </description>
                     <substitute>BYTES_RECEIVED</substitute>
+                </tag>
+                <tag name="referer" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>REFERER</substitute>
+                </tag>
+                <tag name="xcache" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>XCACHE</substitute>
+                </tag>
+                <tag name="gzratio" tagType="Anything">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute>GZRATIO</substitute>
                 </tag>
             </tags>
             <examples>
@@ -206,18 +283,18 @@
                           <expectedTag name="deny_all_uid">1</expectedTag>
                           <expectedTag name="local_ip">192.168.80.10</expectedTag>
                           <expectedTag name="application_id">d74ca776-265b-11e0-a54a-000c298895c5</expectedTag>
-                          <expectedTag name="host_reader">192.168.80.10</expectedTag>
-                          <expectedTag name="remote_ip">192.168.80.1</expectedTag>
-                          <expectedTag name="remote_port">57548</expectedTag>
-                          <expectedTag name="user_agent">Mozilla/5.0 (Windows; U; Windows NT 6.1; fr; rv:1.9.2.13) Gecko/20101203 AskTbTRL2/3.9.1.14019 Firefox/3.6.13</expectedTag>
-                          <expectedTag name="http_flags">0</expectedTag>
-                          <expectedTag name="http_method">GET</expectedTag>
+                          <expectedTag name="host_header">192.168.80.10</expectedTag>
+                          <expectedTag name="dest_ip">192.168.80.1</expectedTag>
+                          <expectedTag name="dest_port">57548</expectedTag>
+                          <expectedTag name="useragent">Mozilla/5.0 (Windows; U; Windows NT 6.1; fr; rv:1.9.2.13) Gecko/20101203 AskTbTRL2/3.9.1.14019 Firefox/3.6.13</expectedTag>
+                          <expectedTag name="https_flags">0</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
                           <expectedTag name="url">/</expectedTag>
                           <expectedTag name="http_protocol_version">HTTP/1.1</expectedTag>
-                          <expectedTag name="http_response_code">200</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
                           <expectedTag name="response_time">215872</expectedTag>
                           <expectedTag name="bytes_sent">1625</expectedTag>
-                          <expectedTag name="bytes_received">409</expectedTag>
+                          <expectedTag name="len">409</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
