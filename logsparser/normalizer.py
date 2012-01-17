@@ -417,6 +417,7 @@ class Normalizer(object):
         self.prerequisites = {}
         self.patterns = {}
         self.commonTags = {}
+        self.finalCallbacks = []
         self.name = normalizer.get('name')
         if not self.name:
             raise ValueError, "The normalizer configuration lacks a name."
@@ -460,6 +461,9 @@ class Normalizer(object):
             elif node.tag == "commonTags":
                 for commonTag in node:
                     self.commonTags[commonTag.get('name')] = commonTag.text
+            elif node.tag == "finalCallbacks":
+                for callback in node:
+                    self.finalCallbacks.append(callback.text)
         # precompile regexp 
         self.full_regexp, self.tags_translation, self.tags_to_pattern, whatever = self.get_uncompiled_regexp()
         self.full_regexp = re.compile(self.full_regexp, self.re_flags)
@@ -622,8 +626,6 @@ class Normalizer(object):
                     log.update(temp_wl)
                     # add the pattern's common Tags
                     log.update(matched_pattern.commonTags) 
-                    # and finally, add the normalizer's common Tags
-                    log.update(self.commonTags)
                 elif csv_patterns:
                     # this little trick makes the following line not type dependent
                     temp_wl = dict([ (u, log[u]) for u in log.keys() ])
@@ -632,8 +634,14 @@ class Normalizer(object):
                         if ret:
                             log.update(ret)
                             break
-                    # and finally, add the normalizer's common Tags
-                    log.update(self.commonTags)
+                # and finally, add the normalizer's common Tags
+                log.update(self.commonTags)
+                # and finally, apply the final callbacks
+                for cb in self.finalCallbacks:
+                    try:
+                        log.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, log))
+                    except Exception, e:
+                        raise Exception("Cannot apply final callback %s : %r - skipping" % (cb, e))
         return log
 
     def validate(self):

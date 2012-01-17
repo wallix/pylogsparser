@@ -388,6 +388,115 @@ log["TEST"] = "TEST"
         self.assertTrue(normalizer.validate())
 
 
+class TestFinalCallbacks(unittest.TestCase):
+    """Unit test used to validate FinalCallbacks"""
+
+    normalizer_path = os.environ['NORMALIZERS_PATH']
+    fake_syslog = StringIO("""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="syslog"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en">Uh</localized_desc>
+  <localized_desc language="fr">Ah</localized_desc>
+ </description>
+ <authors>
+  <author>mhu@wallix.com</author>
+ </authors>
+<tagTypes>
+  <tagType name="blop" type="basestring">
+   <description>
+    <localized_desc language="en">Oh</localized_desc>
+    <localized_desc language="fr">Eh</localized_desc>
+   </description>
+   <regexp>[a-zA-Z]</regexp>
+  </tagType>
+ </tagTypes>
+ <callbacks>
+  <callback name="toto">
+log["toto"] = log["a"] + log["b"]
+  </callback>
+  <callback name="tata">
+if not value:
+    log["tata"] = log["toto"] * 2
+else:
+    log["tata"] = log["toto"] * 3
+  </callback>
+  <callback name="tutu">
+log['b'] = value * 2
+  </callback>
+ </callbacks>
+ <patterns>
+  <pattern name="syslog-001">
+   <description>
+    <localized_desc language="en">Hoo</localized_desc>
+    <localized_desc language="fr">Hi</localized_desc>
+   </description>
+   <text>A B C</text>
+   <tags>
+    <tag name="a" tagType="blop">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">urrrh</localized_desc>
+     </description>
+     <substitute>A</substitute>
+    </tag>
+    <tag name="__b" tagType="blop">
+     <description>
+     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="fr">bleeeh</localized_desc></description>
+     <substitute>B</substitute>
+     <callbacks>
+      <callback>tutu</callback>
+     </callbacks>
+    </tag>
+    <tag name="c" tagType="blop">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">urrrh</localized_desc>
+     </description>
+     <substitute>C</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>a b c</text>
+     <expectedTags>
+      <expectedTag name="a">a</expectedTag>
+      <expectedTag name="b">bb</expectedTag>
+      <expectedTag name="c">c</expectedTag>
+      <expectedTag name="toto">abb</expectedTag>
+      <expectedTag name="tata">abbabb</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+ <finalCallbacks>
+    <callback>toto</callback>
+    <callback>tata</callback>
+ </finalCallbacks>
+</normalizer>""")
+    n = parse(fake_syslog)
+
+    def test_00_validate_fake_syslog(self):
+        """Validate the fake normalizer"""
+        dtd = DTD(open(os.path.join(self.normalizer_path,
+                                    'normalizer.dtd')))
+        self.assertTrue(dtd.validate(self.n))
+
+    def test_10_final_callbacks(self):
+        """Testing final callbacks"""
+        normalizer = Normalizer(self.n, 
+                                os.path.join(self.normalizer_path, 'common_tagTypes.xml'), 
+                                os.path.join(self.normalizer_path, 'common_callBacks.xml'))
+        self.assertTrue(['toto', 'tata'] == normalizer.finalCallbacks)
+        self.assertTrue(normalizer.validate())
+
 
 if __name__ == "__main__":
     unittest.main()

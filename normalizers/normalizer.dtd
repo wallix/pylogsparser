@@ -23,7 +23,7 @@
 <!-- Suite 330, Boston, MA  02111-1307  USA                     -->
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-<!ELEMENT normalizer (description?,authors?,tagTypes?,callbacks?,prerequisites?,patterns,commonTags?)>
+<!ELEMENT normalizer (description?,authors?,tagTypes?,callbacks?,prerequisites?,patterns,commonTags?,finalCallbacks?)>
  <!-- The given name of the normalizer -->
  <!ATTLIST normalizer name CDATA #REQUIRED>
  <!-- The version of this normalizer -->
@@ -130,3 +130,8 @@
 <!ELEMENT commonTags (commonTag+)> 
 <!ELEMENT commonTag (#PCDATA)>
  <!ATTLIST commonTag name CDATA #REQUIRED>
+ 
+<!-- If necessary, add here calls to callbacks to execute after
+     the regular normalization. An arbitrary value argument set to 
+     None will be passed to the callback. -->
+<!ELEMENT finalCallbacks (callback+)>
