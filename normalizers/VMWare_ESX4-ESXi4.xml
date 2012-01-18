@@ -33,7 +33,8 @@
 	    unicode="yes"
 	    ignorecase="yes"
 	    matchtype= "match"
-	    appliedTo= "raw">
+	    appliedTo= "raw"
+	    taxonomy="hypervisor">
   
   <description>
     <localized_desc language="en">This normalizer parses VMware ESX 4.x and ESXi 4.x logs that are not handled by the Syslog normalizer.</localized_desc>
@@ -127,6 +128,7 @@
 	    <expectedTag name="level">verbose</expectedTag>
 	    <expectedTag name="alpha">App</expectedTag>
 	    <expectedTag name="body">[VpxaMoVm::CheckMoVm] did not find a VM with ID 67 in the vmList</expectedTag>
+	    <expectedTag name="taxonomy">hypervisor</expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
@@ -136,6 +138,7 @@
 	    <expectedTag name="level">info</expectedTag>
 	    <expectedTag name="alpha">Vmomi</expectedTag>
 	    <expectedTag name="body">Throw vmodl.fault.RequestCanceled</expectedTag>
+	    <expectedTag name="taxonomy">hypervisor</expectedTag>
 	  </expectedTags>
 	</example>
       </examples>
@@ -160,6 +163,7 @@
 	  <text>sysboot: Executing 'esxcfg-init --set-boot-progress done'</text>
 	  <expectedTags>
 	    <expectedTag name="body">Executing 'esxcfg-init --set-boot-progress done'</expectedTag>
+	    <expectedTag name="taxonomy">hypervisor</expectedTag>
 	  </expectedTags>
 	</example>
       </examples>

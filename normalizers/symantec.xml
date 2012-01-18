@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="antivirus">
  <description>
   <localized_desc language="en">This normalizer parses messages issued by the Symantec Antivirus.</localized_desc>
   <localized_desc language="fr">Ce normaliser analyse les messages émis par Symantec Antivirus.</localized_desc>
@@ -755,6 +756,7 @@ log['action2_status'] = ret
       <expectedTag name="server_group">Parent</expectedTag>
       <expectedTag name="user">SYSTEM</expectedTag>
       <expectedTag name="version">8.0.93330</expectedTag>
+      <expectedTag name="taxonomy">antivirus</expectedTag>
      </expectedTags>
     </example>
    </examples>
@@ -1250,6 +1252,7 @@ log['action2_status'] = ret
       <expectedTag name="server_group">Parent</expectedTag>
       <expectedTag name="user">SYSTEM</expectedTag>
       <expectedTag name="version">9.0.93330</expectedTag>
+      <expectedTag name="taxonomy">antivirus</expectedTag>
      </expectedTags>
     </example>
    </examples>

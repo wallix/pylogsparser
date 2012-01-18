@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="mail">
     <description>
         <localized_desc language="en">This parser defines how to normalize specific MS Exchange flat files based on observed behavior of MS Exchange 2007 (trial version); while it would have to be confirmed that it is consistent with other versions, it is likely that it won't cause any trouble.
 
@@ -279,6 +280,7 @@ log.update(d)
                           <expectedTag name="message_id">C6539E897AEDFA469FE34D029FB708D43495@win2k3dc.qa.ifr.lan</expectedTag>
                           <expectedTag name="message_subject">Coucou !</expectedTag>
                           <expectedTag name="message_sender">user7@qa.ifr.lan</expectedTag>
+                          <expectedTag name="taxonomy">mail</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

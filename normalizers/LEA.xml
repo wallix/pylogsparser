@@ -35,7 +35,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="firewall">
     <description>
         <localized_desc language="en">This normalizer handles LEA (Log Export API) normalization. The LEA format is used by CheckPoint products to export logs to a LogBox.
 The formatting with | as a fields separator is due to the use of FW1-LogGrabber for log fetching.
@@ -165,6 +166,7 @@ int_extract(log)
                           <expectedTag name="dest_host">fw1</expectedTag>
                           <expectedTag name="source_port">56840</expectedTag>
                           <expectedTag name="dest_port">https</expectedTag>
+                          <expectedTag name="taxonomy">firewall</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

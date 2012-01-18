@@ -5,7 +5,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="search"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="access control">
  <description>
      <localized_desc language="en">This normalizer is used to parse Wallix Admin Bastion authentication logs.</localized_desc>
      <localized_desc language="fr"></localized_desc>
@@ -93,6 +94,7 @@
                      <expectedTag name="username">admin</expectedTag>
                      <expectedTag name="client_ip">10.10.4.25</expectedTag>
                      <expectedTag name="diagnostic">SUCCESS</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -164,6 +166,7 @@
                      <expectedTag name="source_proto">SFTP_SESSION</expectedTag>
                      <expectedTag name="type">session opened</expectedTag>
                      <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
                  </expectedTags>
             </example>
         </examples>
@@ -235,6 +238,7 @@
                      <expectedTag name="source_proto">SFTP_SESSION</expectedTag>
                      <expectedTag name="type">session closed</expectedTag>
                      <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
                  </expectedTags>
              </example>
          </examples>

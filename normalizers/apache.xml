@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="web server">
     <description>
         <localized_desc language="en">Apache normalizer. This parser supports log formats defined in apache's documentation, see http://httpd.apache.org/docs/current/logs.html .</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les logs émis par les serveurs web Apache. Seuls les formats décrits dans la documentation Apache sont supportés en standard : cf http://httpd.apache.org/docs/current/logs.html .</localized_desc></description>
@@ -141,6 +142,7 @@ except:
                           <expectedTag name="program">apache</expectedTag>
                           <expectedTag name="url_path">/index/helper/test</expectedTag>
                           <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="taxonomy">web server</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -227,6 +229,7 @@ except:
                           <expectedTag name="useragent">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
                           <expectedTag name="url_path">/apache_pb.gif</expectedTag>
                           <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="taxonomy">web server</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

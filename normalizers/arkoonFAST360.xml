@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="firewall">
  <description>
   <localized_desc language="en"></localized_desc>
   <localized_desc language="fr"></localized_desc>
@@ -306,6 +307,7 @@ log.update(data)
       <expectedTag name="description">default rule</expectedTag>
       <expectedTag name="alert_level">Low</expectedTag>
       <expectedTag name="body">id=firewall time="2004-02-25 17:38:51" pri=4 fw=myArkoon aktype=ALERT gmtime=1077727131 alert_type="Blocked by application control" user="userName" alert_level="Low" alert_desc="TCP from 10.10.192.61:33027 to 10.10.192.156:25 [default rule]"</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -324,6 +326,7 @@ log.update(data)
       <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 16:38:57</expectedTag>
       <expectedTag name="body">id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IP gmtime=1077727137 ip_log_type=ENDCONN src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 intf_in=eth0 intf_out= pkt_len=78 nat=NO snat_addr=0 snat_port=0 dnat_addr=0 dnat_port=0 user="userName" pri=3 rule="myRule" action=DENY reason="Blocked by filter" description="dst addr received from Internet is private"</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -339,6 +342,7 @@ log.update(data)
       <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 16:38:57</expectedTag>
       <expectedTag name="body">id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSMATCH gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 sid=123 score=50</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -356,6 +360,7 @@ log.update(data)
       <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="date">2004-02-25 16:38:57</expectedTag>
       <expectedTag name="body">id=firewall time="2004-02-25 17:38:57" fw=myArkoon aktype=IDPSALERT gmtime=1077727137 src=10.10.192.61 dst=10.10.192.255 proto="137/udp" protocol=17 port_src=137 port_dest=137 profile=1 endcnx_score=100 ch=1 reaction=0</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -372,6 +377,7 @@ log.update(data)
       <expectedTag name="protocol">http</expectedTag>
       <expectedTag name="date">2004-02-25 16:42:54</expectedTag>
       <expectedTag name="body">id=firewall time="2004-02-25 17:42:54" fw=myArkoon pri=6 aktype=HTTP gmtime=1077727374 src=10.10.192.61 proto=http user="userName" op="GET" dstname=www arg="http://www/ HTTP/1.1" ref="" agent="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.0.0) Gecko/20020623 Debian/1.0.0-0.woody.1" rcvd=355 result=407</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -384,6 +390,7 @@ log.update(data)
       <expectedTag name="rule">surf_normal</expectedTag>
       <expectedTag name="action">ACCEPT</expectedTag>
       <expectedTag name="body">id=firewall time="2010-10-04 10:38:37" gmtime=1286181517 fw=doberman.jurassic.ta aktype=IP ip_log_type=NEWCONN src=172.10.10.107 dst=204.13.8.181 proto="http" protocol=6 port_src=2619 port_dest=80 intf_in=eth7 intf_out=eth2 pkt_len=48 nat=HIDE snat_addr=10.10.10.199 snat_port=16176 dnat_addr=0 dnat_port=0 tcp_seq=1113958286 tcp_ack=0 tcp_flags="SYN" user="" vpn-src="" pri=6 rule="surf_normal" action=ACCEPT</expectedTag>
+      <expectedTag name="taxonomy">firewall</expectedTag>
      </expectedTags>
     </example>
    </examples>

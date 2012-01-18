@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="web proxy">
     <description>        
         <localized_desc language="en">This normalizer parses messages issued by the Squid proxy server.
 Please note that only Squid's "native log format" is supported by this normalizer.</localized_desc>
@@ -153,6 +154,7 @@ if value != "-":
                           <expectedTag name="status">200</expectedTag>
                           <expectedTag name="url">http://www.ietf.org/css/ietf.css</expectedTag>
                           <expectedTag name="user">fbo</expectedTag>
+                          <expectedTag name="taxonomy">web proxy</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

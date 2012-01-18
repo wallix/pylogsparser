@@ -38,7 +38,8 @@ TODO: handle view
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="name resolution">
     <description>
         <localized_desc language="en"></localized_desc>
         <localized_desc language="fr"></localized_desc>
@@ -207,6 +208,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                           <expectedTag name="action">started</expectedTag>
                           <expectedTag name="type">AXFR</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -298,6 +300,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">end</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -383,6 +386,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">failed</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -466,6 +470,7 @@ log["severity_code"] = SEVERITIES.index(severity)
                           <expectedTag name="zone">cadenhead.org</expectedTag>
                           <expectedTag name="domain">www.cadenhead.org</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

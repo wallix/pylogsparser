@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="web proxy">
     <description>
         <localized_desc language="en">This normalizer parses DansGuardian's access.log file. This
 file logs every request made, whether allowed or denied, and gives the reason why a specific action
@@ -247,6 +248,7 @@ else:
                           <expectedTag name="mime_type">application/x-gzip</expectedTag>
                           <expectedTag name="filter_group_name">limited_access</expectedTag>
                           <expectedTag name="user_agent">-</expectedTag>
+                          <expectedTag name="taxonomy">web proxy</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -266,6 +268,7 @@ else:
                           <expectedTag name="mime_type">-</expectedTag>
                           <expectedTag name="filter_group_name">limited_access</expectedTag>
                           <expectedTag name="user_agent">-</expectedTag>
+                          <expectedTag name="taxonomy">web proxy</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

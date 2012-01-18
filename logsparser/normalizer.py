@@ -427,6 +427,10 @@ class Normalizer(object):
                         ( (normalizer.get('ignorecase') == "yes" and re.IGNORECASE ) or 0 ) |\
                         ( (normalizer.get('multiline') == "yes" and re.MULTILINE ) or 0 )
         self.matchtype = ( normalizer.get('matchtype') == "search" and "search" ) or 'match'
+        try:
+            self.taxonomy = normalizer.get('taxonomy')
+        except:
+            self.taxonomy = None
 
         for node in normalizer:
             if node.tag == "description":
@@ -540,7 +544,8 @@ class Normalizer(object):
                  'authors' : self.authors,
                  'description' : self.description.get(language, "N/A"),
                  'patterns' : patterns_desc,
-                 'commonTags' : self.commonTags }
+                 'commonTags' : self.commonTags,
+                 'taxonomy' : self.taxonomy }
 
     def get_uncompiled_regexp(self, p = None, increment = 0):
         """returns the uncompiled regular expression associated to pattern named p.
@@ -628,6 +633,9 @@ class Normalizer(object):
                     log.update(matched_pattern.commonTags) 
                     # then add the normalizer's common Tags
                     log.update(self.commonTags)
+                    # then add the taxonomy if relevant
+                    if self.taxonomy:
+                        log['taxonomy'] = self.taxonomy
                     # and finally, apply the final callbacks
                     for cb in self.finalCallbacks:
                         try:
@@ -644,6 +652,9 @@ class Normalizer(object):
                             log.update(ret)
                             # then add the normalizer's common Tags
                             log.update(self.commonTags)
+                            # then add the taxonomy if relevant
+                            if self.taxonomy:
+                                log['taxonomy'] = self.taxonomy
                             # and finally, apply the final callbacks
                             for cb in self.finalCallbacks:
                                 try:
@@ -670,6 +681,8 @@ class Normalizer(object):
                     w = self.patterns[p].normalize(example.raw_line)
                     if w:
                         w.update(self.commonTags)
+                        if self.taxonomy:
+                            w['taxonomy'] = self.taxonomy
                         for cb in self.finalCallbacks:
                             try:
                                 w.update(self.callbacks.get(cb, self.genericCallBacks.get(cb))(None, w))
@@ -731,7 +744,7 @@ def doc2RST(description, gettext = None):
 Description
 :::::::::::
 
-%(description)s
+%(description)s %(taxonomy)s
 
 This normalizer can parse logs of the following structure(s):
 
@@ -747,6 +760,10 @@ Examples
     d['title'] += '\n' + '-'*len(d['title'])
     d['authors'] = '\n'.join( ['* *%s*' % a for a in description['authors'] ] )
     d['description'] = escape(description['description']) or _('undocumented')
+    d['taxonomy'] = ''
+    if description["taxonomy"]:
+        d['taxonomy'] = ("\n\n" +\
+                         (_("This normalizer belongs to the category : *%s*") % description['taxonomy']) )
     d['patterns'] = ''
     d['examples'] = ''
     for p in description['patterns']:

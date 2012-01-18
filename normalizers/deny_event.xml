@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="firewall">
     <description>
         <localized_desc language="en"></localized_desc>
         <localized_desc language="fr"></localized_desc>
@@ -483,6 +484,7 @@ except:
                           <expectedTag name="parameters">GET /cgi-bin/badstore.cgi?searchquery=1' OR 1=1 #&amp;action=search&amp;x=0&amp;y=0</expectedTag>
                           <expectedTag name="uri">(uri) </expectedTag>
                           <expectedTag name="attack_id">11230-0 </expectedTag>
+                          <expectedTag name="taxonomy">firewall</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

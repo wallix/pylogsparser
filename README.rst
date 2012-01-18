@@ -72,6 +72,8 @@ The definition file's root must hold the following elements :
 * how to match the regular expression : from the beginning of the log line (match)
   or from anywhere in the targeted tag (search)
 * the tag value to parse (raw, body...)
+* the service taxonomy, if relevant, of the normalizer. See the end of this
+  document for more details.
 
 Default tag types
 .................
@@ -275,7 +277,6 @@ The alphabetical list below is a series of tag names that must be used when rele
 - source_mac : MAC address of a source host.
 - source_port : source port of a network connection.
 - status : component status such as FAIL, success, 404.
-- taxonomy : associates a log to a software type, such as firewall, antivirus ... 
   see below for a complete list.
 - url : an URL as defined in rfc1738. (scheme://netloc/path;parameters?query#fragment)
 - user : a user id.

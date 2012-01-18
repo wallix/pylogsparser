@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="web proxy">
     <description>
         <localized_desc language="en"></localized_desc>
         <localized_desc language="fr"></localized_desc>
@@ -295,6 +296,7 @@
                           <expectedTag name="response_time">215872</expectedTag>
                           <expectedTag name="bytes_sent">1625</expectedTag>
                           <expectedTag name="len">409</expectedTag>
+                          <expectedTag name="taxonomy">web proxy</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

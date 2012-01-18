@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="mail">
     <description>
         <localized_desc language="en">Postfix log normalization.
 Postfix logs consist of a message UID and a list of keys and values.
@@ -141,6 +142,7 @@ if 'relay' in log.keys():
                           <expectedTag name="orig_to">root</expectedTag>
                           <expectedTag name="relay">none</expectedTag>
                           <expectedTag name="status">bounced</expectedTag>
+                          <expectedTag name="taxonomy">mail</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

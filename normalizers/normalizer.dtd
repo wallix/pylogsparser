@@ -41,6 +41,8 @@
       protocol normalizers, "body" for application or generic normalizers -->
  <!ATTLIST normalizer appliedTo CDATA #REQUIRED>
 <!-- A set of descriptions, language is specified as the usual language code -->
+ <!-- The service taxonomy, if relevant, of the normalizer. See README.rst -->
+ <!ATTLIST normalizer taxonomy CDATA #IMPLIED>
 <!ELEMENT description (localized_desc+)>
  <!ELEMENT localized_desc (#PCDATA)>
  <!ATTLIST localized_desc language CDATA #REQUIRED>

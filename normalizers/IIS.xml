@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="web server">
     <description>
         <localized_desc language="en">This normalizer handles IIS 6.0 (Internet Information Service) logs, which are in w3c ELFF (Extended Log File Format).</localized_desc>
         <localized_desc language="fr">Ce normaliseur gère les logs IIS 6.0, qui sont au format w3c ELFF (Extended Log File Format).</localized_desc>
@@ -187,6 +188,7 @@ log['time_taken'] = value
                           <expectedTag name="status">404</expectedTag>
                           <expectedTag name="substatus">0</expectedTag>
                           <expectedTag name="win_status">2</expectedTag>
+                          <expectedTag name="taxonomy">web server</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -319,6 +321,7 @@ log['time_taken'] = value
                           <expectedTag name="method">PASS</expectedTag>
                           <expectedTag name="url_path">/Intro.htm</expectedTag>
                           <expectedTag name="script_parameters">-</expectedTag>
+                          <expectedTag name="taxonomy">web server</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="address assignation">
     <description>
         <localized_desc language="en">This normalizer is used to parse DHCPd messages.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les messages émis par les serveurs DHCPd.</localized_desc></description>
@@ -83,6 +84,7 @@ log["action"] = value[4:]
                         <expectedTag name="action">DISCOVER</expectedTag>
                         <expectedTag name="source_mac">02:1c:25:a3:32:76</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
+                        <expectedTag name="taxonomy">address assignation</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -109,6 +111,7 @@ log["action"] = value[4:]
                     <expectedTags>
                         <expectedTag name="action">INFORM</expectedTag>
                         <expectedTag name="source_ip">183.231.184.122</expectedTag>
+                        <expectedTag name="taxonomy">address assignation</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -143,6 +146,7 @@ log["action"] = value[4:]
                         <expectedTag name="source_ip">183.231.184.122</expectedTag>
                         <expectedTag name="source_mac">00:13:ec:1c:06:5b</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
+                        <expectedTag name="taxonomy">address assignation</expectedTag>
                     </expectedTags>
                 </example>
                 <example>
@@ -152,6 +156,7 @@ log["action"] = value[4:]
                         <expectedTag name="source_ip">183.231.184.122</expectedTag>
                         <expectedTag name="source_mac">00:13:ec:1c:06:5b</expectedTag>
                         <expectedTag name="via">183.213.184.122</expectedTag>
+                        <expectedTag name="taxonomy">address assignation</expectedTag>
                     </expectedTags>
                 </example>
             </examples>

@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="access control">
     <description><localized_desc language="en">This normalizer can parse connection messages logged by a SSH server.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les événements de connexion à un serveur SSH.</localized_desc></description>
     <authors>
@@ -94,6 +95,7 @@ else:
                           <expectedTag name="method">password</expectedTag>
                           <expectedTag name="user">admin</expectedTag>
                           <expectedTag name="source_ip">218.49.183.17</expectedTag>
+                          <expectedTag name="taxonomy">access control</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

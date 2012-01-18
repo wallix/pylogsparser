@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="no"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="antivirus">
     <description>
         <localized_desc language="en">This normalizer parses BitDefender (Mail servers UNIX) logs.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les logs de BitDefender (version Mail servers UNIX).</localized_desc>
@@ -210,6 +211,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                         <expectedTag name="group">Default</expectedTag>
                         <expectedTag name="reason_detail">AUTO_B_IPX_20100613_110223_1_555</expectedTag>
                         <expectedTag name="reason">signature</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
                 <example>
@@ -224,6 +226,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                         <expectedTag name="stamp"> v1, build 2.10.1.12405, rbl score: 0(0), hit signature: S_REPL_IPX_080830_02, total: 1000(750)</expectedTag>
                         <expectedTag name="reason_detail">S_REPL_IPX_080830_02</expectedTag>
                         <expectedTag name="reason">signature</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
                 <example>
@@ -238,6 +241,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                         <expectedTag name="reason_detail">Spam FuzzyHit CRT_BGU</expectedTag>
                         <expectedTag name="reason">SQMD Hits</expectedTag>
                         <expectedTag name="program">bitdefender</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -270,6 +274,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     <expectedTags>
                         <expectedTag name="date">2011-10-24 15:33:30</expectedTag>
                         <expectedTag name="program">bitdefender</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -302,6 +307,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     <expectedTags>
                         <expectedTag name="date">2011-10-24 13:33:11</expectedTag>
                         <expectedTag name="program">bitdefender</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
             </examples>
@@ -334,6 +340,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                     <expectedTags>
                         <expectedTag name="date">2011-10-24 04:31:39</expectedTag>
                         <expectedTag name="program">bitdefender</expectedTag>
+                        <expectedTag name="taxonomy">antivirus</expectedTag>
                     </expectedTags>
                 </example>
             </examples>

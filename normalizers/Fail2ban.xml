@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="access control">
     <description>
         <localized_desc language="en">This normalizer can parse Fail2ban logs (version 0.8.4).</localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs de l'applicatif Fail2ban (version 0.8.4).</localized_desc>
@@ -165,6 +166,7 @@ log["date"] = newdate.replace(microsecond = int(milliseconds) * 1000 )
                           <expectedTag name="protocol">ssh</expectedTag>
                           <expectedTag name="action">Ban</expectedTag>
                           <expectedTag name="source_ip">213.65.93.82</expectedTag>
+                          <expectedTag name="taxonomy">access control</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

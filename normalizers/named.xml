@@ -70,7 +70,8 @@ in other logline too ... need to wait for real use cases.
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="name resolution">
     <description>
         <localized_desc language="en"></localized_desc>
         <localized_desc language="fr"></localized_desc>
@@ -253,6 +254,7 @@ log["view"] = view
                           <expectedTag name="type">SOA</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -266,6 +268,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                           <expectedTag name="view">external</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -279,6 +282,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                           <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -293,6 +297,7 @@ log["view"] = view
                           <expectedTag name="program">named</expectedTag>
                           <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                           <expectedTag name="category">general</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -308,6 +313,7 @@ log["view"] = view
                           <expectedTag name="date">2000-02-28 15:05:32.863000</expectedTag>
                           <expectedTag name="category">general</expectedTag>
                           <expectedTag name="view">external</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -321,6 +327,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                           <expectedTag name="category">queries</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -337,6 +344,7 @@ log["view"] = view
                           <expectedTag name="category">general</expectedTag>
                           <expectedTag name="severity">crit</expectedTag>
                           <expectedTag name="severity_code">2</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -430,6 +438,7 @@ log["view"] = view
                           <expectedTag name="type">A</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -500,6 +509,7 @@ log["view"] = view
                           <expectedTag name="source_port">1126</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -570,6 +580,7 @@ log["view"] = view
                           <expectedTag name="source_port">1126</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -663,6 +674,7 @@ log["view"] = view
                           <expectedTag name="type">MX</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -731,6 +743,7 @@ log["view"] = view
                           <expectedTag name="domain">126.92.194.77.zen.spamhaus.org</expectedTag>
                           <expectedTag name="type">A</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -807,6 +820,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="serial">2006070304</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -893,6 +907,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -977,6 +992,7 @@ log["view"] = view
                           <expectedTag name="zone">www.abc.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -1062,6 +1078,7 @@ log["view"] = view
                           <expectedTag name="zone">example.com</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -1147,6 +1164,7 @@ log["view"] = view
                           <expectedTag name="zone">somedomain.com.au</expectedTag>
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -1254,6 +1272,7 @@ log["view"] = view
                           <expectedTag name="action">adding</expectedTag>
                           <expectedTag name="domain">pianogirl.home.whootis.com</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -1339,6 +1358,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">failed</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -1424,6 +1444,7 @@ log["view"] = view
                           <expectedTag name="class">IN</expectedTag>
                           <expectedTag name="action">denied</expectedTag>
                           <expectedTag name="program">named</expectedTag>
+                          <expectedTag name="taxonomy">name resolution</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

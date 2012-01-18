@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="database">
 
     <description>
         <localized_desc language="en">This normalizer handles mysql logs, from log and log_error files.</localized_desc>
@@ -128,6 +129,7 @@ log["date"] = newdate
                           <expectedTag name="id">38</expectedTag>
                           <expectedTag name="type">Query</expectedTag>
                           <expectedTag name="event">show databases</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -136,6 +138,7 @@ log["date"] = newdate
                           <expectedTag name="id">36</expectedTag>
                           <expectedTag name="type">Init DB</expectedTag>
                           <expectedTag name="event">test_database</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -143,6 +146,7 @@ log["date"] = newdate
                      <expectedTags>
                           <expectedTag name="id">34</expectedTag>
                           <expectedTag name="type">Quit</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -151,6 +155,7 @@ log["date"] = newdate
                           <expectedTag name="id">16</expectedTag>
                           <expectedTag name="type">Connect</expectedTag>
                           <expectedTag name="event">debian-sys-maint@localhost on</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -193,6 +198,7 @@ log["date"] = newdate
                      <expectedTags>
                           <expectedTag name="component">Note</expectedTag>
                           <expectedTag name="event">/usr/sbin/mysqld: Shutdown complete</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -200,6 +206,7 @@ log["date"] = newdate
                      <expectedTags>
                           <expectedTag name="component">InnoDB</expectedTag>
                           <expectedTag name="event">Initializing buffer pool, size = 8.0M</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
                 <example>
@@ -207,6 +214,7 @@ log["date"] = newdate
                      <expectedTags>
                           <expectedTag name="component">ERROR</expectedTag>
                           <expectedTag name="event">1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1</expectedTag>
+                          <expectedTag name="taxonomy">database</expectedTag>
                      </expectedTags>
                 </example>
            </examples>

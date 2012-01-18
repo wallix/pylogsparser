@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="raw">
+            appliedTo="raw"
+            taxonomy="file transfer">
     <description>
         <localized_desc language="en">This normalizer handles FTP logs in the xferlog format.
 This format is supported by a wide range of FTP servers like Wu-Ftpd, VSFTPd, ProFTPD or standard BSD ftpd.
@@ -279,6 +280,7 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                           <expectedTag name="completion_status">complete</expectedTag>
                           <expectedTag name="completion_status_code">c</expectedTag>
                           <expectedTag name="program">ftpd</expectedTag>
+                          <expectedTag name="taxonomy">file transfer</expectedTag>
                      </expectedTags>
                 </example>
             </examples>

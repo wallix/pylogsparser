@@ -30,7 +30,8 @@
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="access control">
     <description>
         <localized_desc language="en">This normalizer can parse messages issued by the Pluggable Authentication Module (PAM).</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les messages émis par le module d'authentification par greffons (PAM).</localized_desc></description>
@@ -112,6 +113,7 @@ log["action"] = {'opened' : 'open',
                           <expectedTag name="type">session</expectedTag>
                           <expectedTag name="action">open</expectedTag>
                           <expectedTag name="user">www-data</expectedTag>
+                          <expectedTag name="taxonomy">access control</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
