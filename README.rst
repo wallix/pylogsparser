@@ -249,32 +249,85 @@ Log contains common informations such as username, IP address, informations abou
 transport protocol... In order to ease log post-processing we must define a common
 method to name those tags and not deal for example with a series of "login, user,
 username, userid" all describing a user id.
-The list bellow is a series of tag names that must be used when relevant.
+The alphabetical list below is a series of tag names that must be used when relevant.
 
-- local_mac : MAC address of the local host.
-- local_ip : IP adress of the local host.
-- local_host : hostname or FQDN of the local host.
-- local_port : listening port of a local service.
-- source_mac : MAC address of a source host.
-- source_ip : IP address of a source host.
-- source_host : hostname or FQDN of a source host.
-- source_port : source port of a network connection.
-- dest_mac : MAC address of a destination host.
-- dest_ip : IP address of a destination host.
-- dest_host : hostname or FQDN of a destination host.
-- dest_port : destination port of a network connection.
-- protocol : network or software protocol name or numeric id such as TCP, NTP, SMTP.
-- inbound_int : network interface for incoming data.
-- outbound_int : network interface for outgoing data.
-- bind_int : binding interface for a network service.
-- message_id : message or transaction id.
-- message_sender : message sender id.
-- message_recipient : message recipient id.
-- status : component status such as FAIL, success, 404.
 - action : action taken by a component such as DELETED, migrated, DROP, open.
-- method : component access method such as GET, key_auth.
+- bind_int : binding interface for a network service.
+- dest_host : hostname or FQDN of a destination host.
+- dest_ip : IP address of a destination host.
+- dest_mac : MAC address of a destination host.
+- dest_port : destination port of a network connection.
 - event_id : id describing an event.
-- user : a user id.
+- inbound_int : network interface for incoming data.
 - len : a data size.
+- local_host : hostname or FQDN of the local host.
+- local_ip : IP adress of the local host.
+- local_mac : MAC address of the local host.
+- local_port : listening port of a local service.
+- message_id : message or transaction id.
+- message_recipient : message recipient id.
+- message_sender : message sender id.
+- method : component access method such as GET, key_auth.
+- outbound_int : network interface for outgoing data.
+- protocol : network or software protocol name or numeric id such as TCP, NTP, SMTP.
+- source_host : hostname or FQDN of a source host.
+- source_ip : IP address of a source host.
+- source_mac : MAC address of a source host.
+- source_port : source port of a network connection.
+- status : component status such as FAIL, success, 404.
+- taxonomy : associates a log to a software type, such as firewall, antivirus ... 
+  see below for a complete list.
 - url : an URL as defined in rfc1738. (scheme://netloc/path;parameters?query#fragment)
+- user : a user id.
 
+Service taxonomy
+................
+
+As of pylogsparser 0.4 a taxonomy tag is added to relevant normalizers. It helps
+classifying logs by service type, which can be useful for reporting among other
+things. Here is a list of identified services; suggestions and improvements are
+welcome !
+
++-----------+----------------------------------------+------------------------+
+| Service   | Description                            | Normalizers            |
++===========+========================================+========================+
+| access    | A service dealing with authentication  | Fail2ban               |
+| control   | and/or authorization                   | pam                    |
+|           |                                        | sshd                   |
+|           |                                        | wabauth                |
++-----------+----------------------------------------+------------------------+
+| antivirus | A service dealing with malware         | bitdefender            |
+|           | detection and prevention               | symantec               |
++-----------+----------------------------------------+------------------------+
+| database  | A database service such as mySQLd,     | mysql                  |
+|           | postmaster (postGRESQL), ...           |                        |
++-----------+----------------------------------------+------------------------+
+| address   | A service in charge of network address | dhcpd                  |
+|assignation| assignations                           |                        |
++-----------+----------------------------------------+------------------------+
+| name      | A service in charge of network names   | named                  |
+| resolution| resolutions                            | named-2                |
++-----------+----------------------------------------+------------------------+
+| firewall  | A service in charge of monitoring      | LEA                    |
+|           | and filtering network traffic          | arkoonFAST360          |
+|           |                                        | deny_event             |
+|           |                                        | netfilter              |
++-----------+----------------------------------------+------------------------+
+| file      | A file transfer service                | xferlog                |
+| transfer  |                                        |                        |
++-----------+----------------------------------------+------------------------+
+| hypervisor| A virtualization platform service      | VMWare_ESX4-ESXi4      |
+|           |                                        |                        |
++-----------+----------------------------------------+------------------------+
+| mail      | A mail server                          | MSExchange2007-        |
+|           |                                        | MessageTracking        |
+|           |                                        | postfix                |
++-----------+----------------------------------------+------------------------+
+| web proxy | A service acting as an intermediary    | dansguardian           |
+|           | between clients and web resources;     | deny_traffic           |
+|           | access control and content filtering   | squid                  |
+|           | can also occur                         |                        |
++-----------+----------------------------------------+------------------------+
+| web server| A service exposing web resources       | IIS                    |
+|           |                                        | apache                 |
++-----------+----------------------------------------+------------------------+
