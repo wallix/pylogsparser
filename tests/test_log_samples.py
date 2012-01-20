@@ -526,18 +526,17 @@ class Test(unittest.TestCase):
 	self.aS("""sysboot: Executing 'kill -TERM 314'""",
 		{'body': 'Executing \'kill -TERM 314\''})
 
-    def test_mysql(self):
-	"""Test mysql log normalization"""
-	self.aS("""110923 11:04:58	   36 Query	show databases""",
-		{'date': datetime(2011, 9, 23, 11, 4, 58),
-		 'id': '36',
-	 	 'type': 'Query',
-	 	 'event': 'show databases'})
-
-	self.aS("""110923 10:09:11 [Note] Plugin 'FEDERATED' is disabled.""",
-		{'date': datetime(2011, 9, 23, 10, 9, 11),
-	 	 'component': 'Note',
-	 	 'event': 'Plugin \'FEDERATED\' is disabled.'})
+#    def test_mysql(self):
+#	"""Test mysql log normalization"""
+#	self.aS("""110923 11:04:58	   36 Query	show databases""",
+#		{'date': datetime(2011, 9, 23, 11, 4, 58),
+#		 'id': '36',
+#	 	 'type': 'Query',
+#	 	 'event': 'show databases'})
+#	self.aS("""110923 10:09:11 [Note] Plugin 'FEDERATED' is disabled.""",
+#		{'date': datetime(2011, 9, 23, 10, 9, 11),
+#	 	 'component': 'Note',
+#	 	 'event': 'Plugin \'FEDERATED\' is disabled.'})
 
     def test_IIS(self):
 	"""Test IIS log normalization"""

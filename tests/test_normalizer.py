@@ -95,8 +95,8 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_017_vmware(self):
         self.normalize_samples('VMWare_ESX4-ESXi4.xml', 'VMWare_ESX4-ESXi4', 0.99)
 
-    def test_normalize_samples_018_mysql(self):
-        self.normalize_samples('mysql.xml', 'mysql', 0.99)
+#    def test_normalize_samples_018_mysql(self):
+#        self.normalize_samples('mysql.xml', 'mysql', 0.99)
 
     def test_normalize_samples_019_IIS(self):
         self.normalize_samples('IIS.xml', 'IIS', 0.99)
