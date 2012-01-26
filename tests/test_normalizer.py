@@ -37,7 +37,7 @@ class TestSample(unittest.TestCase):
         # validate DTD
         dtd = DTD(open(os.path.join(self.normalizer_path,
                                     'normalizer.dtd')))
-        self.assertTrue(dtd.validate(n))
+        dtd.assertValid(n)
         # Create normalizer from xml definition
         normalizer = Normalizer(n, os.path.join(self.normalizer_path, 'common_tagTypes.xml'), os.path.join(self.normalizer_path, 'common_callBacks.xml'))
         self.assertEquals(normalizer.name, name)
@@ -133,6 +133,12 @@ class TestSample(unittest.TestCase):
 
     def test_normalize_samples_028_dansguardian(self):
         self.normalize_samples('dansguardian.xml', 'dansguardian', 0.99)
+
+    def test_normalize_samples_029_cisco_asa_header(self):
+        self.normalize_samples('cisco-asa_header.xml', 'cisco-asa_header', 0.99)
+
+    def test_normalize_samples_030_cisco_asa_msg(self):
+        self.normalize_samples('cisco-asa_msg.xml', 'cisco-asa_msg', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
