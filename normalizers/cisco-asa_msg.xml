@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="cisco-asa_msg"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body">
+ <description>
+  <localized_desc language="en">This normalizer is able to parse logs from Cisco ASA devices. 
+   This normalizer performs log normalisation on log body extracts by cisco-asa_header parser. 
+   The normalizer has been tested with Cisco ASA IOS version 8.4.
+  </localized_desc>
+  <localized_desc language="fr">Ce normaliseur reconnaît les logs des équipements Cisco ASA. 
+   La normalisation est réalisée sur le corp du log extrait par le normaliseur cisco-asa_header. 
+   Ce normaliseur a été testé avec un Cisco ASA IOS en version 8.4.
+  </localized_desc>
+ </description>
+ <authors>
+  <author>fbo@wallix.com</author>
+ </authors>
+ <tagTypes>
+  <tagType name="Word" type="basestring">
+   <description>
+    <localized_desc language="en">Matches a word.</localized_desc>
+    <localized_desc language="fr">Un mot.</localized_desc>
+   </description>
+   <regexp>[^ ]+</regexp>
+  </tagType>
+  <tagType name="ProtoWord" type="basestring">
+   <description>
+    <localized_desc language="en">Matches a protocol word.</localized_desc>
+    <localized_desc language="fr">Un protocol.</localized_desc>
+   </description>
+   <regexp>(?:(?:TCP)|(?:UDP)|(?:ICMP)|(?:tcp)|(?:udp)|(?:icmp)|\d+)</regexp>
+  </tagType>
+  <tagType name="ActionWord" type="basestring">
+   <description>
+    <localized_desc language="en">Matches an action word.</localized_desc>
+    <localized_desc language="fr">Une action.</localized_desc>
+   </description>
+   <regexp>(?:(?:denied)|(?:permitted)|(?:Successful)|(?:Rejected)|(?:failed)|(?:succeeded))</regexp>
+  </tagType>
+  <tagType name="AAAWord" type="basestring">
+   <description>
+    <localized_desc language="en">Matches an authentication word.</localized_desc>
+    <localized_desc language="fr">Un type d'autorisation.</localized_desc>
+   </description>
+   <regexp>(?:(?:authentication)|(?:authorization)|(?:accounting)|(?:Authentication)|(?:Authorization))</regexp>
+  </tagType>
+ </tagTypes>
+ <patterns>
+  <pattern name="asa-001">
+   <description>
+    <localized_desc language="en">305001</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>Built TYPE PROTOCOL translation from SINT:SIP/SPT to DINT:DIP/DPT</text>
+   <tags>
+    <tag name="type" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>TYPE</substitute>
+    </tag>
+    <tag name="protocol" tagType="ProtoWord">
+     <description>
+      <localized_desc language="en">The protocol of translated connection.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+     </description>
+     <substitute>PROTOCOL</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="outbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Built dynamic TCP translation from inside:192.168.1.50/1107 to outside:172.22.1.254/1025</text>
+     <expectedTags>
+      <expectedTag name="type">dynamic</expectedTag>
+      <expectedTag name="protocol">TCP</expectedTag>
+      <expectedTag name="inbound_int">inside</expectedTag>
+      <expectedTag name="dest_ip">172.22.1.254</expectedTag>
+      <expectedTag name="dest_port">1025</expectedTag>
+      <expectedTag name="source_ip">192.168.1.50</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-002">
+   <description>
+    <localized_desc language="en">302015/302013</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>Built (?:(?:inbound)|(?:outbound)) PROTOCOL connection ID for SINT:SIP/SPT \([^ ]+/\d+\) to DINT:DIP/DPT \([^ ]+/\d+\)(?: \(USER\))?</text>
+   <tags>
+    <tag name="protocol" tagType="ProtoWord">
+     <description>
+      <localized_desc language="en">The protocol of translated connection.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+     </description>
+     <substitute>PROTOCOL</substitute>
+    </tag>
+    <tag name="id" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ID</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="outbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="user" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Built inbound UDP connection 732748 for outside:192.168.208.63/49804 (192.168.208.63/49804) to inside:192.168.150.70/53 (192.168.150.70/53)</text>
+     <expectedTags>
+      <expectedTag name="id">732748</expectedTag>
+      <expectedTag name="protocol">UDP</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="source_ip">192.168.208.63</expectedTag>
+      <expectedTag name="dest_ip">192.168.150.70</expectedTag>
+      <expectedTag name="dest_port">53</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>Built inbound TCP connection 733280 for outside:192.168.208.63/51606 (192.168.208.63/51606) to inside:192.168.150.70/80 (192.168.150.70/80) (myuser)</text>
+     <expectedTags>
+      <expectedTag name="id">733280</expectedTag>
+      <expectedTag name="protocol">TCP</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="source_ip">192.168.208.63</expectedTag>
+      <expectedTag name="dest_ip">192.168.150.70</expectedTag>
+      <expectedTag name="dest_port">80</expectedTag>
+      <expectedTag name="user">myuser</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-003">
+   <description>
+    <localized_desc language="en">106023</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>Deny PROTOCOL src SINT:SIP(?:/SPT)? dst DINT:DIP(?:/DPT)?(?: \(.*\))? by access-group "GROUP" .*</text>
+   <tags>
+    <tag name="protocol" tagType="ProtoWord">
+     <description>
+      <localized_desc language="en">The protocol of translated connection.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+     </description>
+     <substitute>PROTOCOL</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="outbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="group" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>GROUP</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Deny icmp src outside:192.168.208.63 dst inside:192.168.150.77 (type 8, code 0) by access-group "OUTSIDE" [0xd3f63b90, 0x0]</text>
+     <expectedTags>
+      <expectedTag name="protocol">icmp</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="source_ip">192.168.208.63</expectedTag>
+      <expectedTag name="dest_ip">192.168.150.77</expectedTag>
+      <expectedTag name="group">OUTSIDE</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>Deny tcp src outside:192.168.208.63/51585 dst inside:192.168.150.77/288 by access-group "OUTSIDE" [0x5063b82f, 0x0]</text>
+     <expectedTags>
+      <expectedTag name="protocol">tcp</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="source_ip">192.168.208.63</expectedTag>
+      <expectedTag name="dest_ip">192.168.150.77</expectedTag>
+      <expectedTag name="dest_port">288</expectedTag>
+      <expectedTag name="group">OUTSIDE</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-004">
+   <description>
+    <localized_desc language="en">106010</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>Deny inbound protocol PROTOCOL src SINT:SIP dst DINT:DIP</text>
+   <tags>
+    <tag name="protocol" tagType="ProtoWord">
+     <description>
+      <localized_desc language="en">The protocol of translated connection.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+     </description>
+     <substitute>PROTOCOL</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="outbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Deny inbound protocol 47 src outside:192.168.0.1 dst outside:127.0.0.10</text>
+     <expectedTags>
+      <expectedTag name="protocol">47</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="outbound_int">outside</expectedTag>
+      <expectedTag name="source_ip">192.168.0.1</expectedTag>
+      <expectedTag name="dest_ip">127.0.0.10</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-005">
+   <description>
+    <localized_desc language="en">605005/605004</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>Login ACTION from SIP/SPT to SINT:DIP/DPT for user "USER"</text>
+   <tags>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="user" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+    <tag name="action" tagType="ActionWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Login permitted from 192.168.202.51/3507 to inside:192.168.2.20/ssh for user "admin"</text>
+     <expectedTags>
+      <expectedTag name="inbound_int">inside</expectedTag>
+      <expectedTag name="source_port">3507</expectedTag>
+      <expectedTag name="dest_ip">192.168.2.20</expectedTag>
+      <expectedTag name="user">admin</expectedTag>
+      <expectedTag name="action">permitted</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-006">
+   <description>
+    <localized_desc language="en">113004/113005</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>AAA user AAATYPE ACTION : (?:reason = [^:]+: )?server = DIP : user = USER</text>
+   <tags>
+    <tag name="type" tagType="AAAWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>AAATYPE</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="user" tagType="WORD">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+    <tag name="action" tagType="ActionWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>AAA user authentication Successful : server = 10.1.206.27 : user = userx</text>
+     <expectedTags>
+      <expectedTag name="dest_ip">10.1.206.27</expectedTag>
+      <expectedTag name="user">userx</expectedTag>
+      <expectedTag name="type">authentication</expectedTag>
+      <expectedTag name="action">Successful</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>AAA user authentication Rejected : reason = AAA failure : server = 10.10.1.2 : user = vpn_user</text>
+     <expectedTags>
+      <expectedTag name="dest_ip">10.10.1.2</expectedTag>
+      <expectedTag name="user">vpn_user</expectedTag>
+      <expectedTag name="type">authentication</expectedTag>
+      <expectedTag name="action">Rejected</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-007">
+   <description>
+    <localized_desc language="en">109005/109006/109007/109008</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>AAATYPE ACTION for user 'USER' from SIP/SPT to DIP/DPT on interface SINT</text>
+   <tags>
+    <tag name="type" tagType="AAAWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>AAATYPE</substitute>
+    </tag>
+    <tag name="action" tagType="ActionWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION</substitute>
+    </tag>
+    <tag name="user" tagType="WORD">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Authentication succeeded for user 'userjane' from 172.28.4.41/0 to 10.1.1.10/24 on interface outside</text>
+     <expectedTags>
+      <expectedTag name="dest_ip">10.1.1.10</expectedTag>
+      <expectedTag name="dest_port">24</expectedTag>
+      <expectedTag name="user">userjane</expectedTag>
+      <expectedTag name="type">Authentication</expectedTag>
+      <expectedTag name="action">succeeded</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>Authorization denied for user 'user1' from 192.168.208.63/57315 to 192.168.134.21/21 on interface outside</text>
+     <expectedTags>
+      <expectedTag name="dest_ip">192.168.134.21</expectedTag>
+      <expectedTag name="dest_port">21</expectedTag>
+      <expectedTag name="source_port">57315</expectedTag>
+      <expectedTag name="user">user1</expectedTag>
+      <expectedTag name="type">Authorization</expectedTag>
+      <expectedTag name="action">denied</expectedTag>
+      <expectedTag name="inbound_int">outside</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-008">
+   <description>
+    <localized_desc language="en">611101/611102</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>User authentication ACTION: Uname: USER</text>
+   <tags>
+    <tag name="action" tagType="ActionWord">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>ACTION</substitute>
+    </tag>
+    <tag name="user" tagType="WORD">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>User authentication succeeded: Uname: alex</text>
+     <expectedTags>
+      <expectedTag name="user">alex</expectedTag>
+      <expectedTag name="action">succeeded</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>
