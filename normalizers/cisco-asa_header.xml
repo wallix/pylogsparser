@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="cisco-asa_header"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw">
+ <description>
+  <localized_desc language="en">This normalizer is able to parse logs received via the syslog
+   export facility from Cisco ASA. The normalizer has been validated with Cisco ASA version 8.4.
+   The standard export format (No EMBLEM format) with "Device ID" and "timestamp" options must be
+   selected for this normalizer.
+  </localized_desc>
+  <localized_desc language="fr">Ce normaliseur reconnait les logs Cisco ASA exportés via
+   la facilité syslog. Ce normaliseur a été validé avec la version 8.4 de l'IOS Cisco ASA.
+   Le format d'export standard (Non EMBLEM) doit être sélectionné avec les options "Device ID" et
+   "timestamp".
+  </localized_desc>
+ </description>
+ <authors>
+  <author>fbo@wallix.com</author>
+ </authors>
+ <tagTypes>
+  <tagType name="syslogPriority" type="integer">
+   <description>
+    <localized_desc language="en">Expression matching a syslog line priority, defined as 8*facility + severity.</localized_desc>
+    <localized_desc language="fr">Expression correspondant à la priorité du message, suivant la formule 8 x facilité + gravité.</localized_desc>
+   </description>
+   <regexp>\d{1,3}</regexp>
+  </tagType>
+  <tagType name="dateASA1" type="datetime">
+   <description>
+    <localized_desc language="en">Expression matching a date in the DDD MMM dd hh:mm:ss YYYY format.</localized_desc>
+    <localized_desc language="fr">Expression correspondant à la date au format DDD MMM dd hh:mm:ss YYYY.</localized_desc>
+   </description>
+   <regexp>[A-Z]{1}[a-z]{2} [0-9]{1,2} [0-9]{4} \d{2}:\d{2}:\d{2}</regexp>
+  </tagType>
+  <tagType name="deviceID" type="basestring">
+   <description>
+    <localized_desc language="en">Expression matching the device ID.</localized_desc>
+    <localized_desc language="fr">Expression correspondant à l'identifiant de l'équipement.</localized_desc>
+   </description>
+   <regexp>[^: ]+</regexp>
+  </tagType>
+ </tagTypes>
+ <callbacks>
+  <callback name="decode_priority">
+# define facilities
+FACILITIES = { 0: "kernel",
+               1: "user",
+               2: "mail",
+               3: "daemon",
+               4: "auth",
+               5: "syslog",
+               6: "print",
+               7: "news",
+               8: "uucp",
+               9: "ntp",
+               10: "secure",
+               11: "ftp",
+               12: "ntp",
+               13: "audit",
+               14: "alert",
+               15: "ntp" }
+for i in range(0, 8):
+    FACILITIES[i+16] = "local%d" % i
+
+# define severities
+SEVERITIES = { 0: "emerg",
+               1: "alert",
+               2: "crit",
+               3: "error",
+               4: "warn",
+               5: "notice",
+               6: "info",
+               7: "debug" }
+facility = int(value) / 8
+severity = int(value) % 8
+if facility not in FACILITIES or severity not in SEVERITIES:
+    raise ValueError('facility or severity is out of range')
+log["facility"] = "%s" % FACILITIES[facility]
+log["severity"] = "%s" % SEVERITIES[severity]
+log["facility_code"] = "%d" % facility
+log["severity_code"] = "%d" % severity
+  </callback>
+  <callback name="decode_asa_severity">
+SEVERITIES = { 0: "emerg",
+               1: "alert",
+               2: "crit",
+               3: "error",
+               4: "warn",
+               5: "notice",
+               6: "info",
+               7: "debug" }
+log["severity_code"] = "%s" % str(value)
+log["severity"] = "%s" % SEVERITIES[int(value)]
+  </callback>
+ </callbacks>
+ <patterns>
+  <pattern name="asa-001">
+   <description>
+    <localized_desc language="en"></localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>&lt;PRIORITY&gt;DATE SOURCE : %ASA-SEVERITY-MNEMONIC: BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="dateASA1">
+     <description>
+     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="fr">l'horodatage du log</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>MMM dd YYYY hh:mm:ss</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="deviceID">
+     <description>
+     <localized_desc language="en">the log's source (device ID)</localized_desc>
+     <localized_desc language="fr">l'équipement ASA à l'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="__cseverity" tagType="Integer">
+     <description>
+     <localized_desc language="en">the log's severity</localized_desc>
+     <localized_desc language="fr">la severité du log</localized_desc>
+     </description>
+     <substitute>SEVERITY</substitute>
+     <callbacks>
+      <callback>decode_asa_severity</callback>
+     </callbacks>
+    </tag>
+    <tag name="mnemonic" tagType="Integer">
+     <description>
+     <localized_desc language="en">the Cisco ID of the event</localized_desc>
+     <localized_desc language="fr">l'identifiant Cisco de l'évenement</localized_desc>
+     </description>
+     <substitute>MNEMONIC</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <commonTags>
+    <commonTag name="program">cisco-asa</commonTag>
+   </commonTags>
+   <examples>
+    <example>
+     <text>&lt;165&gt;Jan 25 2012 18:31:09 ciscoasa : %ASA-5-111008: User 'enable_15' executed the 'logging host inside2 192.168.30.2 6/11508' command.</text>
+     <expectedTags>
+      <expectedTag name="facility">local4</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="severity_code">5</expectedTag>
+      <expectedTag name="source">ciscoasa</expectedTag>
+      <expectedTag name="date">2012-01-25 18:31:09</expectedTag>
+      <expectedTag name="mnemonic">111008</expectedTag>
+      <expectedTag name="program">cisco-asa</expectedTag>
+      <expectedTag name="body">User 'enable_15' executed the 'logging host inside2 192.168.30.2 6/11508' command.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+ </patterns>
+</normalizer>
+
