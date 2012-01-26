@@ -104,6 +104,28 @@ if newdate > datetime.today():
 log['date'] = newdate
 		</code>
 	</callback>
+	<callback name="MMM dd YYYY hh:mm:ss">
+		<description>
+			<localized_desc language="en">
+			MMM matches the name of the month (Jan, Feb, Mar, etc...)
+			dd matches the number of the day (1, 2, 3, etc...)
+			hh:mm:ss matches the time (23:54:42)
+			YYYY matches the year (2012)
+			</localized_desc>
+		</description>
+		<code>
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']   
+# Following line may throw a lot of ValueError
+newdate = datetime(int(value[7:11]),
+                   MONTHS.index(value[0:3]) + 1,
+                   int(value[4:6]),
+                   int(value[12:14]),
+                   int(value[15:17]),
+                   int(value[18:20]))
+log['date'] = newdate
+		</code>
+	</callback>
 	<callBack name="DDD MMM dd hh:mm:ss YYYY">
 		<description>
 			<localized_desc language="en">
