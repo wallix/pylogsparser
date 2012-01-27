@@ -745,7 +745,25 @@ class Test(unittest.TestCase):
                 'raw': '1,2011-01-20 15:09:38.130965,2011-01-20 15:09:38.130965,,,::1,,,2,2,5,0,rWeb started.,,,,,,,,,,,,,,,,,,,,,,,,',
                 'severity': 'Notice',
                 'severity_code': '5'} )
-        
-                     
+
+    def test_cisco_asa(self):
+        """Testing CISCO ASA logs"""
+        self.aS("""<168>Mar 05 2010 11:06:12 ciscoasa : %ASA-6-305011: Built dynamic TCP translation from 14net:14.36.103.220/300 to 172net:172.18.254.146/55""",
+               {'program': 'cisco-asa',
+                'severity_code': '6',
+                'event_id': '305011',
+                'date': datetime(2010, 3, 5, 11, 6, 12),
+                'taxonomy': 'firewall',
+                'outbound_int': '172net',
+                'dest_port': '55'})
+        self.aS("""<168>Jul 02 2006 07:33:45 ciscoasa : %ASA-6-302013: Built outbound TCP connection 8300517 for outside:64.156.4.191/110 (64.156.4.191/110) to inside:192.168.8.12/3109 (xxx.xxx.185.142/11310)""",
+               {'program': 'cisco-asa',
+                'severity_code': '6',
+                'event_id': '302013',
+                'date': datetime(2006, 7, 2, 7, 33, 45),
+                'taxonomy': 'firewall',
+                'outbound_int': 'inside',
+                'dest_ip': '192.168.8.12'})
+
 if __name__ == "__main__":
     unittest.main()
