@@ -33,11 +33,11 @@
             appliedTo="raw">
  <description>
   <localized_desc language="en">This normalizer is able to parse logs received via the syslog
-   export facility from Cisco ASA. The normalizer has been validated with Cisco ASA version 8.4.
+   export facility from a Cisco ASA. The normalizer has been validated with Cisco ASA version 8.4.
    The standard export format (No EMBLEM format) with "Device ID" and "timestamp" options must be
    selected for this normalizer.
   </localized_desc>
-  <localized_desc language="fr">Ce normaliseur reconnait les logs Cisco ASA exportés via
+  <localized_desc language="fr">Ce normaliseur reconnaît les logs Cisco ASA exportés via
    la facilité syslog. Ce normaliseur a été validé avec la version 8.4 de l'IOS Cisco ASA.
    Le format d'export standard (Non EMBLEM) doit être sélectionné avec les options "Device ID" et
    "timestamp".
@@ -125,8 +125,8 @@ log["severity"] = "%s" % SEVERITIES[int(value)]
  <patterns>
   <pattern name="asa-001">
    <description>
-    <localized_desc language="en"></localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Expression matching the Cisco ASA Syslog header</localized_desc>
+    <localized_desc language="fr">Expression validant l'entête Syslog d'un équipement Cisco ASA</localized_desc>
    </description>
    <text>&lt;PRIORITY&gt;DATE SOURCE : %ASA-SEVERITY-MNEMONIC: BODY</text>
    <tags>
