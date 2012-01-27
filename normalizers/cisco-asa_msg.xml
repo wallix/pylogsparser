@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogsparser - Logs parsers python library                 -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
 <normalizer name="cisco-asa_msg"
             version="0.99"
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
-            appliedTo="body">
+            appliedTo="body"
+            taxonomy="firewall">
  <description>
   <localized_desc language="en">This normalizer is able to parse logs from Cisco ASA devices. 
    This normalizer performs log normalisation on log body extracts by cisco-asa_header parser. 
@@ -49,6 +75,9 @@
    <regexp>(?:(?:authentication)|(?:authorization)|(?:accounting)|(?:Authentication)|(?:Authorization))</regexp>
   </tagType>
  </tagTypes>
+ <prerequisites>
+  <prereqTag name="program">cisco-asa</prereqTag>
+ </prerequisites>
  <patterns>
   <pattern name="asa-001">
    <description>
@@ -618,5 +647,173 @@
     </example>
    </examples>
   </pattern>
+  <pattern name="asa-009">
+   <description>
+    <localized_desc language="en">Generic pattern matching logs like 109024/109025/201010/109023/...</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>.+ from SIP/SPT to DIP/DPT (?:\(.+\) )?on interface DINT(?:(?: using PROTOCOL)|.+|$)</text>
+   <tags>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+    <tag name="protocol" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>PROTOCOL</substitute>
+    </tag>
+    <tag name="user" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Authorization denied from 111.111.111.111/12345 to 222.222.222.222/12345 (not authenticated) on interface inside using https</text>
+     <expectedTags>
+      <expectedTag name="inbound_int">inside</expectedTag>
+      <expectedTag name="protocol">https</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>Authorization denied (acl=RS1) for user 'username' from 10.10.10.9/137 to 10.10.10.255/137 on interface outside using UDP</text>
+     <expectedTags>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="protocol">UDP</expectedTag>
+      <expectedTag name="source_ip">10.10.10.9</expectedTag>
+      <expectedTag name="source_port">137</expectedTag>
+     </expectedTags>
+    </example>
+    <example>
+     <text>User from 192.168.5.2/56985 to 192.168.100.2/80 on interface outside must authenticate before using this service</text>
+     <expectedTags>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="dest_port">80</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-010">
+   <description>
+    <localized_desc language="en">Generic pattern matching logs like 108003/410002/324005/421007/500005/109028/608002/...</localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>.+ (?:from|for) (?:SINT:)?SIP/SPT to (?:DINT:)?DIP/DPT.*</text>
+   <tags>
+    <tag name="source_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SIP</substitute>
+    </tag>
+    <tag name="source_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SPT</substitute>
+    </tag>
+    <tag name="dest_ip" tagType="IP">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DIP</substitute>
+    </tag>
+    <tag name="dest_port" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DPT</substitute>
+    </tag>
+    <tag name="inbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>SINT</substitute>
+    </tag>
+    <tag name="outbound_int" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>DINT</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>Dropped 189 DNS responses with mis-matched id in the past 10 second(s): from outside:192.0.2.2/3917 to inside:192.168.60.1/53</text>
+     <expectedTags>
+      <expectedTag name="inbound_int">outside</expectedTag>
+      <expectedTag name="outbound_int">inside</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="asa-011">
+   <description>
+    <localized_desc language="en">Generic pattern trying to match a user id in a log line </localized_desc>
+    <localized_desc language="fr"></localized_desc>
+   </description>
+   <text>.+(?:(?:[U|u]ser =)|(?:Uname:)|(?:Username =)) USER.*</text>
+   <tags>
+    <tag name="user" tagType="Word">
+     <description>
+      <localized_desc language="en"></localized_desc>
+      <localized_desc language="fr"></localized_desc>
+     </description>
+     <substitute>USER</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>[aaa protocol] Unable to decipher response message Server = 10.10.3.2, User = fbo</text>
+     <expectedTags>
+      <expectedTag name="user">fbo</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
  </patterns>
 </normalizer>
+
