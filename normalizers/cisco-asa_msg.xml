@@ -92,15 +92,15 @@ log['type'] = value.lower()
  <patterns>
   <pattern name="asa-001">
    <description>
-    <localized_desc language="en">305001</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of log event_id 305011</localized_desc>
+    <localized_desc language="fr">Format du log event_id 305011</localized_desc>
    </description>
    <text>Built TYPE PROTOCOL translation from SINT:SIP/SPT to DINT:DIP/DPT</text>
    <tags>
     <tag name="type" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Translation type</localized_desc>
+      <localized_desc language="fr">Le type de translation</localized_desc>
      </description>
      <substitute>TYPE</substitute>
     </tag>
@@ -116,43 +116,43 @@ log['type'] = value.lower()
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="outbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Outbound interface</localized_desc>
+      <localized_desc language="fr">Interface de sortie</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
@@ -173,8 +173,8 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-002">
    <description>
-    <localized_desc language="en">302015/302013</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of logs event_id 302015/302013</localized_desc>
+    <localized_desc language="fr">Format des logs event_id 302015/302013</localized_desc>
    </description>
    <text>Built (?:(?:inbound)|(?:outbound)) PROTOCOL connection ID for SINT:SIP/SPT \([^ ]+/\d+\) to DINT:DIP/DPT \([^ ]+/\d+\)(?: \(USER\))?</text>
    <tags>
@@ -190,57 +190,57 @@ log['type'] = value.lower()
     </tag>
     <tag name="id" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Connection ID</localized_desc>
+      <localized_desc language="fr">Identifiant de connexion</localized_desc>
      </description>
      <substitute>ID</substitute>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="outbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Outbound interface</localized_desc>
+      <localized_desc language="fr">Interface de sortie</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="user" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -273,8 +273,8 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-003">
    <description>
-    <localized_desc language="en">106023</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of log event_id 106023</localized_desc>
+    <localized_desc language="fr">Format du log event_id 106023</localized_desc>
    </description>
    <text>Deny PROTOCOL src SINT:SIP(?:/SPT)? dst DINT:DIP(?:/DPT)?(?: \(.*\))? by access-group "GROUP" .*</text>
    <tags>
@@ -290,50 +290,50 @@ log['type'] = value.lower()
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="outbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Outbound interface</localized_desc>
+      <localized_desc language="fr">Interface de sortie</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="group" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Group related to this event</localized_desc>
+      <localized_desc language="fr">Groupe en rapport avec cet événement</localized_desc>
      </description>
      <substitute>GROUP</substitute>
     </tag>
@@ -364,8 +364,8 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-004">
    <description>
-    <localized_desc language="en">106010</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of log event_id 106010</localized_desc>
+    <localized_desc language="fr">Format du log event_id 106010</localized_desc>
    </description>
    <text>Deny inbound protocol PROTOCOL src SINT:SIP dst DINT:DIP</text>
    <tags>
@@ -381,29 +381,29 @@ log['type'] = value.lower()
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="outbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Outbound interface</localized_desc>
+      <localized_desc language="fr">Interface de sortie</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
@@ -423,57 +423,57 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-005">
    <description>
-    <localized_desc language="en">605005/605004</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of logs event_id 605005/605004</localized_desc>
+    <localized_desc language="fr">Format des logs event_id 605005/605004</localized_desc>
    </description>
    <text>Login ACTION from SIP/SPT to SINT:DIP/DPT for user "USER"</text>
    <tags>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="user" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
     <tag name="action" tagType="ActionWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Action taken by the device</localized_desc>
+      <localized_desc language="fr">Action prise par l'équipement</localized_desc>
      </description>
      <substitute>ACTION</substitute>
      <callbacks>
@@ -496,15 +496,15 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-006">
    <description>
-    <localized_desc language="en">113004/113005</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of logs event_id 113004/113005</localized_desc>
+    <localized_desc language="fr">Format des logs event_id 113004/113005</localized_desc>
    </description>
    <text>AAA user AAATYPE ACTION : (?:reason = [^:]+: )?server = DIP : user = USER</text>
    <tags>
     <tag name="type" tagType="AAAWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">AAA type</localized_desc>
+      <localized_desc language="fr">AAA type</localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
      <callbacks>
@@ -513,22 +513,22 @@ log['type'] = value.lower()
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="user" tagType="WORD">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
     <tag name="action" tagType="ActionWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Action taken by the device</localized_desc>
+      <localized_desc language="fr">Action prise par l'équipement</localized_desc>
      </description>
      <substitute>ACTION</substitute>
      <callbacks>
@@ -559,15 +559,15 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-007">
    <description>
-    <localized_desc language="en">109005/109006/109007/109008</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of logs event_id 109005/109006/109007/109008</localized_desc>
+    <localized_desc language="fr">Format des logs event_id 109005/109006/109007/109008</localized_desc>
    </description>
    <text>AAATYPE ACTION for user 'USER' from SIP/SPT to DIP/DPT on interface SINT</text>
    <tags>
     <tag name="type" tagType="AAAWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">AAA type</localized_desc>
+      <localized_desc language="fr">AAA type</localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
      <callbacks>
@@ -576,8 +576,8 @@ log['type'] = value.lower()
     </tag>
     <tag name="action" tagType="ActionWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Action taken by the device</localized_desc>
+      <localized_desc language="fr">Action prise par l'équipement</localized_desc>
      </description>
      <substitute>ACTION</substitute>
      <callbacks>
@@ -586,43 +586,43 @@ log['type'] = value.lower()
     </tag>
     <tag name="user" tagType="WORD">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
@@ -655,15 +655,15 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-008">
    <description>
-    <localized_desc language="en">611101/611102</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Format of logs event_id 611101/611102</localized_desc>
+    <localized_desc language="fr">Format des logs event_id 611101/611102</localized_desc>
    </description>
    <text>User authentication ACTION: Uname: USER</text>
    <tags>
     <tag name="action" tagType="ActionWord">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Action taken by the device</localized_desc>
+      <localized_desc language="fr">Action prise par l'équipement</localized_desc>
      </description>
      <substitute>ACTION</substitute>
      <callbacks>
@@ -672,8 +672,8 @@ log['type'] = value.lower()
     </tag>
     <tag name="user" tagType="WORD">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -691,49 +691,49 @@ log['type'] = value.lower()
   <pattern name="asa-009">
    <description>
     <localized_desc language="en">Generic pattern matching logs like 109024/109025/201010/109023/...</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="fr">Règle générique pour les logs de type 109024/109025/201010/109023/...</localized_desc>
    </description>
    <text>.+ from SIP/SPT to DIP/DPT (?:\(.+\) )?on interface DINT(?:(?: using PROTOCOL)|.+|$)</text>
    <tags>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
     <tag name="protocol" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">The protocol of translated connection.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -742,8 +742,8 @@ log['type'] = value.lower()
     </tag>
     <tag name="user" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -777,49 +777,49 @@ log['type'] = value.lower()
   <pattern name="asa-010">
    <description>
     <localized_desc language="en">Generic pattern matching logs like 108003/410002/324005/421007/500005/109028/608002/...</localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="fr">Règle générique pour les logs de type 108003/410002/324005/421007/500005/109028/608002/...</localized_desc>
    </description>
    <text>.+ (?:from|for) (?:SINT:)?SIP/SPT to (?:DINT:)?DIP/DPT.*</text>
    <tags>
     <tag name="source_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP source</localized_desc>
      </description>
      <substitute>SIP</substitute>
     </tag>
     <tag name="source_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Source port</localized_desc>
+      <localized_desc language="fr">Port source</localized_desc>
      </description>
      <substitute>SPT</substitute>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination IP address</localized_desc>
+      <localized_desc language="fr">Adresse IP de destination</localized_desc>
      </description>
      <substitute>DIP</substitute>
     </tag>
     <tag name="dest_port" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Destination port</localized_desc>
+      <localized_desc language="fr">Port de destination</localized_desc>
      </description>
      <substitute>DPT</substitute>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Inbound interface</localized_desc>
+      <localized_desc language="fr">Interface d'entrée</localized_desc>
      </description>
      <substitute>SINT</substitute>
     </tag>
     <tag name="outbound_int" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">Outbound interface</localized_desc>
+      <localized_desc language="fr">Interface de sortie</localized_desc>
      </description>
      <substitute>DINT</substitute>
     </tag>
@@ -836,15 +836,15 @@ log['type'] = value.lower()
   </pattern>
   <pattern name="asa-011">
    <description>
-    <localized_desc language="en">Generic pattern trying to match a user id in a log line </localized_desc>
-    <localized_desc language="fr"></localized_desc>
+    <localized_desc language="en">Generic pattern trying to match a user id in a log</localized_desc>
+    <localized_desc language="fr">Règle essayant de trouver un identifiant dans un log</localized_desc>
    </description>
    <text>.+(?:(?:[U|u]ser =)|(?:Uname:)|(?:Username =)) USER.*</text>
    <tags>
     <tag name="user" tagType="Word">
      <description>
-      <localized_desc language="en"></localized_desc>
-      <localized_desc language="fr"></localized_desc>
+      <localized_desc language="en">User related to this event</localized_desc>
+      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
