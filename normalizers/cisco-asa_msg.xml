@@ -75,6 +75,17 @@
    <regexp>(?:(?:authentication)|(?:authorization)|(?:accounting)|(?:Authentication)|(?:Authorization))</regexp>
   </tagType>
  </tagTypes>
+ <callbacks>
+  <callback name="lower_protocol">
+log['protocol'] = value.lower()
+  </callback>
+  <callback name="lower_action">
+log['action'] = value.lower()
+  </callback>
+  <callback name="lower_type">
+log['type'] = value.lower()
+  </callback>
+ </callbacks>
  <prerequisites>
   <prereqTag name="program">cisco-asa</prereqTag>
  </prerequisites>
@@ -99,6 +110,9 @@
       <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
+     <callbacks>
+      <callback>lower_protocol</callback>
+     </callbacks>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
@@ -148,7 +162,7 @@
      <text>Built dynamic TCP translation from inside:192.168.1.50/1107 to outside:172.22.1.254/1025</text>
      <expectedTags>
       <expectedTag name="type">dynamic</expectedTag>
-      <expectedTag name="protocol">TCP</expectedTag>
+      <expectedTag name="protocol">tcp</expectedTag>
       <expectedTag name="inbound_int">inside</expectedTag>
       <expectedTag name="dest_ip">172.22.1.254</expectedTag>
       <expectedTag name="dest_port">1025</expectedTag>
@@ -170,6 +184,9 @@
       <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
+     <callbacks>
+      <callback>lower_protocol</callback>
+     </callbacks>
     </tag>
     <tag name="id" tagType="Word">
      <description>
@@ -233,7 +250,7 @@
      <text>Built inbound UDP connection 732748 for outside:192.168.208.63/49804 (192.168.208.63/49804) to inside:192.168.150.70/53 (192.168.150.70/53)</text>
      <expectedTags>
       <expectedTag name="id">732748</expectedTag>
-      <expectedTag name="protocol">UDP</expectedTag>
+      <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="inbound_int">outside</expectedTag>
       <expectedTag name="source_ip">192.168.208.63</expectedTag>
       <expectedTag name="dest_ip">192.168.150.70</expectedTag>
@@ -244,7 +261,7 @@
      <text>Built inbound TCP connection 733280 for outside:192.168.208.63/51606 (192.168.208.63/51606) to inside:192.168.150.70/80 (192.168.150.70/80) (myuser)</text>
      <expectedTags>
       <expectedTag name="id">733280</expectedTag>
-      <expectedTag name="protocol">TCP</expectedTag>
+      <expectedTag name="protocol">tcp</expectedTag>
       <expectedTag name="inbound_int">outside</expectedTag>
       <expectedTag name="source_ip">192.168.208.63</expectedTag>
       <expectedTag name="dest_ip">192.168.150.70</expectedTag>
@@ -267,6 +284,9 @@
       <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
+     <callbacks>
+      <callback>lower_protocol</callback>
+     </callbacks>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
@@ -355,6 +375,9 @@
       <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
+     <callbacks>
+      <callback>lower_protocol</callback>
+     </callbacks>
     </tag>
     <tag name="inbound_int" tagType="Word">
      <description>
@@ -453,6 +476,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>ACTION</substitute>
+     <callbacks>
+      <callback>lower_action</callback>
+     </callbacks>
     </tag>
    </tags>
    <examples>
@@ -481,6 +507,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
+     <callbacks>
+      <callback>lower_type</callback>
+     </callbacks>
     </tag>
     <tag name="dest_ip" tagType="IP">
      <description>
@@ -502,6 +531,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>ACTION</substitute>
+     <callbacks>
+      <callback>lower_action</callback>
+     </callbacks>
     </tag>
    </tags>
    <examples>
@@ -511,7 +543,7 @@
       <expectedTag name="dest_ip">10.1.206.27</expectedTag>
       <expectedTag name="user">userx</expectedTag>
       <expectedTag name="type">authentication</expectedTag>
-      <expectedTag name="action">Successful</expectedTag>
+      <expectedTag name="action">successful</expectedTag>
      </expectedTags>
     </example>
     <example>
@@ -520,7 +552,7 @@
       <expectedTag name="dest_ip">10.10.1.2</expectedTag>
       <expectedTag name="user">vpn_user</expectedTag>
       <expectedTag name="type">authentication</expectedTag>
-      <expectedTag name="action">Rejected</expectedTag>
+      <expectedTag name="action">rejected</expectedTag>
      </expectedTags>
     </example>
    </examples>
@@ -538,6 +570,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
+     <callbacks>
+      <callback>lower_type</callback>
+     </callbacks>
     </tag>
     <tag name="action" tagType="ActionWord">
      <description>
@@ -545,6 +580,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>ACTION</substitute>
+     <callbacks>
+      <callback>lower_action</callback>
+     </callbacks>
     </tag>
     <tag name="user" tagType="WORD">
      <description>
@@ -596,7 +634,7 @@
       <expectedTag name="dest_ip">10.1.1.10</expectedTag>
       <expectedTag name="dest_port">24</expectedTag>
       <expectedTag name="user">userjane</expectedTag>
-      <expectedTag name="type">Authentication</expectedTag>
+      <expectedTag name="type">authentication</expectedTag>
       <expectedTag name="action">succeeded</expectedTag>
       <expectedTag name="inbound_int">outside</expectedTag>
      </expectedTags>
@@ -608,7 +646,7 @@
       <expectedTag name="dest_port">21</expectedTag>
       <expectedTag name="source_port">57315</expectedTag>
       <expectedTag name="user">user1</expectedTag>
-      <expectedTag name="type">Authorization</expectedTag>
+      <expectedTag name="type">authorization</expectedTag>
       <expectedTag name="action">denied</expectedTag>
       <expectedTag name="inbound_int">outside</expectedTag>
      </expectedTags>
@@ -628,6 +666,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>ACTION</substitute>
+     <callbacks>
+      <callback>lower_action</callback>
+     </callbacks>
     </tag>
     <tag name="user" tagType="WORD">
      <description>
@@ -695,6 +736,9 @@
       <localized_desc language="fr"></localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
+     <callbacks>
+      <callback>lower_protocol</callback>
+     </callbacks>
     </tag>
     <tag name="user" tagType="Word">
      <description>
@@ -716,7 +760,7 @@
      <text>Authorization denied (acl=RS1) for user 'username' from 10.10.10.9/137 to 10.10.10.255/137 on interface outside using UDP</text>
      <expectedTags>
       <expectedTag name="inbound_int">outside</expectedTag>
-      <expectedTag name="protocol">UDP</expectedTag>
+      <expectedTag name="protocol">udp</expectedTag>
       <expectedTag name="source_ip">10.10.10.9</expectedTag>
       <expectedTag name="source_port">137</expectedTag>
      </expectedTags>
