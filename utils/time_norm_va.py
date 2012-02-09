@@ -93,8 +93,14 @@ if __name__ == "__main__":
         except AssertionError:
             print "\n[%s]" % norm.version, "and [%s]" % version, "don't match"
             return
+        samples_amount = len([u for u in [v.examples for v in norm.patterns.values()]])
+        if samples_amount <= 0:
+            print "No samples to validate in %s" % norm.name
+            return
         t = timeit.Timer("assert norm.validate() == True", "from __main__ import norm")
         s = t.timeit(it)
+        # Normalize result against number of validated samples
+        s = s / float(samples_amount)
         # Add result
         result.add_res(norm.name, norm.version, norm.authors, s)
 
