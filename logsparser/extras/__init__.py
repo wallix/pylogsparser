@@ -22,3 +22,4 @@
 #
 
 from domain_parser import get_domain
+from robots import robot_regex
