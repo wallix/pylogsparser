@@ -144,6 +144,14 @@ When writing a callback function, the following rules must be respected :
 
    import re
    from datetime import datetime
+   
+* In version 0.4, the "extras" package is introduced. It allows more freedom in 
+  what can be used in callbacks. It also increases execution speed in some 
+  cases; typically when you need to use complex objects in your callback like 
+  a big set or a big regular expression. In the old approach, this object 
+  would be created each time the function is called; by deporting the object's
+  creation in the extras package it is created once and for all. See the modules
+  in logsparser.extras for use cases.
 
 Default callbacks
 .................
