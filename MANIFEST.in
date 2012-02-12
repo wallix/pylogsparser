@@ -2,3 +2,4 @@ include LICENSE INSTALL README.rst
 recursive-include tests *.py
 recursive-include normalizers *.xml *.template *.dtd
 recursive-include logsparser/i18n *.po *.mo
+recursive-include logsparser/extras *.py

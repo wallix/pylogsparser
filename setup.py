@@ -45,7 +45,7 @@ setup(
     keywords = "log parser xml library python",
     url = "http://www.wallix.org/pylogsparser-project/",
     package_dir={'logsparser.tests':'tests'}, 
-    packages=['logsparser', 'logsparser.tests'],
+    packages=['logsparser', 'logsparser.tests', 'logsparser.extras'],
     data_files=[('share/logsparser/normalizers', data),
                 ('share/logsparser/i18n/fr_FR/LC_MESSAGES/', fr_trans),],
     requires=['lxml', 'pytz'],
