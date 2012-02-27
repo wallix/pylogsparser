@@ -73,7 +73,7 @@
             <localized_desc language="en">Matches an URL.</localized_desc>
             <localized_desc language="fr">Correspond à une URL (http/https).</localized_desc>
         </description>
-        <regexp>http[s]?://[^ "'*]+</regexp>
+        <regexp>http[s]?://[^ "']+</regexp>
     </tagType>
     <tagType name="MACAddress" type="basestring">
         <description>

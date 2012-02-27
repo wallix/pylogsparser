@@ -176,6 +176,17 @@ class Test(unittest.TestCase):
                  'peer_host' : "92.123.65.129",
                  'mime_type' : "application/x-shockwave-flash",
                  'url' : "http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/VABT.swf?url_download=&width=300&height=250&vidw=300&vidh=250&startbbanner=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_in.swf&endbanner=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_out.swf&video_hd=http://aak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_hd.flv&video_md=http://ak.bluestreak.com//adv/sig/%5E16238/%5E7451318/vdo_300x250_md.flv&video_bd=http://ak.bluestreak.comm//adv/sig/%5E16238/%5E7451318/vdo_300x250_bd.flv&url_tracer=http%3A//s0b.bluestreak.com/ix.e%3Fpx%26s%3D8008666%26a%3D7451318%26t%3D&start=2&duration1=3&duration2=4&duration3=5&durration4=6&duration5=7&end=8&hd=9&md=10&bd=11&gif=12&hover1=13&hover2=14&hover3=15&hover4=16&hover5=17&hover6=18&replay=19&sound_state=off&debug=0&playback_controls=off&tracking_objeect=tracking_object_8008666&url=javascript:bluestreak8008666_clic();&rnd=346.2680651591202"})
+        self.aS("<182>Feb 27 09:22:03 golden squid[32525]: 1330330923.254 119 10.10.5.5 TCP_MISS/302 667 GET http://c.astrocenter.fr/r.aspx?M=PRFREEV3_20120226_FR_24651456&L=http*3A*2F*2Fhoroscope.20minutes.fr*2F20Minutes*2Fimages*2FMailHeader*2Faf-0--4700-MailLogo.gif&O=685037391 - DIRECT/193.200.4.204 text/html",
+                {'program' : "squid",
+                 'date': datetime.utcfromtimestamp(float(1330330923.254)),
+                 'elapsed' : "119",
+                 "source_ip" : "10.10.5.5",
+                 "event_id" : "TCP_MISS",
+                 "status" : "302",
+                 "len" : "667",
+                 "method" : "GET",
+                 'url' : "http://c.astrocenter.fr/r.aspx?M=PRFREEV3_20120226_FR_24651456&L=http*3A*2F*2Fhoroscope.20minutes.fr*2F20Minutes*2Fimages*2FMailHeader*2Faf-0--4700-MailLogo.gif&O=685037391"
+                 })
 
 
     def test_netfilter(self):
