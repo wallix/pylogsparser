@@ -279,6 +279,9 @@ Converts an EPOCH timestamp to a human-readable date.
 	    </description>
 	    <code>
 log['date'] = datetime.utcfromtimestamp(float(value))
+# specific to project WLB
+if '_timezone' in log.keys():
+    log['_timezone'] = 'UTC'
 	    </code>
 	</callback>
 	<callback name="dd-MMM-YYYY hh:mm:ss">
