@@ -228,7 +228,7 @@ log['technet_link'] = url + str(value)
 	  </expectedTags>
 	</example>
 	<example>
-	  <text>MSWinEventLog	0	Security	313	ven. août 26 15:42:40 201	4689	Microsoft-Windows-Security-Auditing	AUTORITE NT\SERVICE LOCAL	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </text>
+	  <text>MSWinEventLog	0	Security	313	ven. août 26 15:42:40 201	4689	Microsoft-Windows-Security-Auditing	AUTORITE NT\SERVICE LOCAL	N/A	Success Audit	a-zA-Z0-9	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </text>
 	  <expectedTags>
 	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
             <expectedTag name="criticality">0</expectedTag>
@@ -239,7 +239,7 @@ log['technet_link'] = url + str(value)
 	    <expectedTag name="user">AUTORITE NT\SERVICE LOCAL</expectedTag>
 	    <expectedTag name="sid_used">N/A</expectedTag>
 	    <expectedTag name="event_type">Success Audit</expectedTag>
-	    <expectedTag name="source_host">a-zA-Z0-9_</expectedTag>
+	    <expectedTag name="source_host">a-zA-Z0-9</expectedTag>
 	    <expectedTag name="audit_event_category">Fin du processus</expectedTag>
 	    <expectedTag name="body">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </expectedTag>
 	  </expectedTags>
