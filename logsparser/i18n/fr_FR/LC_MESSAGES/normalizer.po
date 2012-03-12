@@ -73,7 +73,7 @@ msgstr "Ce normaliseur appartient à la catégorie : *%s*"
 msgid ""
 ", where\n"
 "\n"
-msgstr "où\n"
+msgstr ", où\n"
 "\n"
 
 #: logsparser/normalizer.py:773

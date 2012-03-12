@@ -769,7 +769,7 @@ Examples
     d['patterns'] = ''
     d['examples'] = ''
     for p in description['patterns']:
-        d['patterns'] +="""* **%s**""" % escape(p['pattern'])
+        d['patterns'] +="""* %s""" % escape(p['pattern'])
         d['patterns'] += _(", where\n\n")
         for sub in p['substitutes']:
             d['patterns'] += _("  * **%s** is %s ") % (escape(sub), (p['tags'][p['substitutes'][sub]] or _('undocumented') ))
