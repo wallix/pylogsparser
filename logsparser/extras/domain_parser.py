@@ -3702,6 +3702,14 @@ tld = set(("ac",
 
 def get_domain(fqdn):
     domain_elements = fqdn.split('.')
+    try:
+        if len(domain_elements) == 4 and \
+           all([0 <= int(i) < 256 for i in domain_elements ]) :
+           # this is an IP address, return it
+           return fqdn
+    except ValueError:
+        # not an IP address, go on
+        pass
     for c in range(-len(domain_elements), 0):
         potential_domain = ".".join(domain_elements[c:])
         potential_wildcard_domain = ".".join(["*"]+domain_elements[c:][1:])
