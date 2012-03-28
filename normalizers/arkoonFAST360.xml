@@ -133,6 +133,9 @@ def quote_stripper(data):
 
 def extract_date(data):
     data['date'] = datetime.utcfromtimestamp(float(data['gmtime']))
+    # specific to project WLB
+    if '_timezone' in data.keys():
+        data['_timezone'] = 'UTC'
     for key in ('time', 'gmtime'):
         del data[key]
 
