@@ -168,7 +168,7 @@ else:
                 <tag name="len" tagType="Integer">
                     <description>
                         <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
-                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, s'il a été récupéré</localized_desc>
                     </description>
                     <substitute>SIZE</substitute>
                 </tag>
@@ -188,7 +188,7 @@ else:
                 </tag>
                 <tag name="filter_group_number" tagType="Integer">
                     <description>
-                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="en">the filter group to which the request was assigned</localized_desc>
                         <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
                     </description>
                     <substitute>FILTERGROUPNUMBER</substitute>
@@ -209,7 +209,7 @@ else:
                 </tag>
                 <tag name="source_host" tagType="DGany">
                     <description>
-                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="en">if enabled, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
                         <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
                     </description>
                     <substitute>CLIENTNAME</substitute>
@@ -338,7 +338,7 @@ else:
                 <tag name="len" tagType="Integer">
                     <description>
                         <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
-                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, s'il a été récupéré</localized_desc>
                     </description>
                     <substitute>SIZE</substitute>
                 </tag>
@@ -358,7 +358,7 @@ else:
                 </tag>
                 <tag name="filter_group_number" tagType="Integer">
                     <description>
-                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="en">the filter group to which the request was assigned</localized_desc>
                         <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
                     </description>
                     <substitute>FILTERGROUPNUMBER</substitute>
@@ -379,7 +379,7 @@ else:
                 </tag>
                 <tag name="source_host" tagType="DGany">
                     <description>
-                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="en">if enabled, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
                         <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
                     </description>
                     <substitute>CLIENTNAME</substitute>
@@ -465,7 +465,7 @@ else:
                 <tag name="len" tagType="Integer">
                     <description>
                         <localized_desc language="en">the size in bytes of the document, if fetched</localized_desc>
-                        <localized_desc language="fr">la taille du document en bytes, si il a été récupéré</localized_desc>
+                        <localized_desc language="fr">la taille du document en bytes, s'il a été récupéré</localized_desc>
                     </description>
                     <substitute>SIZE</substitute>
                 </tag>
@@ -485,7 +485,7 @@ else:
                 </tag>
                 <tag name="filter_group_number" tagType="Integer">
                     <description>
-                        <localized_desc language="en">the filter group the request was assigned to</localized_desc>
+                        <localized_desc language="en">the filter group to which the request was assigned</localized_desc>
                         <localized_desc language="fr">le groupe de filtrage auquel la requête a été assignée</localized_desc>
                     </description>
                     <substitute>FILTERGROUPNUMBER</substitute>
@@ -506,7 +506,7 @@ else:
                 </tag>
                 <tag name="source_host" tagType="DGany">
                     <description>
-                        <localized_desc language="en">if configured, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
+                        <localized_desc language="en">if enabled, the result of a reverse DNS IP lookup on the requestor's IP address</localized_desc>
                         <localized_desc language="fr">si activée, la résolution DNS inversée de l'IP d'origine de la requête</localized_desc>
                     </description>
                     <substitute>CLIENTNAME</substitute>

@@ -33,7 +33,7 @@
             appliedTo="raw"
             taxonomy="access control">
     <description>
-        <localized_desc language="en">This normalizer can parse Fail2ban logs (version 0.8.4).</localized_desc>
+        <localized_desc language="en">This normalizer parses Fail2ban logs (version 0.8.4).</localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs de l'applicatif Fail2ban (version 0.8.4).</localized_desc>
     </description>
     <authors>
@@ -81,7 +81,7 @@ log["date"] = newdate.replace(microsecond = int(milliseconds) * 1000 )
                 </tag>
                 <tag name="program" tagType="f2bProgram">
                     <description>
-                        <localized_desc language="en">the program, set to "fail2ban"</localized_desc>
+                        <localized_desc language="en">the program, this tag is always set to "fail2ban"</localized_desc>
                         <localized_desc language="fr">le programme, cette métadonnée est toujours évaluée à "fail2ban"</localized_desc>
                     </description>
                     <substitute>PROGRAM</substitute>
@@ -123,7 +123,7 @@ log["date"] = newdate.replace(microsecond = int(milliseconds) * 1000 )
                 </tag>
                 <tag name="program" tagType="f2bProgram">
                     <description>
-                        <localized_desc language="en">the program, set to "fail2ban"</localized_desc>
+                        <localized_desc language="en">the program, this tag is always set to "fail2ban"</localized_desc>
                         <localized_desc language="fr">le programme, cette métadonnée est toujours évaluée à "fail2ban"</localized_desc>
                     </description>
                     <substitute>PROGRAM</substitute>

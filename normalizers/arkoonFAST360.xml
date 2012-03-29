@@ -33,8 +33,8 @@
             appliedTo="raw"
             taxonomy="firewall">
  <description>
-  <localized_desc language="en"></localized_desc>
-  <localized_desc language="fr"></localized_desc>
+  <localized_desc language="en">This parser supports logs from Arkoon FAST 360 devices.</localized_desc>
+  <localized_desc language="fr">Ce normaliseur supporte les logs émis par les équipements Arkoon FAST 360.</localized_desc>
  </description>
  <authors>
   <author>fbo@wallix.com</author>

@@ -92,15 +92,15 @@ log['body'] = log['raw'].split(': ', 1)[1]
     <patterns>
         <pattern name="spam-001">
             <description>
-                <localized_desc language="en">Logs contained in spam.log file.</localized_desc>
+                <localized_desc language="en">Logs contained in the spam.log file.</localized_desc>
                 <localized_desc language="fr">Logs contenus dans le fichier spam.log.</localized_desc>
             </description>
             <text>DATE BDMAILD SPAM: sender: SENDER, recipients: RECIPIENTS, sender IP: SADDR, subject: "SUBJECT", score: SCORE, stamp: "STAMP", agent: AGENT, action: ACTION, header recipients: HRECIPS, headers: HEADERS, group: "GROUP"</text>
             <tags>
                 <tag name="__date" tagType="BD_DATE">
                     <description>
-                        <localized_desc language="en">The time at which the spam was detected.</localized_desc>
-                        <localized_desc language="fr">La date à laquelle le spam a été détécté.</localized_desc>
+                        <localized_desc language="en">The date on which the spam was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle le spam a été détecté.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -146,7 +146,7 @@ log['body'] = log['raw'].split(': ', 1)[1]
                 <tag name="__stamp" tagType="Anything">
                     <description>
                         <localized_desc language="en">Spam identification informations.</localized_desc>
-                        <localized_desc language="fr">Informations d'identifications du spam.</localized_desc>
+                        <localized_desc language="fr">Informations d'identification du spam.</localized_desc>
                     </description>
                     <substitute>STAMP</substitute>
                     <callbacks>
@@ -248,15 +248,15 @@ log['body'] = log['raw'].split(': ', 1)[1]
         </pattern>
         <pattern name="update-001">
             <description>
-                <localized_desc language="en">Logs contained in update.log file.</localized_desc>
+                <localized_desc language="en">Logs contained in the update.log file.</localized_desc>
                 <localized_desc language="fr">Logs contenus dans le fichier update.log.</localized_desc>
             </description>
             <text>DATE BDLIVED INFO: .*</text>
             <tags>
                 <tag name="__date" tagType="BD_DATE">
                     <description>
-                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
-                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                        <localized_desc language="en">The date on which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détecté.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -281,15 +281,15 @@ log['body'] = log['raw'].split(': ', 1)[1]
         </pattern>
         <pattern name="info-001">
             <description>
-                <localized_desc language="en">Logs contained in mail.log file.</localized_desc>
+                <localized_desc language="en">Logs contained in the mail.log file.</localized_desc>
                 <localized_desc language="fr">Logs contenus dans le fichier mail.log.</localized_desc>
             </description>
             <text>DATE BDMAILD INFO: .*</text>
             <tags>
                 <tag name="__date" tagType="BD_DATE">
                     <description>
-                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
-                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                        <localized_desc language="en">The date on which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détecté.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -314,15 +314,15 @@ log['body'] = log['raw'].split(': ', 1)[1]
         </pattern>
         <pattern name="error-001">
             <description>
-                <localized_desc language="en">Logs contained in error.log file.</localized_desc>
+                <localized_desc language="en">Logs contained in the error.log file.</localized_desc>
                 <localized_desc language="fr">Logs contenus dans le fichier error.log.</localized_desc>
             </description>
             <text>DATE BDSCAND ERROR: .*</text>
             <tags>
                 <tag name="__date" tagType="BD_DATE">
                     <description>
-                        <localized_desc language="en">The time at which the event was detected.</localized_desc>
-                        <localized_desc language="fr">La date à laquelle l'événement a été détécté.</localized_desc>
+                        <localized_desc language="en">The date on which the event was detected.</localized_desc>
+                        <localized_desc language="fr">La date à laquelle l'événement a été détecté.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>

@@ -33,8 +33,8 @@
             appliedTo="body"
             taxonomy="web server">
     <description>
-        <localized_desc language="en">Apache normalizer. This parser supports log formats defined in apache's documentation, see http://httpd.apache.org/docs/current/logs.html .</localized_desc>
-        <localized_desc language="fr">Ce normaliseur analyse les logs émis par les serveurs web Apache. Seuls les formats décrits dans la documentation Apache sont supportés en standard : cf http://httpd.apache.org/docs/current/logs.html .</localized_desc></description>
+        <localized_desc language="en">Apache normalizer. This parser supports native log formats defined in Apache's documentation, see http://httpd.apache.org/docs/current/logs.html .</localized_desc>
+        <localized_desc language="fr">Ce normaliseur supporte les logs émis par les serveurs web Apache. Seuls les formats décrits dans la documentation Apache sont supportés en standard : cf http://httpd.apache.org/docs/current/logs.html .</localized_desc></description>
     <authors>
         <author>mhu@wallix.com</author>
     </authors>
@@ -83,25 +83,25 @@ except:
                 <tag name="source_ip" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote host initiating the request</localized_desc>
-        <localized_desc language="fr">l'hôte distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'hôte distant lançant la requête</localized_desc></description>
                  <substitute>%h</substitute>
                 </tag>
                 <tag name="source_logname" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote logname used to initiate the request</localized_desc>
-        <localized_desc language="fr">l'identifiant distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'identifiant distant lançant la requête</localized_desc></description>
                  <substitute>%l</substitute>
                 </tag>
                 <tag name="user" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote user initiating the request</localized_desc>
-        <localized_desc language="fr">l'utilisateur distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'utilisateur distant lançant la requête</localized_desc></description>
                  <substitute>%u</substitute>
                 </tag>
                 <tag name="__date" tagType="CommonTimeFormat">
                  <description>
-        <localized_desc language="en">the time at which the request was issued - please note that the timezone information is not carried over</localized_desc>
-        <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte</localized_desc></description>
+        <localized_desc language="en">the date on which the request was issued - please note that the timezone information is not carried over</localized_desc>
+        <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas conservée</localized_desc></description>
                  <substitute>%t</substitute>
                  <callbacks>
                   <callback>dd/MMM/YYYY:hh:mm:ss</callback>
@@ -125,7 +125,7 @@ except:
                 <tag name="len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
-        <localized_desc language="fr">la taille de la réponse émise en octets, en-têtes HTTP inclus</localized_desc></description>
+        <localized_desc language="fr">la taille de la réponse émise en bytes, en-têtes HTTP inclus</localized_desc></description>
                  <substitute>%b</substitute>
                 </tag>
             </tags>
@@ -156,25 +156,25 @@ except:
                 <tag name="source_ip" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote host initiating the request</localized_desc>
-        <localized_desc language="fr">l'hôte distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'hôte distant lançant la requête</localized_desc></description>
                  <substitute>%h</substitute>
                 </tag>
                 <tag name="source_logname" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote logname used to initiate the request</localized_desc>
-        <localized_desc language="fr">l'identifiant distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'identifiant distant lançant la requête</localized_desc></description>
                  <substitute>%l</substitute>
                 </tag>
                 <tag name="user" tagType="ApacheWord">
                  <description>
         <localized_desc language="en">the remote user initiating the request</localized_desc>
-        <localized_desc language="fr">l'utilisateur distant à l'initiative de la requête</localized_desc></description>
+        <localized_desc language="fr">l'utilisateur distant lançant de la requête</localized_desc></description>
                  <substitute>%u</substitute>
                 </tag>
                 <tag name="__date" tagType="CommonTimeFormat">
                  <description>
-        <localized_desc language="en">the time at which the request was issued - please note that the timezone information is not carried over</localized_desc>
-        <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte</localized_desc></description>
+        <localized_desc language="en">the date on which the request was issued - please note that the timezone information is not carried over</localized_desc>
+        <localized_desc language="fr">la date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas conservée</localized_desc></description>
                  <substitute>%t</substitute>
                  <callbacks>
                   <callback>dd/MMM/YYYY:hh:mm:ss</callback>
@@ -198,7 +198,7 @@ except:
                 <tag name="len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
-        <localized_desc language="fr">la taille de la réponse émise en octets, en-têtes HTTP inclus</localized_desc></description>
+        <localized_desc language="fr">la taille de la réponse émise en bytes, en-têtes HTTP inclus</localized_desc></description>
                  <substitute>%b</substitute>
                 </tag>
                 <tag name="request_header_referer_contents" tagType="Anything">

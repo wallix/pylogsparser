@@ -33,8 +33,8 @@
             appliedTo="raw"
             taxonomy="web server">
     <description>
-        <localized_desc language="en">This normalizer handles IIS 6.0 (Internet Information Service) logs, which are in w3c ELFF (Extended Log File Format).</localized_desc>
-        <localized_desc language="fr">Ce normaliseur gère les logs IIS 6.0, qui sont au format w3c ELFF (Extended Log File Format).</localized_desc>
+        <localized_desc language="en">This normalizer handles IIS 6.0 (Internet Information Service) logs, which are in W3C ELFF (Extended Log File Format).</localized_desc>
+        <localized_desc language="fr">Ce normaliseur gère les logs IIS 6.0, qui sont au format W3C ELFF (Extended Log File Format).</localized_desc>
     </description>
     <authors>
         <author>clo@wallix.com</author>
@@ -72,15 +72,15 @@ log['time_taken'] = value
     <patterns>
         <pattern name="IIS-001">
             <description>
-                <localized_desc language="en">This is the default log format in w3c ELFF format.</localized_desc>
-                <localized_desc language="fr">Log par défaut au format w3c ELFF.</localized_desc>
+                <localized_desc language="en">This is the default log format in W3C ELFF format.</localized_desc>
+                <localized_desc language="fr">Log par défaut au format W3C ELFF.</localized_desc>
             </description>
             <text>DATE\s+SERVICE\s+SERVER_IP\s+REQUEST_TYPE\s+RESOURCE\s+QUERY\s+PORT\s+USERNAME\s+CLIENT_IP\s+AGENT\s+ACTION_STATUS\s+SUB_STATUS\s+WIN_STATUS</text>
             <tags>
                 <tag name="__date" tagType="separated_datetime">
                     <description>
                         <localized_desc language="en">The date that the activity occurred.</localized_desc>
-                        <localized_desc language="fr">La date de l'évènement.</localized_desc>
+                        <localized_desc language="fr">La date de l'événement.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -97,7 +97,7 @@ log['time_taken'] = value
                 <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">The IP address of the server on which the log entry was generated.</localized_desc>
-                        <localized_desc language="fr">IP du serveur.</localized_desc>
+                        <localized_desc language="fr">l'adresse IP du serveur à l'origine du log.</localized_desc>
                     </description>
                     <substitute>SERVER_IP</substitute>
                 </tag>
@@ -132,7 +132,7 @@ log['time_taken'] = value
                 <tag name="user" tagType="w3c_field">
                     <description>
                         <localized_desc language="en">The name of the authenticated user who accessed your server. This does not include anonymous users, who are represented by a hyphen (-).</localized_desc>
-                        <localized_desc language="fr">Le nom de l'utilisateur ayant accédé au serveur.</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur ayant accédé au serveur. Ceci exclut les utilisateurs anonymes, représentés par un trait d'union (-)</localized_desc>
                     </description>
                     <substitute>USERNAME</substitute>
                 </tag>
@@ -153,21 +153,21 @@ log['time_taken'] = value
                 <tag name="status" tagType="Integer">
                     <description>
                         <localized_desc language="en">The status of the action, in HTTP or FTP terms.</localized_desc>
-                        <localized_desc language="fr">Le status de l'action.</localized_desc>
+                        <localized_desc language="fr">Le statut de l'action.</localized_desc>
                     </description>
                     <substitute>ACTION_STATUS</substitute>
                 </tag>
                 <tag name="substatus" tagType="Integer">
                     <description>
                         <localized_desc language="en">The substatus of the action.</localized_desc>
-                        <localized_desc language="fr">Le sous-status de l'action.</localized_desc>
+                        <localized_desc language="fr">Le sous-statut de l'action.</localized_desc>
                     </description>
                     <substitute>SUB_STATUS</substitute>
                 </tag>
                 <tag name="win_status" tagType="Integer">
                     <description>
                         <localized_desc language="en">The status of the action, in terms used by Microsoft Windows®.</localized_desc>
-                        <localized_desc language="fr">Le status de l'action, avec les termes de Windows.</localized_desc>
+                        <localized_desc language="fr">Le statut de l'action, avec les termes de Windows®.</localized_desc>
                     </description>
                     <substitute>WIN_STATUS</substitute>
                 </tag>
@@ -195,8 +195,8 @@ log['time_taken'] = value
         </pattern>
         <pattern name="IIS-002">
             <description>
-                <localized_desc language="en">This is a log format in w3c ELFF format.</localized_desc>
-                <localized_desc language="fr">Format de log au format w3c ELFF.</localized_desc>
+                <localized_desc language="en">This is a log format in W3C ELFF format.</localized_desc>
+                <localized_desc language="fr">Format de log au format W3C ELFF.</localized_desc>
             </description>
             <text>CLIENT_IP,\s*USERNAME,\s*DATE,\s*SERVICE_NAME,\s*SERVER_NAME,\s*SERVER_IP,\s*TIME_TAKEN,\s*CLIENT_BYTES_SENT,\s*SERVER_BYTES_SENT,\s*SERVICE_STATUS_CODE,\s*WINDOWS_STATUS_CODE,\s*REQUEST_TYPE,\s*TARGET_OF_OPERATION,\s*PARAMETERS,\s*</text>
             <tags>
@@ -210,14 +210,14 @@ log['time_taken'] = value
                 <tag name="user" tagType="w3c_field">
                     <description>
                         <localized_desc language="en">The name of the authenticated user who accessed your server. This does not include anonymous users, who are represented by a hyphen (-).</localized_desc>
-                        <localized_desc language="fr">Le nom de l'utilisateur ayant accédé au serveur.</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur ayant accédé au serveur. Ceci exclut les utilisateurs anonymes, représentés par un trait d'union (-)</localized_desc>
                     </description>
                     <substitute>USERNAME</substitute>
                 </tag>
                 <tag name="__date" tagType="separated_date">
                     <description>
                         <localized_desc language="en">The date that the activity occurred.</localized_desc>
-                        <localized_desc language="fr">La date de l'évènement.</localized_desc>
+                        <localized_desc language="fr">La date de l'événement.</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -241,13 +241,13 @@ log['time_taken'] = value
                 <tag name="dest_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">The IP address of the server on which the log entry was generated.</localized_desc>
-                        <localized_desc language="fr">IP du serveur.</localized_desc>
+                        <localized_desc language="fr">IP du serveur à l'origine du log.</localized_desc>
                     </description>
                     <substitute>SERVER_IP</substitute>
                 </tag>
                 <tag name="__time_taken" tagType="Integer">
                     <description>
-                        <localized_desc language="en">Elapsed time to complete request.</localized_desc>
+                        <localized_desc language="en">Elapsed time to complete the request.</localized_desc>
                         <localized_desc language="fr">Temps écoulé pour réaliser la requête.</localized_desc>
                     </description>
                     <substitute>TIME_TAKEN</substitute>
@@ -257,7 +257,7 @@ log['time_taken'] = value
                 </tag>
                 <tag name="sent_bytes_number" tagType="Integer">
                     <description>
-                        <localized_desc language="en">Number of bytes sent by client. (Request size)</localized_desc>
+                        <localized_desc language="en">Number of bytes sent by the client. (Request size)</localized_desc>
                         <localized_desc language="fr">Taille de la requête.</localized_desc>
                     </description>
                     <substitute>CLIENT_BYTES_SENT</substitute>
@@ -272,21 +272,21 @@ log['time_taken'] = value
                 <tag name="status" tagType="Integer">
                     <description>
                         <localized_desc language="en">Service status code. (A value of 200 indicates that the request was fulfilled successfully.)</localized_desc>
-                        <localized_desc language="fr">Code de status du service.</localized_desc>
+                        <localized_desc language="fr">Code de statut du service.</localized_desc>
                     </description>
                     <substitute>SERVICE_STATUS_CODE</substitute>
                 </tag>
                 <tag name="windows_status_code" tagType="Integer">
                     <description>
                         <localized_desc language="en">Windows status code. (A value of 0 indicates that the request was fulfilled successfully.)</localized_desc>
-                        <localized_desc language="fr">code de status de Windows.</localized_desc>
+                        <localized_desc language="fr">code de statut de Windows.</localized_desc>
                     </description>
                     <substitute>WINDOWS_STATUS_CODE</substitute>
                 </tag>
                 <tag name="method" tagType="w3c_field">
                     <description>
-                        <localized_desc language="en">Method name. Such as GET, PASS, ...</localized_desc>
-                        <localized_desc language="fr">Nom de la méthode. Comme GET, PASS, etc..</localized_desc>
+                        <localized_desc language="en">Method name, such as GET, PASS, ...</localized_desc>
+                        <localized_desc language="fr">Nom de la méthode, par exemple GET, PASS, etc..</localized_desc>
                     </description>
                     <substitute>REQUEST_TYPE</substitute>
                 </tag>

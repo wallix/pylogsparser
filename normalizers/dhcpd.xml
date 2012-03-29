@@ -33,7 +33,7 @@
             appliedTo="body"
             taxonomy="address assignation">
     <description>
-        <localized_desc language="en">This normalizer is used to parse DHCPd messages.</localized_desc>
+        <localized_desc language="en">This normalizer parses DHCPd messages.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les messages émis par les serveurs DHCPd.</localized_desc></description>
     <authors>
         <author>mhu@wallix.com</author>

@@ -32,13 +32,13 @@
             matchtype="match"
             appliedTo="raw">
  <description>
-  <localized_desc language="en">This normalizer is able to parse logs received via the syslog
-   export facility from a Cisco ASA. The normalizer has been validated with Cisco ASA version 8.4.
+  <localized_desc language="en">This normalizer parses logs received via the syslog
+   export facility from a Cisco ASA. The normalizer supports Cisco ASA version 8.4.
    The standard export format (No EMBLEM format) with "Device ID" and "timestamp" options must be
    selected for this normalizer.
   </localized_desc>
   <localized_desc language="fr">Ce normaliseur reconnaît les logs Cisco ASA exportés via
-   la facilité syslog. Ce normaliseur a été validé avec la version 8.4 de l'IOS Cisco ASA.
+   la facilité syslog. Ce normaliseur est compatible avec la version 8.4 de l'IOS Cisco ASA.
    Le format d'export standard (Non EMBLEM) doit être sélectionné avec les options "Device ID" et
    "timestamp".
   </localized_desc>
@@ -126,7 +126,7 @@ log["severity"] = "%s" % SEVERITIES[int(value)]
   <pattern name="asa-001">
    <description>
     <localized_desc language="en">Expression matching the Cisco ASA Syslog header</localized_desc>
-    <localized_desc language="fr">Expression validant l'entête Syslog d'un équipement Cisco ASA</localized_desc>
+    <localized_desc language="fr">Expression correspondant à l'en-tête Syslog d'un équipement Cisco ASA</localized_desc>
    </description>
    <text>&lt;PRIORITY&gt;DATE SOURCE : %ASA-SEVERITY-MNEMONIC: BODY</text>
    <tags>
@@ -152,13 +152,13 @@ log["severity"] = "%s" % SEVERITIES[int(value)]
     <tag name="source" tagType="deviceID">
      <description>
      <localized_desc language="en">the log's source (device ID)</localized_desc>
-     <localized_desc language="fr">l'équipement ASA à l'origine de l'événement</localized_desc></description>
+     <localized_desc language="fr">la source du log (device ID)</localized_desc></description>
      <substitute>SOURCE</substitute>
     </tag>
     <tag name="__cseverity" tagType="Integer">
      <description>
      <localized_desc language="en">the log's severity</localized_desc>
-     <localized_desc language="fr">la severité du log</localized_desc>
+     <localized_desc language="fr">la gravité du log</localized_desc>
      </description>
      <substitute>SEVERITY</substitute>
      <callbacks>
@@ -168,7 +168,7 @@ log["severity"] = "%s" % SEVERITIES[int(value)]
     <tag name="event_id" tagType="Integer">
      <description>
      <localized_desc language="en">the Cisco ID of the event</localized_desc>
-     <localized_desc language="fr">l'identifiant Cisco de l'évenement</localized_desc>
+     <localized_desc language="fr">l'identifiant Cisco de l'événement</localized_desc>
      </description>
      <substitute>MNEMONIC</substitute>
     </tag>

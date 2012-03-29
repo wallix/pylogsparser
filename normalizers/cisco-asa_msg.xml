@@ -33,13 +33,13 @@
             appliedTo="body"
             taxonomy="firewall">
  <description>
-  <localized_desc language="en">This normalizer is able to parse logs from Cisco ASA devices. 
-   This normalizer performs log normalisation on log body extracts by cisco-asa_header parser. 
-   The normalizer has been tested with Cisco ASA IOS version 8.4.
+  <localized_desc language="en">This normalizer parses logs from Cisco ASA devices. 
+   This normalizer performs log normalisation on log body extracted by the cisco-asa_header parser. 
+   The normalizer supports Cisco ASA IOS version 8.4.
   </localized_desc>
   <localized_desc language="fr">Ce normaliseur reconnaît les logs des équipements Cisco ASA. 
-   La normalisation est réalisée sur le corp du log extrait par le normaliseur cisco-asa_header. 
-   Ce normaliseur a été testé avec un Cisco ASA IOS en version 8.4.
+   La normalisation est réalisée sur le corps du log extrait par le normaliseur cisco-asa_header. 
+   Ce normaliseur est compatible avec Cisco ASA IOS en version 8.4.
   </localized_desc>
  </description>
  <authors>
@@ -100,14 +100,14 @@ log['type'] = value.lower()
     <tag name="type" tagType="Word">
      <description>
       <localized_desc language="en">Translation type</localized_desc>
-      <localized_desc language="fr">Le type de translation</localized_desc>
+      <localized_desc language="fr">Le type de traduction</localized_desc>
      </description>
      <substitute>TYPE</substitute>
     </tag>
     <tag name="protocol" tagType="ProtoWord">
      <description>
       <localized_desc language="en">The protocol of translated connection.</localized_desc>
-      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion traduite.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -181,7 +181,7 @@ log['type'] = value.lower()
     <tag name="protocol" tagType="ProtoWord">
      <description>
       <localized_desc language="en">The protocol of translated connection.</localized_desc>
-      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion traduite.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -240,7 +240,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="Word">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -281,7 +281,7 @@ log['type'] = value.lower()
     <tag name="protocol" tagType="ProtoWord">
      <description>
       <localized_desc language="en">The protocol of translated connection.</localized_desc>
-      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion traduite.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -333,7 +333,7 @@ log['type'] = value.lower()
     <tag name="group" tagType="Word">
      <description>
       <localized_desc language="en">Group related to this event</localized_desc>
-      <localized_desc language="fr">Groupe en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Groupe lié à cet événement</localized_desc>
      </description>
      <substitute>GROUP</substitute>
     </tag>
@@ -372,7 +372,7 @@ log['type'] = value.lower()
     <tag name="protocol" tagType="ProtoWord">
      <description>
       <localized_desc language="en">The protocol of translated connection.</localized_desc>
-      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion traduite.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -466,7 +466,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="Word">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -504,7 +504,7 @@ log['type'] = value.lower()
     <tag name="type" tagType="AAAWord">
      <description>
       <localized_desc language="en">AAA type</localized_desc>
-      <localized_desc language="fr">AAA type</localized_desc>
+      <localized_desc language="fr">type AAA</localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
      <callbacks>
@@ -521,7 +521,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="WORD">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -567,7 +567,7 @@ log['type'] = value.lower()
     <tag name="type" tagType="AAAWord">
      <description>
       <localized_desc language="en">AAA type</localized_desc>
-      <localized_desc language="fr">AAA type</localized_desc>
+      <localized_desc language="fr">type AAA</localized_desc>
      </description>
      <substitute>AAATYPE</substitute>
      <callbacks>
@@ -587,7 +587,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="WORD">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -673,7 +673,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="WORD">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -733,7 +733,7 @@ log['type'] = value.lower()
     <tag name="protocol" tagType="Word">
      <description>
       <localized_desc language="en">The protocol of translated connection.</localized_desc>
-      <localized_desc language="fr">Le protocole de la connexion translatée.</localized_desc>
+      <localized_desc language="fr">Le protocole de la connexion traduite.</localized_desc>
      </description>
      <substitute>PROTOCOL</substitute>
      <callbacks>
@@ -743,7 +743,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="Word">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
@@ -844,7 +844,7 @@ log['type'] = value.lower()
     <tag name="user" tagType="Word">
      <description>
       <localized_desc language="en">User related to this event</localized_desc>
-      <localized_desc language="fr">Utilisateur en rapport avec cet événement</localized_desc>
+      <localized_desc language="fr">Utilisateur lié à cet événement</localized_desc>
      </description>
      <substitute>USER</substitute>
     </tag>
