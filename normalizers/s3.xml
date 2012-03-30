@@ -55,7 +55,7 @@ Les clés extraites par ce normaliseur sont "bucket_owner", "bucket", "date", "i
     <tagType name="S3String" type="basestring">
       <description>
         <localized_desc language="en">Matches S3 quoted strings.</localized_desc>
-        <localized_desc language="fr">Permet de parser les chaines de caracters S3.</localized_desc>
+        <localized_desc language="fr">Permet d'analyser les chaînes de caractères S3.</localized_desc>
       </description>
       <regexp>\".*\"</regexp>
     </tagType>
@@ -84,7 +84,7 @@ log['user_agent'] = value
     <pattern name="s3generic">
       <description>
         <localized_desc language="en">Generic s3 log pattern.</localized_desc>
-        <localized_desc language="fr">Parseur générique des logs S3.</localized_desc>
+        <localized_desc language="fr">Format générique des logs S3.</localized_desc>
       </description>
       <text>OWNER NAME DATE IP REQUESTOR REQUESTID OP KEY HTTP_METHOD HTTP_STATUS S3ERR SENT SIZE TOTAL TAT REF AGENT VID</text> 
       <tags>
@@ -104,8 +104,8 @@ log['user_agent'] = value
         </tag>
 	<tag name="__date" tagType="CommonTimeFormat">
           <description>
-            <localized_desc language="en">the time at which the request was issued. Please note that the timezone information is not carried over</localized_desc>
-            <localized_desc language="fr">la date à laquelle la requête a été émise. L'information de fuseau horaire n'est pas prise en compte</localized_desc>
+            <localized_desc language="en">the date on which the request was issued. Please note that the timezone information is not carried over</localized_desc>
+            <localized_desc language="fr">la date à laquelle la requête a été émise. L'information de fuseau horaire n'est pas conservée</localized_desc>
 	  </description>
           <substitute>DATE</substitute>
           <callbacks>
@@ -122,7 +122,7 @@ log['user_agent'] = value
         <tag name="requestor" tagType="NonWhitespaceChar">
           <description>
             <localized_desc language="en">The canonical user id of the requester.</localized_desc>
-            <localized_desc language="fr">Identifiant canonique du requeteur.</localized_desc>
+            <localized_desc language="fr">Identifiant canonique du requêteur.</localized_desc>
           </description>
 	  <substitute>REQUESTOR</substitute>
 	</tag>
@@ -143,14 +143,14 @@ log['user_agent'] = value
         <tag name="key" tagType="NonWhitespaceChar">
           <description>
             <localized_desc language="en">The "key" part of the request, URL encoded, or "-" if the operation does not take a key parameter.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">la "clé" telle qu'elle apparaît dans la requête, ou "-" si l'opération effectuée ne nécessite pas de clé</localized_desc>
           </description>
 	  <substitute>KEY</substitute>
 	</tag>
 	<tag name="__s3http_info" tagType="S3String">
 	  <description>
             <localized_desc language="en">The Request-URI part of the HTTP request message.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">l'URI de la requête HTTP</localized_desc>
 	  </description>
           <substitute>HTTP_METHOD</substitute>
           <callbacks>
@@ -173,36 +173,36 @@ log['user_agent'] = value
 	</tag>
 	<tag name="len" tagType="NonWhitespaceChar">
           <description>
-            <localized_desc language="en">The number of response bytes sent, excluding HTTP protocol overhead, or "-" if zero.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="en">The size of the response in bytes, excluding HTTP protocol headers, or "-" if zero.</localized_desc>
+            <localized_desc language="fr">la taille de la réponse en bytes hors en-têtes HTTP, ou "-" si la taille de la réponse est nulle.</localized_desc>
           </description>
 	  <substitute>SENT</substitute>
 	</tag>
 	<tag name="object_size" tagType="NonWhitespaceChar">
           <description>
             <localized_desc language="en">The total size of the object in question.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">la taille totale de l'objet concerné</localized_desc>
           </description>
 	  <substitute>SIZE</substitute>
 	</tag>
 	<tag name="total_request_time" tagType="Integer">
           <description>
-            <localized_desc language="en">The number of milliseconds the request was in flight from the server's perspective.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="en">The number of milliseconds it took the server to process the request</localized_desc>
+            <localized_desc language="fr">le temps en millisecondes mis par le serveur pour traiter la requête</localized_desc>
           </description>
 	  <substitute>TOTAL</substitute>
 	</tag>
 	<tag name="turn_around_time" tagType="NonWhitespaceChar">
           <description>
             <localized_desc language="en">The number of milliseconds that Amazon S3 spent processing your request.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">le temps en millisecondes mis par Amazon S3 pour traiter la requête</localized_desc>
           </description>
 	  <substitute>TAT</substitute>
 	</tag>
 	<tag name="__referer" tagType="S3String">
           <description>
-            <localized_desc language="en">The value of the HTTP Referrer header, if present</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="en">The value of the HTTP "Referer" header, if present</localized_desc>
+            <localized_desc language="fr">l'en-tête "Referer" s'il est présent</localized_desc>
           </description>
 	  <substitute>REF</substitute>
           <callbacks>
@@ -212,7 +212,7 @@ log['user_agent'] = value
         <tag name="__user_agent" tagType="S3String">
           <description>
             <localized_desc language="en">The value of the HTTP User-Agent header.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">l'en-tête "User-Agent"</localized_desc>
           </description>
 	  <substitute>AGENT</substitute>
           <callbacks>
@@ -222,7 +222,7 @@ log['user_agent'] = value
 	<tag name="version_id" tagType="NonWhitespaceChar">
           <description>
             <localized_desc language="en">The version ID in the request, or "-" if the operation does not take a versionId parameter.</localized_desc>
-            <localized_desc language="fr"></localized_desc>
+            <localized_desc language="fr">l'identifiant de version dans la requête, ou "-" si l'opération ne nécessite pas de paramètre versionId</localized_desc>
           </description>
 	  <substitute>VID</substitute>
 	</tag>

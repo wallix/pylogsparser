@@ -32,7 +32,7 @@
             matchtype="match"
             appliedTo="body"
             taxonomy="access control">
-    <description><localized_desc language="en">This normalizer can parse connection messages logged by a SSH server.</localized_desc>
+    <description><localized_desc language="en">This normalizer parses connection messages logged by a SSH server.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les événements de connexion à un serveur SSH.</localized_desc></description>
     <authors>
         <author>mhu@wallix.com</author>
@@ -56,7 +56,7 @@ else:
         <pattern name="sshd-001">
             <description>
         <localized_desc language="en">A generic sshd log line.</localized_desc>
-        <localized_desc language="fr">Une notification standard de connexion à un serveur SSH.</localized_desc></description>
+        <localized_desc language="fr">Une ligne de log standard émise par un serveur SSH.</localized_desc></description>
             <text>ACTION METHOD for(?: invalid user)? USER from IP port [0-9]+ ssh[0-9]</text>
             <tags>
                 <tag name="__action" tagType="ActionTag">

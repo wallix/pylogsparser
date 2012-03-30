@@ -37,7 +37,7 @@
 Postfix logs consist of a message UID and a list of keys and values.
 Normalized keys are "client", "to", "from", "orig_to", "relay", "size", "message-id" and "status".</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les logs émis par le service Postfix.
-Les messages Postfix consistent en un UID de message et une liste variable de clés et de valeurs associées.
+Les messages Postfix sont composés d'un UID de message et d'une liste variable de clés et de valeurs associées.
 Les clés extraites par ce normaliseur sont "client", "to", "from", "orig_to", "relay", "size", "message-id" et "status".</localized_desc>
     </description>
     <authors>
@@ -120,13 +120,13 @@ if 'relay' in log.keys():
                 <tag name="queue_id" tagType="postfixUID">
                  <description>
         <localized_desc language="en">the Postfix message UID</localized_desc>
-        <localized_desc language="fr">l'UID du message</localized_desc></description>
+        <localized_desc language="fr">l'UID du message Postfix</localized_desc></description>
                  <substitute>UID</substitute>
                 </tag>
                 <tag name="__keyvalues" tagType="Anything">
                  <description>
         <localized_desc language="en">the Postfix key-value couples</localized_desc>
-        <localized_desc language="fr">les couples clé-valeur du log</localized_desc></description>
+        <localized_desc language="fr">les couples clé-valeur du log Postfix</localized_desc></description>
                  <substitute>KEYVALUES</substitute>
                  <callbacks>
                   <callback>decode_postfix_key_value</callback>

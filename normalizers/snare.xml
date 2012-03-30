@@ -37,7 +37,7 @@
   
   <description>
     <localized_desc language="en">This normalizer handles event logs sent by Snare agent for Windows.</localized_desc>
-    <localized_desc language="fr">Ce normaliser analyse les logs envoyés par Snare agent for Windows</localized_desc>
+    <localized_desc language="fr">Ce normaliseur analyse les logs envoyés par Snare agent for Windows</localized_desc>
   </description>
   <authors>
     <author>clo@wallix.com</author>
@@ -123,29 +123,29 @@ log['technet_link'] = url + str(value)
 	</tag>
 	<tag name="criticality" tagType="criticality">
 	  <description>
-	    <localized_desc language="en">This is determinated by the Alert level given to the objective by the user. (In Snare Agent)</localized_desc>
-	    <localized_desc language="fr">Niveau d'alerte configuré depuis les objectives de l'agent Snare.</localized_desc>
+	    <localized_desc language="en">This is determined by the Alert level given to the objective by the user. (In Snare Agent)</localized_desc>
+	    <localized_desc language="fr">Niveau d'alerte configuré depuis les "objectives" de l'agent Snare.</localized_desc>
 	  </description>
 	  <substitute>CRITICALITY</substitute>
 	</tag>
         <tag name="event_log_source_name" tagType="event_log_source">
 	  <description>
 	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
-	    <localized_desc language="fr">Nom du journal Windows d'où vient l'évènement.</localized_desc>
+	    <localized_desc language="fr">Nom du journal Windows d'où provient l'événement.</localized_desc>
 	  </description>
 	  <substitute>SOURCE_NAME</substitute>
 	</tag>
  	<tag name="snare_event_counter" tagType="Integer">
 	  <description>
 	    <localized_desc language="en">Based on the internal Snare event counter.</localized_desc>
-	    <localized_desc language="fr">Basé sur le compteur interne des évènements de Snare.</localized_desc>
+	    <localized_desc language="fr">Basé sur le compteur interne des événements de Snare.</localized_desc>
 	  </description>
 	  <substitute>SNARE_EVENT_COUNTER</substitute>
 	</tag>
 	<tag name="event_id" tagType="Integer">
 	  <description>
 	    <localized_desc language="en">This is the Windows event ID.</localized_desc>
-	    <localized_desc language="fr">ID de l'évènement Windows.</localized_desc>
+	    <localized_desc language="fr">ID de l'événement Windows.</localized_desc>
 	  </description>
 	  <substitute>EVENT_ID</substitute>
 	  <callbacks>
@@ -155,7 +155,7 @@ log['technet_link'] = url + str(value)
 	<tag name="event_log_expanded_source_name" tagType="event_log_source">
 	  <description>
 	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
-	    <localized_desc language="fr">Nom du journal Windows d'où vient l'évènement.</localized_desc>
+	    <localized_desc language="fr">Nom du journal Windows d'où provient l'événement.</localized_desc>
 	  </description>
 	  <substitute>EXPANDED_SOURCENAME</substitute>
 	</tag>
@@ -175,8 +175,8 @@ log['technet_link'] = url + str(value)
 	</tag>
 	<tag name="event_type" tagType="event_log_type">
 	  <description>
-	    <localized_desc language="en">This can be anyone of 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
-	    <localized_desc language="fr">Peut être un des suivants: 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
+	    <localized_desc language="en">This can be any of the following values: 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
+	    <localized_desc language="fr">Peut prendre les valeurs suivantes : 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
 	  </description>
 	  <substitute>EVENT_LOGTYPE</substitute>
 	</tag>
@@ -197,14 +197,14 @@ log['technet_link'] = url + str(value)
 	<tag name="body" tagType="Anything">
 	  <description>
 	    <localized_desc language="en">This contains the data string.</localized_desc>
-	    <localized_desc language="fr">Contient la chaîne de donnée.</localized_desc>
+	    <localized_desc language="fr">Contient la chaîne de données.</localized_desc>
 	  </description>
 	  <substitute>DATA_STRING</substitute>
 	</tag>
 	<tag name="md5_checksum" tagType="md5_hexa">
 	  <description>
 	    <localized_desc language="en">This is a MD5 checksum.</localized_desc>
-	    <localized_desc language="fr">Empreinte MD5.</localized_desc>
+	    <localized_desc language="fr">somme de contrôle MD5.</localized_desc>
 	  </description>
 	  <substitute>MD5_CHECKSUM</substitute>
 	</tag>

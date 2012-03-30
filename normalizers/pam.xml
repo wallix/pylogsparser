@@ -33,7 +33,7 @@
             appliedTo="body"
             taxonomy="access control">
     <description>
-        <localized_desc language="en">This normalizer can parse messages issued by the Pluggable Authentication Module (PAM).</localized_desc>
+        <localized_desc language="en">This normalizer parses messages issued by the Pluggable Authentication Module (PAM).</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les messages émis par le module d'authentification par greffons (PAM).</localized_desc></description>
     <authors>
         <author>mhu@wallix.com</author>
@@ -48,7 +48,7 @@
         <tagType name="PAMUser" type="basestring">
             <description>
         <localized_desc language="en">the user information</localized_desc>
-        <localized_desc language="fr">l'utilisateur concerné par l'authentification</localized_desc></description>
+        <localized_desc language="fr">l'information utilisateur</localized_desc></description>
             <regexp>[^ ]+</regexp>
         </tagType>
         <tagType name="PAMSession" type="basestring">
@@ -90,7 +90,7 @@ log["action"] = {'opened' : 'open',
                 </tag>
                 <tag name="action" tagType="PAMSession">
                  <description>
-        <localized_desc language="en">the action taken regarding the session</localized_desc>
+        <localized_desc language="en">the taken action associated to the session</localized_desc>
         <localized_desc language="fr">l'action associée à la session</localized_desc></description>
                  <substitute>ACTION</substitute>
                  <callbacks>

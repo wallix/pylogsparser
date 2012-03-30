@@ -37,7 +37,7 @@
 Netfilter logs consist of a list of keys and values. Normalized keys are "in", "out", "mac", "src", "spt", "dst", "dpt", "len", "proto".
         </localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les logs émis par le composant kernel Netfilter.
-Les messages Netfilter consistent en une liste de clés et de valeurs associèes.
+Les messages Netfilter sont composés d'une liste de clés et de valeurs associèes.
 Les clés extraites par ce normaliseur sont "in", "out", "mac", "src", "spt", "dst", "dpt", "len", "proto".
         </localized_desc>
     </description>
@@ -100,7 +100,7 @@ log['program'] = 'netfilter'
             <tags>
                 <tag name="prefix" tagType="Anything">
                     <description>
-                        <localized_desc language="en">a user defined log prefix</localized_desc>
+                        <localized_desc language="en">a user defined prefix</localized_desc>
                         <localized_desc language="fr">un préfixe défini par l'utilisateur</localized_desc>
                     </description>
                     <substitute>USERPREFIX</substitute>

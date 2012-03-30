@@ -32,8 +32,8 @@
             matchtype="match"
             appliedTo="url">
     <description>
-        <localized_desc language="en">This normalizer extracts additional info from URLs such as domain, protocol, etc.</localized_desc>
-        <localized_desc language="fr">Ce normaliseur extrait des données supplémentaires des URLs telles que le domaine, le protocole, etc.</localized_desc>
+        <localized_desc language="en">This normalizer extracts additional information from URLs such as domain, protocol, etc.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur extrait des données supplémentaires à partir des URLs telles que le domaine, le protocole, etc.</localized_desc>
     </description>
     <authors>
         <author>mhu@wallix.com</author>

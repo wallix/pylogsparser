@@ -71,8 +71,8 @@ if value != "-":
                 </tag>
                 <tag name="__user" tagType="NoSpace">
                  <description>        
-        <localized_desc language="en">the user concerned by the request</localized_desc>
-        <localized_desc language="fr">l'utilisateur concerné par la requête</localized_desc></description>
+        <localized_desc language="en">the user linked to the request</localized_desc>
+        <localized_desc language="fr">l'utilisateur lié à la requête</localized_desc></description>
                  <substitute>USER</substitute>
                  <callbacks>
                   <callback>decode_user</callback>
@@ -161,7 +161,7 @@ if value != "-":
         </pattern>
         <pattern name="squid-002">
             <description>        
-        <localized_desc language="en">This pattern parses Squid's CONNECT logs.</localized_desc>
+        <localized_desc language="en">This pattern describes Squid's CONNECT logs.</localized_desc>
         <localized_desc language="fr">Cette structure décrit le format "natif" des logs Squid, plus spécifiquement des logs concernant l'événement HTTP "CONNECT".</localized_desc></description>
             <text>EPOCH +ELAPSED SOURCE_IP CODE/REQUESTSTATUS SIZE METHOD DEST_IP:DEST_PORT USER PEERSTATUS/PEERHOST MIMETYPE</text>
             <tags>
@@ -176,8 +176,8 @@ if value != "-":
                 </tag>
                 <tag name="__user" tagType="NoSpace">
                  <description>        
-        <localized_desc language="en">the user concerned by the request</localized_desc>
-        <localized_desc language="fr">l'utilisateur concerné par la requête</localized_desc></description>
+        <localized_desc language="en">the user linked to the request</localized_desc>
+        <localized_desc language="fr">l'utilisateur lié à la requête</localized_desc></description>
                  <substitute>USER</substitute>
                  <callbacks>
                   <callback>decode_user</callback>
@@ -222,13 +222,13 @@ if value != "-":
                 <tag name="dest_ip" tagType="IP">
                  <description>        
         <localized_desc language="en">the connection destination IP</localized_desc>
-        <localized_desc language="fr">l'IP de connection distante</localized_desc></description>
+        <localized_desc language="fr">l'IP de connexion distante</localized_desc></description>
                  <substitute>DEST_IP</substitute>
                 </tag>
                 <tag name="dest_port" tagType="Integer">
                  <description>        
         <localized_desc language="en">the connection destination port</localized_desc>
-        <localized_desc language="fr">le port de connection distante</localized_desc></description>
+        <localized_desc language="fr">le port de connexion distante</localized_desc></description>
                  <substitute>DEST_PORT</substitute>
                 </tag>
                 <tag name="peer_status" tagType="NoSpace">

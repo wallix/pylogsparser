@@ -33,7 +33,7 @@
             appliedTo="raw"
             taxonomy="file transfer">
     <description>
-        <localized_desc language="en">This normalizer handles FTP logs in the xferlog format.
+        <localized_desc language="en">This normalizer parses FTP logs in the xferlog format.
 This format is supported by a wide range of FTP servers like Wu-Ftpd, VSFTPd, ProFTPD or standard BSD ftpd.
 The "program" tag is therefore set to the generic value "ftpd".</localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs au format xferlog.
@@ -138,8 +138,8 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
             <tags>
                 <tag name="__date" tagType="date">
                     <description>
-                        <localized_desc language="en">The current local time in the form "DDD MMM dd hh:mm:ss YYYY", where DDD is the day of the week, MMM is the month, dd is the day of the month, hh is the hour, mm is the min-utes, ss is the seconds, and YYYY is the year.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">The current local date and time in the form "DDD MMM dd hh:mm:ss YYYY", where DDD is the day of the week, MMM is the month, dd is the day of the month, hh is the hour, mm is the minutes, ss is the seconds, and YYYY is the year.</localized_desc>
+                        <localized_desc language="fr">La date et l'heure locales, au format "DDD MMM dd hh:mm:ss YYYY", où DDD correspond au jour de la semaine, MMM au mois, dd au jour du mois, hh à l'heure, mm aux minutes, ss aux secondes, et YYYY à l'année</localized_desc>
                     </description>
                     <substitute>DATE</substitute>
                     <callbacks>
@@ -149,35 +149,35 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 <tag name="transfer_time" tagType="Integer">
                     <description>
                         <localized_desc language="en">The total time of the transfer in seconds.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">Le temps total de transmission des données en secondes</localized_desc>
                     </description>
                     <substitute>TSF_TIME</substitute>
                 </tag>
                 <tag name="source_ip" tagType="IP">
                     <description>
                         <localized_desc language="en">The remote host name.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">le nom de l'hôte distant</localized_desc>
                     </description>
                     <substitute>RMT_HOST</substitute>
                 </tag>
                 <tag name="len" tagType="Integer">
                     <description>
                         <localized_desc language="en">The amount of transferred bytes.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">la quantité de bytes transmise</localized_desc>
                     </description>
                     <substitute>BYT_COUNT</substitute>
                 </tag>
                 <tag name="filename" tagType="vsftpd_field">
                     <description>
-                        <localized_desc language="en">The canonicalized (all symbolic links are resolved) abso-lute pathname of the transferred file. In case of the chrooted FTP session this field can be interpreted as the pathname in the chrooted environment(the default interpretation) or as the one in the realfile system. The second type of interpretation can be enabled by the command-line options of the ftpd.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">The canonical (all symbolic links are resolved) absolute pathname of the transferred file. In case of a chrooted FTP session this field can be interpreted as the pathname in the chrooted environment (the default interpretation) or as the one in the real filesystem. The second type of interpretation can be enabled by the command-line options of the ftp server.</localized_desc>
+                        <localized_desc language="fr">Le chemin absolu et canonique (tous les liens symboliques sont résolus) du fichier transmis. En cas de session FTP où le chroot est activé, ce champ peut être interprété comme le chemin absolu dans l'environnement chroot (l'interprétation par défaut) ou comme celui dans le système de fichiers réel. Ce dernier cas peut être activé par une option de démarrage du serveur ftp.</localized_desc>
                     </description>
                     <substitute>FILENAME</substitute>
                 </tag>
                 <tag name="transfer_type_code" tagType="transfer_type">
                     <description>
-                        <localized_desc language="en">he single character that indicates the type of the trans-fer. The set of possible values is: 'a' (an ascii transfer) or 'b' (a binary transfer).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">the single character that indicates the type of the transfer. The set of possible values is: 'a' (an ascii transfer) or 'b' (a binary transfer).</localized_desc>
+                        <localized_desc language="fr">le code alphabétique explicitant la nature de la transmission. Les valeurs possibles sont : "a" (transmission en ASCII) ou "b" (transmission au format binaire)</localized_desc>
                     </description>
                     <substitute>TSF_TYPE</substitute>
                     <callbacks>
@@ -187,7 +187,7 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 <tag name="special_action_flag" tagType="special_action_flag">
                     <description>
                         <localized_desc language="en">One or more single character flags indicating any special action taken. The set of possible values is: '_'(no action was taken), 'C'(the file was compressed [not in use]), 'U'(the file was uncompressed [not in use]) or 'T'(the file was tar'ed [not in use]).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">Une ou plusieurs lettres explicitant toute action spécifique effectuée s'il y a lieu. L'ensemble des valeurs possibles est : "_" (pas d'action), "C" (le fichier a été compressé [non utilisé]), "U" (le fichier a été décompressé [non utilisé]) ou "T" (le fichier a été compressé au format tar [non utilisé])</localized_desc>
                     </description>
                     <substitute>SPE_ACT_FLAG</substitute>
                     <callbacks>
@@ -197,7 +197,7 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 <tag name="direction_code" tagType="direction">
                     <description>
                         <localized_desc language="en">The direction of the transfer. The set of possible values is: 'o'(the outgoing transfer) or 'i'(the incoming transfer)</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">La direction de la transmission de fichiers. L'ensemble des valeurs possibles est : "o" (transmission sortante) ou "i" (transmission entrante)</localized_desc>
                     </description>
                     <substitute>DIR</substitute>
                     <callbacks>
@@ -206,8 +206,8 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 </tag>
                 <tag name="access_mode_code" tagType="access_mode">
                     <description>
-                        <localized_desc language="en">The method by which the user is logged in. The set of possible values is: 'a'[anonymous](the anonymous guest user), 'g'[guest](the real but chrooted user [this capability is guided by ftpchroot(5) file]) or 'r'[real](the real user).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">The method through which the user logged in. The set of possible values is: 'a'[anonymous](the anonymous guest user), 'g'[guest](the real but chrooted user [this capability is guided by ftpchroot(5) file]) or 'r'[real](the real user).</localized_desc>
+                        <localized_desc language="fr">La méthode de connexion de l'utilisateur. L'ensemble des valeurs possibles est : "a" (connexion anonyme), "g" (utilisateur réel mais dans un environnement chroot), ou "r" (l'utilisateur réel)</localized_desc>
                     </description>
                     <substitute>ACC_MODE</substitute>
                     <callbacks>
@@ -217,21 +217,21 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 <tag name="user" tagType="vsftpd_field">
                     <description>
                         <localized_desc language="en">The user's login name in case of the real user, or the user's identification string in case of the anonymous user (by convention it is an email address of the user).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">le nom de connexion utilisé par l'utilisateur : il s'agit du nom d'utilisateur réel si la méthode "r" est utilisée, ou une chaîne d'identification en cas de connexion anonyme (par convention l'adresse E-mail de l'utilisateur)</localized_desc>
                     </description>
                     <substitute>USERNAME</substitute>
                 </tag>
                 <tag name="service_name" tagType="vsftpd_field">
                     <description>
-                        <localized_desc language="en">The name of the service being invoked. The ftpd (utility uses the 'ftp' keyword).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">The name of the service being invoked. The ftpd utility uses the 'ftp' keyword.</localized_desc>
+                        <localized_desc language="fr">Le nom du service appelé. FTPD utilise le mot-clé "ftp"</localized_desc>
                     </description>
                     <substitute>SVC_NAME</substitute>
                 </tag>
                 <tag name="authentication_method_code" tagType="authentication_method">
                     <description>
                         <localized_desc language="en">The used method of the authentication. The set of possible values is: '0' None or '1' RFC931 Authentication (not in use).</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">La méthode d'authentification utilisée. L'ensemble des valeurs possibles est : "0" (aucune authentification) ou "1" (authentification définie par la RFC931) [non utilisé]</localized_desc>
                     </description>
                     <substitute>AUTH_METHOD</substitute>
                     <callbacks>
@@ -240,15 +240,15 @@ log['completion_status'] = decoder.get(value, 'UNKNOWN')
                 </tag>
                 <tag name="authenticated_user_id" tagType="vsftpd_field">
                     <description>
-                        <localized_desc language="en">The user id returned by the authentication method. The '*' symbol is used if an authenticated user id is not available.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="en">The user ID returned by the authentication method. The '*' symbol is used if an authenticated user ID is not available.</localized_desc>
+                        <localized_desc language="fr">L'identifiant utilisateur renvoyé par la méthode d'authentification ou "*"</localized_desc>
                     </description>
                     <substitute>AUTHENTICATED_USER_ID</substitute>
                 </tag>
                 <tag name="completion_status_code" tagType="completion_status">
                     <description>
                         <localized_desc language="en">The single character that indicates the status of the transfer. The set of possible values is: 'c' a complete transfer or 'i' an incomplete transfer.</localized_desc>
-                        <localized_desc language="fr"></localized_desc>
+                        <localized_desc language="fr">Le code alphabétique explicitant le statut de la transmission. L'ensemble des valeurs possibles est : "c" (transmission complète) ou "i" (transmission incomplète)</localized_desc>
                     </description>
                     <substitute>COMPLETION_STATUS</substitute>
                     <callbacks>

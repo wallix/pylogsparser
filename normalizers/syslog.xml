@@ -7,8 +7,8 @@
             matchtype="match"
             appliedTo="raw">
  <description>
-  <localized_desc language="en">This normalizer is used to parse syslog lines, as defined in RFC3164.
-Priority, when present, is broken into the facility and severity codes.</localized_desc>
+  <localized_desc language="en">This normalizer parses syslog lines, as defined in RFC3164.
+The priority, when present, is broken into the facility and severity codes.</localized_desc>
   <localized_desc language="fr">Ce normaliseur traite les événements au format syslog, tel qu'il est défini dans la RFC3164.
 Si le message contient une information de priorité, celle-ci est décomposée en deux valeurs : facilité et gravité.</localized_desc>
  </description>
@@ -83,8 +83,8 @@ log["severity_code"] = "%d" % severity
  <patterns>
   <pattern name="syslog-001">
    <description>
-    <localized_desc language="en">A syslog line with optional priority (sent through network), source, program and optional PID.</localized_desc>
-    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité (optionnelle), une source, un programme et un PID (optionnel).</localized_desc>
+    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, program and optional PID.</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, un programme et un PID (optionnel).</localized_desc>
    </description>
    <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE PROGRAM(?:\[PID\])?: BODY</text>
    <tags>
@@ -100,7 +100,7 @@ log["severity_code"] = "%d" % severity
     </tag>
     <tag name="date" tagType="syslogDate">
      <description>
-     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="en">the log's date and time</localized_desc>
      <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
      <substitute>DATE</substitute>
      <callbacks>
@@ -151,8 +151,8 @@ log["severity_code"] = "%d" % severity
   </pattern>
   <pattern name="syslog-002">
    <description>
-    <localized_desc language="en">A syslog line with optional priority (sent through network), source, and no information about program and PID.</localized_desc>
-    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité (optionnelle), une source, et pas d'information sur le programme.</localized_desc>
+    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, and no information about program and PID.</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, et pas d'information sur le programme.</localized_desc>
    </description>
    <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE BODY</text>
    <tags>
@@ -168,7 +168,7 @@ log["severity_code"] = "%d" % severity
     </tag>
     <tag name="date" tagType="syslogDate">
      <description>
-     <localized_desc language="en">the log's date</localized_desc>
+     <localized_desc language="en">the log's date and time</localized_desc>
      <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
      <substitute>DATE</substitute>
      <callbacks>

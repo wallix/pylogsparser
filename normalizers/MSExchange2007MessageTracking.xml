@@ -208,7 +208,7 @@ log.update(d)
                 <tag name="len" tagType="Anything">
                     <description>
                         <localized_desc language="en">total bytes in the transaction</localized_desc>
-                        <localized_desc language="fr">le nombre de bits total pour la transaction</localized_desc>
+                        <localized_desc language="fr">le nombre de bytes total pour la transaction</localized_desc>
                     </description>
                     <substitute>TOTAL_BYTES</substitute>
                 </tag>
@@ -257,7 +257,7 @@ log.update(d)
                 <tag name="message_info" tagType="Anything">
                     <description>
                         <localized_desc language="en">some additional information about the message</localized_desc>
-                        <localized_desc language="fr">de l'information supplémentaire sur le message</localized_desc>
+                        <localized_desc language="fr">des informations supplémentaires sur le message</localized_desc>
                     </description>
                     <substitute>MESSAGE_INFO</substitute>
                 </tag>

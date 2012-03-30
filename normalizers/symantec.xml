@@ -34,7 +34,7 @@
             taxonomy="antivirus">
  <description>
   <localized_desc language="en">This normalizer parses messages issued by the Symantec Antivirus.</localized_desc>
-  <localized_desc language="fr">Ce normaliser analyse les messages émis par Symantec Antivirus.</localized_desc>
+  <localized_desc language="fr">Ce normaliseur analyse les messages émis par Symantec Antivirus.</localized_desc>
  </description>
  <authors>
   <author>fbo@wallix.com</author>
@@ -414,7 +414,7 @@ log['action2_status'] = ret
   <pattern name="symantec-001">
    <description>
     <localized_desc language="en">Pattern definition for Symantec Antivirus version 8</localized_desc>
-    <localized_desc language="fr">Definition de pattern pour Symantec Antivirus version 8</localized_desc>
+    <localized_desc language="fr">Structure des logs Symantec Antivirus version 8</localized_desc>
    </description>
    <text type="csv" separator="," quotechar='"' >DATE,EVENT_NUMBER,CATEGORY,EVENT_LOGGER_TYPE,COMPUTER,USERNAME,VIRUS_NAME,VIRUS_LOCATION,PRIMARY_ACTION_CONFIGURATION,SECONDARY_ACTION_CONFIGURATION,ACTION_TAKEN,VIRUS_TYPE,EVENTBLOCK_ACTION,BODY,SCAN_ID,UNKNOWN1,GROUP_ID,EVENT_DATA,QUARANTINED_FILE_ID,VIRUS_ID,QUARANTINE_ATTEMPT_STATUS,OPERATION_FLAGS,UNKNOWN2,COMPRESSED_FILE,VIRUS_DEPTH_IN_COMPRESSED_FILE,AMOUNT_OF_REMAINING_INFECTED_FILES,VIRUS_DEFINITIONS_VERSION,VIRUS_DEFINITION_SEQUENCE_NUMBER,CLEANABLE,DELETABLE,BACKUP_ID,PARENT,GUID,CLIENT_GROUP,ADDRESS,SERVER_GROUP,DOMAIN_NAME,MAC_ADDRESS,VERSION</text>
    <tags>
@@ -467,7 +467,7 @@ log['action2_status'] = ret
     </tag>
     <tag name="user" tagType="Anything">
      <description>
-      <localized_desc language="en">Utilisateur</localized_desc>
+      <localized_desc language="en">User</localized_desc>
       <localized_desc language="fr">Utilisateur</localized_desc>
      </description>
      <substitute>USERNAME</substitute>
@@ -539,7 +539,7 @@ log['action2_status'] = ret
     <tag name="body" tagType="Anything">
      <description>
       <localized_desc language="en">Message body describing the event</localized_desc>
-      <localized_desc language="fr">Corps du message, décrivant l'événement</localized_desc>
+      <localized_desc language="fr">Corps du message décrivant l'événement</localized_desc>
      </description>
      <substitute>BODY</substitute>
     </tag>
@@ -632,7 +632,7 @@ log['action2_status'] = ret
     <tag name="amount_of_remaining_infected_files" tagType="Anything">
      <description>
       <localized_desc language="en">Amount of remaining infected files</localized_desc>
-      <localized_desc language="fr">Nombre de fichiers encore infectés</localized_desc>
+      <localized_desc language="fr">Nombre de fichiers infectés restant</localized_desc>
      </description>
      <substitute>AMOUNT_OF_REMAINING_INFECTED_FILES</substitute>
     </tag>
@@ -764,7 +764,7 @@ log['action2_status'] = ret
   <pattern name="symantec-002">
    <description>
     <localized_desc language="en">Pattern definition for Symantec Antivirus version 9</localized_desc>
-    <localized_desc language="fr">Definition de pattern pour Symantec Antivirus version 9</localized_desc>
+    <localized_desc language="fr">Structure des logs Symantec Antivirus version 9</localized_desc>
    </description>
    <text type="csv" separator="," quotechar='"' >DATE,EVENT_NUMBER,CATEGORY,EVENT_LOGGER_TYPE,COMPUTER,USERNAME,VIRUS_NAME,VIRUS_LOCATION,PRIMARY_ACTION_CONFIGURATION,SECONDARY_ACTION_CONFIGURATION,ACTION_TAKEN,VIRUS_TYPE,EVENTBLOCK_ACTION,BODY,SCAN_ID,UNKNOWN1,GROUP_ID,EVENT_DATA,QUARANTINED_FILE_ID,VIRUS_ID,QUARANTINE_ATTEMPT_STATUS,OPERATION_FLAGS,UNKNOWN2,COMPRESSED_FILE,VIRUS_DEPTH_IN_COMPRESSED_FILE,AMOUNT_OF_REMAINING_INFECTED_FILES,VIRUS_DEFINITIONS_VERSION,VIRUS_DEFINITION_SEQUENCE_NUMBER,CLEANABLE,DELETABLE,BACKUP_ID,PARENT,GUID,CLIENT_GROUP,ADDRESS,SERVER_GROUP,DOMAIN_NAME,MAC_ADDRESS,VERSION,REMOTE_MACHINE,REMOTE_MACHINE_IP,ACTION1_STATUS,ACTION2_STATUS,LICENSE_FEATURE_NAME,LICENSE_FEATURE_VER,LICENSE_SERIAL_NUM,LICENSE_FULFILLMENT_ID,LICENSE_START_DT,LICENSE_EXPIRATION_DT,LICENSE_LIFECYCLE,LICENSE_SEATS_TOTAL,LICENSE_SEATS,ERR_CODE,LICENSE_SEATS_DELTA,STATUS,DOMAIN_GUID,LOG_SESSION_GUID,VBIN_SESSION_GUID,LOGIN_DOMAIN</text>
    <tags>
@@ -817,7 +817,7 @@ log['action2_status'] = ret
     </tag>
     <tag name="user" tagType="Anything">
      <description>
-      <localized_desc language="en">Utilisateur</localized_desc>
+      <localized_desc language="en">User</localized_desc>
       <localized_desc language="fr">Utilisateur</localized_desc>
      </description>
      <substitute>USERNAME</substitute>
@@ -825,7 +825,7 @@ log['action2_status'] = ret
     <tag name="virus_name" tagType="Anything">
      <description>
       <localized_desc language="en">Virus name</localized_desc>
-      <localized_desc language="fr">Nom du virus'</localized_desc>
+      <localized_desc language="fr">Nom du virus</localized_desc>
      </description>
      <substitute>VIRUS_NAME</substitute>
     </tag>
@@ -889,7 +889,7 @@ log['action2_status'] = ret
     <tag name="body" tagType="Anything">
      <description>
       <localized_desc language="en">Message body describing the event</localized_desc>
-      <localized_desc language="fr">Corps du message, décrivant l'événement</localized_desc>
+      <localized_desc language="fr">Corps du message décrivant l'événement</localized_desc>
      </description>
      <substitute>BODY</substitute>
     </tag>
@@ -982,7 +982,7 @@ log['action2_status'] = ret
     <tag name="amount_of_remaining_infected_files" tagType="Anything">
      <description>
       <localized_desc language="en">Amount of remaining infected files</localized_desc>
-      <localized_desc language="fr">Nombre de fichiers encore infectés</localized_desc>
+      <localized_desc language="fr">Nombre de fichiers infectés restant</localized_desc>
      </description>
      <substitute>AMOUNT_OF_REMAINING_INFECTED_FILES</substitute>
     </tag>

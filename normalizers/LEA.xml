@@ -38,11 +38,11 @@
             appliedTo="body"
             taxonomy="firewall">
     <description>
-        <localized_desc language="en">This normalizer handles LEA (Log Export API) normalization. The LEA format is used by CheckPoint products to export logs to a LogBox.
+        <localized_desc language="en">This normalizer parses Check Point's LEA (Log Export API) formatted logs. The LEA format is used by Check Point products to export logs to a LogBox.
 The formatting with | as a fields separator is due to the use of FW1-LogGrabber for log fetching.
 
 Due to the dynamic nature of this logging format, please refer to your product's documentation to find out more about tagging.</localized_desc>
-        <localized_desc language="fr">Ce normaliseur analyse les logs émis en utilisant l'API d'export de logs (LEA). Cette API peut être utilisée pour la réception de logs en provenance d'équipements CheckPoint.
+        <localized_desc language="fr">Ce normaliseur analyse les logs émis en utilisant l'API Check Point d'export de logs (LEA). Cette API peut être utilisée pour la réception de logs en provenance d'équipements Check Point.
 Le formatage des champs séparés par le caractère | est dû à la récupération des logs via l'utilitaire FW1-LogGrabber.
 
 En raison de la nature dynamique de ce format de log, les tags extraits peuvent varier en fonction des événements consignés. Veuillez vous référer à la documentation de votre équipement exposant LEA pour de plus amples informations.</localized_desc></description>
@@ -144,7 +144,7 @@ int_extract(log)
                 <tag name="__lea" tagType="LEAFields">
                  <description>
         <localized_desc language="en">a list of key-value couples, separated by a | character, needing some post-processing</localized_desc>
-        <localized_desc language="fr">la liste des couples clé-valeur, à passer à une fonction de post-traitement</localized_desc></description>
+        <localized_desc language="fr">la liste des couples clé-valeur, nécessitant un traitement ultérieur</localized_desc></description>
                  <substitute>LEAFIELDS</substitute>
                  <callbacks>
                   <callback>decode_LEA</callback>

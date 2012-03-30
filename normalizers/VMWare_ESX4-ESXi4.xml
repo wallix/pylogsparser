@@ -83,7 +83,7 @@
       <tags>
 	<tag name="__date" tagType="date">
 	  <description>
-	    <localized_desc language="en">The time at which the request was issued - please note that the timezone information is not carried over.</localized_desc>
+	    <localized_desc language="en">The date on which the request was issued - please note that the timezone information is not carried over.</localized_desc>
 	    <localized_desc language="fr">La date à laquelle la requête a été émise. Veuillez noter que l'information de fuseau horaire n'est pas prise en compte.</localized_desc>
 	  </description>
 	  <substitute>DATE</substitute>
@@ -101,7 +101,7 @@
 	<tag name="level" tagType="level_word">
 	  <description>
 	    <localized_desc language="en">The level is the type of the log.</localized_desc>
-	    <localized_desc language="fr">Le level correspond au type du log.</localized_desc>
+	    <localized_desc language="fr">Le niveau correspond au type du log.</localized_desc>
 	  </description>
 	  <substitute>LEVEL</substitute>
 	</tag>
