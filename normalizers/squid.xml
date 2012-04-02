@@ -52,6 +52,13 @@ Seul le format "natif" des logs Squid est supporté par ce normaliseur.</localiz
         <callback name="decode_user">
 if value != "-":
     log["user"] = value</callback>
+        <callback name="decode_dest_connect">
+ip = re.compile("(?&lt;![.0-9])(?:\d{1,3}.){3}\d{1,3}(?![.0-9])")
+if ip.match(value):
+    log["dest_ip"] = value
+else:
+    log['dest_host'] = value
+        </callback>
     </callbacks>
     <patterns>
         <pattern name="squid-001">
@@ -163,7 +170,7 @@ if value != "-":
             <description>        
         <localized_desc language="en">This pattern describes Squid's CONNECT logs.</localized_desc>
         <localized_desc language="fr">Cette structure décrit le format "natif" des logs Squid, plus spécifiquement des logs concernant l'événement HTTP "CONNECT".</localized_desc></description>
-            <text>EPOCH +ELAPSED SOURCE_IP CODE/REQUESTSTATUS SIZE METHOD DEST_IP:DEST_PORT USER PEERSTATUS/PEERHOST MIMETYPE</text>
+            <text>EPOCH +ELAPSED SOURCE_IP CODE/REQUESTSTATUS SIZE METHOD DEST_CONNECT:DEST_PORT USER PEERSTATUS/PEERHOST MIMETYPE</text>
             <tags>
                 <tag name="__epoch" tagType="EpochTime">
                  <description>        
@@ -219,11 +226,14 @@ if value != "-":
         <localized_desc language="fr">la méthode associée à la requête</localized_desc></description>
                  <substitute>METHOD</substitute>
                 </tag>
-                <tag name="dest_ip" tagType="IP">
+                <tag name="dest_ip" tagType="NoSpace">
                  <description>        
         <localized_desc language="en">the connection destination IP</localized_desc>
         <localized_desc language="fr">l'IP de connexion distante</localized_desc></description>
-                 <substitute>DEST_IP</substitute>
+                 <substitute>DEST_CONNECT</substitute>
+                 <callbacks>
+                  <callback>decode_dest_connect</callback>
+                 </callbacks>
                 </tag>
                 <tag name="dest_port" tagType="Integer">
                  <description>        
@@ -243,7 +253,7 @@ if value != "-":
         <localized_desc language="fr">l'hôte du pair</localized_desc></description>
                  <substitute>PEERHOST</substitute>
                 </tag>
-                <tag name="mime_type" tagType="NoSPace">
+                <tag name="mime_type" tagType="NoSpace">
                  <description>        
         <localized_desc language="en">the MIME type of the result of the request</localized_desc>
         <localized_desc language="fr">le type MIME du résultat de la requête</localized_desc></description>
@@ -268,6 +278,23 @@ if value != "-":
                           <expectedTag name="taxonomy">web proxy</expectedTag>
                      </expectedTags>
                 </example>
+                <example>
+                     <text>1333350837.580 6515 10.10.5.10 TCP_MISS/200 4537 CONNECT versioncheck.addons.mozilla.org:443 - DIRECT/63.245.217.168 -</text>
+                     <expectedTags>
+                          <expectedTag name="event_id">TCP_MISS</expectedTag>
+                          <expectedTag name="elapsed">6515</expectedTag>
+                          <expectedTag name="source_ip">10.10.5.10</expectedTag>
+                          <expectedTag name="method">CONNECT</expectedTag>
+                          <expectedTag name="mime_type">-</expectedTag>
+                          <expectedTag name="peer_host">63.245.217.168</expectedTag>
+                          <expectedTag name="peer_status">DIRECT</expectedTag>
+                          <expectedTag name="len">4537</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="dest_host">versioncheck.addons.mozilla.org</expectedTag>
+                          <expectedTag name="dest_port">443</expectedTag>
+                          <expectedTag name="taxonomy">web proxy</expectedTag>
+                     </expectedTags>
+                </example>
             </examples>
         </pattern>
     </patterns>
@@ -275,4 +302,3 @@ if value != "-":
         <commonTag name="program">squid</commonTag>
     </commonTags>
 </normalizer>
-
