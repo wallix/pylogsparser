@@ -32,19 +32,26 @@ it is useful to detect normalization conflicts.
 """
 import os
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
+import pytz
 
 from logsparser import lognormalizer
 
 normalizer_path = os.environ['NORMALIZERS_PATH']
 ln = lognormalizer.LogNormalizer(normalizer_path)
 
+def _get_timeoffset(timezone, localtz):
+        n = datetime.now()
+        return localtz.localize(n) - timezone.localize(n)
+
 class Test(unittest.TestCase):
 
-    def aS(self, log, subset, notexpected = ()):
+    def aS(self, log, subset, notexpected = (), tzinfo = None):
         """Assert that the result of normalization of a given line log has the given subset."""
         data = {'raw' : log,
                 'body' : log}
+        if tzinfo:
+            data['_timezone'] = tzinfo
         ln.lognormalize(data)
         for key in subset:
             self.assertEqual(data[key], subset[key])
@@ -92,7 +99,122 @@ class Test(unittest.TestCase):
                  'facility_code' : '5',
                  'source': 'neo',
                  'program': 'kernel' })
+        
+        # test the tolerance up to the minute : 1 ...
+        now = datetime.now() + timedelta(seconds = +57)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'date': now.replace(microsecond=0),
+                 'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel' })
+        # ... and 2
+        now = datetime.now() + timedelta(seconds = +63)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'date': now.replace(microsecond=0, year=now.year-1),
+                 'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel' })
 
+    def test_syslog_with_timezone(self):
+        """Test syslog logs with a timezone info"""
+        try:
+            # Linux/Unix specific I guess ?
+            localtz = pytz.timezone(file('/etc/timezone').read()[:-1])
+        except:
+            self.skipTest("Could not find local timezone, skipping test")    
+        # Tokyo drift
+        tokyo = pytz.timezone('Asia/Tokyo')
+        offset = _get_timeoffset(tokyo,localtz)
+        # first test the past
+        now = datetime.now() + offset + timedelta(hours=-2)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': now.replace(microsecond=0)},
+                 tzinfo = 'Asia/Tokyo')
+        # then fight the future
+        now = datetime.now() + offset + timedelta(hours=+2)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': now.replace(microsecond=0, year=now.year-1)},
+                 tzinfo = 'Asia/Tokyo')
+        # and finally, without the tz info ?
+        now = datetime.now() + offset
+        if offset.total_seconds() > 60:
+            d = now.replace(microsecond=0, year=now.year-1)
+        else:
+            d = now.replace(microsecond=0)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': d})
+        # Operation Anchorage
+        anchorage = pytz.timezone('America/Anchorage')
+        offset = _get_timeoffset(anchorage,localtz)
+        # first test the past
+        now = datetime.now() + offset + timedelta(hours=-2)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': now.replace(microsecond=0)},
+                 tzinfo = 'America/Anchorage')
+        # then fight the future
+        now = datetime.now() + offset + timedelta(hours=+2)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': now.replace(microsecond=0, year=now.year-1)},
+                 tzinfo = 'America/Anchorage')
+        # and finally, without the tz info ?
+        now = datetime.now() + offset
+        if offset.total_seconds() > 60:
+            d = now.replace(microsecond=0, year=now.year-1)
+        else:
+            d = now.replace(microsecond=0)
+        self.aS("<40>%s neo kernel: tun_wallix: Disabled Privacy Extensions" % now.strftime("%b %d %H:%M:%S"),
+                {'body': 'tun_wallix: Disabled Privacy Extensions',
+                 'severity': 'emerg',
+                 'severity_code' : '0',
+                 'facility': 'syslog',
+                 'facility_code' : '5',
+                 'source': 'neo',
+                 'program': 'kernel',
+                 'date': d})
+                 
     def test_postfix(self):
         """Test postfix logs"""
         self.aS("<40>Dec 21 07:49:02 hosting03 postfix/cleanup[23416]: 2BD731B4017: message-id=<20071221073237.5244419B327@paris.office.wallix.com>",

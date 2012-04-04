@@ -33,7 +33,7 @@ import warnings
 import math
 
 from lxml.etree import parse, tostring
-from datetime import datetime # pyflakes:ignore
+from datetime import datetime, timedelta # pyflakes:ignore
 import urlparse # pyflakes:ignore
 import logsparser.extras as extras # pyflakes:ignore
 
@@ -52,7 +52,7 @@ SAFE_SYMBOLS = ["list", "dict", "tuple", "set", "long", "float", "object",
                 "map", "filter", "max", "min", "oct", "chr", "ord", "range",
                 "reduce", "repr", "str", "unicode", "basestring", "type", "zip",
                 "xrange", "None", "Exception", "re", "datetime", "math",
-                "urlparse", "country_code_by_address", "extras"]
+                "urlparse", "country_code_by_address", "extras", "timedelta"]
 
 class Tag(object):
     """A tag as defined in a pattern."""

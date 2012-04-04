@@ -21,6 +21,20 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-from domain_parser import get_domain
-from robots import robot_regex
-from timezone import to_naive_utc
+""""""
+
+import pytz
+
+def to_naive_utc(date, from_tz):
+    """
+    @param date: a naive datetime instance
+    @param from_tz: timezone information about the naive datetime
+    @return: naive datetime set to UTC
+    """
+    date = date.replace(tzinfo=None)
+    try:
+        timezone = pytz.timezone(from_tz)
+    except pytz.UnknownTimeZoneError:
+        timezone = pytz.utc
+    loc_date = timezone.localize(date)
+    return loc_date.astimezone(pytz.utc).replace(tzinfo=None)

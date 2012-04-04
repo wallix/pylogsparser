@@ -98,7 +98,14 @@ newdate = datetime(currentyear,
                    int(value[7:9]),
                    int(value[10:12]),
                    int(value[13:15]))
-if newdate > datetime.today():
+if '_timezone' in log.keys():
+    test_date = extras.to_naive_utc(newdate, log['_timezone'])
+    test_value = datetime.utcnow()
+else:
+    test_date = newdate
+    test_value = datetime.now()
+# give it a minute of latency
+if test_date > test_value + timedelta(minutes=+1):
 	newdate = newdate.replace(year = newdate.year - 1)
 
 log['date'] = newdate
