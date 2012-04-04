@@ -37,7 +37,7 @@ fr_trans = glob.glob('logsparser/i18n/fr_FR/LC_MESSAGES/normalizer.*')
 
 setup(
     name = "pylogsparser",
-    version = "0.4.1",
+    version = "0.5",
     author = "Wallix",
     author_email = "opensource@wallix.org",
     description = ("A log parser library packaged with a set of ready to use parsers (DHCPd, Squid, Apache, ...)"),
