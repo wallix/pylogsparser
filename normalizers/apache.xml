@@ -72,6 +72,12 @@ try:
     log['method'] = value.split(' ')[0]
 except:
     pass</callback>
+        <callback name="sanitize_len">
+try:
+    i = long(value)
+    log['len'] = value
+except:
+    log['len'] = 0</callback>
     </callbacks>
     <patterns>
         <pattern name="apache-001">
@@ -122,11 +128,14 @@ except:
         <localized_desc language="fr">le code de statut final pour la requête</localized_desc></description>
                  <substitute>%&gt;s</substitute>
                 </tag>
-                <tag name="len" tagType="ApacheNumVal">
+                <tag name="__len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
         <localized_desc language="fr">la taille de la réponse émise en bytes, en-têtes HTTP inclus</localized_desc></description>
                  <substitute>%b</substitute>
+                 <callbacks>
+                    <callback>sanitize_len</callback>
+                 </callbacks>
                 </tag>
             </tags>
             <examples>
@@ -195,11 +204,14 @@ except:
         <localized_desc language="fr">le code de statut final pour la requête</localized_desc></description>
                  <substitute>%&gt;s</substitute>
                 </tag>
-                <tag name="len" tagType="ApacheNumVal">
+                <tag name="__len" tagType="ApacheNumVal">
                  <description>
         <localized_desc language="en">the size of the response in bytes, including HTTP headers</localized_desc>
         <localized_desc language="fr">la taille de la réponse émise en bytes, en-têtes HTTP inclus</localized_desc></description>
                  <substitute>%b</substitute>
+                 <callbacks>
+                    <callback>sanitize_len</callback>
+                 </callbacks>
                 </tag>
                 <tag name="request_header_referer_contents" tagType="Anything">
                  <description>
@@ -228,6 +240,23 @@ except:
                           <expectedTag name="request_header_referer_contents">http://www.example.com/start.html</expectedTag>
                           <expectedTag name="useragent">Mozilla/4.08 [en] (Win98; I ;Nav)</expectedTag>
                           <expectedTag name="url_path">/apache_pb.gif</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="taxonomy">web server</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>62.210.161.232 - - [25/Apr/2012:14:02:38 +0200] "GET /favicon.ico HTTP/1.1" 200 - "https://updates.wallix.com/" "Opera/9.80 (Windows NT 6.1; WOW64; U; en) Presto/2.10.229 Version/11.62"</text>
+                     <expectedTags>
+                          <expectedTag name="source_ip">62.210.161.232</expectedTag>
+                          <expectedTag name="source_logname">-</expectedTag>
+                          <expectedTag name="user">-</expectedTag>
+                          <expectedTag name="request">GET /favicon.ico HTTP/1.1</expectedTag>
+                          <expectedTag name="status">200</expectedTag>
+                          <expectedTag name="len">0</expectedTag>
+                          <expectedTag name="program">apache</expectedTag>
+                          <expectedTag name="request_header_referer_contents">https://updates.wallix.com/</expectedTag>
+                          <expectedTag name="useragent">Opera/9.80 (Windows NT 6.1; WOW64; U; en) Presto/2.10.229 Version/11.62</expectedTag>
+                          <expectedTag name="url_path">/favicon.ico</expectedTag>
                           <expectedTag name="method">GET</expectedTag>
                           <expectedTag name="taxonomy">web server</expectedTag>
                      </expectedTags>
