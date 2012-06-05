@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="OpenLDAP"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="body"
+            taxonomy="access control">
+    <description>
+        <localized_desc language="en">This normalizer parses messages issued by the openLDAP server. Debugging messages are not supported. The messages were obtained from the analysis of openLDAP's source code, as of commit 243a2316d3ffc889da301d021fe0b8bc097ee634.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages émis par le serveur openLDAP. Les messages de debug ne sont pas supportés. Les messages sont tirés de l'analyse du code source d'openLDAP tel qu'il se présentait au moment du commit 243a2316d3ffc889da301d021fe0b8bc097ee634.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="txn" type="basestring">
+            <description>
+                <localized_desc language="en">a transaction message</localized_desc>
+                <localized_desc language="fr">message de transaction</localized_desc>
+            </description>
+            <regexp>TXN START|TXN END</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decodeAuthMethod">
+methods = {0: 'None',
+128: 'Simple',
+129: 'KerberosV4.1',
+130: 'KerberosV4.2',
+163: 'SASL',
+255: 'KerberosV4'}
+if int(value) in methods.keys():
+    log["mechanism"] = methods[int(value)]</callback>
+        <callback name="decodeResult">
+results = {-18: 'API - connecting',
+-17: 'API - referral limit exceeded',
+-16: 'API - client loop',
+-15: 'API - more results to return',
+-14: 'API - no results returned',
+-13: 'API - control not found',
+-12: 'API - not supported',
+-11: 'API - connect error',
+-10: 'API - no memory',
+-9: 'API - parameter error',
+-8: 'API - user cancelled',
+-7: 'API - filter error',
+-6: 'API - auth unknown',
+-5: 'API - timeout',
+-4: 'API - decoding error',
+-3: 'API - encoding error',
+-2: 'API - local error',
+-1: 'API - server down',
+0: 'Success',
+1: 'Operations Error',
+2: 'Protocol Error',
+3: 'Time limit exceeded',
+4: 'Size limit exceeded',
+5: 'Compare false',
+6: 'Compare true',
+7: 'Authentication method not supported',
+8: 'Strong authentication required',
+9: 'Partial results',
+10: 'Referral',
+11: 'Admin limit exceeded',
+12: 'Unavailable critical extension',
+13: 'Confidentiality required',
+14: 'SASL Bind in progress',
+16: 'Attribute error - no such attribute',
+17: 'Attribute error - undefined type',
+18: 'Attribute error - inappropriate matching',
+19: 'Attribute error - constraint violation',
+20: 'Attribute error - type or value exists',
+21: 'Attribute error - invalid syntax',
+32: 'Name error - no such object',
+33: 'Name error - alias problem',
+34: 'Name error - invalid DN syntax',
+35: 'Name error - is leaf',
+36: 'Name error - alias deref problem',
+47: 'Security error - X proxy authz failure',
+48: 'Security error - inappropriate authentication',
+49: 'Security error - invalid credentials',
+50: 'Security error - insufficient access',
+51: 'Service error - busy',
+52: 'Service error - unavailable',
+53: 'Service error - unwilling to perform',
+54: 'Service error - loop detected',
+64: 'Update error - naming violation',
+65: 'Update error - object class violation',
+66: 'Update error - not allowed on non-leaf',
+67: 'Update error - not allowed on RDN',
+68: 'Update error - already exists',
+69: 'Update error - no object class mods',
+70: 'Update error - results too large',
+71: 'Update error - affects multiple DSAs',
+76: 'VLV error',
+80: 'Other',
+118: 'Cancelled',
+119: 'No such operation',
+120: 'Too late',
+121: 'Cannot cancel',
+122: 'Assertion failed',
+123: 'Proxied authorization denied',
+4096: 'Sync refresh required',
+16654: 'X error - no operation ',
+16656: 'Chaining behavior - no referrals found',
+16657: 'Chaining behavior - cannot chain ',
+16658: 'Distributed procedures - invalid reference',
+16672: 'Transaction - specify okay',
+16673: 'Transaction - invalid ID'}
+if int(value) in results.keys():
+    log["status"]  = results[int(value)]</callback>
+        <callback name="decodeTag">
+tags = {97: 'Bind',
+100: 'Search',
+101: 'Search result',
+103: 'Modify',
+105: 'Add',
+107: 'Delete',
+109: 'Modify DN',
+111: 'Compare',
+115: 'Search reference',
+120: 'Extended operation',
+121: 'Intermediate result'}
+if int(value) in tags.keys():
+    log["response_type"] = tags[int(value)]</callback>
+        <callback name="decodeBindUser">
+if value.lower().startswith('dn="'):
+    log['user'] = value[4:-1]
+else:
+    log['user'] = value</callback>
+        <callback name="decodeExtraParams">
+for param in value.split(" "):
+    nameval = param.split("=", 1)
+    if len(nameval) == 2:
+        name, val = nameval
+        if name == "scope":
+            log["scope"] = {0 : "base", 1 : "one-level", 2 : "subtree"}.get(int(val), val)
+            log["scope_code"] = val
+        else:
+            log[name] = val
+</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="openldap-01-proxyold">
+            <description>
+                <localized_desc language="en">this message is issued when the obsolete proxyAuthz control is used, and a connection is successful.</localized_desc>
+                <localized_desc language="fr">ce message est émis quand un mode de contrôle proxyAuthz obsolète est utilisé, et que la connexion a réussi.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID PROXYOLD dn="AUTHZ_DN"</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="authz_distinguished_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the authoritative distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distinctif de l'authorité</localized_desc>
+                    </description>
+                    <substitute>AUTHZ_DN</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">PROXYOLD</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-02-abandon">
+            <description>
+                <localized_desc language="en">This message is issued when a previous request is aborted.</localized_desc>
+                <localized_desc language="fr">Ce message est émis à l'abandon d'une requête précédente.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID ABANDON msg=MSG_ID</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="message_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message ID of the aborted query</localized_desc>
+                        <localized_desc language="fr">le numéro de message de la requête abandonnée</localized_desc>
+                    </description>
+                    <substitute>MSG_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">ABANDON</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-04-dnssrv-bind">
+            <description>
+                <localized_desc language="en">This message is issued when a binding operation occurs related to a DNSSRV backend.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'une opération de "binding" a lieu en relation avec un service DNSSRV.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID DNSSRV BIND dn="DISTINGUISHED_NAME" provided cleartext passwd</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the distinguished name used for the binding operation</localized_desc>
+                        <localized_desc language="fr">le nom distinctif utilisé pour le "binding"</localized_desc>
+                    </description>
+                    <substitute>DISTINGUISHED_NAME</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">DNSSRV BIND</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-05-dnssrv">
+            <description>
+                <localized_desc language="en">This message is issued when DNSSRV backend returns a response with the URL of an authoritative LDAP server for the given request.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'un service DNSSRV renvoie l'URL du serveur LDAP faisant authorité pour la requête.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID DNSSRV p=PROTOCOL dn="DISTINGUISHED_NAME" url="RESPONSE_URL"</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="protocol" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the protocol used to contact the authoritative directory</localized_desc>
+                        <localized_desc language="fr">le protocole utilisé pour contacter l'annuaire faisant authorité</localized_desc>
+                    </description>
+                    <substitute>PROTOCOL</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the distinguished name for which an authoritative LDAP server is needed</localized_desc>
+                        <localized_desc language="fr">le nom distinctif pour lequel un serveur LDAP faisant authorité est recherché</localized_desc>
+                    </description>
+                    <substitute>DISTINGUISHED_NAME</substitute>
+                </tag>
+                <tag name="url" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the authoritative LDAP server's URL</localized_desc>
+                        <localized_desc language="fr">l'URL du serveur LDAP faisant authorité</localized_desc>
+                    </description>
+                    <substitute>RESPONSE_URL</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">DNSSRV</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-06-whoami">
+            <description>
+                <localized_desc language="en">This message is issued when a WHOAMI command occurs.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'une commande WHOAMI est exécutée.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID WHOAMI</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">WHOAMI</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-07-chainedrequest">
+            <description>
+                <localized_desc language="en">This message is issued when a chained request occurs.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'une requête enchaînée a lieu.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID CHAINEDREQUEST</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">CHAINEDREQUEST</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-10-cancel">
+            <description>
+                <localized_desc language="en">This message is issued when an extended operation is cancelled.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'une opération étendue est annulée.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID CANCEL msg=MSG_ID</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="message_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message ID of the cancelled operation</localized_desc>
+                        <localized_desc language="fr">le numéro de message de l'opération annulée</localized_desc>
+                    </description>
+                    <substitute>MSG_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">CANCEL</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-13-tls-accept">
+            <description>
+                <localized_desc language="en">This message is issued when a TLS connection starts.</localized_desc>
+                <localized_desc language="fr">Ce message est émis à l'ouverture d'une connexion TLS.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID fd=SOCKET_FILE_DESCRIPTOR TLS established tls_ssf=TLS_SSF_CODE ssf=BASIC_SSF_CODE</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="socket_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the socket file descriptor ID</localized_desc>
+                        <localized_desc language="fr">le numéro du descripteur de fichier associé à la connexion</localized_desc>
+                    </description>
+                    <substitute>SOCKET_FILE_DESCRIPTOR</substitute>
+                </tag>
+                <tag name="tls_security_strength_factor" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the TLS security strength factor</localized_desc>
+                        <localized_desc language="fr">le facteur de niveau de sécurité associé à la connexion TLS</localized_desc>
+                    </description>
+                    <substitute>TLS_SSF_CODE</substitute>
+                </tag>
+                <tag name="security_strength_factor" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the security strength factor</localized_desc>
+                        <localized_desc language="fr">le facteur de niveau de sécurité associé à la connexion</localized_desc>
+                    </description>
+                    <substitute>BASIC_SSF_CODE</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">ACCEPT TLS</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-14-udp-accept">
+            <description>
+                <localized_desc language="en">This message is issued when a UDP request is accepted.</localized_desc>
+                <localized_desc language="fr">Ce message est émis à l'acceptation d'une requête UDP.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID UDP request from PEER_NAME \(SOCKET_NAME\) accepted.</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the peer emitting the request</localized_desc>
+                        <localized_desc language="fr">l'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>PEER_NAME</substitute>
+                </tag>
+                <tag name="socket_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the name of the socket used for the request</localized_desc>
+                        <localized_desc language="fr">l'identifiant de "socket" pour la requête</localized_desc>
+                    </description>
+                    <substitute>SOCKET_NAME</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">ACCEPT UDP</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-15-sasl-bind">
+            <description>
+                <localized_desc language="en">This message is issued when a TLS connection starts.</localized_desc>
+                <localized_desc language="fr">Ce message est émis à l'ouverture d'une connexion TLS.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID BIND dn="DISTINGUISHED_NAME" mech=AUTH_MECH sasl_ssf=SASL_SSF_CODE ssf=BASIC_SSF_CODE</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="mechanism" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the authentication mechanism</localized_desc>
+                        <localized_desc language="fr">le mécanisme d'authentification</localized_desc>
+                    </description>
+                    <substitute>AUTH_MECH</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user requesting the binding</localized_desc>
+                        <localized_desc language="fr">le nom distinctif à l'origine de la demande de binding</localized_desc>
+                    </description>
+                    <substitute>DISTINGUISHED_NAME</substitute>
+                    <callbacks>
+                        <callback>decodeBindUser</callback>
+                    </callbacks>
+                </tag>
+                <tag name="security_strength_factor" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the security strength factor, which indicates the relative strength of protection. A SSF of zero (0) indicates no protections are in place. A SSF of one (1) indicates integrity protections are in place. A SSF greater than one (>1) roughly correlates to the effective encryption key length. For example, DES is 56, 3DES is 112, and AES 128, 192, or 256</localized_desc>
+                        <localized_desc language="fr">le facteur de force de sécurité, qui indique la force relative de la protection. Un facteur de 0 indique qu'aucune protection n'est en place. Un facteur de 1 indique qu'une protection d'intégrité est en place. Un facteur supérieur à 1 correspond à peu près à la taille effective de la clé de cryptage utilisée. Par exemple, DES vaut 56, 3DES 112, et AES vaut 128, 192 ou 256</localized_desc>
+                    </description>
+                    <substitute>BASIC_SSF_CODE</substitute>
+                </tag>
+                <tag name="sasl_security_strength_factor" tagType="Anything">
+                    <description>
+                    <localized_desc language="en">the security strength factor for SASL</localized_desc>
+                        <localized_desc language="fr">le facteur de force de sécurité de l'implémentation SASL</localized_desc>
+                    </description>
+                    <substitute>SASL_SSF_CODE</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">BIND SASL</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-16-proxyauthz">
+            <description>
+                <localized_desc language="en">this message is issued when a proxified authorization is used.</localized_desc>
+                <localized_desc language="fr">ce message est émis quand une autorisation par serveur tiers est utilisée.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID PROXYAUTHZ dn="DISTINGUISHED_NAME"</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the authoritative distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distinctif de l'authorité</localized_desc>
+                    </description>
+                    <substitute>DISTINGUISHED_NAME</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">PROXYAUTHZ</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-20-ext">
+            <description>
+                <localized_desc language="en">This message is issued for extended operations.</localized_desc>
+                <localized_desc language="fr">Ce message est émis par les opérations étendues.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID EXT oid=OBJECT_ID</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="oid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the extended operation's OID</localized_desc>
+                        <localized_desc language="fr">l'OID de l'opération étendue</localized_desc>
+                    </description>
+                    <substitute>OBJECT_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">EXT</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-23-passmod">
+            <description>
+                <localized_desc language="en">This message is issued when a password is modified.</localized_desc>
+                <localized_desc language="fr">Ce message est émis à la modification d'un mot de passe.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID PASSMOD(?: id="PASSMOD_ID")?(?: old)?(?: new)?</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="passmod_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">unknown</localized_desc>
+                        <localized_desc language="fr">inconnu</localized_desc>
+                    </description>
+                    <substitute>PASSMOD_ID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">PASSMOD</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-27-interm">
+            <description>
+                <localized_desc language="en">This message is issued by intermediate queries.</localized_desc>
+                <localized_desc language="fr">Ce message est émis par une requête intermédiaire.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID INTERM oid=RESPONSE_OID</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="oid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the request's OID</localized_desc>
+                        <localized_desc language="fr">l'OID de requête</localized_desc>
+                    </description>
+                    <substitute>RESPONSE_OID</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">INTERM</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-28-entry">
+            <description>
+                <localized_desc language="en">Undocumented.</localized_desc>
+                <localized_desc language="fr">Non documenté.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID ENTRY dn="DISTINGUISHED_NAME"</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+               <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distinctif</localized_desc>
+                    </description>
+                    <substitute>DISTINGUISHED_NAME</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">ENTRY</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-29-ref">
+            <description>
+                <localized_desc language="en">Undocumented.</localized_desc>
+                <localized_desc language="fr">Non documenté.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID REF (?:#REF_NUMBER )?"REFERENCE"</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+               <tag name="referral_number" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the referral number</localized_desc>
+                        <localized_desc language="fr">le numéro de référence</localized_desc>
+                    </description>
+                    <substitute>REF_NUMBER</substitute>
+                </tag>
+                <tag name="reference" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the reference</localized_desc>
+                        <localized_desc language="fr">la référence</localized_desc>
+                    </description>
+                    <substitute>REFERENCE</substitute>
+                </tag>
+            </tags>
+            <commonTags>
+                <commonTag name="action">REF</commonTag>
+            </commonTags>
+        </pattern>
+        <pattern name="openldap-34-txn">
+            <description>
+                <localized_desc language="en">This message is issued when a transaction starts or stops.</localized_desc>
+                <localized_desc language="fr">Ce message est émis lorsqu'une transaction débute ou prend fin.</localized_desc>
+            </description>
+            <text>conn=CONNECTION_ID op=OPERATION_ID TXN_STATE</text>
+            <tags>
+                <tag name="connection_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the connection ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session</localized_desc>
+                    </description>
+                    <substitute>CONNECTION_ID</substitute>
+                </tag>
+              <tag name="operation_id" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the operation ID</localized_desc>
+                        <localized_desc language="fr">le numéro d'opération au sein de la session</localized_desc>
+                    </description>
+                    <substitute>OPERATION_ID</substitute>
+                </tag>
+                <tag name="action" tagType="txn">
+                    <description>
+                        <localized_desc language="en">the transaction status</localized_desc>
+                        <localized_desc language="fr">le statut de la transaction</localized_desc>
+                    </description>
+                    <substitute>TXN_STATE</substitute>
+                </tag>
+            </tags>
+        </pattern>
+<!--        <pattern name="MyNormalizer-001">
+            <description>
+                <localized_desc language="en"></localized_desc>
+                <localized_desc language="fr"></localized_desc>
+            </description>
+            <text></text>
+            <tags>
+                <tag name="myTag" tagType="myCustomTagType">
+                    <description>
+                        <localized_desc language="en"></localized_desc>
+                        <localized_desc language="fr"></localized_desc>
+                    </description>
+                    <substitute></substitute>
+                    <callbacks>
+                        <callback></callback>
+                    </callbacks>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text></text>
+                     <expectedTags>
+                          <expectedTag name="myTag"></expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern> -->
+    </patterns>
+</normalizer>
+
