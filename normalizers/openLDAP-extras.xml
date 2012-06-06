@@ -25,7 +25,7 @@
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
-<normalizer name="OpenLDAP"
+<normalizer name="OpenLDAP-extras"
             version="0.99"
             unicode="yes"
             ignorecase="yes"
