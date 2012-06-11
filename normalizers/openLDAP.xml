@@ -25,7 +25,7 @@
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
-<normalizer name="OpenLDAP"
+<normalizer name="openLDAP"
             version="0.99"
             unicode="yes"
             ignorecase="yes"
@@ -200,6 +200,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">ADD</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1001 op=2 ADD dn="uid=toto,ou=people,dc=logbox,dc=test"</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1001</expectedTag>
+                          <expectedTag name="operation_id">2</expectedTag>
+                          <expectedTag name="user">uid=toto,ou=people,dc=logbox,dc=test</expectedTag>
+                          <expectedTag name="action">ADD</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-08-bind-mech">
             <description>
@@ -250,6 +261,19 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">BIND</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1011 op=0 BIND dn="cn=admin,dc=logbox,dc=test" mech=SIMPLE ssf=0</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1011</expectedTag>
+                          <expectedTag name="operation_id">0</expectedTag>
+                          <expectedTag name="user">cn=admin,dc=logbox,dc=test</expectedTag>
+                          <expectedTag name="action">BIND</expectedTag>
+                          <expectedTag name="mechanism">SIMPLE</expectedTag>
+                          <expectedTag name="security_strength_factor">0</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-09-bind-method">
             <description>
@@ -293,8 +317,21 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">BIND</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1011 op=0 BIND dn="cn=admin,dc=logbox,dc=test" method=128</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1011</expectedTag>
+                          <expectedTag name="operation_id">0</expectedTag>
+                          <expectedTag name="user">cn=admin,dc=logbox,dc=test</expectedTag>
+                          <expectedTag name="action">BIND</expectedTag>
+                          <expectedTag name="method">128</expectedTag>
+                          <expectedTag name="mechanism">Simple</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
-        <pattern name="openldap-11-cmp">
+        <pattern name="opsecurity_streenldap-11-cmp">
             <description>
                 <localized_desc language="en">This message is issued when a compare (CMP) request occurs. The request tests whether a named entry contains a given attribute value or not.</localized_desc>
                 <localized_desc language="fr">Ce message est émis lorsqu'une requête de comparaison (CMP) a lieu. La requête permet de tester si une entrée de l'annuaire contient une certaine valeur d'attribut.</localized_desc>
@@ -366,6 +403,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">CLOSE</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1012 fd=14 closed (connection lost)</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1012</expectedTag>
+                          <expectedTag name="socket_id">14</expectedTag>
+                          <expectedTag name="action">CLOSE</expectedTag>
+                          <expectedTag name="reason">connection lost</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-17-access-denied">
             <description>
@@ -453,6 +501,20 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">ACCEPT</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1014 fd=14 ACCEPT from IP=127.0.0.1:39452 (IP=0.0.0.0:389)</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1014</expectedTag>
+                          <expectedTag name="socket_id">14</expectedTag>
+                          <expectedTag name="action">ACCEPT</expectedTag>
+                          <expectedTag name="source_ip">127.0.0.1</expectedTag>
+                          <expectedTag name="source_port">39452</expectedTag>
+                          <expectedTag name="local_ip">0.0.0.0</expectedTag>
+                          <expectedTag name="local_port">389</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-19-delete">
             <description>
@@ -486,6 +548,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">DEL</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1032 op=1 DEL dn="cn=toto,dc=logbox,dc=test"</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1032</expectedTag>
+                          <expectedTag name="operation_id">1</expectedTag>
+                          <expectedTag name="action">DEL</expectedTag>
+                          <expectedTag name="user">cn=toto,dc=logbox,dc=test</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-21-mod-dn">
             <description>
@@ -519,6 +592,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">MOD</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1018 op=1 MOD dn="cn=titi,ou=people,dc=logbox,dc=test"</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1018</expectedTag>
+                          <expectedTag name="operation_id">1</expectedTag>
+                          <expectedTag name="action">MOD</expectedTag>
+                          <expectedTag name="user">cn=titi,ou=people,dc=logbox,dc=test</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-22-mod-attr">
             <description>
@@ -552,6 +636,26 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">MOD</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1018 op=1 MOD attr=homeDirectory</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1018</expectedTag>
+                          <expectedTag name="operation_id">1</expectedTag>
+                          <expectedTag name="action">MOD</expectedTag>
+                          <expectedTag name="attributes">homeDirectory</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>conn=1000 op=2 MOD attr=olcDbIndex olcDbIndex olcDbIndex olcDbIndex</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1000</expectedTag>
+                          <expectedTag name="operation_id">2</expectedTag>
+                          <expectedTag name="action">MOD</expectedTag>
+                          <expectedTag name="attributes">olcDbIndex olcDbIndex olcDbIndex olcDbIndex</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-24-disconnect">
             <description>
@@ -665,6 +769,34 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">SEARCH RESULT</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1003 op=1 SEARCH RESULT tag=101 err=32 nentries=0 text=</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1003</expectedTag>
+                          <expectedTag name="operation_id">1</expectedTag>
+                          <expectedTag name="action">SEARCH RESULT</expectedTag>
+                          <expectedTag name="tag_code">101</expectedTag>
+                          <expectedTag name="error_code">32</expectedTag>
+                          <expectedTag name="entries">0</expectedTag>
+                          <expectedTag name="response_type">Search result</expectedTag>
+                          <expectedTag name="status">Name error - no such object</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                     <text>conn=1003 op=4 SEARCH RESULT tag=101 err=0 nentries=1 text=</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1003</expectedTag>
+                          <expectedTag name="operation_id">4</expectedTag>
+                          <expectedTag name="action">SEARCH RESULT</expectedTag>
+                          <expectedTag name="tag_code">101</expectedTag>
+                          <expectedTag name="error_code">0</expectedTag>
+                          <expectedTag name="entries">1</expectedTag>
+                          <expectedTag name="response_type">Search result</expectedTag>
+                          <expectedTag name="status">Success</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-26-result">
             <description>
@@ -725,6 +857,20 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">RESULT</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1004 op=0 RESULT tag=97 err=0 text=</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1004</expectedTag>
+                          <expectedTag name="operation_id">0</expectedTag>
+                          <expectedTag name="action">RESULT</expectedTag>
+                          <expectedTag name="tag_code">97</expectedTag>
+                          <expectedTag name="error_code">0</expectedTag>
+                          <expectedTag name="response_type">Bind</expectedTag>
+                          <expectedTag name="status">Success</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-30-bind-sasl">
             <description>
@@ -765,6 +911,18 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">BIND SASL</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1018 op=0 BIND authcid="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" authzid="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1018</expectedTag>
+                          <expectedTag name="operation_id">0</expectedTag>
+                          <expectedTag name="action">BIND SASL</expectedTag>
+                          <expectedTag name="authcid">gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth</expectedTag>
+                          <expectedTag name="user">gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-31-search-filter">
             <description>
@@ -815,6 +973,21 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">SRCH</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1019 op=1 SRCH base="dc=logbox,dc=test" scope=2 deref=0 filter="(uid=titi)"</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1019</expectedTag>
+                          <expectedTag name="operation_id">1</expectedTag>
+                          <expectedTag name="action">SRCH</expectedTag>
+                          <expectedTag name="base_dn">dc=logbox,dc=test</expectedTag>
+                          <expectedTag name="scope_code">2</expectedTag>
+                          <expectedTag name="scope">subtree</expectedTag>
+                          <expectedTag name="deref">0</expectedTag>
+                          <expectedTag name="filter">(uid=titi)</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-32-search-attr">
             <description>
@@ -848,6 +1021,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">SRCH</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>conn=1030 op=0 SRCH attr=supportedSASLMechanisms</text>
+                     <expectedTags>
+                          <expectedTag name="connection_id">1030</expectedTag>
+                          <expectedTag name="operation_id">0</expectedTag>
+                          <expectedTag name="action">SRCH</expectedTag>
+                          <expectedTag name="attributes">supportedSASLMechanisms</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="openldap-33-start-tls">
             <description>
@@ -929,34 +1113,17 @@ for param in value.split(" "):
             <commonTags>
                 <commonTag name="action">UNBIND</commonTag>
             </commonTags>
-        </pattern>
-<!--        <pattern name="MyNormalizer-001">
-            <description>
-                <localized_desc language="en"></localized_desc>
-                <localized_desc language="fr"></localized_desc>
-            </description>
-            <text></text>
-            <tags>
-                <tag name="myTag" tagType="myCustomTagType">
-                    <description>
-                        <localized_desc language="en"></localized_desc>
-                        <localized_desc language="fr"></localized_desc>
-                    </description>
-                    <substitute></substitute>
-                    <callbacks>
-                        <callback></callback>
-                    </callbacks>
-                </tag>
-            </tags>
             <examples>
                 <example>
-                     <text></text>
+                     <text>conn=1016 op=2 UNBIND</text>
                      <expectedTags>
-                          <expectedTag name="myTag"></expectedTag>
+                          <expectedTag name="connection_id">1016</expectedTag>
+                          <expectedTag name="operation_id">2</expectedTag>
+                          <expectedTag name="action">UNBIND</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
-        </pattern> -->
+        </pattern>
     </patterns>
 </normalizer>
 
