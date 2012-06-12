@@ -143,6 +143,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_031_openLDAP(self):
         self.normalize_samples('openLDAP.xml', 'openLDAP', 0.99)
 
+    def test_normalize_samples_031_openLDAP_extras(self):
+        self.normalize_samples('openLDAP-extras.xml', 'openLDAP-extras', 0.99)
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']

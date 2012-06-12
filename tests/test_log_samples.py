@@ -898,5 +898,44 @@ class Test(unittest.TestCase):
                 'outbound_int': 'inside',
                 'dest_ip': '192.168.8.12'})
 
+    def test_openLDAP(self):
+        """Testing openLDAP logs"""
+        self.aS("""Jun 12 11:18:47 openLDAP slapd[870]: conn=1007 op=0 RESULT tag=97 err=53 text=unauthenticated bind (DN with no password) disallowed""",
+               {'program': 'slapd',
+                'source': 'openLDAP',
+                'connection_id' : '1007',
+                'operation_id' : '0',
+                'action' : 'RESULT',
+                'tag_code' : '97',
+                'error_code': '53',
+                'response_type' : 'Bind',
+                'status' : 'Service error - unwilling to perform',
+                'reason' : 'unauthenticated bind (DN with no password) disallowed',
+                })
+        self.aS('Jun 12 11:14:20 openLDAP slapd[870]: conn=1002 op=0 SRCH base="" scope=0 deref=0 filter="(objectClass=*)"',
+               {'program': 'slapd',
+                'source': 'openLDAP',
+                'connection_id' : '1002',
+                'operation_id' : '0',
+                'action' : 'SRCH',
+                'deref' : '0',
+                'scope_code': '0',
+                'scope' : 'base',
+                'filter' : '(objectClass=*)',
+                })
+        self.aS('Jun 11 15:52:37 openLDAP slapd[1814]: conn=1012 fd=14 ACCEPT from IP=10.10.4.7:39450 (IP=10.10.4.250:389)',
+               {'program': 'slapd',
+                'source': 'openLDAP',
+                'connection_id' : '1012',
+                'socket_id' : '14',
+                'action' : 'ACCEPT',
+                'source_ip' : '10.10.4.7',
+                'source_port': '39450',
+                'local_ip' : '10.10.4.250',
+                'local_port' : '389',
+                })
+        
+
+
 if __name__ == "__main__":
     unittest.main()
