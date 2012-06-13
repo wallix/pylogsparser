@@ -31,7 +31,7 @@
             ignorecase="yes"
             matchtype="match"
             appliedTo="body"
-            taxonomy="access control">
+            taxonomy="directory">
     <description>
         <localized_desc language="en">This normalizer parses messages issued by the openLDAP server. Debugging messages are not supported. The messages were obtained from the analysis of openLDAP's source code, as of commit 243a2316d3ffc889da301d021fe0b8bc097ee634.</localized_desc>
         <localized_desc language="fr">Ce normaliseur analyse les messages émis par le serveur openLDAP. Les messages de debug ne sont pas supportés. Les messages sont tirés de l'analyse du code source d'openLDAP tel qu'il se présentait au moment du commit 243a2316d3ffc889da301d021fe0b8bc097ee634.</localized_desc>
