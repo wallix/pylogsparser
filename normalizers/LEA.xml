@@ -54,7 +54,7 @@ En raison de la nature dynamique de ce format de log, les tags extraits peuvent 
             <description>
         <localized_desc language="en">LEA fields as "key=value", separated by |</localized_desc>
         <localized_desc language="fr">Champs descriptifs au format "clé=valeur", séparés par le caractère |</localized_desc></description>
-            <regexp>(?:[^ =]+=[^|]+|)*[^ =]+=[^|]+</regexp>
+            <regexp>[^ =]+=[^=|]+[|](?:[^ =]+=[^|]+|)*[^ =]+=[^|]+</regexp>
         </tagType>
     </tagTypes>
     <callbacks>
