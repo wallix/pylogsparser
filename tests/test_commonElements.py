@@ -62,10 +62,15 @@ def generic_time_callback_test(instance, cb):
         pattern = pattern.replace(old, new)
     # special cases
     if pattern == "ISO8601":
-        pattern = "%Y-%m-%dT%H:%M:%SZ"      
+        pattern = "%Y-%m-%dT%H:%M:%SZ"
     for d in DATES_TO_TEST:
         if pattern == "EPOCH":
-            value = d.strftime('%s') + ".%i" % (d.microsecond/1000)
+            #value = d.strftime('%s') + ".%i" % (d.microsecond/1000)
+            # Fix for windows strftime('%s'), and python timedelta total_seconds not exists in 2.6
+            td = d - datetime(1970, 1, 1)
+            total_seconds_since_epoch = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+            value = str(total_seconds_since_epoch) + ".%i" % (d.microsecond/1000)
+            #
             expected_result = datetime.utcfromtimestamp(float(value))
         else:
             value = d.strftime(pattern)
