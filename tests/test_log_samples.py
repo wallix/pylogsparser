@@ -159,7 +159,10 @@ class Test(unittest.TestCase):
                  tzinfo = 'Asia/Tokyo')
         # and finally, without the tz info ?
         now = datetime.now() + offset
-        if offset.total_seconds() > 60:
+        total_seconds = (offset.microseconds + (offset.seconds + offset.days * 24 * 3600) * 10**6) / 10**6
+        # New in python 2.7
+        #total_seconds = offset.total_seconds()
+        if total_seconds > 60:
             d = now.replace(microsecond=0, year=now.year-1)
         else:
             d = now.replace(microsecond=0)
@@ -201,7 +204,10 @@ class Test(unittest.TestCase):
                  tzinfo = 'America/Anchorage')
         # and finally, without the tz info ?
         now = datetime.now() + offset
-        if offset.total_seconds() > 60:
+        total_seconds = (offset.microseconds + (offset.seconds + offset.days * 24 * 3600) * 10**6) / 10**6
+        # New in python 2.7
+        #total_seconds = offset.total_seconds()
+        if total_seconds > 60:
             d = now.replace(microsecond=0, year=now.year-1)
         else:
             d = now.replace(microsecond=0)
