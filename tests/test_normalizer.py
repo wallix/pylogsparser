@@ -145,6 +145,9 @@ class TestSample(unittest.TestCase):
 
     def test_normalize_samples_031_openLDAP_extras(self):
         self.normalize_samples('openLDAP-extras.xml', 'openLDAP-extras', 0.99)
+        
+    def test_normalize_samples_032_squidguard(self):
+        self.normalize_samples('squidguard.xml', 'squidguard', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""

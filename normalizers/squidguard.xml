@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="squidguard"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw"
+            taxonomy="web proxy">
+    <description>
+        <localized_desc language="en">This normalizer parses logs from Squid's extension Squidguard, as they are formatted when using the configuration described in Squidguard's manual : see http://www.squidguard.org/Doc/extended.html#blocklog
+This normalizer is based on Squidguard's source code as of version 1.4 .</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite le contenu des logs émis par Squidguard, une extension de Squid, tels qu'ils sont émis quand la configuration décrite dans le manuel de Squidguard est implémentée : voir http://www.squidguard.org/Doc/extended.html#blocklog
+Ce normaliseur est basé sur le code source de Squidguard version 1.4 .</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="SGDate" type="basestring">
+            <description>
+                <localized_desc language="en">the date as it is logged by Squidguard. It might be OS dependent. This is based on a Debian installation</localized_desc>
+                <localized_desc language="fr">la date telle qu'elle est consignée par Squidguard. Le format retenu peut dépendre de l'OS. Ce format est basé sur une installation Debian</localized_desc>
+            </description>
+            <regexp>\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}</regexp>
+        </tagType>
+        <tagType name="HTTPmethod" type="basestring">
+            <description>
+                <localized_desc language="en">one of the HTTP methods defined by W3C</localized_desc>
+                <localized_desc language="fr">une méthode HTTP parmi celles définies par le W3C</localized_desc>
+            </description>
+            <regexp>GET|HEAD|CHECKOUT|SHOWMETHOD|PUT|DELETE|POST|LINK|UNLINK|CHECKIN|TEXTSEARCH|SPACEJUMP|SEARCH</regexp>
+        </tagType>
+<!--        <tagType name="SGCategory" type="basestring">-->
+<!--            <description>-->
+<!--                <localized_desc language="en">the category of the rule, in two parts : ACL source name / target class</localized_desc>-->
+<!--                <localized_desc language="fr">la catégorie de la règle, en deux parties : nom d'ACL / classe de la cible</localized_desc>-->
+<!--            </description>-->
+<!--            <regexp>.+/[^/]+</regexp>-->
+<!--        </tagType>-->
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_category">
+try:
+    acl, target, rewrite = value.split('/')
+    log['category'] = acl + '/' + target
+    log['rewrite'] = rewrite
+except:
+    log['category'] = value</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="squidguard-001">
+            <description>
+                <localized_desc language="en">The generic squidguard log format as defined in squidguard's source code.</localized_desc>
+                <localized_desc language="fr">Le format générique de logging pour squidguard, tel qu'il est défini dans le code source de squidguard.</localized_desc>
+            </description>
+            <text>DATE \[PID\] Request\(CATEGORY\) URL FROM/DOMAIN IDENT METHOD ACTION</text>
+            <tags>
+                <tag name="__date" tagType="SGDate">
+                    <description>
+                        <localized_desc language="en">the date of the logged event</localized_desc>
+                        <localized_desc language="fr">la date de l'événement consigné</localized_desc>
+                    </description>
+                    <substitute>DATE</substitute>
+                    <callbacks>
+                        <callback>YYYY-MM-DD hh:mm:ss</callback>
+                    </callbacks>
+                </tag>
+                <tag name="pid" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">the extended PID</localized_desc>
+                        <localized_desc language="fr">le PID étendu</localized_desc>
+                    </description>
+                    <substitute>PID</substitute>
+                </tag>
+                <tag name="__category" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the category of the event and if relevant, the rewrite rule</localized_desc>
+                        <localized_desc language="fr">la catégorie de l'événement et si c'est pertinent, la règle de réécriture</localized_desc>
+                    </description>
+                    <substitute>CATEGORY</substitute>
+                    <callbacks>
+                        <callback>decode_category</callback>
+                    </callbacks>
+                </tag>
+                <tag name="url" tagType="URL">
+                    <description>
+                        <localized_desc language="en">the URL for which an action is taken</localized_desc>
+                        <localized_desc language="fr">l'URL à l'origine de l'action</localized_desc>
+                    </description>
+                    <substitute>URL</substitute>
+                </tag>
+                <tag name="source_ip" tagType="IP">
+                    <description>
+                        <localized_desc language="en">the IP address of the requestor</localized_desc>
+                        <localized_desc language="fr">l'adresse IP d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>FROM</substitute>
+                </tag>
+                <tag name="source_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">if relevant, the domain of the requestor</localized_desc>
+                        <localized_desc language="fr">si cela a été défini dans la configuration de Squidguard, le domaine d'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>DOMAIN</substitute>
+                </tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">if relevant, the username of the requestor as passed to the proxy</localized_desc>
+                        <localized_desc language="fr">si c'est pertinent, le nom d'utilisateur à l'origine de la requête, tel qu'il a été passé au proxy</localized_desc>
+                    </description>
+                    <substitute>IDENT</substitute>
+                </tag>
+                <tag name="method" tagType="HTTPmethod">
+                    <description>
+                        <localized_desc language="en">the HTTP request verb</localized_desc>
+                        <localized_desc language="fr">la méthode HTTP</localized_desc>
+                    </description>
+                    <substitute>METHOD</substitute>
+                </tag>
+                <tag name="action" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the action taken by Squidguard</localized_desc>
+                        <localized_desc language="fr">l'action appliquée par Squidguard</localized_desc>
+                    </description>
+                    <substitute>ACTION</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2012-10-25 14:13:14 [31277] Request(default/adult/-) http://static.videohub.com/core/core-as3-v5.0.0.swf 10.10.30.17/- - GET REDIRECT</text>
+                     <expectedTags>
+                          <expectedTag name="program">squidguard</expectedTag>
+                          <expectedTag name="pid">31277</expectedTag>
+                          <expectedTag name="category">default/adult</expectedTag>
+                          <expectedTag name="rewrite">-</expectedTag>
+                          <expectedTag name="url">http://static.videohub.com/core/core-as3-v5.0.0.swf</expectedTag>
+                          <expectedTag name="source_ip">10.10.30.17</expectedTag>
+                          <expectedTag name="source_domain">-</expectedTag>
+                          <expectedTag name="user">-</expectedTag>
+                          <expectedTag name="method">GET</expectedTag>
+                          <expectedTag name="action">REDIRECT</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+    <commonTags>
+        <commonTag name="program">squidguard</commonTag>
+    </commonTags>
+</normalizer>
+
