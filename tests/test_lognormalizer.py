@@ -122,7 +122,7 @@ class Test(unittest.TestCase):
         of a normalizer.
         """
         ln = LogNormalizer(self.normalizer_path)
-        source = ln.get_normalizer_source('syslog-0.99')
+        source = ln.get_normalizer_source('syslog-1.0')
         self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'syslog')
 
     def test_008_normalizer_multiple_paths(self):
@@ -140,13 +140,13 @@ class Test(unittest.TestCase):
         source = ln.get_normalizer_source('postfix-0.99')
         self.assertEquals(XMLfromstring(source).getroottree().getroot().get('name'), 'postfix')
         self.assertTrue(ln.get_normalizer_path('postfix-0.99').__contains__(os.path.basename(sdir)))
-        self.assertTrue(ln.get_normalizer_path('syslog-0.99').__contains__(os.path.basename(fdir)))
-        xml_src = ln.get_normalizer_source('syslog-0.99')
+        self.assertTrue(ln.get_normalizer_path('syslog-1.0').__contains__(os.path.basename(fdir)))
+        xml_src = ln.get_normalizer_source('syslog-1.0')
         os.unlink(os.path.join(fdir, 'syslog.xml'))
         ln.reload()
-        self.assertRaises(ValueError, ln.get_normalizer_path, 'syslog-0.99')
+        self.assertRaises(ValueError, ln.get_normalizer_path, 'syslog-1.0')
         ln.update_normalizer(xml_src, dir_path = sdir)
-        self.assertTrue(ln.get_normalizer_path('syslog-0.99').__contains__(os.path.basename(sdir)))
+        self.assertTrue(ln.get_normalizer_path('syslog-1.0').__contains__(os.path.basename(sdir)))
         shutil.rmtree(fdir)
         shutil.rmtree(sdir)
 

@@ -623,35 +623,34 @@ class Test(unittest.TestCase):
 
     def test_Snare(self):
         """Test Snare for Windows log normalization"""
-	self.aS(unicode("""<13> Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	1	System	287	ven. août 26 16:45:45 201	4	Virtual Disk Service	Constantin	N/A	Information	a-zA-Z0-9_	None	 Le service s’est arrêté.	119 """, 'utf8'),
-                {'snare_event_log_type': 'MSWinEventLog',
+	self.aS(unicode("""<13>Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	1	System	287	ven. août 26 16:45:45	201	4	Virtual Disk Service	Constantin	N/A	Information	a-zA-Z0-9_	None	Le service s’est arrêté.	119 """, 'utf8'),
+                {
                  'criticality': '1',
-                 'event_log_source_name': 'System',
+                 'eventlog_source': 'System',
                  'snare_event_counter': '287',
-                 'event_id': '4',
-                 'event_log_expanded_source_name': 'Virtual Disk Service',
+                 'eventlog_id': '4',
+                 'eventlog_name': 'Virtual Disk Service',
                  'user': 'Constantin',
                  'sid_used': 'N/A',
-                 'event_type': 'Information',
+                 'eventlog_type': 'Information',
                  'source_host': 'a-zA-Z0-9_',
-                 'audit_event_category': 'None',
+                 'eventlog_category': 'None',
                  'program' : 'EventLog',
-                 'body': unicode('Le service s’est arrêté.	119 ', 'utf8')})
+                 'eventlog_description': unicode('Le service s’est arrêté.	119 ', 'utf8')})
 
-	self.aS(unicode("""<13> Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01 201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
-                {'snare_event_log_type': 'MSWinEventLog',
-                 'criticality': '0',
-                 'event_log_source_name': 'Security',
+	self.aS(unicode("""<13>Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01	201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
+                { 'criticality': '0',
+                 'eventlog_source': 'Security',
                  'snare_event_counter': '284',
-                 'event_id': '4689',
-                 'event_log_expanded_source_name': 'Microsoft-Windows-Security-Auditing',
+                 'eventlog_id': '4689',
+                 'eventlog_name': 'Microsoft-Windows-Security-Auditing',
                  'user': 'A-ZA-Z0-9_\\clo',
                  'sid_used': 'N/A',
-                 'event_type': 'Success Audit',
+                 'eventlog_type': 'Success Audit',
                  'source_host': 'a-zA-Z0-9_',
-                 'audit_event_category': 'Fin du processus',
+                 'eventlog_category': 'Fin du processus',
                  'program' : "EventLog",
-                 'body': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 ', 'utf8')})
+                 'eventlog_description': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 ', 'utf8')})
 
     def test_vmwareESX4_ESXi4(self):
 	"""Test VMware ESX 4.x and VMware ESXi 4.x log normalization"""

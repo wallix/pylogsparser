@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
 <normalizer name="syslog"
-            version="0.99"
+            version="1.0"
             unicode="yes"
             ignorecase="yes"
             matchtype="match"
@@ -189,6 +189,61 @@ log["severity_code"] = "%d" % severity
      <substitute>BODY</substitute>
     </tag>
    </tags>
+   <examples>
+    <example>
+     <text>&lt;29&gt;Jul 18 08:55:35 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
+     <expectedTags>
+      <expectedTag name="facility">daemon</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">naruto</expectedTag>
+      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="syslog-003-snare-windows-agent">
+   <description>
+    <localized_desc language="en">A syslog line as it is emitted by the Snare Windows agent.</localized_desc>
+    <localized_desc language="fr">Une ligne de log au format Syslog, telle qu'elle est émise par l'agent Snare pour Windows.</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE MSWinEventLog BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDate">
+     <description>
+     <localized_desc language="en">the log's date and time</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>MMM dd hh:mm:ss</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <commonTags>
+    <commonTag name="program">EventLog</commonTag>
+   </commonTags>
    <examples>
     <example>
      <text>&lt;29&gt;Jul 18 08:55:35 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>

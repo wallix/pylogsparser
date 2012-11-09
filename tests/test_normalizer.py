@@ -45,7 +45,7 @@ class TestSample(unittest.TestCase):
         self.assertTrue(normalizer.validate())
 
     def test_normalize_samples_001_syslog(self):
-        self.normalize_samples('syslog.xml', 'syslog', 0.99)
+        self.normalize_samples('syslog.xml', 'syslog', 1.0)
 
     def test_normalize_samples_002_apache(self):
         self.normalize_samples('apache.xml', 'apache', 0.99)
@@ -90,7 +90,7 @@ class TestSample(unittest.TestCase):
         self.normalize_samples('s3.xml', 's3', 0.99)
 
     def test_normalize_samples_016_snare(self):
-        self.normalize_samples('snare.xml', 'snare', 0.99)
+        self.normalize_samples('snare.xml', 'snare', 1.0)
 
     def test_normalize_samples_017_vmware(self):
         self.normalize_samples('VMWare_ESX4-ESXi4.xml', 'VMWare_ESX4-ESXi4', 0.99)

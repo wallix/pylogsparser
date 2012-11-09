@@ -29,18 +29,19 @@
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
 
 <normalizer name="snare"
-	    version="0.99"
+	    version="1.0"
 	    unicode="yes"
 	    ignorecase="yes"
 	    matchtype= "search"
-	    appliedTo= "raw">
+	    appliedTo= "body">
   
   <description>
-    <localized_desc language="en">This normalizer handles event logs sent by Snare agent for Windows.</localized_desc>
-    <localized_desc language="fr">Ce normaliseur analyse les logs envoyés par Snare agent for Windows</localized_desc>
+    <localized_desc language="en">This normalizer handles event logs sent by Snare agent for Windows. The supported version is 4.0.1.2 (Jan 2012)</localized_desc>
+    <localized_desc language="fr">Ce normaliseur analyse les logs envoyés par Snare agent for Windows. La version de l'agent supportée est 4.0.1.2 (Jan 2012)</localized_desc>
   </description>
   <authors>
     <author>clo@wallix.com</author>
+    <author>mhu@wallix.com</author>
   </authors>
   <tagTypes>
     <tagType name="windows_names" type="basestring">
@@ -49,13 +50,6 @@
 	<localized_desc language="fr">Chaîne contenant les caractères autorisés de Windows pour les noms d'ordinateur, utilisateurs etc..</localized_desc>
       </description>
       <regexp>[^\t]+|(?:N/A)</regexp>
-    </tagType>
-    <tagType name="snare_event_log_type" type="basestring">
-      <description>
-	<localized_desc language="en">'MSWinEventLog' for Snare for Windows.</localized_desc>
-	<localized_desc language="fr">'MSWinEventLog' pour Snare for Windows.</localized_desc>
-      </description>
-      <regexp>MSWinEventLog</regexp>
     </tagType>
     <tagType name="criticality" type="integer">
       <description>
@@ -85,7 +79,7 @@
       </description>
       <regexp>Success Audit|Failure Audit|Error|Warning|Information</regexp>
     </tagType>
-    <tagType name="audit_event_category_string" type="basestring">
+    <tagType name="eventlog_category_string" type="basestring">
       <description>
 	<localized_desc language="en">String of the different Windows' audit event category.</localized_desc>
 	<localized_desc language="fr">Chaîne d'une des catégories d'audit event de Windows.</localized_desc>
@@ -112,15 +106,8 @@ log['technet_link'] = url + str(value)
 	<localized_desc language="en">This is the Snare log format.</localized_desc>
 	<localized_desc language="fr">Description du format des logs Snare.</localized_desc>
       </description>
-        <text>SNARE_EVENT_LOG_TYPE\s+CRITICALITY\s+SOURCE_NAME\s+SNARE_EVENT_COUNTER\s+[a-zA-Z]{3}. \w+ [0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{3}\s+EVENT_ID\s+EXPANDED_SOURCENAME\sUSER_NAME\s+SID_TYPE\s+EVENT_LOGTYPE\s+COMPUTER_NAME\s+CATEGORY_STRING\s+DATA_STRING(?:\s+MD5_CHECKSUM)?</text>
+        <text>CRITICALITY\tSOURCE_NAME\tSNARE_EVENT_COUNTER\t[a-zA-Z]{3}. \w+ [0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2}\t[0-9]{3}\tEVENTLOG_ID\tEXPANDED_SOURCENAME\tUSER_NAME\tSID_TYPE\tEVENT_LOGTYPE\tCOMPUTER_NAME\tCATEGORY_STRING\tDATA_STRING(?:\tMD5_CHECKSUM)?</text>
       <tags>
-	<tag name="snare_event_log_type" tagType="snare_event_log_type">
-	  <description>
-	    <localized_desc language="en">'MSWinEventLog' for Snare for Windows.</localized_desc>
-	    <localized_desc language="fr">'MSWinEventLog' pour Snare for Windows.</localized_desc>
-	  </description>
-	  <substitute>SNARE_EVENT_LOG_TYPE</substitute>
-	</tag>
 	<tag name="criticality" tagType="criticality">
 	  <description>
 	    <localized_desc language="en">This is determined by the Alert level given to the objective by the user. (In Snare Agent)</localized_desc>
@@ -128,7 +115,7 @@ log['technet_link'] = url + str(value)
 	  </description>
 	  <substitute>CRITICALITY</substitute>
 	</tag>
-        <tag name="event_log_source_name" tagType="event_log_source">
+        <tag name="eventlog_source" tagType="event_log_source">
 	  <description>
 	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
 	    <localized_desc language="fr">Nom du journal Windows d'où provient l'événement.</localized_desc>
@@ -142,17 +129,17 @@ log['technet_link'] = url + str(value)
 	  </description>
 	  <substitute>SNARE_EVENT_COUNTER</substitute>
 	</tag>
-	<tag name="event_id" tagType="Integer">
+	<tag name="eventlog_id" tagType="Integer">
 	  <description>
 	    <localized_desc language="en">This is the Windows event ID.</localized_desc>
 	    <localized_desc language="fr">ID de l'événement Windows.</localized_desc>
 	  </description>
-	  <substitute>EVENT_ID</substitute>
+	  <substitute>EVENTLOG_ID</substitute>
 	  <callbacks>
 	    <callback>add_technet_link</callback>
 	  </callbacks>
 	</tag>
-	<tag name="event_log_expanded_source_name" tagType="event_log_source">
+	<tag name="eventlog_name" tagType="event_log_source">
 	  <description>
 	    <localized_desc language="en">This is the Windows Event Log from which the event record was derived.</localized_desc>
 	    <localized_desc language="fr">Nom du journal Windows d'où provient l'événement.</localized_desc>
@@ -173,7 +160,7 @@ log['technet_link'] = url + str(value)
 	  </description>
 	  <substitute>SID_TYPE</substitute>
 	</tag>
-	<tag name="event_type" tagType="event_log_type">
+	<tag name="eventlog_type" tagType="event_log_type">
 	  <description>
 	    <localized_desc language="en">This can be any of the following values: 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
 	    <localized_desc language="fr">Peut prendre les valeurs suivantes : 'Success Audit', 'Failure Audit', 'Error', 'Information', 'Warning'.</localized_desc>
@@ -187,17 +174,17 @@ log['technet_link'] = url + str(value)
 	  </description>
 	  <substitute>COMPUTER_NAME</substitute>
 	</tag>
-	<tag name="audit_event_category" tagType="audit_event_category_string">
+	<tag name="eventlog_category" tagType="eventlog_category_string">
 	  <description>
-	    <localized_desc language="en">This is the Windows computer name.</localized_desc>
-	    <localized_desc language="fr">Nom de l'ordinateur.</localized_desc>
+	    <localized_desc language="en">The category of the event log.</localized_desc>
+	    <localized_desc language="fr">La catégorie de l'événement.</localized_desc>
 	  </description>
 	  <substitute>CATEGORY_STRING</substitute>
 	</tag>
-	<tag name="body" tagType="Anything">
+	<tag name="eventlog_description" tagType="Anything">
 	  <description>
-	    <localized_desc language="en">This contains the data string.</localized_desc>
-	    <localized_desc language="fr">Contient la chaîne de données.</localized_desc>
+	    <localized_desc language="en">This contains the description of the event log.</localized_desc>
+	    <localized_desc language="fr">Contient la description détaillée de l'événement.</localized_desc>
 	  </description>
 	  <substitute>DATA_STRING</substitute>
 	</tag>
@@ -211,54 +198,54 @@ log['technet_link'] = url + str(value)
       </tags>
       <examples>
 	<example>
-	  <text>clo-PC	MSWinEventLog	0	Security	191	mer. août 24 14:20:19 201	4688	Microsoft-Windows-Security-Auditing WORKGROUP\CLO-PC$	N/A	Success Audit	clo-PC	Création du processus	 Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133 </text>
+	  <text>0&#9;Security&#9;191&#9;mer. août 24 14:20:19&#9;201&#9;4688&#9;Microsoft-Windows-Security-Auditing&#9;WORKGROUP\CLO-PC$&#9;N/A&#9;Success Audit&#9;clo-PC&#9;Création du processus&#9;Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.&#9;133 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
-            <expectedTag name="criticality">0</expectedTag>
-	    <expectedTag name="event_log_source_name">Security</expectedTag>
-            <expectedTag name="snare_event_counter">191</expectedTag>
-	    <expectedTag name="event_id">4688</expectedTag>
-	    <expectedTag name="event_log_expanded_source_name">Microsoft-Windows-Security-Auditing</expectedTag>
+        <expectedTag name="criticality">0</expectedTag>
+	    <expectedTag name="program">EventLog</expectedTag>
+	    <expectedTag name="eventlog_source">Security</expectedTag>
+        <expectedTag name="snare_event_counter">191</expectedTag>
+	    <expectedTag name="eventlog_id">4688</expectedTag>
+	    <expectedTag name="eventlog_name">Microsoft-Windows-Security-Auditing</expectedTag>
 	    <expectedTag name="user">WORKGROUP\CLO-PC$</expectedTag>
 	    <expectedTag name="sid_used">N/A</expectedTag>
-	    <expectedTag name="event_type">Success Audit</expectedTag>
+	    <expectedTag name="eventlog_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">clo-PC</expectedTag>
-	    <expectedTag name="audit_event_category">Création du processus</expectedTag>
-	    <expectedTag name="body">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.	133 </expectedTag>
+	    <expectedTag name="eventlog_category">Création du processus</expectedTag>
+	    <expectedTag name="eventlog_description">Un nouveau processus a été créé. Sujet : ID de sécurité : S-1-5-18 Nom du compte : CLO-PC$ Domaine du compte : WORKGROUP ID d’ouverture de session : 0x3e7 Informations sur le processus : ID du nouveau processus : 0x654 Nom du nouveau processus : C:\Windows\servicing\TrustedInstaller.exe Type d’élévation du jeton : Type d’élévation de jeton par défaut (1) ID du processus créateur : 0x1c8 Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.&#9;133 </expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
-	  <text>MSWinEventLog	0	Security	313	ven. août 26 15:42:40 201	4689	Microsoft-Windows-Security-Auditing	AUTORITE NT\SERVICE LOCAL	N/A	Success Audit	a-zA-Z0-9	Fin du processus	 Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </text>
+	  <text>0&#9;Security&#9;313&#9;ven. août 26 15:42:40&#9;201&#9;4689&#9;Microsoft-Windows-Security-Auditing&#9;AUTORITE NT\SERVICE LOCAL&#9;N/A&#9;Success Audit&#9;a-zA-Z0-9&#9;Fin du processus&#9;Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0&#9;189 </text>
 	  <expectedTags>
-	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
-            <expectedTag name="criticality">0</expectedTag>
-	    <expectedTag name="event_log_source_name">Security</expectedTag>
-            <expectedTag name="snare_event_counter">313</expectedTag>
-	    <expectedTag name="event_id">4689</expectedTag>
-	    <expectedTag name="event_log_expanded_source_name">Microsoft-Windows-Security-Auditing</expectedTag>
+        <expectedTag name="criticality">0</expectedTag>
+        <expectedTag name="program">EventLog</expectedTag>
+	    <expectedTag name="eventlog_source">Security</expectedTag>
+        <expectedTag name="snare_event_counter">313</expectedTag>
+	    <expectedTag name="eventlog_id">4689</expectedTag>
+	    <expectedTag name="eventlog_name">Microsoft-Windows-Security-Auditing</expectedTag>
 	    <expectedTag name="user">AUTORITE NT\SERVICE LOCAL</expectedTag>
 	    <expectedTag name="sid_used">N/A</expectedTag>
-	    <expectedTag name="event_type">Success Audit</expectedTag>
+	    <expectedTag name="eventlog_type">Success Audit</expectedTag>
 	    <expectedTag name="source_host">a-zA-Z0-9</expectedTag>
-	    <expectedTag name="audit_event_category">Fin du processus</expectedTag>
-	    <expectedTag name="body">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0	189 </expectedTag>
+	    <expectedTag name="eventlog_category">Fin du processus</expectedTag>
+	    <expectedTag name="eventlog_description">Un processus est terminé. Sujet : ID de sécurité : S-1-5-19 Nom du compte : SERVICE LOCAL Domaine du compte : AUTORITE NT ID d’ouverture de session : 0x3e5 Informations sur le processus : ID du processus : 0xdf4 Nom du processus : C:\Windows\System32\taskhost.exe État de fin : 0x0&#9;189 </expectedTag>
 	  </expectedTags>
 	</example>
 	<example>
-	<text>&gt;13&lt;Aug 31 15:42:55 clo-vbox-win-7 MSWinEventLog	1	Security	103	mer. août 31 15:42:54 201	4776	Microsoft-Windows-Security-Auditing	clo	N/A	Failure Audit	clo-vbox-win-7	Validation des informations d’identification	 L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77 </text>
+	<text>1&#9;Security&#9;103&#9;mer. août 31 15:42:54&#9;201&#9;4776&#9;Microsoft-Windows-Security-Auditing&#9;clo&#9;N/A&#9;Failure Audit&#9;clo-vbox-win-7&#9;Validation des informations d’identification&#9;L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e&#9;77 </text>
 	<expectedTags>
-	    <expectedTag name="snare_event_log_type">MSWinEventLog</expectedTag>
 	    <expectedTag name="criticality">1</expectedTag>
-	    <expectedTag name="event_log_source_name">Security</expectedTag>
+	    <expectedTag name="program">EventLog</expectedTag>
+	    <expectedTag name="eventlog_source">Security</expectedTag>
 	    <expectedTag name="snare_event_counter">103</expectedTag>
-	    <expectedTag name="event_id">4776</expectedTag>
-	    <expectedTag name="event_log_expanded_source_name">Microsoft-Windows-Security-Auditing</expectedTag>
+	    <expectedTag name="eventlog_id">4776</expectedTag>
+	    <expectedTag name="eventlog_name">Microsoft-Windows-Security-Auditing</expectedTag>
 	    <expectedTag name="user">clo</expectedTag>
 	    <expectedTag name="sid_used">N/A</expectedTag>
-	    <expectedTag name="event_type">Failure Audit</expectedTag>
+	    <expectedTag name="eventlog_type">Failure Audit</expectedTag>
 	    <expectedTag name="source_host">clo-vbox-win-7</expectedTag>
-	    <expectedTag name="audit_event_category">Validation des informations d’identification</expectedTag>
-	    <expectedTag name="body">L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e	77 </expectedTag>
+	    <expectedTag name="eventlog_category">Validation des informations d’identification</expectedTag>
+	    <expectedTag name="eventlog_description">L’ordinateur a tenté de valider les informations d’identification d’un compte. Package d’authentification : MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 Compte d’ouverture de session : clo Station de travail source : CLO-VBOX-WIN-7 Code d’erreur : 0xc000006e&#9;77 </expectedTag>
 	  </expectedTags>
 	</example>
       </examples>
