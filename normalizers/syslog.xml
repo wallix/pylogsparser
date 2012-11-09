@@ -149,59 +149,7 @@ log["severity_code"] = "%d" % severity
     </example>
    </examples>
   </pattern>
-  <pattern name="syslog-002">
-   <description>
-    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, and no information about program and PID.</localized_desc>
-    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, et pas d'information sur le programme.</localized_desc>
-   </description>
-   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE BODY</text>
-   <tags>
-    <tag name="__priority" tagType="syslogPriority">
-     <description>
-      <localized_desc language="en">the log's priority</localized_desc>
-      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
-     </description>
-     <substitute>PRIORITY</substitute>
-     <callbacks>
-      <callback>decode_priority</callback>
-     </callbacks>
-    </tag>
-    <tag name="date" tagType="syslogDate">
-     <description>
-     <localized_desc language="en">the log's date and time</localized_desc>
-     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
-     <substitute>DATE</substitute>
-     <callbacks>
-      <callback>MMM dd hh:mm:ss</callback>
-     </callbacks>
-    </tag>
-    <tag name="source" tagType="syslogSource">
-     <description>
-     <localized_desc language="en">the log's source</localized_desc>
-     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
-     <substitute>SOURCE</substitute>
-    </tag>
-    <tag name="body" tagType="Anything">
-     <description>
-     <localized_desc language="en">the actual event message</localized_desc>
-     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
-     </description>
-     <substitute>BODY</substitute>
-    </tag>
-   </tags>
-   <examples>
-    <example>
-     <text>&lt;29&gt;Jul 18 08:55:35 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
-     <expectedTags>
-      <expectedTag name="facility">daemon</expectedTag>
-      <expectedTag name="severity">notice</expectedTag>
-      <expectedTag name="source">naruto</expectedTag>
-      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
-     </expectedTags>
-    </example>
-   </examples>
-  </pattern>
-  <pattern name="syslog-003-snare-windows-agent">
+  <pattern name="syslog-002-snare-windows-agent">
    <description>
     <localized_desc language="en">A syslog line as it is emitted by the Snare Windows agent.</localized_desc>
     <localized_desc language="fr">Une ligne de log au format Syslog, telle qu'elle est émise par l'agent Snare pour Windows.</localized_desc>
@@ -244,6 +192,59 @@ log["severity_code"] = "%d" % severity
    <commonTags>
     <commonTag name="program">EventLog</commonTag>
    </commonTags>
+   <examples>
+    <example>
+     <text>&lt;13&gt;Nov  6 17:32:47 w2003en MSWinEventLog 1&#9;Security&#9;418&#9;Tue Nov 06 17:32:41 2012&#9;538&#9;Security&#9;ANONYMOUS LOGON&#9;Well Known Group&#9;Success Audit&#9;W2003EN&#9;Logon/Logoff&#9;User Logoff:     User Name: ANONYMOUS LOGON     Domain: NT AUTHORITY     Logon ID: (0x0,0x6D78D)     Logon Type: 3&#9;291</text>
+     <expectedTags>
+      <expectedTag name="facility">user</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">w2003en</expectedTag>
+      <expectedTag name="program">EventLog</expectedTag>
+      <expectedTag name="body">1&#9;Security&#9;418&#9;Tue Nov 06 17:32:41 2012&#9;538&#9;Security&#9;ANONYMOUS LOGON&#9;Well Known Group&#9;Success Audit&#9;W2003EN&#9;Logon/Logoff&#9;User Logoff:     User Name: ANONYMOUS LOGON     Domain: NT AUTHORITY     Logon ID: (0x0,0x6D78D)     Logon Type: 3&#9;291</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="syslog-003">
+   <description>
+    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, and no information about program and PID.</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, et pas d'information sur le programme.</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDate">
+     <description>
+     <localized_desc language="en">the log's date and time</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>MMM dd hh:mm:ss</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
    <examples>
     <example>
      <text>&lt;29&gt;Jul 18 08:55:35 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
