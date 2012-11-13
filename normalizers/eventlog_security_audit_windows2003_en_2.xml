@@ -38,14 +38,14 @@ The following event IDs are covered:
 * 592 to 595 (processes events),
 <!--* 608 to 612, 671, 768 (Policy change events),-->
 <!--* 624, 627, 632 to 668, 684, 685 (account management events),-->
-<!--* 672 to 683(logon events) -->
+<!--* 672 to 683 (logon events) -->
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
 Les codes d'événements suivants sont normalisés :
 * 592 to 595 (événements de suivi des processus),
 <!--* 608 to 612, 671, 768 (événements de modification de stratégies),-->
 <!--* 624, 627, 632 to 668, 684, 685 (événements de gestion des comptes),-->
-<!--* 672 to 683(événements de connexion) -->
+<!--* 672 to 683 (événements de connexion) -->
 </localized_desc>
     </description>
     <authors>
@@ -150,6 +150,129 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00594">
+            <description>
+                <localized_desc language="en">Object handle duplication</localized_desc>
+                <localized_desc language="fr">Duplication d'un descripteur d'objet</localized_desc>
+            </description>
+            <text>A handle to an object has been duplicated: Source Handle ID: _HANDLEID_ Source Process ID: _PID_ Target Handle ID: _TARGETHANDLEID_ Target Process ID: _TARGETPID_</text>
+            <tags>
+                <tag name="handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The source handle ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du descripteur source</localized_desc>
+                    </description>
+                    <substitute>_HANDLEID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The source process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus source</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="target_handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target handle ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du descripteur cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETHANDLEID_</substitute>
+            	</tag>
+            	<tag name="target_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETPID_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00595">
+            <description>
+                <localized_desc language="en">Indirect access to an object has been granted</localized_desc>
+                <localized_desc language="fr">Accès indirect à un objet accordé</localized_desc>
+            </description>
+            <text>Indirect access to an object has been obtained: Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_ Access Mask: _ACCESSMASK_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="object_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object type</localized_desc>
+                        <localized_desc language="fr">Le type d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJTYPE_</substitute>
+            	</tag>
+            	<tag name="object_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object name</localized_desc>
+                        <localized_desc language="fr">Le nom d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJNAME_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary domain</localized_desc>
+                        <localized_desc language="fr">Le domaine principal</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion principal</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="client_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">L'utilisateur du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="client_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="client_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du client</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="accesses" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The accesses</localized_desc>
+                        <localized_desc language="fr">Les accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSES_</substitute>
+            	</tag>
+            	<tag name="access_mask" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The access mask</localized_desc>
+                        <localized_desc language="fr">Le masque d'accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSMASK_</substitute>
             	</tag>
             </tags>
         </pattern>

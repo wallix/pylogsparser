@@ -521,8 +521,8 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	</tag>
             	<tag name="object_name" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The object server</localized_desc>
-                        <localized_desc language="fr">L'objet serveur</localized_desc>
+                        <localized_desc language="en">The object name</localized_desc>
+                        <localized_desc language="fr">Le nom d'objet</localized_desc>
                     </description>
                     <substitute>_OBJNAME_</substitute>
             	</tag>
@@ -545,7 +545,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                         <localized_desc language="en">The process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus</localized_desc>
                     </description>
-                    <substitute>_OBJNAME_</substitute>
+                    <substitute>_PID_</substitute>
             	</tag>
             	<tag name="file_name" tagType="Anything">
                     <description>
