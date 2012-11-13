@@ -149,6 +149,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_032_squidguard(self):
         self.normalize_samples('squidguard.xml', 'squidguard', 0.99)
 
+	def test_normalize_samples_033_eventlog_security_audit_w2003en(self):
+		self.normalize_samples('eventlog_security_audit_windows2003_en.xml', 'EventLog-Security-Windows2003[EN]', 0.99)
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']
