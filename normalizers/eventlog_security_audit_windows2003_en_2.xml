@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2003[EN]_2"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
+The following event IDs are covered: 
+* 592 to 595 (processes events),
+<!--* 608 to 612, 671, 768 (Policy change events),-->
+<!--* 624, 627, 632 to 668, 684, 685 (account management events),-->
+<!--* 672 to 683(logon events) -->
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
+Les codes d'événements suivants sont normalisés :
+* 592 to 595 (événements de suivi des processus),
+<!--* 608 to 612, 671, 768 (événements de modification de stratégies),-->
+<!--* 624, 627, 632 to 668, 684, 685 (événements de gestion des comptes),-->
+<!--* 672 to 683(événements de connexion) -->
+</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <callbacks>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+    </callbacks>
+    <patterns>
+        <pattern name="eventID-00592">
+            <description>
+                <localized_desc language="en">Process creation</localized_desc>
+                <localized_desc language="fr">Création d'un nouveau processus</localized_desc>
+            </description>
+            <text>A new process has been created: New Process ID: _PID_ Image File Name: _FILENAME_ Creator Process ID: _CPID_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <tags>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+            	<tag name="creator_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The creator process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus d'origine</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00593">
+            <description>
+                <localized_desc language="en">A process has exited</localized_desc>
+                <localized_desc language="fr">Arrêt d'un processus</localized_desc>
+            </description>
+            <text>A process has exited: Process ID: _PID_ Image File Name: _FILENAME_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <tags>
+                <tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+    </patterns>
+</normalizer>
+
