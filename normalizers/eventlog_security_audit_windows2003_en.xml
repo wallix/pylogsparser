@@ -178,12 +178,12 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	</tag>
             </tags>
         </pattern>
-        <pattern name="eventID-00528">
+        <pattern name="eventID-00528-00540">
             <description>
                 <localized_desc language="en">Successful logon</localized_desc>
                 <localized_desc language="fr">Connexion réussie</localized_desc>
             </description>
-            <text>Successful Logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ Logon GUID: _LGUID_ Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
+            <text>Successful (?:Network )?Logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ Logon GUID: _LGUID_ Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -321,7 +321,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 </example>
             </examples>
         </pattern>
-                <pattern name="eventID-00529-00537">
+                <pattern name="eventID-00529_to_00537">
             <description>
                 <localized_desc language="en">Logon Failures</localized_desc>
                 <localized_desc language="fr">Connexions échouées</localized_desc>
@@ -455,28 +455,28 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             </description>
             <text>User Logoff: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_</text>
             <tags>
-                <tag name="user" tagType="Any">
+                <tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The user name</localized_desc>
                         <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
                     </description>
                     <substitute>_USER_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Any">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The domain</localized_desc>
                         <localized_desc language="fr">Le nom de domaine</localized_desc>
                     </description>
                     <substitute>_DOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Any">
+            	<tag name="logon_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The logon ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_LID_</substitute>
             	</tag>
-            	<tag name="logon_type" tagType="Any">
+            	<tag name="logon_type" tagType="Anything">
                     <description>
                         <localized_desc language="en">The logon type</localized_desc>
                         <localized_desc language="fr">Le type de connexion</localized_desc>
@@ -485,6 +485,224 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <callbacks>
                  		<callback>decode_logon_type</callback>
                  	</callbacks>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00560_00563_00565">
+            <description>
+                <localized_desc language="en">Object open</localized_desc>
+                <localized_desc language="fr">Accès accordé à un objet</localized_desc>
+            </description>
+            <text>Object Open(?: for Delete)?: Object Server: _OBJSERVER_ Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Handle ID: _HANDLEID_ Operation ID: {_OPID_} Process ID: _PID_ (?:Image File Name: _FILENAME_)|(?:Process Name: _PROCESSNAME_) Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_ Privileges: _PRIVILEGES_(?: Properties: _PROPERTIES_)?(?: Restricted Sid Count: _SIDCOUNT_)?(?: Access Mask: _ACCESSMASK_)?</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="object_server" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object server</localized_desc>
+                        <localized_desc language="fr">L'objet serveur</localized_desc>
+                    </description>
+                    <substitute>_OBJSERVER_</substitute>
+            	</tag>
+            	<tag name="object_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object type</localized_desc>
+                        <localized_desc language="fr">Le type d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJTYPE_</substitute>
+            	</tag>
+            	<tag name="object_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object server</localized_desc>
+                        <localized_desc language="fr">L'objet serveur</localized_desc>
+                    </description>
+                    <substitute>_OBJNAME_</substitute>
+            	</tag>
+            	<tag name="handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The handle ID</localized_desc>
+                        <localized_desc language="fr">L'identificateur du handle</localized_desc>
+                    </description>
+                    <substitute>_HANDLEID_</substitute>
+            	</tag>
+            	<tag name="operation_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The operation ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant d'opération</localized_desc>
+                    </description>
+                    <substitute>_OPID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus</localized_desc>
+                    </description>
+                    <substitute>_OBJNAME_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary domain</localized_desc>
+                        <localized_desc language="fr">Le domaine principal</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion principal</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="client_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">L'utilisateur du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="client_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="client_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du client</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="accesses" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The accesses</localized_desc>
+                        <localized_desc language="fr">Les accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSES_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="restricted_sid_count" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The restricted SID count</localized_desc>
+                        <localized_desc language="fr">Le nombre de SID restreint</localized_desc>
+                    </description>
+                    <substitute>_SIDCOUNT_</substitute>
+            	</tag>
+            	<tag name="access_mask" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The access mask</localized_desc>
+                        <localized_desc language="fr">Le masque d'accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSMASK_</substitute>
+            	</tag>
+            	<tag name="process_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process name</localized_desc>
+                        <localized_desc language="fr">Le nom du processus</localized_desc>
+                    </description>
+                    <substitute>_PROCESSNAME_</substitute>
+            	</tag>
+            	<tag name="properties" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The properties</localized_desc>
+                        <localized_desc language="fr">Les propriétés</localized_desc>
+                    </description>
+                    <substitute>_PROPERTIES_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Object Open:
+Object Server: Security
+Object Type: Key
+Object Name: \REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Security
+Handle ID: 3240
+Operation ID: {0,112580708}
+Process ID: 768
+Image File Name: C:\WINDOWS\system32\services.exe
+Primary User Name: UserName
+Primary Domain: DomainName
+Primary Logon ID: (0x0,0x3E7)
+Client User Name: UserName
+Client Domain: DomainName
+Client Logon ID: (0x0,0x3E7)
+Accesses: Set key value
+Privileges: -
+Restricted Sid Count: 0</text>
+                     <expectedTags>
+                          <expectedTag name="user">UserName</expectedTag>
+                          <expectedTag name="object_server">Security</expectedTag>
+                          <expectedTag name="logon_id">(0x0,0x3E7)</expectedTag>
+                          <expectedTag name="object_type">Key</expectedTag>
+                          <expectedTag name="object_name">\REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Security</expectedTag>
+                          <expectedTag name="handle_id">3240</expectedTag>
+                          <expectedTag name="operation_id">0,112580708</expectedTag>
+                          <expectedTag name="pid">768</expectedTag>
+                          <expectedTag name="file_name">C:\WINDOWS\system32\services.exe</expectedTag>
+                          <expectedTag name="domain">DomainName</expectedTag>
+                          <expectedTag name="client_user">UserName</expectedTag>
+                          <expectedTag name="client_domain">DomainName</expectedTag>
+                          <expectedTag name="client_logon_id">(0x0,0x3E7)</expectedTag>
+                          <expectedTag name="accesses">Set key value</expectedTag>
+                          <expectedTag name="privileges">-</expectedTag>
+                          <expectedTag name="restricted_sid_count">0</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="eventID-00562_564">
+            <description>
+                <localized_desc language="en">Object handle closed, Object deleted</localized_desc>
+                <localized_desc language="fr">Descripteur d'objet fermé, objet supprimé</localized_desc>
+            </description>
+            <text>(?:Handle Closed)|(?:Object Deleted): Object Server: _OBJSERVER_ Handle ID: _HANDLEID_ Process ID: _PID_ Image File Name: _FILENAME_</text>
+            <tags>
+                <tag name="object_server" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object server</localized_desc>
+                        <localized_desc language="fr">Le serveur d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJSERVER_</substitute>
+            	</tag>
+            	<tag name="handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The handle ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du handle</localized_desc>
+                    </description>
+                    <substitute>_HANDLEID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
             	</tag>
             </tags>
         </pattern>
