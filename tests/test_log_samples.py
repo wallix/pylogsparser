@@ -636,7 +636,8 @@ class Test(unittest.TestCase):
                  'source_host': 'a-zA-Z0-9_',
                  'eventlog_category': 'None',
                  'program' : 'EventLog',
-                 'eventlog_description': unicode('Le service s’est arrêté.	119 ', 'utf8')})
+                 'md5_checksum' : '119',
+                 'eventlog_description': unicode('Le service s’est arrêté.', 'utf8')})
 
 	self.aS(unicode("""<13>Aug 31 15:46:47 a-zA-Z0-9_ MSWinEventLog	0	Security	284	ven. août 26 16:42:01	201	4689	Microsoft-Windows-Security-Auditing	A-ZA-Z0-9_\\clo	N/A	Success Audit	a-zA-Z0-9_	Fin du processus	Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 """, 'utf8'),
                 { 'criticality': '0',
@@ -650,7 +651,8 @@ class Test(unittest.TestCase):
                  'source_host': 'a-zA-Z0-9_',
                  'eventlog_category': 'Fin du processus',
                  'program' : "EventLog",
-                 'eventlog_description': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0	138 ', 'utf8')})
+                 'md5_checksum' : '138',
+                 'eventlog_description': unicode('Un processus est terminé. Sujet : ID de sécurité : S-1-5-21-2423214773-420032381-3839276281-1000 Nom du compte : clo Domaine du compte : A-ZA-Z0-9_ ID d’ouverture de session : 0x21211 Informations sur le processus : ID du processus : 0xb4c Nom du processus : C:\\Windows\\System32\\taskeng.exe État de fin : 0x0', 'utf8')})
 
     def test_vmwareESX4_ESXi4(self):
 	"""Test VMware ESX 4.x and VMware ESXi 4.x log normalization"""
