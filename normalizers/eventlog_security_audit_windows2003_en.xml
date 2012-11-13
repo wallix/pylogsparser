@@ -33,8 +33,26 @@
             appliedTo="eventlog_description"
             taxonomy="access control">
     <description>
-        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.</localized_desc>
-        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.</localized_desc>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
+The following event IDs are covered: 
+* 514 to 518 (system events), 
+* 528 to 540<!--, 672 to 683--> (logon events),
+* 560 to 565 (Object access events),
+* 576 to 578 (privileges use events),
+<!--* 592 to 595 (processes events),-->
+<!--* 608 to 612, 671, 768 (Policy change events),-->
+<!--* 624, 627, 632 to 668, 684, 685 (account management events)-->
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
+Les codes d'événements suivants sont normalisés :
+* 514 to 518 (événements du système), 
+* 528 to 540<!--, 672 to 683--> (événements de connexion),
+* 560 to 565 (événements d'accès aux objets),
+* 576 to 578 (événements d'utilisation des privilèges),
+<!--* 592 to 595 (événements de suivi des processus),-->
+<!--* 608 to 612, 671, 768 (événements de modification de stratégies),-->
+<!--* 624, 627, 632 to 668, 684, 685 (événements de gestion des comptes)-->
+</localized_desc>
     </description>
     <authors>
         <author>mhu@wallix.com</author>
@@ -703,6 +721,194 @@ Restricted Sid Count: 0</text>
                         <localized_desc language="fr">Le nom du fichier image</localized_desc>
                     </description>
                     <substitute>_FILENAME_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00576">
+            <description>
+                <localized_desc language="en">Special privileges assigned at logon</localized_desc>
+                <localized_desc language="fr">Privilèges spéciaux assignés à une nouvelle session</localized_desc>
+            </description>
+            <text>Special privileges assigned to new logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00577">
+            <description>
+                <localized_desc language="en">Privileged service called</localized_desc>
+                <localized_desc language="fr">Appel à une opération privilégiée</localized_desc>
+            </description>
+            <text>Privileged Service Called: Server: _SERVER_ Service: _SERVICE_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
+            <tags>
+                <tag name="server" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The server</localized_desc>
+                        <localized_desc language="fr">Le serveur</localized_desc>
+                    </description>
+                    <substitute>_SERVER_</substitute>
+            	</tag>
+            	<tag name="service" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service</localized_desc>
+                        <localized_desc language="fr">Le service</localized_desc>
+                    </description>
+                    <substitute>_SERVICE_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="client_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="client_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="client_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client  logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion cliente</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+           	</tags>
+        </pattern>
+        <pattern name="eventID-00578">
+            <description>
+            	    <localized_desc language="en">Privileged object operation</localized_desc>
+            	    <localized_desc language="fr">Appel à une opération privilégiée sur un objet</localized_desc>
+            	</description>
+            <text>Privileged object operation: Object Server: _OBJSERVER_ Object Handle: _OBJHANDLE_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
+            <tags>
+                <tag name="object_server" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object server</localized_desc>
+                        <localized_desc language="fr">Le serveur d'objet'</localized_desc>
+                    </description>
+                    <substitute>_OBJSERVER_</substitute>
+            	</tag>
+            	<tag name="object_handle" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object handle</localized_desc>
+                        <localized_desc language="fr">Le handle d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJHANDLE_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="client_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="client_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="client_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client  logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion cliente</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
             	</tag>
             </tags>
         </pattern>
