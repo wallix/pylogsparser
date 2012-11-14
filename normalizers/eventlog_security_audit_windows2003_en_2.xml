@@ -56,6 +56,37 @@ Les codes d'événements suivants sont normalisés :
 decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
 log['method'] = decoder.get(value, 'UNKNOWN')
         </callback>
+        <callback name="decode_user_right">
+decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
+'SeMachineAccountPrivilege' : 'Ability to add workstations to the domain',
+'SeIncreaseQuotaPrivilege' : 'Ability to adjust memory quotas for a process',
+'SeBackupPrivilege' : 'Ability to back up files and directories',
+'SeChangeNotifyPrivilege' : 'Ability to bypass traverse checking',
+'SeSystemtimePrivilege' : 'Ability to change the system time',
+'SeCreatePagefilePrivilege' : 'Ability to create a pagefile',
+'SeCreateTokenPrivilege' : 'Ability to create a token object',
+'SeCreatePermanentPrivilege' : 'Ability to create permanent shared objects',
+'SeDebugPrivilege' : 'Ability to debug programs',
+'SeEnableDelegationPrivilege' : 'Ability to delegate trust on computers and user accounts',
+'SeRemoteShutdownPrivilege' : 'Ability to shutdown a system remotely',
+'SeAuditPrivilege' : 'Ability to generate security audits',
+'SeIncreaseBasePriorityPrivilege' : 'Ability to increase scheduling priority',
+'SeLoadDriverPrivilege' : 'Ability to load or unload device drivers',
+'SeLockMemoryPrivilege' : 'Ability to lock pages in memory',
+'SeSecurityPrivilege' : 'Ability to manage the security event log',
+'SeSystemEnvironmentPrivilege' : 'Ability to modify firmware environment values',
+'SeManageVolumePrivilege' : 'Ability to perform volume maintenance tasks',
+'SeProfileSingleProcessPrivilege' : 'Ability to profile a single process',
+'SeSystemProfilePrivilege' : 'Ability to profile the system performances',
+'SeUndockPrivilege' : 'Ability to remove the computer from its docking station',
+'SeAssignPrimaryTokenPrivilege' : 'Ability to replace a process level token',
+'SeRestorePrivilege' : 'Ability to restore files and directories',
+'SeShutdownPrivilege' : 'Ability to shut the system down',
+'SeSyncAgentPrivilege' : 'Ability to synchronize directory service data',
+'SeTakeOwnershipPrivilege' : 'Ability to take ownership of files or other objects',
+}
+log['user_right_description'] = decoder.get(value, 'UNKNOWN')
+        </callback>
     </callbacks>
     <patterns>
         <pattern name="eventID-00592">
@@ -63,7 +94,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">Process creation</localized_desc>
                 <localized_desc language="fr">Création d'un nouveau processus</localized_desc>
             </description>
-            <text>A new process has been created: New Process ID: _PID_ Image File Name: _FILENAME_ Creator Process ID: _CPID_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <text>A new process has been created:\s+New Process ID: _PID_\s+Image File Name: _FILENAME_\s+Creator Process ID: _CPID_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
             <tags>
             	<tag name="pid" tagType="Anything">
                     <description>
@@ -108,13 +139,32 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_LOGONID_</substitute>
             	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>A new process has been created:
+New Process ID: 2167588800
+Image File Name: \WINNT\system32\notepad.exe
+Creator Process ID: 2167187648
+User Name: administrator
+Domain: ELMW2
+Logon ID: (0x0,0x804C2)</text>
+            		<expectedTags>
+            			<expectedTag name="pid">2167588800</expectedTag>
+            			<expectedTag name="file_name">\WINNT\system32\notepad.exe</expectedTag>
+            			<expectedTag name="creator_pid">2167187648</expectedTag>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x804C2)</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern>
         <pattern name="eventID-00593">
             <description>
                 <localized_desc language="en">A process has exited</localized_desc>
                 <localized_desc language="fr">Arrêt d'un processus</localized_desc>
             </description>
-            <text>A process has exited: Process ID: _PID_ Image File Name: _FILENAME_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <text>A process has exited:\s+Process ID: _PID_\s+Image File Name: _FILENAME_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="pid" tagType="Anything">
                     <description>
@@ -152,13 +202,30 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_LOGONID_</substitute>
             	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>A process has exited:
+Process ID: 2084
+Image File Name: C:\WINDOWS\system32\notepad.exe
+User Name: administrator
+Domain: ELM
+Logon ID: (0x0,0x158EB7)</text>
+            		<expectedTags>
+            			<expectedTag name="pid">2084</expectedTag>
+            			<expectedTag name="file_name">C:\WINDOWS\system32\notepad.exe</expectedTag>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELM</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern>
         <pattern name="eventID-00594">
             <description>
                 <localized_desc language="en">Object handle duplication</localized_desc>
                 <localized_desc language="fr">Duplication d'un descripteur d'objet</localized_desc>
             </description>
-            <text>A handle to an object has been duplicated: Source Handle ID: _HANDLEID_ Source Process ID: _PID_ Target Handle ID: _TARGETHANDLEID_ Target Process ID: _TARGETPID_</text>
+            <text>A handle to an object has been duplicated:\s+Source Handle ID: _HANDLEID_\s+Source Process ID: _PID_\s+Target Handle ID: _TARGETHANDLEID_\s+Target Process ID: _TARGETPID_</text>
             <tags>
                 <tag name="handle_id" tagType="Anything">
                     <description>
@@ -189,13 +256,29 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_TARGETPID_</substitute>
             	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>A handle to an object has been duplicated:
+
+Source Handle ID: 1064
+Source Process ID: 796
+Target Handle ID: 1072
+Target Process ID: 796</text>
+            		<expectedTags>
+            			<expectedTag name="handle_id">1064</expectedTag>
+            			<expectedTag name="pid">796</expectedTag>
+            			<expectedTag name="target_handle_id">1072</expectedTag>
+            			<expectedTag name="target_pid">796</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern>
         <pattern name="eventID-00595">
             <description>
                 <localized_desc language="en">Indirect access to an object has been granted</localized_desc>
                 <localized_desc language="fr">Accès indirect à un objet accordé</localized_desc>
             </description>
-            <text>Indirect access to an object has been obtained: Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_ Access Mask: _ACCESSMASK_</text>
+            <text>Indirect access to an object has been obtained:\s+Object Type: _OBJTYPE_\s+Object Name: _OBJNAME_\s+Process ID: _PID_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Accesses: _ACCESSES_(?:\s+Access Mask: _ACCESSMASK_)?</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -273,6 +356,32 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                         <localized_desc language="fr">Le masque d'accès</localized_desc>
                     </description>
                     <substitute>_ACCESSMASK_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00608">
+            <description>
+                <localized_desc language="en">User right assigned</localized_desc>
+                <localized_desc language="fr">Assignation d'un droit utilisateur</localized_desc>
+            </description>
+            <text>User Right Assigned: User Right: _USERRIGHT_ Assigned To: _USER_ Assigned By: _ASSIGNEDBY_ User Name: _USERNAME_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_right" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The system name of the assigned user right </localized_desc>
+                        <localized_desc language="fr">Le nom système du droit assigné à l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERRIGHT_</substitute>
+                    <callbacks>
+                 		<callback>decode_user_right</callback>
+                 	</callbacks>
             	</tag>
             </tags>
         </pattern>
