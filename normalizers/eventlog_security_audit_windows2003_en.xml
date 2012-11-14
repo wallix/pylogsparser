@@ -29,7 +29,7 @@
             version="0.99"
             unicode="yes"
             ignorecase="yes"
-            matchtype="match"
+            matchtype="search"
             appliedTo="eventlog_description"
             taxonomy="access control">
     <description>
@@ -63,7 +63,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">An authentication package has been loaded by the Local Security Authority</localized_desc>
                 <localized_desc language="fr">Chargement d'un package d'authentification par l'Autorité Locale de Sécurité</localized_desc>
             </description>
-            <text>An authentication package has been loaded by the Local Security Authority.  This authentication package will be used to authenticate logon attempts. Authentication Package Name: _AUTHPACKAGE_</text>
+            <text>An authentication package has been loaded by the Local Security Authority.\s+This authentication package will be used to authenticate logon attempts.\s+Authentication Package Name: _AUTHPACKAGE_</text>
             <tags>
                 <tag name="authentication_package" tagType="Anything">
                     <description>
@@ -87,7 +87,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">A trusted logon process has registered with the Local Security Authority</localized_desc>
                 <localized_desc language="fr">Enregistrement auprès de l'autorité locale de sécurité d'un processus de connexion approuvée</localized_desc>
             </description>
-            <text>A trusted logon process has registered with the Local Security Authority.  This logon process will be trusted to submit logon requests. Logon Process Name: _PROCESSNAME_</text>
+            <text>A trusted logon process has registered with the Local Security Authority.\s+This logon process will be trusted to submit logon requests.\s+Logon Process Name: _PROCESSNAME_</text>
             <tags>
                 <tag name="logon_process_name" tagType="Anything">
                     <description>
@@ -97,13 +97,23 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_PROCESSNAME_</substitute>
             	</tag>
             </tags>
+            <examples>
+                <example>
+                     <text>A trusted logon process has registered with the Local Security Authority. This logon process will be trusted to submit logon requests.
+ 
+ Logon Process Name: Schannel</text>
+                     <expectedTags>
+                          <expectedTag name="logon_process_name">Schannel</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="eventID-00516">
             <description>
                 <localized_desc language="en">Internal resources allocated for the queuing of audit messages have been exhausted</localized_desc>
                 <localized_desc language="fr">Ressources allouées à la mise en file d'attente des messages d'audit épuisées</localized_desc>
             </description>
-            <text>Internal resources allocated for the queuing of audit messages have been exhausted,  leading to the loss of some audits. Number of audit messages discarded: _MDISCARDED_</text>
+            <text>Internal resources allocated for the queuing of audit messages have been exhausted,\s+leading to the loss of some audits.\s+Number of audit messages discarded: _MDISCARDED_</text>
             <tags>
                 <tag name="discarded" tagType="Anything">
                     <description>
@@ -113,50 +123,58 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_MDISCARDED_</substitute>
             	</tag>
             </tags>
+            <examples>
+                <example>
+                     <text>Internal resources allocated for the queuing of audit messages have been exhausted, leading to the loss of some audits. Number of audit messages discarded: 132</text>
+                     <expectedTags>
+                          <expectedTag name="discarded">132</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="eventID-00517">
             <description>
                 <localized_desc language="en">The audit log was cleared</localized_desc>
                 <localized_desc language="fr">Le journal des événements de sécurité a été nettoyé</localized_desc>
             </description>
-            <text>The audit log was cleared Primary User Name: _PUN_ Primary Domain: _PDOM_ Primary Logon ID: _PLID_ Client User Name: _CUN_ Client Domain: _CDOM_ Client Logon ID: _CLID_</text>
+            <text>The audit log was cleared\s+Primary User Name: _PUN_\s+Primary Domain: _PDOM_\s+Primary Logon ID: _PLID_\s+Client User Name: _CUN_\s+Client Domain: _CDOM_\s+Client Logon ID: _CLID_</text>
             <tags>
-                <tag name="user" tagType="Anything">
+                <tag name="primary_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">the primary user</localized_desc>
                         <localized_desc language="fr">l'utilisateur principal</localized_desc>
                     </description>
                     <substitute>_PUN_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="primary_domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">the primary domain</localized_desc>
                         <localized_desc language="fr">le domaine principal</localized_desc>
                     </description>
                     <substitute>_PDOM_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="primary_logon_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">the primary logon ID</localized_desc>
                         <localized_desc language="fr">l'identifiant de session principal</localized_desc>
                     </description>
                     <substitute>_PLID_</substitute>
             	</tag>
-            	<tag name="client_user" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">the client user</localized_desc>
                         <localized_desc language="fr">l'utilisateur client</localized_desc>
                     </description>
                     <substitute>_CUN_</substitute>
             	</tag>
-            	<tag name="client_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">the client domain</localized_desc>
                         <localized_desc language="fr">le domaine client</localized_desc>
                     </description>
                     <substitute>_CDOM_</substitute>
             	</tag>
-            	<tag name="client_logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">the client logon ID</localized_desc>
                         <localized_desc language="fr">l'identifiant de session client</localized_desc>
@@ -164,13 +182,32 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_CLID_</substitute>
             	</tag>
             </tags>
+            <examples>
+                <example>
+                     <text>The audit log was cleared
+  Primary User Name: SYSTEM
+  Primary Domain: NT AUTHORITY
+  Primary Logon ID: (0x0,0x3E7)
+  Client User Name: Administrator
+  Client Domain: ACME
+  Client Logon ID: (0x0,0x3F5C9)</text>
+                     <expectedTags>
+                          <expectedTag name="primary_user">SYSTEM</expectedTag>
+                          <expectedTag name="primary_domain">NT AUTHORITY</expectedTag>
+                          <expectedTag name="primary_logon_id">(0x0,0x3E7)</expectedTag>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">ACME</expectedTag>
+                          <expectedTag name="logon_id">(0x0,0x3F5C9)</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="eventID-00518">
             <description>
                 <localized_desc language="en">An notification package has been loaded by the Security Account Manager</localized_desc>
                 <localized_desc language="fr">Chargement d'un package de notification par le Gestionnaire des comptes de sécurité</localized_desc>
             </description>
-            <text>An notification package has been loaded by the Security Account Manager.  This package will be notified of any account or password changes. Notification Package Name: NOTIFPACKAGE</text>
+            <text>An notification package has been loaded by the Security Account Manager.\s+This package will be notified of any account or password changes.\s+Notification Package Name: _NOTIFPACKAGE_</text>
             <tags>
                 <tag name="notification_package" tagType="Anything">
                     <description>
@@ -180,13 +217,22 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     <substitute>_NOTIFPACKAGE_</substitute>
             	</tag>
             </tags>
+            <examples>
+                <example>
+                     <text>An notification package has been loaded by the Security Account Manager. This package will be notified of any account or password changes.
+Notification Package Name: scecli</text>
+                     <expectedTags>
+                          <expectedTag name="notification_package">scecli</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
         </pattern>
         <pattern name="eventID-00528-00540">
             <description>
                 <localized_desc language="en">Successful logon</localized_desc>
                 <localized_desc language="fr">Connexion réussie</localized_desc>
             </description>
-            <text>Successful (?:Network )?Logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ Logon GUID: _LGUID_ Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
+            <text>Successful (?:Network )?Logon:?\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LID_\s+Logon Type: _LOGONTYPE_\s+Logon Process: _LOGONPROCESS_\s+Authentication Package: _AUTHPACKAGE_\s+Workstation Name: _WORKSTATION_\s+Logon GUID: _LGUID_\s+Caller User Name: _CALLERUSER_\s+Caller Domain: _CALLERDOMAIN_\s+Caller Logon ID: _CID_\s+Caller Process ID: _CPID_\s+Transited Services: _TSERV_\s+Source Network Address: _SOURCEIP_\s+Source Port: _SOURCEPORT_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -302,7 +348,23 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             </commonTags>
             <examples>
                 <example>
-                     <text>Successful Logon:     User Name: Administrator     Domain: W2003EN     Logon ID: (0x0,0x64C2F)     Logon Type: 7     Logon Process: User32       Authentication Package: Negotiate     Workstation Name: W2003EN     Logon GUID: -     Caller User Name: W2003EN$     Caller Domain: WORKGROUP     Caller Logon ID: (0x0,0x3E7)     Caller Process ID: 532     Transited Services: -     Source Network Address: 127.0.0.1     Source Port: 0</text>
+                     <text>Successful Logon:
+
+User Name: Administrator
+Domain: W2003EN
+Logon ID: (0x0,0x64C2F)
+Logon Type: 7
+Logon Process: User32
+Authentication Package: Negotiate
+Workstation Name: W2003EN
+Logon GUID: -
+Caller User Name: W2003EN$
+Caller Domain: WORKGROUP
+Caller Logon ID: (0x0,0x3E7)
+Caller Process ID: 532
+Transited Services: -
+Source Network Address: 127.0.0.1
+Source Port: 0</text>
                      <expectedTags>
                           <expectedTag name="user">Administrator</expectedTag>
                           <expectedTag name="domain">W2003EN</expectedTag>
@@ -322,6 +384,44 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                           <expectedTag name="status">success</expectedTag>
                      </expectedTags>
                 </example>
+                <example>
+                     <text>Successful Network Logon:
+
+User Name: Administrator
+
+Domain: ELM
+Logon ID: (0x0,0x558DD)
+Logon Type: 3
+Logon Process: User32
+Authentication Package: Negotiate
+Workstation Name: W2MS
+Logon GUID: {d39697e4-34a9-b3e0-f30a-d2ba517eb4a2}
+Caller User Name: -
+Caller Domain: -
+Caller Logon ID: -
+Caller Process ID: -
+Transited Services: -
+Source Network Address: 10.42.42.170
+Source Port: 3165</text>
+                     <expectedTags>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">ELM</expectedTag>
+                          <expectedTag name="logon_id">(0x0,0x558DD)</expectedTag>
+                          <expectedTag name="logon_type">3</expectedTag>
+                          <expectedTag name="method">Network</expectedTag>
+                          <expectedTag name="authentication_package">Negotiate</expectedTag>
+                          <expectedTag name="dest_host">W2MS</expectedTag>
+                          <expectedTag name="logon_guid">{d39697e4-34a9-b3e0-f30a-d2ba517eb4a2}</expectedTag>
+                          <expectedTag name="caller">-</expectedTag>
+                          <expectedTag name="caller_domain">-</expectedTag>
+                          <expectedTag name="caller_logon_id">-</expectedTag>
+                          <expectedTag name="pid">-</expectedTag>
+                          <expectedTag name="transited_services">-</expectedTag>
+                          <expectedTag name="source_ip">10.42.42.170</expectedTag>
+                          <expectedTag name="source_port">3165</expectedTag>
+                          <expectedTag name="status">success</expectedTag>
+                     </expectedTags>
+                </example>
             </examples>
         </pattern>
                 <pattern name="eventID-00529_to_00537">
@@ -329,7 +429,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">Logon Failures</localized_desc>
                 <localized_desc language="fr">Connexions échouées</localized_desc>
             </description>
-            <text>Logon Failure: Reason: _REASON_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ Logon GUID: _LGUID_ Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
+            <text>Logon Failure:\s+Reason: _REASON_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+(?:Logon ID: _LID_\s+)?Logon Type: _LOGONTYPE_\s+Logon Process: _LOGONPROCESS_\s+Authentication Package: _AUTHPACKAGE_\s+Workstation Name: _WORKSTATION_\s+(?:Logon GUID: _LGUID_\s+)?Caller User Name: _CALLERUSER_\s+Caller Domain: _CALLERDOMAIN_\s+Caller Logon ID: _CID_\s+Caller Process ID: _CPID_\s+Transited Services: _TSERV_\s+Source Network Address: _SOURCEIP_\s+Source Port: _SOURCEPORT_</text>
             <tags>
             	<tag name="reason" tagType="Anything">
                     <description>
@@ -450,6 +550,42 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             <commonTags>
             	<commonTag name="status">failure</commonTag>
             </commonTags>
+            <examples>
+                <example>
+                     <text>Logon Failure:
+Reason: Unknown user name or bad password
+User Name: Administrator
+Domain: W2003EN
+Logon Type: 7
+Logon Process: -
+Authentication Package: Negotiate
+Workstation Name: MYWORKSTATION
+Caller User Name: -
+Caller Domain: -
+Caller Logon ID: -
+Caller Process ID: -
+Transited Services: -
+Source Network Address: 10.42.42.180
+Source Port: 0</text>
+                     <expectedTags>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">W2003EN</expectedTag>
+                          <expectedTag name="logon_type">7</expectedTag>
+                          <expectedTag name="method">UnlockWorkstationLogon</expectedTag>
+                          <expectedTag name="authentication_package">Negotiate</expectedTag>
+                          <expectedTag name="dest_host">MYWORKSTATION</expectedTag>
+                          <expectedTag name="caller">-</expectedTag>
+                          <expectedTag name="caller_domain">-</expectedTag>
+                          <expectedTag name="caller_logon_id">-</expectedTag>
+                          <expectedTag name="pid">-</expectedTag>
+                          <expectedTag name="transited_services">-</expectedTag>
+                          <expectedTag name="source_ip">10.42.42.180</expectedTag>
+                          <expectedTag name="source_port">0</expectedTag>
+                          <expectedTag name="status">failure</expectedTag>
+                          <expectedTag name="reason">Unknown user name or bad password</expectedTag>
+                     </expectedTags>
+                </example>
+			</examples>
         </pattern>
         <pattern name="eventID-00538">
             <description>
@@ -496,7 +632,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">Object open</localized_desc>
                 <localized_desc language="fr">Accès accordé à un objet</localized_desc>
             </description>
-            <text>Object Open(?: for Delete)?: Object Server: _OBJSERVER_ Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Handle ID: _HANDLEID_ Operation ID: {_OPID_} Process ID: _PID_ (?:Image File Name: _FILENAME_)|(?:Process Name: _PROCESSNAME_) Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_ Privileges: _PRIVILEGES_(?: Properties: _PROPERTIES_)?(?: Restricted Sid Count: _SIDCOUNT_)?(?: Access Mask: _ACCESSMASK_)?</text>
+            <text>Object Open(?: for Delete)?:\s+Object Server: _OBJSERVER_\s+Object Type: _OBJTYPE_\s+Object Name: _OBJNAME_\s+Handle ID: _HANDLEID_\s+Operation ID: {_OPID_}\s+Process ID: _PID_\s+(?:(?:Image File Name: _FILENAME_)|(?:Process Name: _PROCESSNAME_))\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Accesses: _ACCESSES_\s+Privileges: _PRIVILEGES_(?:\s+Properties: _PROPERTIES_)?(?:\s+Restricted Sid Count: _SIDCOUNT_)?(?:\s+Access Mask: _ACCESSMASK_)?</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -677,7 +813,7 @@ Restricted Sid Count: 0</text>
                 <localized_desc language="en">Object handle closed, Object deleted</localized_desc>
                 <localized_desc language="fr">Descripteur d'objet fermé, objet supprimé</localized_desc>
             </description>
-            <text>(?:Handle Closed)|(?:Object Deleted): Object Server: _OBJSERVER_ Handle ID: _HANDLEID_ Process ID: _PID_ Image File Name: _FILENAME_</text>
+            <text>(?:(?:Handle Closed)|(?:Object Deleted)):\s+Object Server: _OBJSERVER_\s+Handle ID: _HANDLEID_\s+Process ID: _PID_\s+Image File Name: _FILENAME_</text>
             <tags>
                 <tag name="object_server" tagType="Anything">
                     <description>
@@ -708,13 +844,28 @@ Restricted Sid Count: 0</text>
                     <substitute>_FILENAME_</substitute>
             	</tag>
             </tags>
+            <examples>
+                <example>
+                     <text>Handle Closed:
+Object Server: Security
+Handle ID: 1468
+Process ID: 1688
+Image File Name: C:\WINDOWS\system32\notepad.exe</text>
+                     <expectedTags>
+                          <expectedTag name="object_server">Security</expectedTag>
+                          <expectedTag name="handle_id">1468</expectedTag>
+                          <expectedTag name="pid">1688</expectedTag>
+                          <expectedTag name="file_name">C:\WINDOWS\system32\notepad.exe</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>            
         </pattern>
         <pattern name="eventID-00576">
             <description>
                 <localized_desc language="en">Special privileges assigned at logon</localized_desc>
                 <localized_desc language="fr">Privilèges spéciaux assignés à une nouvelle session</localized_desc>
             </description>
-            <text>Special privileges assigned to new logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
+            <text>Special privileges assigned to new logon:\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_\s+(?:(?:Privileges)|(?:Assigned)): _PRIVILEGES_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -739,19 +890,88 @@ Restricted Sid Count: 0</text>
             	</tag>
             	<tag name="privileges" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The privileges</localized_desc>
-                        <localized_desc language="fr">Les privileges</localized_desc>
+                        <localized_desc language="en">The privileges, they can belong to the following list:
+* SeTcbPrivilege : act as part of the operating system
+* SeMachineAccountPrivilege: add workstations to domain
+* SeIncreaseQuotaPrivilege: adjust memory quotas for a process
+* SeBackupPrivilege: back up files and directories
+* SeChangeNotifyPrivilege: bypass traverse checking
+* SeSystemtimePrivilege: change the system time
+* SeCreatePagefilePrivilege: create a pagefile
+* SeCreateTokenPrivilege: create a token object
+* SeCreatePermanentPrivilege: create permanent shared objects
+* SeDebugPrivilege: debug programs
+* SeEnableDelegationPrivilege: enable computer and user accounts to be trusted for delegation
+* SeRemoteShutdownPrivilege: force shutdown from a remote system
+* SeAuditPrivilege: generate security audits
+* SeIncreaseBasePriorityPrivilege: increase scheduling priority
+* SeLoadDriverPrivilege: load and unload device drivers
+* SeLockMemoryPrivilege: lock pages in memory
+* SeSecurityPrivilege: manage auditing and security log
+* SeSystemEnvironmentPrivilege: modify firmware environment values
+* SeManageVolumePrivilege: perform volume maintenance tasks
+* SeProfileSingleProcessPrivilege: profile single process
+* SeSystemProfilePrivilege: profile system performance
+* SeUndockPrivilege: remove computer from docking station
+* SeAssignPrimaryTokenPrivilege: replace a process level token
+* SeRestorePrivilege: restore files and directories
+* SeShutdownPrivilege: shut down the system
+* SeSyncAgentPrivilege: synchronize directory service data
+* SeTakeOwnershipPrivilege: take ownership of files or other objects</localized_desc>
+                        <localized_desc language="fr">Les privilèges, issus de la liste suivante :
+* SeTcbPrivilege : agir comme le système d'exploitation
+* SeMachineAccountPrivilege: ajouter un poste de travail au domaine
+* SeIncreaseQuotaPrivilege: ajuster les quotas mémoire d'un processus
+* SeBackupPrivilege: sauvegarder des fichiers et répertoires
+* SeChangeNotifyPrivilege: outrepasser les droits d'accès transverses
+* SeSystemtimePrivilege: changer l'heure système
+* SeCreatePagefilePrivilege: créer un fichier de pagination
+* SeCreateTokenPrivilege: créer un jeton
+* SeCreatePermanentPrivilege: créer des objets partagés permanents
+* SeDebugPrivilege: déboguer les programmes
+* SeEnableDelegationPrivilege: accorder la délégation à des ordinateurs et des comptes utilisateurs
+* SeRemoteShutdownPrivilege: forcer l'arrêt à distance
+* SeAuditPrivilege: générer des audits de sécurité
+* SeIncreaseBasePriorityPrivilege: augmenter la priorité d'exécution
+* SeLoadDriverPrivilege: charger et décharger des pilotes matériels
+* SeLockMemoryPrivilege: bloquer des pages en mémoire
+* SeSecurityPrivilege: gérer les logs d'audit et de sécurité
+* SeSystemEnvironmentPrivilege: changer les variables d'environnement de firmware
+* SeManageVolumePrivilege: réaliser des opérations de maintenance sur les volumes
+* SeProfileSingleProcessPrivilege: profiler un processus
+* SeSystemProfilePrivilege: profiler les performances système
+* SeUndockPrivilege: retirer un poste de travail de sa station d'accueil
+* SeAssignPrimaryTokenPrivilege: remplacer un token au niveau processus
+* SeRestorePrivilege: restaurer des fichiers et des répertoires
+* SeShutdownPrivilege: mettre le système à l'arrêt
+* SeSyncAgentPrivilege: synchroniser les données du service d'annuaire
+* SeTakeOwnershipPrivilege: prendre possession de fichiers</localized_desc>
                     </description>
                     <substitute>_PRIVILEGES_</substitute>
             	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>Special privileges assigned to new logon:
+User Name: Fred
+Domain: Acme
+Logon ID: (0x0,0x10591D)
+Assigned: SeBackupPrivilege SeRestorePrivilege SeDebugPrivilege SeChangeNotifyPrivilege SeRestorePrivilege SeDebugPrivilege SeChangeNotifyPrivilege</text>
+					<expectedTags>
+						<expectedTag name="user">Fred</expectedTag>
+						<expectedTag name="domain">Acme</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x10591D)</expectedTag>
+						<expectedTag name="privileges">SeBackupPrivilege SeRestorePrivilege SeDebugPrivilege SeChangeNotifyPrivilege SeRestorePrivilege SeDebugPrivilege SeChangeNotifyPrivilege</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
         </pattern>
         <pattern name="eventID-00577">
             <description>
                 <localized_desc language="en">Privileged service called</localized_desc>
                 <localized_desc language="fr">Appel à une opération privilégiée</localized_desc>
             </description>
-            <text>Privileged Service Called: Server: _SERVER_ Service: _SERVICE_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
+            <text>Privileged Service Called:\s+Server: _SERVER_\s+Service: _SERVICE_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="server" tagType="Anything">
                     <description>
@@ -817,13 +1037,38 @@ Restricted Sid Count: 0</text>
                     <substitute>_PRIVILEGES_</substitute>
             	</tag>
            	</tags>
+           	<examples>
+           		<example>
+           			<text>Privileged Service Called:
+Server: Security
+Service: -
+Primary User Name: Administrator
+Primary Domain: ELMW2
+Primary Logon ID: (0x0,0x804C2)
+Client User Name: -
+Client Domain: -
+Client Logon ID: -
+Privileges: SeSystemtimePrivilege</text>
+           			<expectedTags>
+           				<expectedTag name="server">Security</expectedTag>
+           				<expectedTag name="service">-</expectedTag>
+           				<expectedTag name="user">Administrator</expectedTag>
+           				<expectedTag name="domain">ELMW2</expectedTag>
+           				<expectedTag name="logon_id">(0x0,0x804C2)</expectedTag>
+           				<expectedTag name="client_user">-</expectedTag>
+           				<expectedTag name="client_domain">-</expectedTag>
+           				<expectedTag name="client_logon_id">-</expectedTag>
+           				<expectedTag name="privileges">SeSystemtimePrivilege</expectedTag>
+           			</expectedTags>
+           		</example>
+           	</examples>
         </pattern>
         <pattern name="eventID-00578">
             <description>
             	    <localized_desc language="en">Privileged object operation</localized_desc>
             	    <localized_desc language="fr">Appel à une opération privilégiée sur un objet</localized_desc>
             	</description>
-            <text>Privileged object operation: Object Server: _OBJSERVER_ Object Handle: _OBJHANDLE_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
+            <text>Privileged object operation:\s+Object Server: _OBJSERVER_\s+Object Handle: _OBJHANDLE_\s+Process ID: _PID_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="object_server" tagType="Anything">
                     <description>
@@ -846,42 +1091,42 @@ Restricted Sid Count: 0</text>
                     </description>
                     <substitute>_PID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+            	<tag name="primary_user" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The user name</localized_desc>
-                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                        <localized_desc language="en">The primary user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur primaire</localized_desc>
                     </description>
                     <substitute>_USER_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="primary_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The domain name</localized_desc>
-                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                        <localized_desc language="en">The primary domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine primaire</localized_desc>
                     </description>
                     <substitute>_DOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="primary_logon_id" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The logon ID</localized_desc>
-                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                        <localized_desc language="en">The primary logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion primaire</localized_desc>
                     </description>
                     <substitute>_LOGONID_</substitute>
             	</tag>
-            	<tag name="client_user" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The client user name</localized_desc>
                         <localized_desc language="fr">Le nom d'utilisateur client</localized_desc>
                     </description>
                     <substitute>_CLIENTUSER_</substitute>
             	</tag>
-            	<tag name="client_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The client domain</localized_desc>
                         <localized_desc language="fr">Le domaine client</localized_desc>
                     </description>
                     <substitute>_CLIENTDOMAIN_</substitute>
             	</tag>
-            	<tag name="client_logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The client  logon ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion cliente</localized_desc>
@@ -896,6 +1141,33 @@ Restricted Sid Count: 0</text>
                     <substitute>_PRIVILEGES_</substitute>
             	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>Privileged object operation:
+Object Server: EventLog
+Object Handle: 0
+Process ID: 248
+Primary User Name: W2DC$
+Primary Domain: ELMW2
+Primary Logon ID: (0x0,0x3E7)
+Client User Name: Administrator
+Client Domain: ELMW2
+Client Logon ID: (0x0,0x804C2)
+Privileges: SeSecurityPrivilege</text>
+					<expectedTags>
+						<expectedTag name="object_server">EventLog</expectedTag>
+						<expectedTag name="object_handle">0</expectedTag>
+						<expectedTag name="pid">248</expectedTag>
+						<expectedTag name="primary_user">W2DC$</expectedTag>
+						<expectedTag name="primary_domain">ELMW2</expectedTag>
+						<expectedTag name="primary_logon_id">(0x0,0x3E7)</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">ELMW2</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x804C2)</expectedTag>
+						<expectedTag name="privileges">SeSecurityPrivilege</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
         </pattern>
     </patterns>
 </normalizer>
