@@ -87,6 +87,26 @@ decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
 }
 log['user_right_description'] = decoder.get(value, 'UNKNOWN')
         </callback>
+        <callback name="decode_trust_direction">
+decoder = { '1' : 'Trusted',
+'2' : 'Trusting',
+'3' : '2-way',
+ }
+log['trust_direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_attributes">
+decoder = { '1' : 'Transitive',
+'2' : 'Nontransitive',
+ }
+log['trust_attributes'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_type">
+decoder = { '1': 'NT 4.0 legacy trust',
+'2' : 'Kerberos realm trust',
+'3' : 'forest or domain trust with another active directory domain',
+ }
+log['trust_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
     </callbacks>
     <patterns>
         <pattern name="eventID-00592">
@@ -487,6 +507,116 @@ Logon ID: (0x0,0x3E7)</text>
 						<expectedTag name="removed_by">administrator</expectedTag>
 						<expectedTag name="domain">ACME</expectedTag>
 						<expectedTag name="logon_id">(0x0,0x12526E)</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
+        <pattern name="eventID-00610">
+            <description>
+                <localized_desc language="en">New trusted domain</localized_desc>
+                <localized_desc language="fr">Nouveau domaine de confiance</localized_desc>
+            </description>
+            <text>New Trusted Domain:\s+Domain Name: _DOMAIN_\s+Domain ID: _DOMAINID_\s+Established By:\s+User Name: _USER_\s+Domain: _USERDOMAIN_\s+Logon ID: _LOGONID_\s+Trust Type: _TRUSTTYPE_\s+Trust Direction: _TRUSTDIRECTION_\s+Trust Attributes: _TRUSTATTRIBUTES_\s+SID Filtering: _FILTERING_</text>
+            <tags>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain name</localized_desc>
+                        <localized_desc language="fr">Le nom du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="trust_direction_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust direction code</localized_desc>
+                        <localized_desc language="fr">Le code du sens de la relation de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTDIRECTION_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_direction</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="trust_type_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust type code</localized_desc>
+                        <localized_desc language="fr">Le code du type de niveau de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTTYPE_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_type</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="trust_attributes_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust attributes code</localized_desc>
+                        <localized_desc language="fr">Le code des attributs de la relation de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTATTRIBUTES_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_attributes</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="sid_filtering" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The SID filtering status</localized_desc>
+                        <localized_desc language="fr">Le statut du filtrage par SID</localized_desc>
+                    </description>
+                    <substitute>_FILTERING_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>New Trusted Domain:
+Domain Name: SouthAmerica
+Domain ID: -
+Established By:
+User Name: administrator
+Domain: ELM
+Logon ID: (0x0,0x158EB7)
+Trust Type: 3
+Trust Direction: 2
+Trust Attributes: 1
+SID Filtering: Disabled</text>
+					<expectedTags>
+						<expectedTag name="domain">SouthAmerica</expectedTag>
+						<expectedTag name="domain_id">-</expectedTag>
+						<expectedTag name="user">administrator</expectedTag>
+						<expectedTag name="user_domain">ELM</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+						<expectedTag name="trust_type_code">3</expectedTag>
+						<expectedTag name="trust_direction_code">2</expectedTag>
+						<expectedTag name="trust_attributes_code">1</expectedTag>
+						<expectedTag name="sid_filtering">Disabled</expectedTag>
+						<expectedTag name="trust_type">forest or domain trust with another active directory domain</expectedTag>
+						<expectedTag name="trust_direction">Trusting</expectedTag>
+						<expectedTag name="trust_attributes">Transitive</expectedTag>
 					</expectedTags>
             	</example>
             </examples>
