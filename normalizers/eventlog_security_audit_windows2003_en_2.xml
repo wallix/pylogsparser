@@ -621,6 +621,68 @@ SID Filtering: Disabled</text>
             	</example>
             </examples>
         </pattern>
+                <pattern name="eventID-00611">
+            <description>
+                <localized_desc language="en">Trusted domain removed</localized_desc>
+                <localized_desc language="fr">Domaine de confiance détruit</localized_desc>
+            </description>
+            <text>Trusted Domain Removed:\s+Domain Name: _DOMAIN_\s+Domain ID: _DOMAINID_\s+Removed By:\s+User Name: _USER_\s+Domain: _USERDOMAIN_\s+Logon ID: _LOGONID_</text>
+            <tags>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain name</localized_desc>
+                        <localized_desc language="fr">Le nom du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Trusted Domain Removed:
+Domain Name: SouthAmerica
+Domain ID: -
+Removed By:
+User Name: administrator
+Domain: ELM
+Logon ID: (0x0,0x158EB7)</text>
+					<expectedTags>
+						<expectedTag name="domain">SouthAmerica</expectedTag>
+						<expectedTag name="domain_id">-</expectedTag>
+						<expectedTag name="user">administrator</expectedTag>
+						<expectedTag name="user_domain">ELM</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
