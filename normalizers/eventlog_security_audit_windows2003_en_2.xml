@@ -425,6 +425,72 @@ Logon ID: (0x0,0x3E7)</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00609">
+            <description>
+                <localized_desc language="en">User right removed</localized_desc>
+                <localized_desc language="fr">Révocation d'un droit utilisateur</localized_desc>
+            </description>
+            <text>User Right Removed:\s+User Right: _USERRIGHT_\s+Removed From: _USER_\s+Removed By:\s+User Name: _USERNAME_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_right" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The system name of the removed user right </localized_desc>
+                        <localized_desc language="fr">Le nom système du droit retiré à l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERRIGHT_</substitute>
+                    <callbacks>
+                 		<callback>decode_user_right</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="removed_by" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user who removed the right</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur qui a retiré le droit</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>User Right Removed:
+  User Right: SeManageVolumePrivilege
+  Removed From: ACME\wsmith
+  Removed By:
+    User Name: administrator
+    Domain: ACME
+    Logon ID: (0x0,0x12526E)</text>
+					<expectedTags>
+						<expectedTag name="user_right">SeManageVolumePrivilege</expectedTag>
+						<expectedTag name="user_right_description">Ability to perform volume maintenance tasks</expectedTag>
+						<expectedTag name="user">ACME\wsmith</expectedTag>
+						<expectedTag name="removed_by">administrator</expectedTag>
+						<expectedTag name="domain">ACME</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x12526E)</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
