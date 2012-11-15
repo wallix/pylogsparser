@@ -51,6 +51,14 @@ Les codes d'événements suivants sont normalisés :
     <authors>
         <author>mhu@wallix.com</author>
     </authors>
+    <tagTypes>
+        <tagType name="policy+-" type="basestring">
+            <description>
+        <localized_desc language="en">A single sign used to display a policy change.</localized_desc>
+        <localized_desc language="fr">Un simple signe utilisé pour indiquer un changement de politique.</localized_desc></description>
+            <regexp>[+-]</regexp>
+        </tagType>
+    </tagTypes>
     <callbacks>
     	<callback name="decode_logon_type">
 decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
@@ -679,6 +687,206 @@ Logon ID: (0x0,0x158EB7)</text>
 						<expectedTag name="user">administrator</expectedTag>
 						<expectedTag name="user_domain">ELM</expectedTag>
 						<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
+        <pattern name="eventID-00612">
+            <description>
+                <localized_desc language="en">Audit Policy Change. Changes are marked with a + if enabled, a - if disabled</localized_desc>
+                <localized_desc language="fr">Changement de politique d'audit. Les changements sont signalés par un + en cas d'activation, un - en cas de désactivation</localized_desc>
+            </description>
+            <text>Audit Policy Change:\s+New Policy:\s+Success\s+Failure\s+_LOGSUCCESS_\s+_LOGFAIL_\s+Logon/Logoff\s+_OBJSUCCESS_\s+_OBJFAIL_\s+Object Access\s+_PRIVSUCCESS_\s+_PRIVFAIL_\s+Privilege Use\s+_ACCTMGMTSUCCESS_\s+_ACCTMGMTFAIL_\s+Account Management\s+_POLCHANGESUCCESS_\s+_POLCHANGEFAIL_\s+Policy Change\s+_SYSTEMSUCCESS_\s+_SYSTEMFAIL_\s+System\s+_TRACKINGSUCCESS_\s+_TRACKINGFAIL_\s+Detailed Tracking\s+_DSASUCCESS_\s+_DSAFAIL_\s+Directory Service Access\s+_ACCTLOGONSUCCESS_\s+_ACCTLOGONFAIL_\s+Account Logon\s+Changed By:\s+User Name: _USER_\s+Domain Name: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <tags>
+                <tag name="logon_logoff_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the logon/logoff success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de connexion et de déconnexion</localized_desc>
+                    </description>
+                    <substitute>_LOGSUCCESS_</substitute>
+            	</tag>
+            	<tag name="logon_logoff_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the logon/logoff failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de connexion et de déconnexion</localized_desc>
+                    </description>
+                    <substitute>_LOGFAIL_</substitute>
+            	</tag>
+            	<tag name="object_access_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the object access success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'accès aux objets</localized_desc>
+                    </description>
+                    <substitute>_OBJSUCCESS_</substitute>
+            	</tag>
+            	<tag name="object_access_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the object access failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'accès aux objets</localized_desc>
+                    </description>
+                    <substitute>_OBJFAIL_</substitute>
+            	</tag>
+            	<tag name="privilege_use_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the privilege use success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'usage des privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVSUCCESS_</substitute>
+            	</tag>
+            	<tag name="privilege_use_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the privilege use failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'usage des privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVFAIL_</substitute>
+            	</tag>
+            	<tag name="account_management_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account management success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de gestions des comptes</localized_desc>
+                    </description>
+                    <substitute>_ACCTMGMTSUCCESS_</substitute>
+            	</tag>
+            	<tag name="account_management_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account management failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de gestions des comptes</localized_desc>
+                    </description>
+                    <substitute>_ACCTMGMTFAIL_</substitute>
+            	</tag>
+            	<tag name="policy_change_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the policy change success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de changement de politique</localized_desc>
+                    </description>
+                    <substitute>_POLCHANGESUCCESS_</substitute>
+            	</tag>
+            	<tag name="policy_change_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the policy change failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de changement de politique</localized_desc>
+                    </description>
+                    <substitute>_POLCHANGEFAIL_</substitute>
+            	</tag>
+            	<tag name="system_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the system success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès système</localized_desc>
+                    </description>
+                    <substitute>_SYSTEMSUCCESS_</substitute>
+            	</tag>
+            	<tag name="system_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the system failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs système</localized_desc>
+                    </description>
+                    <substitute>_SYSTEMFAIL_</substitute>
+            	</tag>
+            	<tag name="detailed_tracking_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the detailed tracking success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de suivi détaillé</localized_desc>
+                    </description>
+                    <substitute>_TRACKINGSUCCESS_</substitute>
+            	</tag>
+            	<tag name="detailed_tracking_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the detailed tracking failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de suivi détaillé</localized_desc>
+                    </description>
+                    <substitute>_TRACKINGFAIL_</substitute>
+            	</tag>
+            	<tag name="directory_service_access_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the directory service access success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'accès au service d'annuaire</localized_desc>
+                    </description>
+                    <substitute>_DSASUCCESS_</substitute>
+            	</tag>
+            	<tag name="directory_service_access_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the directory service access failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'accès au service d'annuaire</localized_desc>
+                    </description>
+                    <substitute>_DSAFAIL_</substitute>
+            	</tag>
+            	<tag name="account_logon_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account logon success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de connexion de compte</localized_desc>
+                    </description>
+                    <substitute>_ACCTLOGONSUCCESS_</substitute>
+            	</tag>
+            	<tag name="account_logon_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account logon failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de connexion de compte</localized_desc>
+                    </description>
+                    <substitute>_ACCTLOGONFAIL_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Audit Policy Change:
+New Policy:
+	Success	Failure
+	    +	    + Logon/Logoff
+	    +	    + Object Access
+	    -	    + Privilege Use
+	    +	    + Account Management
+	    -	    + Policy Change
+	    +	    -   System
+	    +	    + Detailed Tracking
+	    +	    + Directory Service Access
+	    +	    + Account Logon
+
+Changed By:
+	  User Name: Alebovsky
+	  Domain Name: RESEARCH
+	  Logon ID: (0x0,0x59DF36)</text>
+					<expectedTags>
+						<expectedTag name="logon_logoff_success">+</expectedTag>
+						<expectedTag name="logon_logoff_failure">+</expectedTag>
+						<expectedTag name="object_access_success">+</expectedTag>
+						<expectedTag name="object_access_failure">+</expectedTag>
+						<expectedTag name="privilege_use_success">-</expectedTag>
+						<expectedTag name="privilege_use_failure">+</expectedTag>
+						<expectedTag name="account_management_success">+</expectedTag>
+						<expectedTag name="account_management_failure">+</expectedTag>
+						<expectedTag name="policy_change_success">-</expectedTag>
+						<expectedTag name="policy_change_failure">+</expectedTag>
+						<expectedTag name="system_success">+</expectedTag>
+						<expectedTag name="system_failure">-</expectedTag>
+						<expectedTag name="detailed_tracking_success">+</expectedTag>
+						<expectedTag name="detailed_tracking_failure">+</expectedTag>
+						<expectedTag name="directory_service_access_success">+</expectedTag>
+						<expectedTag name="directory_service_access_failure">+</expectedTag>
+						<expectedTag name="account_logon_success">+</expectedTag>
+						<expectedTag name="account_logon_failure">+</expectedTag>
+						<expectedTag name="user">Alebovsky</expectedTag>
+						<expectedTag name="domain">RESEARCH</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>
 					</expectedTags>
             	</example>
             </examples>
