@@ -364,7 +364,7 @@ Target Process ID: 796</text>
                 <localized_desc language="en">User right assigned</localized_desc>
                 <localized_desc language="fr">Assignation d'un droit utilisateur</localized_desc>
             </description>
-            <text>User Right Assigned: User Right: _USERRIGHT_ Assigned To: _USER_ Assigned By: _ASSIGNEDBY_ User Name: _USERNAME_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
+            <text>User Right Assigned:\s+User Right: _USERRIGHT_\s+Assigned To: _USER_\s+Assigned By:\s+User Name: _USERNAME_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -383,7 +383,47 @@ Target Process ID: 796</text>
                  		<callback>decode_user_right</callback>
                  	</callbacks>
             	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="assigned_by" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user who assigned the right</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur qui a assigné le droit</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
             </tags>
+            <examples>
+            	<example>
+            		<text>User Right Assigned:
+User Right: SeUndockPrivilege
+Assigned To: MTG\rsmith
+Assigned By:
+User Name: MTG1$
+Domain: MTG
+Logon ID: (0x0,0x3E7)</text>
+					<expectedTags>
+						<expectedTag name="user_right">SeUndockPrivilege</expectedTag>
+						<expectedTag name="user_right_description">Ability to remove the computer from its docking station</expectedTag>
+						<expectedTag name="user">MTG\rsmith</expectedTag>
+						<expectedTag name="assigned_by">MTG1$</expectedTag>
+						<expectedTag name="domain">MTG</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x3E7)</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
         </pattern>
     </patterns>
 </normalizer>
