@@ -36,7 +36,7 @@
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
 * 592 to 595 (processes events),
-<!--* 608 to 612, 671, 768 (Policy change events),-->
+* 608 to 612<!--, 671, 768--> (Policy change events),
 <!--* 624, 627, 632 to 668, 684, 685 (account management events),-->
 <!--* 672 to 683 (logon events) -->
 </localized_desc>
@@ -115,6 +115,20 @@ decoder = { '1': 'NT 4.0 legacy trust',
  }
 log['trust_type'] = decoder.get(value, 'UNKNOWN')
         </callback>
+        <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
     </callbacks>
     <patterns>
         <pattern name="eventID-00592">
@@ -891,6 +905,254 @@ Changed By:
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00624">
+            <description>
+                <localized_desc language="en">User account creation</localized_desc>
+                <localized_desc language="fr">Création d'un utilisateur</localized_desc>
+            </description>
+            <text>User Account Created:\s+New Account Name: _NEWUSER_\s+New Domain: _NEWDOMAIN_\s+New Account ID: _ACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges _PRIVILEGES_\s+Attributes:\s+Sam Account Name: _SAMACCT_\s+Display Name: _DISPLAYNAME_\s+User Principal Name: _DN_\s+Home Directory: _HOMEDIR_\s+Home Drive: _HOMEDRIVE_\s+Script Path: _SCRIPTPATH_\s+Profile Path: _PROFILEPATH_\s+User Workstations: _WORKSTATIONS_\s+Password Last Set: _PWDLASTSET_\s+Account Expires: _EXPIRYDATE_\s+Primary Group ID: _PGID_\s+AllowedToDelegateTo: _DELEGATETO_\s+Old UAC Value: _OLDUAC_\s+New UAC Value: _NEWUAC_\s+User Account Control:\s+_ACCTCONTROL_\s+User Parameters: _USERPARAMS_\s+Sid History: _SIDHISTORY_\s+Logon Hours: _LOGONHOURS_</text>
+            <tags>
+                <tag name="new_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The created user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur créé</localized_desc>
+                    </description>
+                    <substitute>_NEWUSER_</substitute>
+            	</tag>
+            	<tag name="new_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain of the created user</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur créé</localized_desc>
+                    </description>
+                    <substitute>_NEWDOMAIN_</substitute>
+            	</tag>
+            	<tag name="new_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID of the created user</localized_desc>
+                        <localized_desc language="fr">L'identifiant de compte de l'utilisateur créé</localized_desc>
+                    </description>
+                    <substitute>_ACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user creating the account</localized_desc>
+                        <localized_desc language="fr">l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain of the user creating the account</localized_desc>
+                        <localized_desc language="fr">le domaine de l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID of the user creating the account</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session de l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">an unidentified field, empty most of the time</localized_desc>
+                        <localized_desc language="fr">un champ non identifié, vide la plupart du temps</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="sam_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the legacy logon name</localized_desc>
+                        <localized_desc language="fr">le nom de compte utilisé par les clients de version antérieure à windows 2003</localized_desc>
+                    </description>
+                    <substitute>_SAMACCT_</substitute>
+            	</tag>
+            	<tag name="display_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the display name</localized_desc>
+                        <localized_desc language="fr">le nom affiché</localized_desc>
+                    </description>
+                    <substitute>_DISPLAYNAME_</substitute>
+            	</tag>
+            	<tag name="principal_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the full user name, in an email format, with either the domain address or the domain's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom d'utilisateur complet, au format email, accompagné soit de l'adresse de domaine, soit du nom distingué du domaine</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+            	</tag>
+            	<tag name="home_directory" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the home directory</localized_desc>
+                        <localized_desc language="fr">le répertoire d'accueil</localized_desc>
+                    </description>
+                    <substitute>_HOMEDIR_</substitute>
+            	</tag>
+            	<tag name="home_drive" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the home drive</localized_desc>
+                        <localized_desc language="fr">le disque d'accueil</localized_desc>
+                    </description>
+                    <substitute>_HOMEDRIVE_</substitute>
+            	</tag>
+            	<tag name="script_path" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the path to the user's logon script</localized_desc>
+                        <localized_desc language="fr">le chemin vers le script de démarrage de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_SCRIPTPATH_</substitute>
+            	</tag>
+            	<tag name="profile_path" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the path to the user's profile</localized_desc>
+                        <localized_desc language="fr">le chemin vers le profil de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_PROFILEPATH_</substitute>
+            	</tag>
+            	<tag name="workstations" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the workstations from which the user can log on</localized_desc>
+                        <localized_desc language="fr">les postes de travail depuis lesquels l'utilisateur peut se connecter</localized_desc>
+                    </description>
+                    <substitute>_WORKSTATIONS_</substitute>
+            	</tag>
+            	<tag name="__password_last_set" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the date at which the password was last set</localized_desc>
+                        <localized_desc language="fr">la date de dernier changement du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_PWDLASTSET_</substitute>
+                    <callbacks>
+                    	<callback>decode_password_last_set</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="__expiry_date" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the expiry date of the account</localized_desc>
+                        <localized_desc language="fr">la date d'expiration du compte</localized_desc>
+                    </description>
+                    <substitute>_EXPIRYDATE_</substitute>
+                    <callbacks>
+                    	<callback>decode_expiry_date</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="primary_gid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the primary group ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de groupe primaire</localized_desc>
+                    </description>
+                    <substitute>_PGID_</substitute>
+            	</tag>
+            	<tag name="allowed_to_delegate_to" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the list of Service Principal Names to which the user can forward credentials</localized_desc>
+                        <localized_desc language="fr">la liste des Noms Principaux de Services auxquels l'utilisateur peut transférer ses crédences</localized_desc>
+                    </description>
+                    <substitute>_DELEGATETO_</substitute>
+            	</tag>
+            	<tag name="old_uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the bitwise value of User Account Control options (old)</localized_desc>
+                        <localized_desc language="fr">l'ancienne valeur en bits des options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_OLDUAC_</substitute>
+            	</tag>
+            	<tag name="new_uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the bitwise value of User Account Control options (new)</localized_desc>
+                        <localized_desc language="fr">la nouvelle valeur en bits des options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_NEWUAC_</substitute>
+            	</tag>
+            	<tag name="uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the User Account Control options</localized_desc>
+                        <localized_desc language="fr">les options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_ACCTCONTROL_</substitute>
+            	</tag>
+            	<tag name="user_parameters" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the optional, specific user parameters</localized_desc>
+                        <localized_desc language="fr">les paramètres utilisateurs spécifiques et optionnels</localized_desc>
+                    </description>
+                    <substitute>_USERPARAMS_</substitute>
+            	</tag>
+            	<tag name="sid_history" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the previous SID of the user, in case it was moved from a domain</localized_desc>
+                        <localized_desc language="fr">les précédents SID de l'utilisateur, si celui-ci provient d'un autre domaine</localized_desc>
+                    </description>
+                    <substitute>_SIDHISTORY_</substitute>
+            	</tag>
+            	<tag name="logon_hours" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the allowed logon hours</localized_desc>
+                        <localized_desc language="fr">les heures de connexion autorisées</localized_desc>
+                    </description>
+                    <substitute>_LOGONHOURS_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>User Account Created:
+        New Account Name: Naruto
+        New Domain: KONOHA
+        New Account ID: {S-1-5-21-184992632-1607737289-1287950321-1178}
+        Caller User Name: Hokage
+        Caller Domain: KONOHA
+        Caller Logon ID: (0x0,0x59DF36)
+        Privileges -
+        Attributes:
+        Sam Account Name: Naruto
+        Display Name: Naruto Uzumaki
+        User Principal Name: Naruto@dc=konoha,dc=shinobi
+        Home Directory: -
+        Home Drive: -
+        Script Path: -
+        Profile Path: -
+        User Workstations: -
+        Password Last Set: &lt;never&gt;
+        Account Expires: &lt;never&gt;
+        Primary Group ID: 513
+        AllowedToDelegateTo: -
+        Old UAC Value: 0x0
+        New UAC Value: 0x15
+        User Account Control:
+        Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled
+        User Parameters: -
+        Sid History: -
+        Logon Hours: &lt;value not set&gt;</text>
+					<expectedTags>
+						<expectedTag name="new_user">Naruto</expectedTag>
+						<expectedTag name="new_domain">KONOHA</expectedTag>
+						<expectedTag name="new_account_id">{S-1-5-21-184992632-1607737289-1287950321-1178}</expectedTag>
+						<expectedTag name="user">Hokage</expectedTag>
+						<expectedTag name="domain">KONOHA</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>
+						<expectedTag name="privileges">-</expectedTag>
+						<expectedTag name="sam_account_name">Naruto</expectedTag>
+						<expectedTag name="display_name">Naruto Uzumaki</expectedTag>
+						<expectedTag name="principal_name">Naruto@dc=konoha,dc=shinobi</expectedTag>
+						<expectedTag name="home_directory">-</expectedTag>
+						<expectedTag name="home_drive">-</expectedTag>
+						<expectedTag name="script_path">-</expectedTag>
+						<expectedTag name="profile_path">-</expectedTag>
+						<expectedTag name="workstations">-</expectedTag>
+						<expectedTag name="password_last_set">&lt;never&gt;</expectedTag>
+						<expectedTag name="expiry_date">&lt;never&gt;</expectedTag>
+						<expectedTag name="primary_gid">513</expectedTag>
+						<expectedTag name="old_uac">0x0</expectedTag>
+						<expectedTag name="new_uac">0x15</expectedTag>
+						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled</expectedTag>
+        				<expectedTag name="user_parameters">-</expectedTag>
+        				<expectedTag name="sid_history">-</expectedTag>
+        				<expectedTag name="logon_hours">&lt;value not set&gt;</expectedTag>
+					</expectedTags>
+            	</example>
+            </examples>
+        </pattern>        
     </patterns>
 </normalizer>
 
