@@ -4,7 +4,7 @@
 
 # pylogsparser - Logs parsers python library
 #
-# Copyright (C) 2011 Wallix Inc.
+# Copyright (C) 2012 Wallix Inc.
 #
 # This library is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by the
@@ -21,7 +21,16 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-from domain_parser import get_domain
-from robots import robot_regex
-from timezone import to_naive_utc
-from windows import winUTC2UnixTimestamp
+"""Windows and MS-related utility functions."""
+
+from datetime import datetime
+
+def winUTC2UnixTimestamp(winTimestamp):
+	"""Converts a windows UTC timestamp (increments of 100 nanoseconds since Jan 1, 1601)
+	into a Unix EPOCH timestamp.
+	
+	@param winTimestamp : the windows timestamp"""
+	
+	a = int(winTimestamp)
+	unixts = (a / 10000000) - 11644473600
+	return datetime.fromtimestamp(unixts).isoformat()

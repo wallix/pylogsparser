@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2003[EN]_3"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
+The following event IDs are covered: 
+* 627<!--, 632 to 668, 684, 685 (account management events),--><!--, 671, 768 (Policy change events),-->
+<!--* 672 to 683 (logon events) -->
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
+Les codes d'événements suivants sont normalisés :
+*  627<!--, 632 to 668, 684, 685 (événements de gestion des comptes),-->
+<!--* 672 to 683 (événements de connexion) --><!--, 671, 768 (Policy change events),-->
+</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="policy+-" type="basestring">
+            <description>
+        <localized_desc language="en">A single sign used to display a policy change.</localized_desc>
+        <localized_desc language="fr">Un simple signe utilisé pour indiquer un changement de politique.</localized_desc></description>
+            <regexp>[+-]</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_user_right">
+decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
+'SeMachineAccountPrivilege' : 'Ability to add workstations to the domain',
+'SeIncreaseQuotaPrivilege' : 'Ability to adjust memory quotas for a process',
+'SeBackupPrivilege' : 'Ability to back up files and directories',
+'SeChangeNotifyPrivilege' : 'Ability to bypass traverse checking',
+'SeSystemtimePrivilege' : 'Ability to change the system time',
+'SeCreatePagefilePrivilege' : 'Ability to create a pagefile',
+'SeCreateTokenPrivilege' : 'Ability to create a token object',
+'SeCreatePermanentPrivilege' : 'Ability to create permanent shared objects',
+'SeDebugPrivilege' : 'Ability to debug programs',
+'SeEnableDelegationPrivilege' : 'Ability to delegate trust on computers and user accounts',
+'SeRemoteShutdownPrivilege' : 'Ability to shutdown a system remotely',
+'SeAuditPrivilege' : 'Ability to generate security audits',
+'SeIncreaseBasePriorityPrivilege' : 'Ability to increase scheduling priority',
+'SeLoadDriverPrivilege' : 'Ability to load or unload device drivers',
+'SeLockMemoryPrivilege' : 'Ability to lock pages in memory',
+'SeSecurityPrivilege' : 'Ability to manage the security event log',
+'SeSystemEnvironmentPrivilege' : 'Ability to modify firmware environment values',
+'SeManageVolumePrivilege' : 'Ability to perform volume maintenance tasks',
+'SeProfileSingleProcessPrivilege' : 'Ability to profile a single process',
+'SeSystemProfilePrivilege' : 'Ability to profile the system performances',
+'SeUndockPrivilege' : 'Ability to remove the computer from its docking station',
+'SeAssignPrimaryTokenPrivilege' : 'Ability to replace a process level token',
+'SeRestorePrivilege' : 'Ability to restore files and directories',
+'SeShutdownPrivilege' : 'Ability to shut the system down',
+'SeSyncAgentPrivilege' : 'Ability to synchronize directory service data',
+'SeTakeOwnershipPrivilege' : 'Ability to take ownership of files or other objects',
+}
+log['user_right_description'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_direction">
+decoder = { '1' : 'Trusted',
+'2' : 'Trusting',
+'3' : '2-way',
+ }
+log['trust_direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_attributes">
+decoder = { '1' : 'Transitive',
+'2' : 'Nontransitive',
+ }
+log['trust_attributes'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_type">
+decoder = { '1': 'NT 4.0 legacy trust',
+'2' : 'Kerberos realm trust',
+'3' : 'forest or domain trust with another active directory domain',
+ }
+log['trust_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="eventID-00627">
+            <description>
+                <localized_desc language="en">Password change attempt failure</localized_desc>
+                <localized_desc language="fr">Tentative infructueuse de changement de mot de passe</localized_desc>
+            </description>
+            <text>Change Password Attempt:\s+Target Account Name: _TARGETACCOUNT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCOUNTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCOUNT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCOUNTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user attempting to change the password, can be Anonymous as a logon is not required to do so</localized_desc>
+                        <localized_desc language="fr">L'utilisateur tentant de changer le mot de passe, peut être un compte anonyme car l'opération ne nécessite pas d'être authentifié</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">an undocumented value, empty most of the time</localized_desc>
+                        <localized_desc language="fr">un champ non documenté, de valeur nulle la plupart du temps</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Change Password Attempt:
+Target Account Name: user
+Target Domain: ELMW2
+Target Account ID: ELMW2\user
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x130650)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">user</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\user</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x130650)</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>     
+    </patterns>
+</normalizer>
+

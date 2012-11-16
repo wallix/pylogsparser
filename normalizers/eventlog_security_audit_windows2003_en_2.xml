@@ -36,16 +36,14 @@
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
 * 592 to 595 (processes events),
-* 608 to 612<!--, 671, 768--> (Policy change events),
-<!--* 624, 627, 632 to 668, 684, 685 (account management events),-->
-<!--* 672 to 683 (logon events) -->
+* 608 to 612 (Policy change events),
+* 624 (account management events)
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
 Les codes d'événements suivants sont normalisés :
 * 592 to 595 (événements de suivi des processus),
-<!--* 608 to 612, 671, 768 (événements de modification de stratégies),-->
-<!--* 624, 627, 632 to 668, 684, 685 (événements de gestion des comptes),-->
-<!--* 672 to 683 (événements de connexion) -->
+* 608 to 612(événements de modification de stratégies),
+* 624 (événements de gestion des comptes),
 </localized_desc>
     </description>
     <authors>
@@ -1152,7 +1150,7 @@ Changed By:
 					</expectedTags>
             	</example>
             </examples>
-        </pattern>        
+        </pattern>
     </patterns>
 </normalizer>
 

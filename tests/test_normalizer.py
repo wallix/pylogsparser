@@ -152,6 +152,7 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_033_eventlogW2003(self):
         self.normalize_samples('eventlog_security_audit_windows2003_en.xml', 'EventLog-Security-Windows2003[EN]_1', 0.99)
         self.normalize_samples('eventlog_security_audit_windows2003_en_2.xml', 'EventLog-Security-Windows2003[EN]_2', 0.99)
+        self.normalize_samples('eventlog_security_audit_windows2003_en_3.xml', 'EventLog-Security-Windows2003[EN]_3', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
