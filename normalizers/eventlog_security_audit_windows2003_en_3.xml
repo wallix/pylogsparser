@@ -204,7 +204,439 @@ Privileges: -</text>
             		</expectedTags>
             	</example>
             </examples>
+        </pattern>
+        <pattern name="eventID-00632-00633-00636-00637-00650-00651-00655-00656-00660-00661-00665-00666">
+            <description>
+                <localized_desc language="en">Security Group Member change</localized_desc>
+                <localized_desc language="fr">Changement opéré sur un membre de Groupe de Sécurité</localized_desc>
+            </description>
+            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group Member (?:Added|Removed):\s+Member Name: _MEMBER_\s+Member ID: _MEMBERID_\s+Target Account Name: _TARGETACCT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <tags>
+            	<tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The member name</localized_desc>
+                        <localized_desc language="fr">Le nom du membre</localized_desc>
+                    </description>
+                    <substitute>_MEMBER_</substitute>
+            	</tag>
+            	<tag name="member_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The member ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du membre</localized_desc>
+                    </description>
+                    <substitute>_MEMBERID_</substitute>
+            	</tag>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Security Enabled Global Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Global Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Local Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Local Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Local Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Local Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Global Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Global Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Universal Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Universal Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Universal Group Member Added:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Universal Group Member Removed:
+Member Name: cn=alice,DC=elmw2,DC=local
+Member ID: ELMW2\alicej
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x1469C1)
+Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>
+            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern>     
+<!--        <pattern name="eventID-00632-00633-00636-00637">-->
+<!--            <description>-->
+<!--                <localized_desc language="en">Security Enabled Group Member changes</localized_desc>-->
+<!--                <localized_desc language="fr">Changement opéré sur un membre de Groupe de Sécurité</localized_desc>-->
+<!--            </description>-->
+<!--            <text>Security Enabled (?:Global|Local) Group Member (?:Added|Removed):\s+Member Name: _MEMBER_\s+Member ID: _MEMBERID_\s+Target Account Name: _TARGETACCT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>-->
+<!--            <tags>-->
+<!--            	<tag name="dn" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The member name</localized_desc>-->
+<!--                        <localized_desc language="fr">Le nom du membre</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_MEMBER_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="member_id" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The member ID</localized_desc>-->
+<!--                        <localized_desc language="fr">L'identifiant du membre</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_MEMBERID_</substitute>-->
+<!--            	</tag>-->
+<!--                <tag name="target_account" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The target account</localized_desc>-->
+<!--                        <localized_desc language="fr">Le compte cible</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_TARGETACCT_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="target_domain" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The target domain</localized_desc>-->
+<!--                        <localized_desc language="fr">Le domaine cible</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_TARGETDOMAIN_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="target_account_id" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The target account ID</localized_desc>-->
+<!--                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_TARGETACCTID_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="target_account_id" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The target account ID</localized_desc>-->
+<!--                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_TARGETACCTID_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="user" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The user modifying the member</localized_desc>-->
+<!--                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_USER_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="domain" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The domain</localized_desc>-->
+<!--                        <localized_desc language="fr">Le domaine</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_DOMAIN_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="logon_id" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The logon ID</localized_desc>-->
+<!--                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_LOGONID_</substitute>-->
+<!--            	</tag>-->
+<!--            	<tag name="privileges" tagType="Anything">-->
+<!--                    <description>-->
+<!--                        <localized_desc language="en">The privileges</localized_desc>-->
+<!--                        <localized_desc language="fr">Les privilèges</localized_desc>-->
+<!--                    </description>-->
+<!--                    <substitute>_PRIVILEGES_</substitute>-->
+<!--            	</tag>-->
+<!--            </tags>-->
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text></text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">user</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+<!--        </pattern>-->
     </patterns>
 </normalizer>
 
