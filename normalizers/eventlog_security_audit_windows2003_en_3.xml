@@ -729,6 +729,195 @@ Privileges: -</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00635-00648-00653-00658-00663">
+            <description>
+                <localized_desc language="en">Various group creation events</localized_desc>
+                <localized_desc language="fr">Événements de création de groupes variés</localized_desc>
+            </description>
+            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group Created:\s+(?:Target|New) Account Name: _TARGETACCT_\s+(?:Target|New) Domain: _TARGETDOMAIN_\s+(?:Target|New) Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+Attributes:\s+Sam Account Name: _SAMACCT_\s+Sid History: _SIDHISTORY_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="sam_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the legacy logon name</localized_desc>
+                        <localized_desc language="fr">le nom de compte utilisé par les clients de version antérieure à windows 2003</localized_desc>
+                    </description>
+                    <substitute>_SAMACCT_</substitute>
+            	</tag>
+            	<tag name="sid_history" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the previous SID of the user, in case it was moved from a domain</localized_desc>
+                        <localized_desc language="fr">les précédents SID de l'utilisateur, si celui-ci provient d'un autre domaine</localized_desc>
+                    </description>
+                    <substitute>_SIDHISTORY_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Security Enabled Local Group Created:
+New Account Name: AccountingStaff
+New Domain: ELMW2
+New Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Attributes:
+Sam Account Name: TestGroup
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">TestGroup</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Local Group Created:
+        Target Account Name: Employees_distrib
+        Target Domain: RESEARCH
+        Target Account ID: %{S-1-5-21-184992632-1607737289-1287950321-1190}
+        Caller User Name: Alebovsky
+        Caller Domain: RESEARCH
+        Caller Logon ID: (0x0,0x59DF36)
+        Privileges: -
+        Attributes:
+        Sam Account Name: Employees_distrib
+        Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">Employees_distrib</expectedTag>
+            			<expectedTag name="target_domain">RESEARCH</expectedTag>
+            			<expectedTag name="target_account_id">%{S-1-5-21-184992632-1607737289-1287950321-1190}</expectedTag>
+            			<expectedTag name="user">Alebovsky</expectedTag>
+            			<expectedTag name="domain">RESEARCH</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>
+            			<expectedTag name="sam_account_name">Employees_distrib</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Global Group Created:
+New Account Name: AccountingStaff
+New Domain: ELMW2
+New Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Attributes:
+Sam Account Name: TestGroup
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">TestGroup</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Universal Group Created:
+New Account Name: AccountingStaff
+New Domain: ELMW2
+New Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Attributes:
+Sam Account Name: TestGroup
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">TestGroup</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Universal Group Created:
+New Account Name: AccountingStaff
+New Domain: ELMW2
+New Account ID: ELMW2\AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Attributes:
+Sam Account Name: TestGroup
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">TestGroup</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern> 
     </patterns>
 </normalizer>
 
