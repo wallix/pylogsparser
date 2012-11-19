@@ -729,12 +729,12 @@ Privileges: -</text>
             	</example>
             </examples>
         </pattern>
-        <pattern name="eventID-00635-00648-00653-00658-00663">
+        <pattern name="eventID-00635-00639-00641-00648-00649-00653-00654-00658-00659-00663-00664">
             <description>
-                <localized_desc language="en">Various group creation events</localized_desc>
-                <localized_desc language="fr">Événements de création de groupes variés</localized_desc>
+                <localized_desc language="en">Various group creation or change events</localized_desc>
+                <localized_desc language="fr">Événements de création ou de changement de groupes variés</localized_desc>
             </description>
-            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group Created:\s+(?:Target|New) Account Name: _TARGETACCT_\s+(?:Target|New) Domain: _TARGETDOMAIN_\s+(?:Target|New) Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+Attributes:\s+Sam Account Name: _SAMACCT_\s+Sid History: _SIDHISTORY_</text>
+            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group (?:Created|Changed):\s+(?:Target|New) Account Name: _TARGETACCT_\s+(?:Target|New) Domain: _TARGETDOMAIN_\s+(?:Target|New) Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+(?:Changed )?Attributes:\s+Sam Account Name: _SAMACCT_\s+Sid History: _SIDHISTORY_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -913,6 +913,144 @@ Sid History: -</text>
             			<expectedTag name="domain">ELMW2</expectedTag>
             			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
             			<expectedTag name="sam_account_name">TestGroup</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Local Group Changed:
+  Target Account Name: Accounting
+  Target Domain: STG
+  Target Account ID: STG\Accounting
+  Caller User Name: wsmith
+  Caller Domain: STG
+  Caller Logon ID: (0x0,0x31AA8)
+  Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">Accounting</expectedTag>
+            			<expectedTag name="target_domain">STG</expectedTag>
+            			<expectedTag name="target_account_id">STG\Accounting</expectedTag>
+            			<expectedTag name="user">wsmith</expectedTag>
+            			<expectedTag name="domain">STG</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x31AA8)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Global Group Changed:
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Local Group Changed:
+        Target Account Name: Employees_distrib
+        Target Domain: RESEARCH
+        Target Account ID: %{S-1-5-21-184992632-1607737289-1287950321-1190}
+        Caller User Name: Alebovsky
+        Caller Domain: RESEARCH
+        Caller Logon ID: (0x0,0x59DF36)
+        Privileges: -
+        Changed Attributes:
+        Sam Account Name: -
+        Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">Employees_distrib</expectedTag>
+            			<expectedTag name="target_domain">RESEARCH</expectedTag>
+            			<expectedTag name="target_account_id">%{S-1-5-21-184992632-1607737289-1287950321-1190}</expectedTag>
+            			<expectedTag name="user">Alebovsky</expectedTag>
+            			<expectedTag name="domain">RESEARCH</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Global Group Changed:
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Enabled Universal Group Changed:
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Security Disabled Universal Group Changed:
+Target Account Name: AccountingStaff
+Target Domain: ELMW2
+Target Account ID: AccountingStaff
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Sid History: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">AccountingStaff</expectedTag>
+            			<expectedTag name="target_domain">ELMW2</expectedTag>
+            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+            			<expectedTag name="sam_account_name">-</expectedTag>
             			<expectedTag name="sid_history">-</expectedTag>
             		</expectedTags>
             	</example>
