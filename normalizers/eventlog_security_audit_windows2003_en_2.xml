@@ -37,13 +37,13 @@
 The following event IDs are covered: 
 * 592 to 595 (processes events),
 * 608 to 612 (Policy change events),
-* 624, 642, 645 (account management events)
+* 624, 642, 645, 646 (account management events)
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
 Les codes d'événements suivants sont normalisés :
 * 592 to 595 (événements de suivi des processus),
 * 608 to 612(événements de modification de stratégies),
-* 624, 642, 645 (événements de gestion des comptes),
+* 624, 642, 645, 646 (événements de gestion des comptes),
 </localized_desc>
     </description>
     <authors>
@@ -903,13 +903,20 @@ Changed By:
             	</example>
             </examples>
         </pattern>
-        <pattern name="eventID-00624-00642-00645">
+        <pattern name="eventID-00624-00642-00645-00646">
             <description>
-                <localized_desc language="en">User account creation</localized_desc>
-                <localized_desc language="fr">Création d'un utilisateur</localized_desc>
+                <localized_desc language="en">User account creation or change</localized_desc>
+                <localized_desc language="fr">Création ou modification d'un utilisateur</localized_desc>
             </description>
-            <text>(?:Computer|User) Account (?:Created|Changed):\s+(?:New|Target) Account Name: _NEWUSER_\s+(?:New|Target) Domain: _NEWDOMAIN_\s+(?:Target|New) Account ID: _ACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges:? _PRIVILEGES_\s+(?:Changed )?Attributes:\s+Sam Account Name: _SAMACCT_\s+Display Name: _DISPLAYNAME_\s+User Principal Name: _DN_\s+Home Directory: _HOMEDIR_\s+Home Drive: _HOMEDRIVE_\s+Script Path: _SCRIPTPATH_\s+Profile Path: _PROFILEPATH_\s+User Workstations: _WORKSTATIONS_\s+Password Last Set: _PWDLASTSET_\s+Account Expires: _EXPIRYDATE_\s+Primary Group ID: _PGID_\s+AllowedToDelegateTo: _DELEGATETO_\s+Old UAC Value: _OLDUAC_\s+New UAC Value: _NEWUAC_\s+User Account Control:\s+_ACCTCONTROL_\s+User Parameters: _USERPARAMS_\s+Sid History: _SIDHISTORY_\s+Logon Hours: _LOGONHOURS_(?:\s+DNS Host Name: _DNSHOSTNAME_)?(?:\s+Service Principal Names: _SERVICEPRINCIPALNAMES_)?</text>
+            <text>(?:Computer|User) Account (?:Created|Changed):\s+(?:_ACTION_\s+)?(?:New|Target) Account Name: _NEWUSER_\s+(?:New|Target) Domain: _NEWDOMAIN_\s+(?:Target|New) Account ID: _ACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges:? _PRIVILEGES_\s+(?:Changed )?Attributes:\s+Sam Account Name: _SAMACCT_\s+Display Name: _DISPLAYNAME_\s+User Principal Name: _DN_\s+Home Directory: _HOMEDIR_\s+Home Drive: _HOMEDRIVE_\s+Script Path: _SCRIPTPATH_\s+Profile Path: _PROFILEPATH_\s+User Workstations: _WORKSTATIONS_\s+Password Last Set: _PWDLASTSET_\s+Account Expires: _EXPIRYDATE_\s+Primary Group ID: _PGID_\s+AllowedToDelegateTo: _DELEGATETO_\s+Old UAC Value: _OLDUAC_\s+New UAC Value: _NEWUAC_\s+User Account Control:\s+_ACCTCONTROL_\s+User Parameters: _USERPARAMS_\s+Sid History: _SIDHISTORY_\s+Logon Hours: _LOGONHOURS_(?:\s+DNS Host Name: _DNSHOSTNAME_)?(?:\s+Service Principal Names: _SERVICEPRINCIPALNAMES_)?</text>
             <tags>
+            	<tag name="action" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The type of change, in case of a computer account change</localized_desc>
+                        <localized_desc language="fr">Le type de changement, dans le cas d'un changement de compte d'ordinateur</localized_desc>
+                    </description>
+                    <substitute>_ACTION_</substitute>
+            	</tag>
                 <tag name="target_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The target user name</localized_desc>
@@ -1269,6 +1276,64 @@ Service Principal Names: -</text>
 						<expectedTag name="old_uac">0x0</expectedTag>
 						<expectedTag name="new_uac">0x85</expectedTag>
 						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Workstation Trust Account' - Enabled</expectedTag>
+        				<expectedTag name="user_parameters">-</expectedTag>
+        				<expectedTag name="sid_history">-</expectedTag>
+        				<expectedTag name="dest_host">-</expectedTag>
+        				<expectedTag name="service_principal_names">-</expectedTag>
+					</expectedTags>
+            	</example>
+            	<example>
+            		<text>Computer Account Changed:
+Account Enabled.
+Target Account Name: COMP1$
+Target Domain: ELMW2
+Target Account ID: comp1
+Caller User Name: Administrator
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x12D622)
+Privileges: -
+Changed Attributes:
+Sam Account Name: -
+Display Name: -
+User Principal Name: -
+Home Directory: -
+Home Drive: -
+Script Path: -
+Profile Path: -
+User Workstations: -
+Password Last Set: -
+Account Expires: -
+Primary Group ID: -
+AllowedToDelegateTo: -
+Old UAC Value: -
+New UAC Value: -
+User Account Control: -
+User Parameters: -
+Sid History: -
+Logon Hours: -
+DNS Host Name: -
+Service Principal Names: -</text>
+					<expectedTags>
+						<expectedTag name="action">Account Enabled.</expectedTag>
+						<expectedTag name="target_user">COMP1$</expectedTag>
+						<expectedTag name="target_domain">ELMW2</expectedTag>
+						<expectedTag name="target_account_id">comp1</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">ELMW2</expectedTag>
+						<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>
+						<expectedTag name="privileges">-</expectedTag>
+						<expectedTag name="sam_account_name">-</expectedTag>
+						<expectedTag name="display_name">-</expectedTag>
+						<expectedTag name="principal_name">-</expectedTag>
+						<expectedTag name="home_directory">-</expectedTag>
+						<expectedTag name="home_drive">-</expectedTag>
+						<expectedTag name="script_path">-</expectedTag>
+						<expectedTag name="profile_path">-</expectedTag>
+						<expectedTag name="workstations">-</expectedTag>
+						<expectedTag name="primary_gid">-</expectedTag>
+						<expectedTag name="old_uac">-</expectedTag>
+						<expectedTag name="new_uac">-</expectedTag>
+						<expectedTag name="uac">-</expectedTag>
         				<expectedTag name="user_parameters">-</expectedTag>
         				<expectedTag name="sid_history">-</expectedTag>
         				<expectedTag name="dest_host">-</expectedTag>
