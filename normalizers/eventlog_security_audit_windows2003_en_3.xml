@@ -175,6 +175,20 @@ decoder={ '0x1' : "Client's entry in database has expired",
 }
 log['reason'] = decoder.get(value, "-")
 		</callback>
+		<callback name="decode_error_code_680">
+decoder = {'0xC0000064' : "user name does not exist",
+'0xC000006A' : "correct user name but wrong password",
+'0xC0000234' : "user currently locked out",
+'0xC0000072' : "account currently disabled",
+'0xC000006F' : "logon attempt outside of allowed hours",
+'0xC0000070' : "workstation restriction",
+'0xC0000193' : "account expiration",
+'0xC0000071' : "expired password",
+'0xC0000224' : "password change required at next logon",
+'0x0' : "success",
+}
+log['status'] = decoder.get(value, "UNKNOWN")
+		</callback>
     </callbacks>
     <patterns>
         <pattern name="eventID-00627">
@@ -1632,6 +1646,61 @@ OEM Information: -</text>
                     <substitute>_MAPPEDNAME_</substitute>
             	</tag>
             </tags>
+        </pattern>
+        <pattern name="eventID-00680">
+            <description>
+                <localized_desc language="en">Logon attempt resulting in an error</localized_desc>
+                <localized_desc language="fr">Tentative de connexion aboutissant à une erreur</localized_desc>
+            </description>
+            <text>Logon attempt by: _AUTHPACKAGE_\s+Logon account: _USER_\s+Source Workstation: _SOURCEHOST_\s+Error Code: _ERRORCODE_</text>
+            <tags>
+                <tag name="authentication_package" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The authentication mechanism</localized_desc>
+                        <localized_desc language="fr">Le mécanisme d'authentification</localized_desc>
+                    </description>
+                    <substitute>_AUTHPACKAGE_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The workstation used for the logon attempt</localized_desc>
+                        <localized_desc language="fr">Le poste de travail à partir duquel la tentative de connexion a lieu</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            	<tag name="error_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The error code</localized_desc>
+                        <localized_desc language="fr">Le code d'erreur</localized_desc>
+                    </description>
+                    <substitute>_ERRORCODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_error_code_680</callback>
+                    </callbacks>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Logon attempt by: MICROSOFT _AUTHENTICATION _PACKAGE_V1_0
+Logon account: sbergman
+Source Workstation: RAID
+Error Code: 0xC0000064</text>
+            		<expectedTags>
+            			<expectedTag name="user">sbergman</expectedTag>
+            			<expectedTag name="authentication_package">MICROSOFT _AUTHENTICATION _PACKAGE_V1_0</expectedTag>
+            			<expectedTag name="source_host">RAID</expectedTag>
+            			<expectedTag name="error_code">0xC0000064</expectedTag>
+            			<expectedTag name="status">user name does not exist</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern>
     </patterns>
 </normalizer>
