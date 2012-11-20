@@ -1055,6 +1055,100 @@ Sid History: -</text>
             		</expectedTags>
             	</example>
             </examples>
+        </pattern>
+        <pattern name="eventID-00644-00671">
+            <description>
+                <localized_desc language="en">Account locking events</localized_desc>
+                <localized_desc language="fr">Événements de blocage de compte</localized_desc>
+            </description>
+            <text>User Account (?:Unlocked|Locked Out):\s+Target Account Name: _TARGETACCT_\s+(?:Target Domain: _TARGETDOMAIN_\s+)?Target Account ID: _TARGETACCTID_\s+(?:Caller Machine Name: _SOURCEHOST_\s+)?Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user locking or unlocking the account</localized_desc>
+                        <localized_desc language="fr">L'utilisateur verrouillant ou déverrouillant le compte cible</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>User Account Locked Out:
+Target Account Name: alicej
+Target Account ID: ELMW2\alicej
+Caller Machine Name: W3DC
+Caller User Name: W2DC$
+Caller Domain: ELMW2
+Caller Logon ID: (0x0,0x3E7)</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">alicej</expectedTag>
+            			<expectedTag name="target_account_id">ELMW2\alicej</expectedTag>
+            			<expectedTag name="source_host">W3DC</expectedTag>
+            			<expectedTag name="user">W2DC$</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x3E7)</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>User Account Unlocked:
+Target Account Name: harold
+Target Domain: ELM
+Target Account ID: ELM\harold
+Caller User Name: administrator
+Caller Domain: ELM
+Caller Logon ID: (0x0,0x158EB7)</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">harold</expectedTag>
+            			<expectedTag name="target_account_id">ELM\harold</expectedTag>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELM</expectedTag>
+            			<expectedTag name="target_domain">ELM</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
         </pattern> 
     </patterns>
 </normalizer>
