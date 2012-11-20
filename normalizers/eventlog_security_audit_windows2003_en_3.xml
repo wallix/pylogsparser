@@ -1149,7 +1149,94 @@ Caller Logon ID: (0x0,0x158EB7)</text>
             		</expectedTags>
             	</example>
             </examples>
-        </pattern> 
+        </pattern>
+        <pattern name="eventID-00682-00683">
+            <description>
+                <localized_desc language="en">connection to/disconnection from winstation</localized_desc>
+                <localized_desc language="fr">connexion à/déconnexion d'une station de travail</localized_desc>
+            </description>
+            <text>Session (?:reconnected to|disconnected from) winstation:\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_\s+Session Name: _SESSIONNAME_\s+Client Name: _SOURCEHOST_\s+Client Address: _SOURCEIP_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user connecting or disconnecting from the terminal server session</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+                <tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The session name</localized_desc>
+                        <localized_desc language="fr">Le nom de session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONNAME_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Session reconnected to winstation:
+User Name: administrator
+Domain: ELMW2
+Logon ID: (0x0,0xBBA2)
+Session Name: RDP-Tcp#5
+Client Name: CPQ
+Client Address: 10.42.42.90</text>
+            		<expectedTags>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0xBBA2)</expectedTag>
+            			<expectedTag name="session_name">RDP-Tcp#5</expectedTag>
+            			<expectedTag name="source_host">CPQ</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.90</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Session disconnected from winstation:
+User Name: administrator
+Domain: ELMW2
+Logon ID: (0x0,0x5BAA5)
+Session Name: Unknown
+Client Name: CPQ
+Client Address: 10.42.42.90</text>
+            		<expectedTags>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELMW2</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x5BAA5)</expectedTag>
+            			<expectedTag name="session_name">Unknown</expectedTag>
+            			<expectedTag name="source_host">CPQ</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.90</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
