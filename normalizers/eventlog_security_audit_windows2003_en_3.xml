@@ -125,6 +125,56 @@ try:
 except:
 	log['expiry_date'] = value
 		</callback>
+		<callback name="decode_ticket_failure">
+decoder={ '0x1' : "Client's entry in database has expired",
+'0x2' : "Server's entry in database has expired",
+'0x3' : "Requested protocol version number not supported",
+'0x4' : "Client's key encrypted in old master key",
+'0x5' :  "Server's key encrypted in old master key",
+'0x6' : "Client not found in Kerberos database",
+'0x7' : "Server not found in Kerberos database",
+'0x8' : "Multiple principal entries in database",
+'0x9' : "The client or server has a null key",
+'0xA' : "Ticket not eligible for postdating",
+'0xB' : "Requested start time is later than end time",
+'0xC' : "KDC policy rejects requests",
+'0xD' : "KDC cannot accommodate requested option",
+'0xE' : "KDC has no support for encryption type",
+'0xF' : "KDC has no support for checksum type",
+'0x10' : "KDC has no support for padata type",
+'0x11' : "KDC has no support for transited type",
+'0x12' : "Clients credentials have been revoked",
+'0x13' : "Credentials for server have been revoked",
+'0x14' : "TGT has been revoked",
+'0x15' : "Client not yet valid",
+'0x16' : "Server not yet valid",
+'0x17' : "Password has expired",
+'0x18' : "Pre-authentication information was invalid",
+'0x19' : "Additional pre-authentication required",
+'0x1F' : "Integrity check on decrypted field failed",
+'0x20' : "Ticket expired",
+'0x21' : "Ticket not yet valid",
+'0x22' : "Request is a replay",
+'0x23' : "The ticket isn't for us",
+'0x24' : "Ticket and authenticator don't match",
+'0x25' : "Clock skew too great",
+'0x26' : "Incorrect net address",
+'0x27' : "Protocol version mismatch",
+'0x28' : "Invalid message type",
+'0x29' : "Message stream modified",
+'0x2A' : "Message out of order",
+'0x2C' : "Specified version of key is not available",
+'0x2D' : "Service key not available",
+'0x2E' : "Mutual authentication failed",
+'0x2F' : "Incorrect message direction",
+'0x30' : "Alternative authentication method required",
+'0x31' : "Incorrect sequence number in message",
+'0x32' : "Inappropriate type of checksum in message",
+'0x3C' : "Generic error",
+'0x3D' : "Field is too long for this implementation",
+}
+log['reason'] = decoder.get(value, "-")
+		</callback>
     </callbacks>
     <patterns>
         <pattern name="eventID-00627">
@@ -1233,6 +1283,134 @@ Client Address: 10.42.42.90</text>
             			<expectedTag name="session_name">Unknown</expectedTag>
             			<expectedTag name="source_host">CPQ</expectedTag>
             			<expectedTag name="source_ip">10.42.42.90</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
+        <pattern name="eventID-00673-00674">
+            <description>
+                <localized_desc language="en">Service Ticket events</localized_desc>
+                <localized_desc language="fr">Événements concernant des tickets de service</localized_desc>
+            </description>
+            <text>Service Ticket (?:Request|Renewed):\s+User Name:(?: _USER_)?\s+User Domain: _DOMAIN_\s+Service Name: _SERVICENAME_\s+Service ID: _SERVICEID_\s+Ticket Options: _TICKETOPTIONS_\s+Ticket Encryption Type: _TICKETENCRYPTIONTYPE_\s+Client Address: _SOURCEIP_(?:\s+Failure Code: _FAILURECODE_\s+Logon GUID: _GUID_\s+Transited Services: _TRANSITEDSERVICES_)?</text>
+            <tags>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+                <tag name="service_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The name of the computer</localized_desc>
+                        <localized_desc language="fr">Le nom de l'ordinateur</localized_desc>
+                    </description>
+                    <substitute>_SERVICENAME_</substitute>
+            	</tag>
+            	<tag name="service_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICEID_</substitute>
+            	</tag>
+            	<tag name="ticket_options" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket options</localized_desc>
+                        <localized_desc language="fr">Les options de ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETOPTIONS_</substitute>
+            	</tag>
+            	<tag name="ticket_encryption_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket encryption type</localized_desc>
+                        <localized_desc language="fr">Le type d'encodage du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETENCRYPTIONTYPE_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client address</localized_desc>
+                        <localized_desc language="fr">L'adresse du client</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="failure_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure code</localized_desc>
+                        <localized_desc language="fr">Le code d'échec</localized_desc>
+                    </description>
+                    <substitute>_FAILURECODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_ticket_failure</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="guid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon GUID</localized_desc>
+                        <localized_desc language="fr">Le GUID de connexion</localized_desc>
+                    </description>
+                    <substitute>_GUID_</substitute>
+            	</tag>
+            	<tag name="transited_services" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The transited services</localized_desc>
+                        <localized_desc language="fr">Les services transités</localized_desc>
+                    </description>
+                    <substitute>_TRANSITEDSERVICES_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Service Ticket Request:
+User Name: 
+User Domain: SERVER.APPLEADV.COM
+Service Name: host/server1.server.appleadv.com
+Service ID: -
+Ticket Options: 0x40830000
+Ticket Encryption Type: -
+Client Address: 127.0.0.1
+Failure Code: 0xD
+Logon GUID: -
+Transited Services: -</text>
+            		<expectedTags>
+            			<expectedTag name="domain">SERVER.APPLEADV.COM</expectedTag>
+            			<expectedTag name="service_name">host/server1.server.appleadv.com</expectedTag>
+            			<expectedTag name="service_id">-</expectedTag>
+            			<expectedTag name="ticket_options">0x40830000</expectedTag>
+            			<expectedTag name="ticket_encryption_type">-</expectedTag>
+            			<expectedTag name="source_ip">127.0.0.1</expectedTag>
+            			<expectedTag name="failure_code">0xD</expectedTag>
+            			<expectedTag name="reason">KDC cannot accommodate requested option</expectedTag>
+            			<expectedTag name="guid">-</expectedTag>
+            			<expectedTag name="transited_services">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Service Ticket Renewed:
+User Name: qbvm$@MONTEREYTECHGROUP.COM
+User Domain: MONTEREYTECHGROUP.COM
+Service Name: krbtgt
+Service ID: MTG\krbtgt
+Ticket Options: 0x2
+Ticket Encryption Type: 0x17
+Client Address: 10.42.42.24</text>
+            		<expectedTags>
+            			<expectedTag name="user">qbvm$@MONTEREYTECHGROUP.COM</expectedTag>
+            			<expectedTag name="domain">MONTEREYTECHGROUP.COM</expectedTag>
+            			<expectedTag name="service_name">krbtgt</expectedTag>
+            			<expectedTag name="service_id">MTG\krbtgt</expectedTag>
+            			<expectedTag name="ticket_options">0x2</expectedTag>
+            			<expectedTag name="ticket_encryption_type">0x17</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.24</expectedTag>
             		</expectedTags>
             	</example>
             </examples>
