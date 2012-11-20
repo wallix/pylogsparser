@@ -1603,6 +1603,36 @@ OEM Information: -</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00678">
+            <description>
+                <localized_desc language="en">Account mapped for logon</localized_desc>
+                <localized_desc language="fr">Account mapping à la connexion</localized_desc>
+            </description>
+            <text>Account Mapped for Logon.\s+Mapping Attempted By: _ACCTMAPPER_\s+Client Name: _USER_\s+Mapped Name: _MAPPEDNAME_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="account_mapper" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">undocumented</localized_desc>
+                        <localized_desc language="fr">non documenté</localized_desc>
+                    </description>
+                    <substitute>_ACCTMAPPER_</substitute>
+            	</tag>
+            	<tag name="mapped_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">undocumented</localized_desc>
+                        <localized_desc language="fr">non documenté</localized_desc>
+                    </description>
+                    <substitute>_MAPPEDNAME_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
     </patterns>
 </normalizer>
 
