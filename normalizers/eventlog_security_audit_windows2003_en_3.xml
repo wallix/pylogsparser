@@ -1415,6 +1415,194 @@ Client Address: 10.42.42.24</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00643">
+            <description>
+                <localized_desc language="en">Domain policy change</localized_desc>
+                <localized_desc language="fr">Changement de politique de domaine</localized_desc>
+            </description>
+            <text>Domain Policy Changed:\s+_POLICY_ modified\s+Domain Name: _POLICYDOMAIN_\s+Domain ID: _POLICYDOMAINID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+Changed Attributes:\s+Min. Password Age: _MINPASSWDAGE_\s+Max. Password Age: _MAXPASSWDAGE_\s+Force Logoff: _FORCELOGOFF_\s+Lockout Threshold: _LOCKOUTTHRESHOLD_\s+Lockout Observation Window: _LOCKOUTOBSWINDOW_\s+Lockout Duration: _LOCKOUTDURATION_\s+Password Properties: _PASSWDPROPERTIES_\s+Min. Password Length: _MINPASSWDLENGTH_\s+Password History Length: _PASSWDHISTORYLENGTH_\s+Machine Account Quota: _MACHINEACCTQUOTA_\s+Mixed Domain Mode: _MIXEDDOMAINMODE_\s+Domain Behavior Version: _DOMAINBEHAVIORVERSION_\s+OEM Information</text>
+            <tags>
+                <tag name="policy" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy name</localized_desc>
+                        <localized_desc language="fr">Le nom de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICY_</substitute>
+            	</tag>
+            	<tag name="policy_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICYDOMAIN_</substitute>
+            	</tag>
+            	<tag name="policy_domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de domaine de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICYDOMAINID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user changing the policy</localized_desc>
+                        <localized_desc language="fr">L'utilisateur changeant la politique</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="minimum_password_age" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The minimum password age</localized_desc>
+                        <localized_desc language="fr">L'âge minimal du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_MINPASSWDAGE_</substitute>
+            	</tag>
+            	<tag name="maximum_password_age" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The maximum password age</localized_desc>
+                        <localized_desc language="fr">L'âge maximal du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_MAXPASSWDAGE_</substitute>
+            	</tag>
+            	<tag name="force_logoff" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The force logoff option</localized_desc>
+                        <localized_desc language="fr">L'option de déconnexion forcée</localized_desc>
+                    </description>
+                    <substitute>_FORCELOGOFF_</substitute>
+            	</tag>
+            	<tag name="lockout_threshold" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout threshold</localized_desc>
+                        <localized_desc language="fr">Le pallier de blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTTHRESHOLD_</substitute>
+            	</tag>
+            	<tag name="lockout_observation_window" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout observation window</localized_desc>
+                        <localized_desc language="fr">La plage d'observation du blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTOBSWINDOW_</substitute>
+            	</tag>
+            	<tag name="lockout_duration" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout duration</localized_desc>
+                        <localized_desc language="fr">La durée du blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTDURATION_</substitute>
+            	</tag>
+            	<tag name="password_properties" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The password properties as a bit code</localized_desc>
+                        <localized_desc language="fr">Les propriétés de mot de passe</localized_desc>
+                    </description>
+                    <substitute>_PASSWDPROPERTIES_</substitute>
+            	</tag>
+            	<tag name="minimum_password_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The minimum password length</localized_desc>
+                        <localized_desc language="fr">La longueur de mot de passe minimale</localized_desc>
+                    </description>
+                    <substitute>_MINPASSWDLENGTH_</substitute>
+            	</tag>
+            	<tag name="password_history_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The password history length</localized_desc>
+                        <localized_desc language="fr">La nombre de mots de passe conservés en historique</localized_desc>
+                    </description>
+                    <substitute>_PASSWDHISTORYLENGTH_</substitute>
+            	</tag>
+            	<tag name="machine_account_quota" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine account quota</localized_desc>
+                        <localized_desc language="fr">Le quota de comptes machines</localized_desc>
+                    </description>
+                    <substitute>_MACHINEACCTQUOTA_</substitute>
+            	</tag>
+            	<tag name="mixed_domain_mode" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The mixed domain mode</localized_desc>
+                        <localized_desc language="fr">Le mode de domaine mixte</localized_desc>
+                    </description>
+                    <substitute>_MIXEDDOMAINMODE_</substitute>
+            	</tag>
+            	<tag name="domain_behavior_version" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain behavior version</localized_desc>
+                        <localized_desc language="fr">La version de comportement de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINBEHAVIORVERSION_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Domain Policy Changed: - modified
+Domain Name: ELM
+Domain ID: ELM
+Caller User Name: administrator
+Caller Domain: ELM
+Caller Logon ID: (0x0,0x158EB7)
+Privileges: -
+Changed Attributes:
+Min. Password Age: -
+Max. Password Age: -
+Force Logoff: -
+Lockout Threshold: -
+Lockout Observation Window: -
+Lockout Duration: -
+Password Properties: -
+Min. Password Length: -
+Password History Length: -
+Machine Account Quota: -
+Mixed Domain Mode: -
+Domain Behavior Version: 2
+OEM Information: -</text>
+            		<expectedTags>
+            			<expectedTag name="policy">-</expectedTag>
+            			<expectedTag name="policy_domain">ELM</expectedTag>
+            			<expectedTag name="policy_domain_id">ELM</expectedTag>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ELM</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+            			<expectedTag name="minimum_password_age">-</expectedTag>
+            			<expectedTag name="maximum_password_age">-</expectedTag>
+            			<expectedTag name="force_logoff">-</expectedTag>
+            			<expectedTag name="lockout_threshold">-</expectedTag>
+            			<expectedTag name="lockout_observation_window">-</expectedTag>
+            			<expectedTag name="lockout_duration">-</expectedTag>
+            			<expectedTag name="password_properties">-</expectedTag>
+            			<expectedTag name="minimum_password_length">-</expectedTag>
+            			<expectedTag name="password_history_length">-</expectedTag>
+            			<expectedTag name="machine_account_quota">-</expectedTag>
+            			<expectedTag name="mixed_domain_mode">-</expectedTag>
+            			<expectedTag name="domain_behavior_version">2</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
