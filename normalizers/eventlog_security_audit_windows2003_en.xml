@@ -52,6 +52,14 @@ Les codes d'événements suivants sont normalisés :
         <author>mhu@wallix.com</author>
     </authors>
     <callbacks>
+    	<callback name="strip_values">
+for t in log.keys():
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
     	<callback name="decode_logon_type">
 decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
 log['method'] = decoder.get(value, 'UNKNOWN')
@@ -1170,5 +1178,8 @@ Privileges: SeSecurityPrivilege</text>
             </examples>
         </pattern>
     </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
 </normalizer>
 

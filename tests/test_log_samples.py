@@ -941,8 +941,64 @@ class Test(unittest.TestCase):
                 'local_ip' : '10.10.4.250',
                 'local_port' : '389',
                 })
-        
 
+    def test_zzz_eventlogW3EN(self):
+        """Testing Win2003 security audit logs (english)"""
+        self.aS("""<13>Nov 21 16:28:40 w2003en MSWinEventLog	0\tSecurity\t129\tWed Nov 21 16:28:40\t2012\t592\tSecurity\tSYSTEM\tUser\tSuccess Audit\tW2003EN\tDetailed Tracking\tA new process has been created:     New Process ID: 1536     Image File Name: C:\WINDOWS\system32\wpabaln.exe     Creator Process ID: 540     User Name: W2003EN$     Domain: WORKGROUP     Logon ID: (0x0,0x3E7)\t99""",
+               {
+                 'criticality': '0',
+                 'eventlog_id': '592',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Security',
+                 'source_host': 'W2003EN',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '99',
+                 'eventlog_description': """A new process has been created:     New Process ID: 1536     Image File Name: C:\WINDOWS\system32\wpabaln.exe     Creator Process ID: 540     User Name: W2003EN$     Domain: WORKGROUP     Logon ID: (0x0,0x3E7)""",
+                 "file_name" : "C:\WINDOWS\system32\wpabaln.exe",
+                 "user" : "W2003EN$",
+                 "domain" : "WORKGROUP",
+                 "logon_id" : "(0x0,0x3E7)",
+                 "pid" : "1536",})         
+
+        self.aS("""<13>Nov 21 17:45:05 w2003en MSWinEventLog 1\tSecurity\t233\tWed Nov 21 17:44:59\t2012\t529\tSecurity\tSYSTEM\tUser\tFailure Audit\tW2003EN\tLogon/Logoff\tLogon Failure:     Reason: Unknown user name or bad password     User Name: Administrator     Domain: W2003EN     Logon Type: 2     Logon Process: User32       Authentication Package: Negotiate     Workstation Name: W2003EN     Caller User Name: W2003EN$     Caller Domain: WORKGROUP     Caller Logon ID: (0x0,0x3E7)     Caller Process ID: 484     Transited Services: -     Source Network Address: 127.0.0.1     Source Port: 0\t206""", 
+               {'criticality': '1',
+                 'eventlog_id': '529',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Security',
+                 'source_host': 'W2003EN',
+                 'eventlog_type': 'Failure Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '206',
+                 "user" : "Administrator",
+                 "domain" : "W2003EN",
+                 "logon_type" : "2",
+                 "method" : "Interactive",
+                 "authentication_package" : 'Negotiate',
+                 "dest_host" : "W2003EN",
+                 "caller" : "W2003EN$",
+                 "caller_domain" : "WORKGROUP",
+                 "caller_logon_id" : "(0x0,0x3E7)",
+                 "status" : "failure",
+                 "reason" : "Unknown user name or bad password",
+                 "source_ip" : "127.0.0.1",
+                 "source_port" : "0",
+                 'eventlog_description': """Logon Failure:     Reason: Unknown user name or bad password     User Name: Administrator     Domain: W2003EN     Logon Type: 2     Logon Process: User32       Authentication Package: Negotiate     Workstation Name: W2003EN     Caller User Name: W2003EN$     Caller Domain: WORKGROUP     Caller Logon ID: (0x0,0x3E7)     Caller Process ID: 484     Transited Services: -     Source Network Address: 127.0.0.1     Source Port: 0""", })  
+
+        self.aS("""<13>Nov 21 17:45:25 w2003en MSWinEventLog	1\tSecurity\t237\tWed Nov 21 17:45:25\t2012\t576\tSecurity\tAdministrator\tUser\tSuccess Audit\tW2003EN\tPrivilege Use\tSpecial privileges assigned to new logon:     User Name: Administrator     Domain: W2003EN     Logon ID: (0x0,0x3A092)     Privileges: SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege\t210""", 
+               {'criticality': '1',
+                 'eventlog_id': '576',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Security',
+                 'source_host': 'W2003EN',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '210',
+                 "user" : "Administrator",
+                 "domain" : "W2003EN",
+                 "logon_id" : "(0x0,0x3A092)",
+                 "privileges" : "SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege",
+                 'eventlog_description': """Special privileges assigned to new logon:     User Name: Administrator     Domain: W2003EN     Logon ID: (0x0,0x3A092)     Privileges: SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege""", })  
 
 if __name__ == "__main__":
     unittest.main()

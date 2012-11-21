@@ -106,7 +106,7 @@ log['technet_link'] = url + str(value)
 	<localized_desc language="en">This is the Snare log format.</localized_desc>
 	<localized_desc language="fr">Description du format des logs Snare.</localized_desc>
       </description>
-        <text>CRITICALITY\tSOURCE_NAME\tSNARE_EVENT_COUNTER\t[a-zA-Z]{3}. \w+ [0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2}\t[0-9]{3}\tEVENTLOG_ID\tEXPANDED_SOURCENAME\tUSER_NAME\tSID_TYPE\tEVENT_LOGTYPE\tCOMPUTER_NAME\tCATEGORY_STRING\tDATA_STRING(?:\tMD5_CHECKSUM)?</text>
+        <text>CRITICALITY\tSOURCE_NAME\tSNARE_EVENT_COUNTER\t[a-zA-Z]{3}.? \w+ [0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2}\t[0-9]+\tEVENTLOG_ID\tEXPANDED_SOURCENAME\tUSER_NAME\tSID_TYPE\tEVENT_LOGTYPE\tCOMPUTER_NAME\tCATEGORY_STRING\t+DATA_STRING(?:\tMD5_CHECKSUM)?</text>
       <tags>
 	<tag name="criticality" tagType="criticality">
 	  <description>

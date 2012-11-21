@@ -35,13 +35,13 @@
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
-* 627<!--, 632 to 668, 684, 685 (account management events),--><!--, 671, 768 (Policy change events),-->
-<!--* 672 to 683 (logon events) -->
+* 685 (account management events),
+* 675 (logon events)
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
 Les codes d'événements suivants sont normalisés :
-*  627<!--, 632 to 668, 684, 685 (événements de gestion des comptes),-->
-<!--* 672 to 683 (événements de connexion) --><!--, 671, 768 (Policy change events),-->
+*  685 (événements de gestion des comptes),
+* 675 (événements de connexion)
 </localized_desc>
     </description>
     <authors>
@@ -56,6 +56,14 @@ Les codes d'événements suivants sont normalisés :
         </tagType>
     </tagTypes>
     <callbacks>
+    	<callback name="strip_values">
+for t in log.keys():
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
     	<callback name="decode_logon_type">
 decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
 log['method'] = decoder.get(value, 'UNKNOWN')
@@ -360,5 +368,8 @@ Client Address: 10.42.42.10</text>
             </examples>
         </pattern>
     </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
 </normalizer>
 
