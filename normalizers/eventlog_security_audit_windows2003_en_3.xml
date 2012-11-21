@@ -1702,6 +1702,139 @@ Error Code: 0xC0000064</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00672">
+            <description>
+                <localized_desc language="en">Authentication ticket request</localized_desc>
+                <localized_desc language="fr">Demande de ticket d'authentification</localized_desc>
+            </description>
+            <text>Authentication Ticket Request:\s+User Name: _USER_\s+Supplied Realm Name: _REALM_\s+User ID: _USERID_\s+Service Name: _SERVICENAME_\s+Service ID: _SERVICEID_\s+Ticket Options: _TICKETOPTIONS_\s+Result Code: _RESULTCODE_\s+Ticket Encryption Type: _TICKETENCRYPTIONTYPE_\s+Pre-Authentication Type: _PREAUTHTYPE_\s+Client Address: _SOURCEIP_\s+Certificate Issuer Name: _CERTISSUER_\s+Certificate Serial Number: _CERTSN_\s+Certificate Thumbprint: _CERTTHUMBPRINT_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user requesting a ticket</localized_desc>
+                        <localized_desc language="fr">L'utilisateur demandant le ticket</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="realm" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user account's DNS suffix</localized_desc>
+                        <localized_desc language="fr">Le suffixe DNS du compte utilisateur</localized_desc>
+                    </description>
+                    <substitute>_REALM_</substitute>
+            	</tag>
+            	<tag name="user_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user ID, NT style</localized_desc>
+                        <localized_desc language="fr">L'identifiant utilisateur, compatible NT</localized_desc>
+                    </description>
+                    <substitute>_USERID_</substitute>
+            	</tag>
+            	<tag name="service_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service name</localized_desc>
+                        <localized_desc language="fr">Le nom de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICENAME_</substitute>
+            	</tag>
+            	<tag name="service_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICEID_</substitute>
+            	</tag>
+            	<tag name="ticket_options" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket options</localized_desc>
+                        <localized_desc language="fr">Les options du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETOPTIONS_</substitute>
+            	</tag>
+            	<tag name="result_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The request result code</localized_desc>
+                        <localized_desc language="fr">Les code du résultat de la demande</localized_desc>
+                    </description>
+                    <substitute>_RESULTCODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_ticket_failure</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="ticket_encryption_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket encryption type</localized_desc>
+                        <localized_desc language="fr">Le type de cryptage du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETENCRYPTIONTYPE_</substitute>
+            	</tag>
+            	<tag name="preauth_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The pre-authentication type</localized_desc>
+                        <localized_desc language="fr">Le type de préauthentification</localized_desc>
+                    </description>
+                    <substitute>_PREAUTHTYPE_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The origin of the ticket request</localized_desc>
+                        <localized_desc language="fr">L'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="certificate_issuer" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate issuer name</localized_desc>
+                        <localized_desc language="fr">L'émetteur du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTISSUER_</substitute>
+            	</tag>
+            	<tag name="certificate_serial_number" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate serial number</localized_desc>
+                        <localized_desc language="fr">Le numéro de série du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTSN_</substitute>
+            	</tag>
+            	<tag name="certificate_thumbprint" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate thumbprint</localized_desc>
+                        <localized_desc language="fr">L'empreinte du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTTHUMBPRINT_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Authentication Ticket Request:
+User Name: Administrator
+Supplied Realm Name: elm.local
+User ID: S-1-5-21-2121316058-685099279-904526279-500
+Service Name: krbtgt
+Service ID: ELM\krbtgt
+Ticket Options: 0x40810010
+Result Code: -
+Ticket Encryption Type: 0x17
+Pre-Authentication Type: 2
+Client Address: 10.42.42.171
+Certificate Issuer Name: 
+Certificate Serial Number: 
+Certificate Thumbprint: </text>
+            		<expectedTags>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="realm">elm.local</expectedTag>
+            			<expectedTag name="user_id">S-1-5-21-2121316058-685099279-904526279-500</expectedTag>
+            			<expectedTag name="service_name">krbtgt</expectedTag>
+            			<expectedTag name="service_id">ELM\krbtgt</expectedTag>
+            			<expectedTag name="ticket_options">0x40810010</expectedTag>
+            			<expectedTag name="result_code">-</expectedTag>
+            			<expectedTag name="ticket_encryption_type">0x17</expectedTag>
+            			<expectedTag name="preauth_type">2</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.171</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
