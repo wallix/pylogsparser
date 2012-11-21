@@ -271,6 +271,94 @@ Client Address: 10.42.42.10</text>
             	</example>
             </examples>
         </pattern>
+        <pattern name="eventID-00685">
+            <description>
+                <localized_desc language="en">Account name change</localized_desc>
+                <localized_desc language="fr">Changement de nom de compte</localized_desc>
+            </description>
+            <text>Account Name Changed:\s+Old Account Name: _OLDNAME_\s+New Account Name: _NEWNAME_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <tags>
+                <tag name="old_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The old account name</localized_desc>
+                        <localized_desc language="fr">L'ancien nom du compte</localized_desc>
+                    </description>
+                    <substitute>_OLDNAME_</substitute>
+            	</tag>
+            	<tag name="new_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new account name</localized_desc>
+                        <localized_desc language="fr">Le nouveau nom du compte</localized_desc>
+                    </description>
+                    <substitute>_NEWNAME_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Account Name Changed:
+  Old Account Name: DC1$
+  New Account Name: DC3$
+  Target Domain: ACME
+  Target Account ID: ACME\DC3$
+  Caller User Name: administrator
+  Caller Domain: ACME
+  Caller Logon ID: (0x0,0x3C154)
+  Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="old_name">DC1$</expectedTag>
+            			<expectedTag name="new_name">DC3$</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="target_account_id">ACME\DC3$</expectedTag>
+            			<expectedTag name="user">administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0x3C154)</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
