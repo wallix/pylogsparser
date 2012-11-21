@@ -35,13 +35,15 @@
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
-* 627<!--, 632 to 668, 684, 685 (account management events),--><!--, 671, 768 (Policy change events),-->
-<!--* 672 to 683 (logon events) -->
+* 627, 632 to 668 (account management events),
+* 671 (Policy change events),
+* 672 to 674 (logon events)
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
 Les codes d'événements suivants sont normalisés :
-*  627<!--, 632 to 668, 684, 685 (événements de gestion des comptes),-->
-<!--* 672 to 683 (événements de connexion) --><!--, 671, 768 (Policy change events),-->
+* 627, 632 à 668 (événements de gestion des comptes),
+* 671, 768 (événements de changement de politique),
+* 672 à 674 (événements de connexion)
 </localized_desc>
     </description>
     <authors>
@@ -126,54 +128,60 @@ except:
 	log['expiry_date'] = value
 		</callback>
 		<callback name="decode_ticket_failure">
-decoder={ '0x1' : "Client's entry in database has expired",
-'0x2' : "Server's entry in database has expired",
-'0x3' : "Requested protocol version number not supported",
-'0x4' : "Client's key encrypted in old master key",
-'0x5' :  "Server's key encrypted in old master key",
-'0x6' : "Client not found in Kerberos database",
-'0x7' : "Server not found in Kerberos database",
-'0x8' : "Multiple principal entries in database",
-'0x9' : "The client or server has a null key",
-'0xA' : "Ticket not eligible for postdating",
-'0xB' : "Requested start time is later than end time",
-'0xC' : "KDC policy rejects requests",
-'0xD' : "KDC cannot accommodate requested option",
-'0xE' : "KDC has no support for encryption type",
-'0xF' : "KDC has no support for checksum type",
-'0x10' : "KDC has no support for padata type",
-'0x11' : "KDC has no support for transited type",
-'0x12' : "Clients credentials have been revoked",
-'0x13' : "Credentials for server have been revoked",
-'0x14' : "TGT has been revoked",
-'0x15' : "Client not yet valid",
-'0x16' : "Server not yet valid",
-'0x17' : "Password has expired",
-'0x18' : "Pre-authentication information was invalid",
-'0x19' : "Additional pre-authentication required",
-'0x1F' : "Integrity check on decrypted field failed",
-'0x20' : "Ticket expired",
-'0x21' : "Ticket not yet valid",
-'0x22' : "Request is a replay",
-'0x23' : "The ticket isn't for us",
-'0x24' : "Ticket and authenticator don't match",
-'0x25' : "Clock skew too great",
-'0x26' : "Incorrect net address",
-'0x27' : "Protocol version mismatch",
-'0x28' : "Invalid message type",
-'0x29' : "Message stream modified",
-'0x2A' : "Message out of order",
-'0x2C' : "Specified version of key is not available",
-'0x2D' : "Service key not available",
-'0x2E' : "Mutual authentication failed",
-'0x2F' : "Incorrect message direction",
-'0x30' : "Alternative authentication method required",
-'0x31' : "Incorrect sequence number in message",
-'0x32' : "Inappropriate type of checksum in message",
-'0x3C' : "Generic error",
-'0x3D' : "Field is too long for this implementation",
+decoder={ '0X1' : "Client's entry in database has expired",
+'0X2' : "Server's entry in database has expired",
+'0X3' : "Requested protocol version number not supported",
+'0X4' : "Client's key encrypted in old master key",
+'0X5' :  "Server's key encrypted in old master key",
+'0X6' : "Client not found in Kerberos database",
+'0X7' : "Server not found in Kerberos database",
+'0X8' : "Multiple principal entries in database",
+'0X9' : "The client or server has a null key",
+'0XA' : "Ticket not eligible for postdating",
+'0XB' : "Requested start time is later than end time",
+'0XC' : "KDC policy rejects requests",
+'0XD' : "KDC cannot accommodate requested option",
+'0XE' : "KDC has no support for encryption type",
+'0XF' : "KDC has no support for checksum type",
+'0X10' : "KDC has no support for padata type",
+'0X11' : "KDC has no support for transited type",
+'0X12' : "Clients credentials have been revoked",
+'0X13' : "Credentials for server have been revoked",
+'0X14' : "TGT has been revoked",
+'0X15' : "Client not yet valid",
+'0X16' : "Server not yet valid",
+'0X17' : "Password has expired",
+'0X18' : "Pre-authentication information was invalid",
+'0X19' : "Additional pre-authentication required",
+'0X1F' : "Integrity check on decrypted field failed",
+'0X20' : "Ticket expired",
+'0X21' : "Ticket not yet valid",
+'0X22' : "Request is a replay",
+'0X23' : "The ticket isn't for us",
+'0X24' : "Ticket and authenticator don't match",
+'0X25' : "Clock skew too great",
+'0X26' : "Incorrect net address",
+'0X27' : "Protocol version mismatch",
+'0X28' : "Invalid message type",
+'0X29' : "Message stream modified",
+'0X2A' : "Message out of order",
+'0X2C' : "Specified version of key is not available",
+'0X2D' : "Service key not available",
+'0X2E' : "Mutual authentication failed",
+'0X2F' : "Incorrect message direction",
+'0X30' : "Alternative authentication method required",
+'0X31' : "Incorrect sequence number in message",
+'0X32' : "Inappropriate type of checksum in message",
+'0X3C' : "Generic error",
+'0X3D' : "Field is too long for this implementation",
 }
-log['reason'] = decoder.get(value, "-")
+v = value.upper()
+if not v.startswith('0X'):
+	try:
+		v = hex(int(value)).upper()
+	except:
+		pass
+log['reason'] = decoder.get(v, "-")
 		</callback>
 		<callback name="decode_error_code_680">
 decoder = {'0xC0000064' : "user name does not exist",
