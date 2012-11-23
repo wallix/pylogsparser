@@ -74,6 +74,9 @@ The definition file's root must hold the following elements :
 * the tag value to parse (raw, body...)
 * the service taxonomy, if relevant, of the normalizer. See the end of this
   document for more details.
+* the optional expandWhitespaces value. If set to "yes", spaces or carriage returns
+   in a pattern will be converted to match any whitespace character (line feed, tab, etc). 
+   This is to maintain the readability of multiline patterns.
 
 Default tag types
 .................
