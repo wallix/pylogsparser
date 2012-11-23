@@ -31,7 +31,8 @@
             ignorecase="yes"
             matchtype="match"
             appliedTo="eventlog_description"
-            taxonomy="access control">
+            taxonomy="access control"
+            expandWhitespaces="yes">
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
@@ -210,7 +211,7 @@ log['status'] = decoder.get(value, "UNKNOWN")
                 <localized_desc language="en">Pre-authentication failure</localized_desc>
                 <localized_desc language="fr">Tentative infructueuse de pré-authentification</localized_desc>
             </description>
-            <text>Pre-authentication failed:\s+User Name: _USER_\s+User ID: _USERID_\s+Service Name: _SERVICENAME_\s+Pre-Authentication Type: _PREAUTHTYPE_\s+Failure Code: _FAILURECODE_\s+Client Address: _SOURCEIP_</text>
+            <text>Pre-authentication failed: User Name: _USER_ User ID: _USERID_ Service Name: _SERVICENAME_ Pre-Authentication Type: _PREAUTHTYPE_ Failure Code: _FAILURECODE_ Client Address: _SOURCEIP_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -284,7 +285,7 @@ Client Address: 10.42.42.10</text>
                 <localized_desc language="en">Account name change</localized_desc>
                 <localized_desc language="fr">Changement de nom de compte</localized_desc>
             </description>
-            <text>Account Name Changed:\s+Old Account Name: _OLDNAME_\s+New Account Name: _NEWNAME_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <text>Account Name Changed: Old Account Name: _OLDNAME_ New Account Name: _NEWNAME_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="old_name" tagType="Anything">
                     <description>

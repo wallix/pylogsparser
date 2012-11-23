@@ -421,6 +421,7 @@ class Normalizer(object):
         self.commonTags = {}
         self.finalCallbacks = []
         self.name = normalizer.get('name')
+        self.expandWhitespaces = False
         if not self.name:
             raise ValueError, "The normalizer configuration lacks a name."
         self.version = float(normalizer.get('version')) or 1.0
@@ -429,6 +430,7 @@ class Normalizer(object):
                         ( (normalizer.get('ignorecase') == "yes" and re.IGNORECASE ) or 0 ) |\
                         ( (normalizer.get('multiline') == "yes" and re.MULTILINE ) or 0 )
         self.matchtype = ( normalizer.get('matchtype') == "search" and "search" ) or 'match'
+        self.expandWhitespaces = normalizer.get("expandWhitespaces") == "yes"
         try:
             self.taxonomy = normalizer.get('taxonomy')
         except:
@@ -573,6 +575,8 @@ class Normalizer(object):
             if isinstance(self.patterns[pattern], CSVPattern):
                 continue
             regexp = self.patterns[pattern].pattern
+            if self.expandWhitespaces:
+                regexp = re.sub("\s+", "\s+", regexp)
             for tagname, tag in self.patterns[pattern].tags.items():
                 # tagTypes defined in the conf file take precedence on the
                 # generic ones. If nothing found either way, fall back to

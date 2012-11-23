@@ -31,7 +31,8 @@
             ignorecase="yes"
             matchtype="match"
             appliedTo="eventlog_description"
-            taxonomy="access control">
+            taxonomy="access control"
+            expandWhitespaces="yes">
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
@@ -212,7 +213,7 @@ log['status'] = decoder.get(value, "UNKNOWN")
                 <localized_desc language="en">Password change attempt failure</localized_desc>
                 <localized_desc language="fr">Tentative infructueuse de changement de mot de passe</localized_desc>
             </description>
-            <text>Change Password Attempt:\s+Target Account Name: _TARGETACCOUNT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCOUNTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <text>Change Password Attempt: Target Account Name: _TARGETACCOUNT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCOUNTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -290,7 +291,7 @@ Privileges: -</text>
                 <localized_desc language="en">Security Group Member change</localized_desc>
                 <localized_desc language="fr">Changement opéré sur un membre de Groupe de Sécurité</localized_desc>
             </description>
-            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group Member (?:Added|Removed):\s+Member Name: _MEMBER_\s+Member ID: _MEMBERID_\s+Target Account Name: _TARGETACCT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group Member (?:Added|Removed): Member Name: _MEMBER_ Member ID: _MEMBERID_ Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
             	<tag name="dn" tagType="Anything">
                     <description>
@@ -628,7 +629,7 @@ Privileges: -</text>
                 <localized_desc language="en">Various deletion events</localized_desc>
                 <localized_desc language="fr">Événements de suppression variés</localized_desc>
             </description>
-            <text>(?:Computer Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted:\s+Target Account Name: _TARGETACCT_\s+Target Domain: _TARGETDOMAIN_\s+Target Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_</text>
+            <text>(?:Computer Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted: Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -814,7 +815,7 @@ Privileges: -</text>
                 <localized_desc language="en">Various group creation or change events</localized_desc>
                 <localized_desc language="fr">Événements de création ou de changement de groupes variés</localized_desc>
             </description>
-            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group (?:Created|Changed):\s+(?:Target|New) Account Name: _TARGETACCT_\s+(?:Target|New) Domain: _TARGETDOMAIN_\s+(?:Target|New) Account ID: _TARGETACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+(?:Changed )?Attributes:\s+Sam Account Name: _SAMACCT_\s+Sid History: _SIDHISTORY_</text>
+            <text>Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group (?:Created|Changed): (?:Target|New) Account Name: _TARGETACCT_ (?:Target|New) Domain: _TARGETDOMAIN_ (?:Target|New) Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_ (?:Changed )?Attributes: Sam Account Name: _SAMACCT_ Sid History: _SIDHISTORY_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -1141,7 +1142,7 @@ Sid History: -</text>
                 <localized_desc language="en">Account locking events</localized_desc>
                 <localized_desc language="fr">Événements de blocage de compte</localized_desc>
             </description>
-            <text>User Account (?:Unlocked|Locked Out):\s+Target Account Name: _TARGETACCT_\s+(?:Target Domain: _TARGETDOMAIN_\s+)?Target Account ID: _TARGETACCTID_\s+(?:Caller Machine Name: _SOURCEHOST_\s+)?Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_</text>
+            <text>User Account (?:Unlocked|Locked Out): Target Account Name: _TARGETACCT_ (?:Target Domain: _TARGETDOMAIN_ )?Target Account ID: _TARGETACCTID_ (?:Caller Machine Name: _SOURCEHOST_ )?Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -1235,7 +1236,7 @@ Caller Logon ID: (0x0,0x158EB7)</text>
                 <localized_desc language="en">connection to/disconnection from winstation</localized_desc>
                 <localized_desc language="fr">connexion à/déconnexion d'une station de travail</localized_desc>
             </description>
-            <text>Session (?:reconnected to|disconnected from) winstation:\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_\s+Session Name: _SESSIONNAME_\s+Client Name: _SOURCEHOST_\s+Client Address: _SOURCEIP_</text>
+            <text>Session (?:reconnected to|disconnected from) winstation: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_ Session Name: _SESSIONNAME_ Client Name: _SOURCEHOST_ Client Address: _SOURCEIP_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -1322,7 +1323,7 @@ Client Address: 10.42.42.90</text>
                 <localized_desc language="en">Service Ticket events</localized_desc>
                 <localized_desc language="fr">Événements concernant des tickets de service</localized_desc>
             </description>
-            <text>Service Ticket (?:Request|Renewed):\s+User Name:(?: _USER_)?\s+User Domain: _DOMAIN_\s+Service Name: _SERVICENAME_\s+Service ID: _SERVICEID_\s+Ticket Options: _TICKETOPTIONS_\s+Ticket Encryption Type: _TICKETENCRYPTIONTYPE_\s+Client Address: _SOURCEIP_(?:\s+Failure Code: _FAILURECODE_\s+Logon GUID: _GUID_\s+Transited Services: _TRANSITEDSERVICES_)?</text>
+            <text>Service Ticket (?:Request|Renewed): User Name:(?: _USER_)? User Domain: _DOMAIN_ Service Name: _SERVICENAME_ Service ID: _SERVICEID_ Ticket Options: _TICKETOPTIONS_ Ticket Encryption Type: _TICKETENCRYPTIONTYPE_ Client Address: _SOURCEIP_(?: Failure Code: _FAILURECODE_ Logon GUID: _GUID_ Transited Services: _TRANSITEDSERVICES_)?</text>
             <tags>
             	<tag name="user" tagType="Anything">
                     <description>
@@ -1450,7 +1451,7 @@ Client Address: 10.42.42.24</text>
                 <localized_desc language="en">Domain policy change</localized_desc>
                 <localized_desc language="fr">Changement de politique de domaine</localized_desc>
             </description>
-            <text>Domain Policy Changed:\s+_POLICY_ modified\s+Domain Name: _POLICYDOMAIN_\s+Domain ID: _POLICYDOMAINID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges: _PRIVILEGES_\s+Changed Attributes:\s+Min. Password Age: _MINPASSWDAGE_\s+Max. Password Age: _MAXPASSWDAGE_\s+Force Logoff: _FORCELOGOFF_\s+Lockout Threshold: _LOCKOUTTHRESHOLD_\s+Lockout Observation Window: _LOCKOUTOBSWINDOW_\s+Lockout Duration: _LOCKOUTDURATION_\s+Password Properties: _PASSWDPROPERTIES_\s+Min. Password Length: _MINPASSWDLENGTH_\s+Password History Length: _PASSWDHISTORYLENGTH_\s+Machine Account Quota: _MACHINEACCTQUOTA_\s+Mixed Domain Mode: _MIXEDDOMAINMODE_\s+Domain Behavior Version: _DOMAINBEHAVIORVERSION_\s+OEM Information</text>
+            <text>Domain Policy Changed: _POLICY_ modified Domain Name: _POLICYDOMAIN_ Domain ID: _POLICYDOMAINID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_ Changed Attributes: Min. Password Age: _MINPASSWDAGE_ Max. Password Age: _MAXPASSWDAGE_ Force Logoff: _FORCELOGOFF_ Lockout Threshold: _LOCKOUTTHRESHOLD_ Lockout Observation Window: _LOCKOUTOBSWINDOW_ Lockout Duration: _LOCKOUTDURATION_ Password Properties: _PASSWDPROPERTIES_ Min. Password Length: _MINPASSWDLENGTH_ Password History Length: _PASSWDHISTORYLENGTH_ Machine Account Quota: _MACHINEACCTQUOTA_ Mixed Domain Mode: _MIXEDDOMAINMODE_ Domain Behavior Version: _DOMAINBEHAVIORVERSION_ OEM Information</text>
             <tags>
                 <tag name="policy" tagType="Anything">
                     <description>
@@ -1638,7 +1639,7 @@ OEM Information: -</text>
                 <localized_desc language="en">Account mapped for logon</localized_desc>
                 <localized_desc language="fr">Account mapping à la connexion</localized_desc>
             </description>
-            <text>Account Mapped for Logon.\s+Mapping Attempted By: _ACCTMAPPER_\s+Client Name: _USER_\s+Mapped Name: _MAPPEDNAME_</text>
+            <text>Account Mapped for Logon. Mapping Attempted By: _ACCTMAPPER_ Client Name: _USER_ Mapped Name: _MAPPEDNAME_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -1668,7 +1669,7 @@ OEM Information: -</text>
                 <localized_desc language="en">Logon attempt resulting in an error</localized_desc>
                 <localized_desc language="fr">Tentative de connexion aboutissant à une erreur</localized_desc>
             </description>
-            <text>Logon attempt by: _AUTHPACKAGE_\s+Logon account: _USER_\s+Source Workstation: _SOURCEHOST_\s+Error Code: _ERRORCODE_</text>
+            <text>Logon attempt by: _AUTHPACKAGE_ Logon account: _USER_ Source Workstation: _SOURCEHOST_ Error Code: _ERRORCODE_</text>
             <tags>
                 <tag name="authentication_package" tagType="Anything">
                     <description>
@@ -1723,7 +1724,7 @@ Error Code: 0xC0000064</text>
                 <localized_desc language="en">Authentication ticket request</localized_desc>
                 <localized_desc language="fr">Demande de ticket d'authentification</localized_desc>
             </description>
-            <text>Authentication Ticket Request:\s+User Name: _USER_\s+Supplied Realm Name: _REALM_\s+User ID: _USERID_\s+Service Name: _SERVICENAME_\s+Service ID: _SERVICEID_\s+Ticket Options: _TICKETOPTIONS_\s+Result Code: _RESULTCODE_\s+Ticket Encryption Type: _TICKETENCRYPTIONTYPE_\s+Pre-Authentication Type: _PREAUTHTYPE_\s+Client Address: _SOURCEIP_\s+Certificate Issuer Name: _CERTISSUER_\s+Certificate Serial Number: _CERTSN_\s+Certificate Thumbprint: _CERTTHUMBPRINT_</text>
+            <text>Authentication Ticket Request: User Name: _USER_ Supplied Realm Name: _REALM_ User ID: _USERID_ Service Name: _SERVICENAME_ Service ID: _SERVICEID_ Ticket Options: _TICKETOPTIONS_ Result Code: _RESULTCODE_ Ticket Encryption Type: _TICKETENCRYPTIONTYPE_ Pre-Authentication Type: _PREAUTHTYPE_ Client Address: _SOURCEIP_ Certificate Issuer Name: _CERTISSUER_ Certificate Serial Number: _CERTSN_ Certificate Thumbprint: _CERTTHUMBPRINT_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>

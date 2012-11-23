@@ -31,7 +31,8 @@
             ignorecase="yes"
             matchtype="match"
             appliedTo="eventlog_description"
-            taxonomy="access control">
+            taxonomy="access control"
+            expandWhitespaces="yes">
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
@@ -142,7 +143,7 @@ except:
                 <localized_desc language="en">Process creation</localized_desc>
                 <localized_desc language="fr">Création d'un nouveau processus</localized_desc>
             </description>
-            <text>A new process has been created:\s+New Process ID: _PID_\s+Image File Name: _FILENAME_\s+Creator Process ID: _CPID_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>A new process has been created: New Process ID: _PID_ Image File Name: _FILENAME_ Creator Process ID: _CPID_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
             	<tag name="pid" tagType="Anything">
                     <description>
@@ -212,7 +213,7 @@ Logon ID: (0x0,0x804C2)</text>
                 <localized_desc language="en">A process has exited</localized_desc>
                 <localized_desc language="fr">Arrêt d'un processus</localized_desc>
             </description>
-            <text>A process has exited:\s+Process ID: _PID_\s+Image File Name: _FILENAME_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>A process has exited: Process ID: _PID_ Image File Name: _FILENAME_ User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="pid" tagType="Anything">
                     <description>
@@ -273,7 +274,7 @@ Logon ID: (0x0,0x158EB7)</text>
                 <localized_desc language="en">Object handle duplication</localized_desc>
                 <localized_desc language="fr">Duplication d'un descripteur d'objet</localized_desc>
             </description>
-            <text>A handle to an object has been duplicated:\s+Source Handle ID: _HANDLEID_\s+Source Process ID: _PID_\s+Target Handle ID: _TARGETHANDLEID_\s+Target Process ID: _TARGETPID_</text>
+            <text>A handle to an object has been duplicated: Source Handle ID: _HANDLEID_ Source Process ID: _PID_ Target Handle ID: _TARGETHANDLEID_ Target Process ID: _TARGETPID_</text>
             <tags>
                 <tag name="handle_id" tagType="Anything">
                     <description>
@@ -326,7 +327,7 @@ Target Process ID: 796</text>
                 <localized_desc language="en">Indirect access to an object has been granted</localized_desc>
                 <localized_desc language="fr">Accès indirect à un objet accordé</localized_desc>
             </description>
-            <text>Indirect access to an object has been obtained:\s+Object Type: _OBJTYPE_\s+Object Name: _OBJNAME_\s+Process ID: _PID_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Accesses: _ACCESSES_(?:\s+Access Mask: _ACCESSMASK_)?</text>
+            <text>Indirect access to an object has been obtained: Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_(?: Access Mask: _ACCESSMASK_)?</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -412,7 +413,7 @@ Target Process ID: 796</text>
                 <localized_desc language="en">User right assigned</localized_desc>
                 <localized_desc language="fr">Assignation d'un droit utilisateur</localized_desc>
             </description>
-            <text>User Right Assigned:\s+User Right: _USERRIGHT_\s+Assigned To: _USER_\s+Assigned By:\s+User Name: _USERNAME_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>User Right Assigned: User Right: _USERRIGHT_ Assigned To: _USER_ Assigned By: User Name: _USERNAME_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -478,7 +479,7 @@ Logon ID: (0x0,0x3E7)</text>
                 <localized_desc language="en">User right removed</localized_desc>
                 <localized_desc language="fr">Révocation d'un droit utilisateur</localized_desc>
             </description>
-            <text>User Right Removed:\s+User Right: _USERRIGHT_\s+Removed From: _USER_\s+Removed By:\s+User Name: _USERNAME_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>User Right Removed: User Right: _USERRIGHT_ Removed From: _USER_ Removed By: User Name: _USERNAME_ Domain: _DOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -544,7 +545,7 @@ Logon ID: (0x0,0x3E7)</text>
                 <localized_desc language="en">New trusted domain</localized_desc>
                 <localized_desc language="fr">Nouveau domaine de confiance</localized_desc>
             </description>
-            <text>New Trusted Domain:\s+Domain Name: _DOMAIN_\s+Domain ID: _DOMAINID_\s+Established By:\s+User Name: _USER_\s+Domain: _USERDOMAIN_\s+Logon ID: _LOGONID_\s+Trust Type: _TRUSTTYPE_\s+Trust Direction: _TRUSTDIRECTION_\s+Trust Attributes: _TRUSTATTRIBUTES_\s+SID Filtering: _FILTERING_</text>
+            <text>New Trusted Domain: Domain Name: _DOMAIN_ Domain ID: _DOMAINID_ Established By: User Name: _USER_ Domain: _USERDOMAIN_ Logon ID: _LOGONID_ Trust Type: _TRUSTTYPE_ Trust Direction: _TRUSTDIRECTION_ Trust Attributes: _TRUSTATTRIBUTES_ SID Filtering: _FILTERING_</text>
             <tags>
             	<tag name="domain" tagType="Anything">
                     <description>
@@ -654,7 +655,7 @@ SID Filtering: Disabled</text>
                 <localized_desc language="en">Trusted domain removed</localized_desc>
                 <localized_desc language="fr">Domaine de confiance détruit</localized_desc>
             </description>
-            <text>Trusted Domain Removed:\s+Domain Name: _DOMAIN_\s+Domain ID: _DOMAINID_\s+Removed By:\s+User Name: _USER_\s+Domain: _USERDOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>Trusted Domain Removed: Domain Name: _DOMAIN_ Domain ID: _DOMAINID_ Removed By: User Name: _USER_ Domain: _USERDOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
             	<tag name="domain" tagType="Anything">
                     <description>
@@ -716,7 +717,7 @@ Logon ID: (0x0,0x158EB7)</text>
                 <localized_desc language="en">Audit Policy Change. Changes are marked with a + if enabled, a - if disabled</localized_desc>
                 <localized_desc language="fr">Changement de politique d'audit. Les changements sont signalés par un + en cas d'activation, un - en cas de désactivation</localized_desc>
             </description>
-            <text>Audit Policy Change:\s+New Policy:\s+Success\s+Failure\s+_LOGSUCCESS_\s+_LOGFAIL_\s+Logon/Logoff\s+_OBJSUCCESS_\s+_OBJFAIL_\s+Object Access\s+_PRIVSUCCESS_\s+_PRIVFAIL_\s+Privilege Use\s+_ACCTMGMTSUCCESS_\s+_ACCTMGMTFAIL_\s+Account Management\s+_POLCHANGESUCCESS_\s+_POLCHANGEFAIL_\s+Policy Change\s+_SYSTEMSUCCESS_\s+_SYSTEMFAIL_\s+System\s+_TRACKINGSUCCESS_\s+_TRACKINGFAIL_\s+Detailed Tracking\s+_DSASUCCESS_\s+_DSAFAIL_\s+Directory Service Access\s+_ACCTLOGONSUCCESS_\s+_ACCTLOGONFAIL_\s+Account Logon\s+Changed By:\s+User Name: _USER_\s+Domain Name: _DOMAIN_\s+Logon ID: _LOGONID_</text>
+            <text>Audit Policy Change: New Policy: Success Failure _LOGSUCCESS_ _LOGFAIL_ Logon/Logoff _OBJSUCCESS_ _OBJFAIL_ Object Access _PRIVSUCCESS_ _PRIVFAIL_ Privilege Use _ACCTMGMTSUCCESS_ _ACCTMGMTFAIL_ Account Management _POLCHANGESUCCESS_ _POLCHANGEFAIL_ Policy Change _SYSTEMSUCCESS_ _SYSTEMFAIL_ System _TRACKINGSUCCESS_ _TRACKINGFAIL_ Detailed Tracking _DSASUCCESS_ _DSAFAIL_ Directory Service Access _ACCTLOGONSUCCESS_ _ACCTLOGONFAIL_ Account Logon Changed By: User Name: _USER_ Domain Name: _DOMAIN_ Logon ID: _LOGONID_</text>
             <tags>
                 <tag name="logon_logoff_success" tagType="policy+-">
                     <description>
@@ -916,7 +917,7 @@ Changed By:
                 <localized_desc language="en">User account creation or change</localized_desc>
                 <localized_desc language="fr">Création ou modification d'un utilisateur</localized_desc>
             </description>
-            <text>(?:Computer|User) Account (?:Created|Changed):\s+(?:_ACTION_\s+)?(?:New|Target) Account Name: _NEWUSER_\s+(?:New|Target) Domain: _NEWDOMAIN_\s+(?:Target|New) Account ID: _ACCTID_\s+Caller User Name: _USER_\s+Caller Domain: _DOMAIN_\s+Caller Logon ID: _LOGONID_\s+Privileges:? _PRIVILEGES_\s+(?:Changed )?Attributes:\s+Sam Account Name: _SAMACCT_\s+Display Name: _DISPLAYNAME_\s+User Principal Name: _DN_\s+Home Directory: _HOMEDIR_\s+Home Drive: _HOMEDRIVE_\s+Script Path: _SCRIPTPATH_\s+Profile Path: _PROFILEPATH_\s+User Workstations: _WORKSTATIONS_\s+Password Last Set: _PWDLASTSET_\s+Account Expires: _EXPIRYDATE_\s+Primary Group ID: _PGID_\s+AllowedToDelegateTo: _DELEGATETO_\s+Old UAC Value: _OLDUAC_\s+New UAC Value: _NEWUAC_\s+User Account Control:\s+_ACCTCONTROL_\s+User Parameters: _USERPARAMS_\s+Sid History: _SIDHISTORY_\s+Logon Hours: _LOGONHOURS_(?:\s+DNS Host Name: _DNSHOSTNAME_)?(?:\s+Service Principal Names: _SERVICEPRINCIPALNAMES_)?</text>
+            <text>(?:Computer|User) Account (?:Created|Changed): (?:_ACTION_ )?(?:New|Target) Account Name: _NEWUSER_ (?:New|Target) Domain: _NEWDOMAIN_ (?:Target|New) Account ID: _ACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges:? _PRIVILEGES_ (?:Changed )?Attributes: Sam Account Name: _SAMACCT_ Display Name: _DISPLAYNAME_ User Principal Name: _DN_ Home Directory: _HOMEDIR_ Home Drive: _HOMEDRIVE_ Script Path: _SCRIPTPATH_ Profile Path: _PROFILEPATH_ User Workstations: _WORKSTATIONS_ Password Last Set: _PWDLASTSET_ Account Expires: _EXPIRYDATE_ Primary Group ID: _PGID_ AllowedToDelegateTo: _DELEGATETO_ Old UAC Value: _OLDUAC_ New UAC Value: _NEWUAC_ User Account Control: _ACCTCONTROL_ User Parameters: _USERPARAMS_ Sid History: _SIDHISTORY_ Logon Hours: _LOGONHOURS_(?: DNS Host Name: _DNSHOSTNAME_)?(?: Service Principal Names: _SERVICEPRINCIPALNAMES_)?</text>
             <tags>
             	<tag name="action" tagType="Anything">
                     <description>

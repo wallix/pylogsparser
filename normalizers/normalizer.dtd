@@ -43,6 +43,9 @@
 <!-- A set of descriptions, language is specified as the usual language code -->
  <!-- The service taxonomy, if relevant, of the normalizer. See README.rst -->
  <!ATTLIST normalizer taxonomy CDATA #IMPLIED>
+  <!-- set to yes if a space in the patterns should be considered as a combination 
+      of any whitespace character, for readability of the patterns.-->
+ <!ATTLIST normalizer  expandWhitespaces (yes|no) "no">
 <!ELEMENT description (localized_desc+)>
  <!ELEMENT localized_desc (#PCDATA)>
  <!ATTLIST localized_desc language CDATA #REQUIRED>

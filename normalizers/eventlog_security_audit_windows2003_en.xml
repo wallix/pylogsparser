@@ -31,7 +31,8 @@
             ignorecase="yes"
             matchtype="search"
             appliedTo="eventlog_description"
-            taxonomy="access control">
+            taxonomy="access control"
+            expandWhitespaces="yes">
     <description>
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
 The following event IDs are covered: 
@@ -71,7 +72,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">An authentication package has been loaded by the Local Security Authority</localized_desc>
                 <localized_desc language="fr">Chargement d'un package d'authentification par l'Autorité Locale de Sécurité</localized_desc>
             </description>
-            <text>An authentication package has been loaded by the Local Security Authority.\s+This authentication package will be used to authenticate logon attempts.\s+Authentication Package Name: _AUTHPACKAGE_</text>
+            <text>An authentication package has been loaded by the Local Security Authority. This authentication package will be used to authenticate logon attempts. Authentication Package Name: _AUTHPACKAGE_</text>
             <tags>
                 <tag name="authentication_package" tagType="Anything">
                     <description>
@@ -95,7 +96,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">A trusted logon process has registered with the Local Security Authority</localized_desc>
                 <localized_desc language="fr">Enregistrement auprès de l'autorité locale de sécurité d'un processus de connexion approuvée</localized_desc>
             </description>
-            <text>A trusted logon process has registered with the Local Security Authority.\s+This logon process will be trusted to submit logon requests.\s+Logon Process Name: _PROCESSNAME_</text>
+            <text>A trusted logon process has registered with the Local Security Authority. This logon process will be trusted to submit logon requests. Logon Process Name: _PROCESSNAME_</text>
             <tags>
                 <tag name="logon_process_name" tagType="Anything">
                     <description>
@@ -121,7 +122,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">Internal resources allocated for the queuing of audit messages have been exhausted</localized_desc>
                 <localized_desc language="fr">Ressources allouées à la mise en file d'attente des messages d'audit épuisées</localized_desc>
             </description>
-            <text>Internal resources allocated for the queuing of audit messages have been exhausted,\s+leading to the loss of some audits.\s+Number of audit messages discarded: _MDISCARDED_</text>
+            <text>Internal resources allocated for the queuing of audit messages have been exhausted, leading to the loss of some audits. Number of audit messages discarded: _MDISCARDED_</text>
             <tags>
                 <tag name="discarded" tagType="Anything">
                     <description>
@@ -145,7 +146,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">The audit log was cleared</localized_desc>
                 <localized_desc language="fr">Le journal des événements de sécurité a été nettoyé</localized_desc>
             </description>
-            <text>The audit log was cleared\s+Primary User Name: _PUN_\s+Primary Domain: _PDOM_\s+Primary Logon ID: _PLID_\s+Client User Name: _CUN_\s+Client Domain: _CDOM_\s+Client Logon ID: _CLID_</text>
+            <text>The audit log was cleared Primary User Name: _PUN_ Primary Domain: _PDOM_ Primary Logon ID: _PLID_ Client User Name: _CUN_ Client Domain: _CDOM_ Client Logon ID: _CLID_</text>
             <tags>
                 <tag name="primary_user" tagType="Anything">
                     <description>
@@ -215,7 +216,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">An notification package has been loaded by the Security Account Manager</localized_desc>
                 <localized_desc language="fr">Chargement d'un package de notification par le Gestionnaire des comptes de sécurité</localized_desc>
             </description>
-            <text>An notification package has been loaded by the Security Account Manager.\s+This package will be notified of any account or password changes.\s+Notification Package Name: _NOTIFPACKAGE_</text>
+            <text>An notification package has been loaded by the Security Account Manager. This package will be notified of any account or password changes. Notification Package Name: _NOTIFPACKAGE_</text>
             <tags>
                 <tag name="notification_package" tagType="Anything">
                     <description>
@@ -240,7 +241,7 @@ Notification Package Name: scecli</text>
                 <localized_desc language="en">Successful logon</localized_desc>
                 <localized_desc language="fr">Connexion réussie</localized_desc>
             </description>
-            <text>Successful (?:Network )?Logon:?\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LID_\s+Logon Type: _LOGONTYPE_\s+Logon Process: _LOGONPROCESS_\s+Authentication Package: _AUTHPACKAGE_\s+Workstation Name: _WORKSTATION_\s+Logon GUID: _LGUID_\s+Caller User Name: _CALLERUSER_\s+Caller Domain: _CALLERDOMAIN_\s+Caller Logon ID: _CID_\s+Caller Process ID: _CPID_\s+Transited Services: _TSERV_\s+Source Network Address: _SOURCEIP_\s+Source Port: _SOURCEPORT_</text>
+            <text>Successful (?:Network )?Logon:? User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ Logon GUID: _LGUID_ Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -437,7 +438,7 @@ Source Port: 3165</text>
                 <localized_desc language="en">Logon Failures</localized_desc>
                 <localized_desc language="fr">Connexions échouées</localized_desc>
             </description>
-            <text>Logon Failure:\s+Reason: _REASON_\s+User Name: _USER_\s+Domain: _DOMAIN_\s+(?:Logon ID: _LID_\s+)?Logon Type: _LOGONTYPE_\s+Logon Process: _LOGONPROCESS_\s+Authentication Package: _AUTHPACKAGE_\s+Workstation Name: _WORKSTATION_\s+(?:Logon GUID: _LGUID_\s+)?Caller User Name: _CALLERUSER_\s+Caller Domain: _CALLERDOMAIN_\s+Caller Logon ID: _CID_\s+Caller Process ID: _CPID_\s+Transited Services: _TSERV_\s+Source Network Address: _SOURCEIP_\s+Source Port: _SOURCEPORT_</text>
+            <text>Logon Failure: Reason: _REASON_ User Name: _USER_ Domain: _DOMAIN_ (?:Logon ID: _LID_ )?Logon Type: _LOGONTYPE_ Logon Process: _LOGONPROCESS_ Authentication Package: _AUTHPACKAGE_ Workstation Name: _WORKSTATION_ (?:Logon GUID: _LGUID_ )?Caller User Name: _CALLERUSER_ Caller Domain: _CALLERDOMAIN_ Caller Logon ID: _CID_ Caller Process ID: _CPID_ Transited Services: _TSERV_ Source Network Address: _SOURCEIP_ Source Port: _SOURCEPORT_</text>
             <tags>
             	<tag name="reason" tagType="Anything">
                     <description>
@@ -640,7 +641,7 @@ Source Port: 0</text>
                 <localized_desc language="en">Object open</localized_desc>
                 <localized_desc language="fr">Accès accordé à un objet</localized_desc>
             </description>
-            <text>Object Open(?: for Delete)?:\s+Object Server: _OBJSERVER_\s+Object Type: _OBJTYPE_\s+Object Name: _OBJNAME_\s+Handle ID: _HANDLEID_\s+Operation ID: {_OPID_}\s+Process ID: _PID_\s+(?:(?:Image File Name: _FILENAME_)|(?:Process Name: _PROCESSNAME_))\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Accesses: _ACCESSES_\s+Privileges: _PRIVILEGES_(?:\s+Properties: _PROPERTIES_)?(?:\s+Restricted Sid Count: _SIDCOUNT_)?(?:\s+Access Mask: _ACCESSMASK_)?</text>
+            <text>Object Open(?: for Delete)?: Object Server: _OBJSERVER_ Object Type: _OBJTYPE_ Object Name: _OBJNAME_ Handle ID: _HANDLEID_ Operation ID: {_OPID_} Process ID: _PID_ (?:(?:Image File Name: _FILENAME_)|(?:Process Name: _PROCESSNAME_)) Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Accesses: _ACCESSES_ Privileges: _PRIVILEGES_(?: Properties: _PROPERTIES_)?(?: Restricted Sid Count: _SIDCOUNT_)?(?: Access Mask: _ACCESSMASK_)?</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -821,7 +822,7 @@ Restricted Sid Count: 0</text>
                 <localized_desc language="en">Object handle closed, Object deleted</localized_desc>
                 <localized_desc language="fr">Descripteur d'objet fermé, objet supprimé</localized_desc>
             </description>
-            <text>(?:(?:Handle Closed)|(?:Object Deleted)):\s+Object Server: _OBJSERVER_\s+Handle ID: _HANDLEID_\s+Process ID: _PID_\s+Image File Name: _FILENAME_</text>
+            <text>(?:(?:Handle Closed)|(?:Object Deleted)): Object Server: _OBJSERVER_ Handle ID: _HANDLEID_ Process ID: _PID_ Image File Name: _FILENAME_</text>
             <tags>
                 <tag name="object_server" tagType="Anything">
                     <description>
@@ -873,7 +874,7 @@ Image File Name: C:\WINDOWS\system32\notepad.exe</text>
                 <localized_desc language="en">Special privileges assigned at logon</localized_desc>
                 <localized_desc language="fr">Privilèges spéciaux assignés à une nouvelle session</localized_desc>
             </description>
-            <text>Special privileges assigned to new logon:\s+User Name: _USER_\s+Domain: _DOMAIN_\s+Logon ID: _LOGONID_\s+(?:(?:Privileges)|(?:Assigned)): _PRIVILEGES_</text>
+            <text>Special privileges assigned to new logon: User Name: _USER_ Domain: _DOMAIN_ Logon ID: _LOGONID_ (?:(?:Privileges)|(?:Assigned)): _PRIVILEGES_</text>
             <tags>
                 <tag name="user" tagType="Anything">
                     <description>
@@ -979,7 +980,7 @@ Assigned: SeBackupPrivilege SeRestorePrivilege SeDebugPrivilege SeChangeNotifyPr
                 <localized_desc language="en">Privileged service called</localized_desc>
                 <localized_desc language="fr">Appel à une opération privilégiée</localized_desc>
             </description>
-            <text>Privileged Service Called:\s+Server: _SERVER_\s+Service: _SERVICE_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Privileges: _PRIVILEGES_</text>
+            <text>Privileged Service Called: Server: _SERVER_ Service: _SERVICE_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="server" tagType="Anything">
                     <description>
@@ -1076,7 +1077,7 @@ Privileges: SeSystemtimePrivilege</text>
             	    <localized_desc language="en">Privileged object operation</localized_desc>
             	    <localized_desc language="fr">Appel à une opération privilégiée sur un objet</localized_desc>
             	</description>
-            <text>Privileged object operation:\s+Object Server: _OBJSERVER_\s+Object Handle: _OBJHANDLE_\s+Process ID: _PID_\s+Primary User Name: _USER_\s+Primary Domain: _DOMAIN_\s+Primary Logon ID: _LOGONID_\s+Client User Name: _CLIENTUSER_\s+Client Domain: _CLIENTDOMAIN_\s+Client Logon ID: _CLID_\s+Privileges: _PRIVILEGES_</text>
+            <text>Privileged object operation: Object Server: _OBJSERVER_ Object Handle: _OBJHANDLE_ Process ID: _PID_ Primary User Name: _USER_ Primary Domain: _DOMAIN_ Primary Logon ID: _LOGONID_ Client User Name: _CLIENTUSER_ Client Domain: _CLIENTDOMAIN_ Client Logon ID: _CLID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="object_server" tagType="Anything">
                     <description>
