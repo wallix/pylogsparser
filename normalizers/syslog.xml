@@ -154,7 +154,7 @@ log["severity_code"] = "%d" % severity
     <localized_desc language="en">A syslog line as it is emitted by the Snare Windows agent.</localized_desc>
     <localized_desc language="fr">Une ligne de log au format Syslog, telle qu'elle est émise par l'agent Snare pour Windows.</localized_desc>
    </description>
-   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE MSWinEventLog BODY</text>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE MSWinEventLog\sBODY</text>
    <tags>
     <tag name="__priority" tagType="syslogPriority">
      <description>
