@@ -942,7 +942,7 @@ class Test(unittest.TestCase):
                 'local_port' : '389',
                 })
 
-    def test_zzz_eventlogW3EN(self):
+    def test_eventlogW3EN(self):
         """Testing Win2003 security audit logs (english)"""
         self.aS("""<13>Nov 21 16:28:40 w2003en MSWinEventLog	0\tSecurity\t129\tWed Nov 21 16:28:40\t2012\t592\tSecurity\tSYSTEM\tUser\tSuccess Audit\tW2003EN\tDetailed Tracking\tA new process has been created:     New Process ID: 1536     Image File Name: C:\WINDOWS\system32\wpabaln.exe     Creator Process ID: 540     User Name: W2003EN$     Domain: WORKGROUP     Logon ID: (0x0,0x3E7)\t99""",
                {

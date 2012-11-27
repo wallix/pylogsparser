@@ -344,7 +344,7 @@ Notification Package Name: scecli</text>
                     </description>
                     <substitute>_SOURCEIP_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Integer">
+            	<tag name="source_port" tagType="Anything">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -548,7 +548,7 @@ Source Port: 3165</text>
                     </description>
                     <substitute>_SOURCEIP_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Integer">
+            	<tag name="source_port" tagType="Anything">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -624,7 +624,7 @@ Source Port: 0</text>
                     </description>
                     <substitute>_LID_</substitute>
             	</tag>
-            	<tag name="logon_type" tagType="Anything">
+            	<tag name="logon_type" tagType="Integer">
                     <description>
                         <localized_desc language="en">The logon type</localized_desc>
                         <localized_desc language="fr">Le type de connexion</localized_desc>
@@ -685,7 +685,7 @@ Source Port: 0</text>
                     </description>
                     <substitute>_OPID_</substitute>
             	</tag>
-            	<tag name="pid" tagType="Integer">
+            	<tag name="pid" tagType="Anything">
                     <description>
                         <localized_desc language="en">The process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus</localized_desc>

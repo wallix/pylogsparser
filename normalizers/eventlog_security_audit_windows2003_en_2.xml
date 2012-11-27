@@ -350,7 +350,7 @@ Target Process ID: 796</text>
                     </description>
                     <substitute>_OBJNAME_</substitute>
             	</tag>
-            	<tag name="pid" tagType="Integer">
+            	<tag name="pid" tagType="Anything">
                     <description>
                         <localized_desc language="en">The process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus</localized_desc>
