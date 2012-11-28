@@ -60,7 +60,7 @@ Les codes d'événements suivants sont normalisés :
     </tagTypes>
     <callbacks>
     	<callback name="strip_values">
-for t in log.keys():
+for t in log:
 	if isinstance(log[t], basestring):
 		try:
 			log[t] = log[t].strip()
