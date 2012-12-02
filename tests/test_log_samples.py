@@ -782,6 +782,32 @@ class Test(unittest.TestCase):
                   'type': 'session opened',
                   'username': 'admin'})
 
+    def test_MSExchange2003MTL(self):
+        """Test Exchange 2003 message tracking log normalization"""
+        self.aS("""2012-11-29\t10:42:15 GMT\t10.10.40.254\tmx2.wallix.com\t-\tEXCHANGE\t10.10.46.74\tmhuin@exchange.wallix.fr\t1019\t353399610.5513.1354185742534.JavaMail.root@zimbra.ifr.lan\t0\t0\t2532\t1\t2012-11-29 10:42:15 GMT\t0\tVersion: 6.0.3790.4675\t-\t-\tmatthieu.huin@wallix.com\t-""",
+                {
+                 'source_host': 'mx2.wallix.com',
+                 'source_ip': '10.10.40.254',
+                 'partner' : '-',
+                 'creation_time': '2012-11-29 10:42:15',
+                 'date': datetime(2012, 11, 29, 10, 42, 15),
+                 'message_recipient' : 'mhuin@exchange.wallix.fr',
+                 'event': 'SMTP submit message to AQ',
+                 'event_id': '1019',
+                 'internal_message_id': '353399610.5513.1354185742534.JavaMail.root@zimbra.ifr.lan',
+                 'priority' : '0',
+                 'recipient_status' : '0',
+                 'len' : '2532',
+                 'recipient_count' : '1',
+                 'encryption': '0',
+                 'service_version' : "Version: 6.0.3790.4675",
+                 'linked_message_id' : '-',
+                 'message_subject' : "-",
+                 "message_sender" : "matthieu.huin@wallix.com",
+                 'program': 'MS Exchange 2003 Message Tracking',
+                 'dest_host': 'EXCHANGE',
+                 'dest_ip': '10.10.46.74',})
+
     def test_xferlog(self):
         """Testing xferlog formatted logs"""
         self.aS("Thu Sep 2 09:52:00 2004 50 192.168.20.10 896242 /home/test/file1.tgz b _ o r suporte ftp 0 * c ",
@@ -1000,6 +1026,8 @@ class Test(unittest.TestCase):
                  "logon_id" : "(0x0,0x3A092)",
                  "privileges" : "SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege",
                  'eventlog_description': """Special privileges assigned to new logon:     User Name: Administrator     Domain: W2003EN     Logon ID: (0x0,0x3A092)     Privileges: SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege""", })  
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -270,6 +270,9 @@ except ValueError:
                     <substitute>Sender-Address</substitute>
                 </tag>
             </tags>
+            <commonTags>
+                <commonTag name="program">MS Exchange 2003 Message Tracking</commonTag>
+            </commonTags>
             <examples>
                 <example>
                      <text>2012-11-29&#9;10:41:58 GMT&#9;-&#9;-&#9;-&#9;EXCHANGE&#9;-&#9;mhu@wallix.com&#9;1027&#9;2E5AC9438EBEC04AA767178D6846D5923A05@exchange.q-ass.lan&#9;0&#9;0&#9;288&#9;1&#9;2012-11-29 10:41:58 GMT&#9;0&#9;-&#9;c=FR;a= ;p=Q-Ass;l=EXCHANGE-121129104157Z-1&#9;-&#9;EX:/O=Q-ASS/OU=PREMIER GROUPE D'ADMINISTRATION/CN=RECIPIENTS/CN=MHUIN&#9;-</text>
