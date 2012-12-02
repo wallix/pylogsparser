@@ -155,6 +155,9 @@ class TestSample(unittest.TestCase):
         self.normalize_samples('eventlog_security_audit_windows2003_en_3.xml', 'EventLog-Security-Windows2003[EN]_3', 0.99)
         self.normalize_samples('eventlog_security_audit_windows2003_en_4.xml', 'EventLog-Security-Windows2003[EN]_4', 0.99)
 
+    def test_normalize_samples_034_msexchange2003MTL(self):
+        self.normalize_samples('MSExchange2003MessageTracking.xml', 'MSExchange2003MessageTracking', 0.99)
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']

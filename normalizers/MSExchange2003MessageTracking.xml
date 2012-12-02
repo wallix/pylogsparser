@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="MSExchange2003MessageTracking"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="raw"
+            taxonomy="mail">
+    <description>
+        <localized_desc language="en">This parser describes the format of Exchange 2003's Message Tracking Log (something similar to Postfix logs), a CSV-like flat file that can be found at 
+C:\Program Files\Exchsrvr\SERVERNAME.log\ on a standard install once logging has been activated.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur décrit le format du "Message Tracking Log" (un journal d'événements similaire à celui d'un serveur Postfix), un fichier plat de type CSV qui se trouve à l'emplacement suivant dans une installation standard : C:\Program Files\Exchsrvr\SERVERNAME.log\  si l'audit des événements de messages a été activé.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="DateFormat" type="basestring">
+            <description>
+                <localized_desc language="en">the date format used in this log</localized_desc>
+                <localized_desc language="fr">le format d'horodatage</localized_desc>
+            </description>
+            <regexp>\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+        <callback name="decode_event_id">
+decoder = { '0' : 'Message transfer in',
+'1' : 'Probe transfer in',
+'2' : 'Report transfer in',
+'4' : 'Message submission',
+'5' : 'Probe submission',
+'6' : 'Probe transfer out',
+'7' : 'Message transfer out',
+'8' : 'Report transfer out',
+'9' : 'Message delivered',
+'10' : 'Report delivered',
+'18' : 'StartAssocByMTSUser',
+'23' : 'ReleaseAssocByMTSUse',
+'28' : 'Message redirected',
+'29' : 'Message rerouted',
+'31' : 'Downgrading',
+'33' : 'Report absorption',
+'34' : 'Report generation',
+'43' : 'Unroutable report discarded',
+'50' : 'Gateway deleted message',
+'51' : 'Gateway deleted probe',
+'52' : 'Gateway deleted report',
+'1000' : 'Local delivery',
+'1001' : 'Backbone transfer in',
+'1002' : 'Backbone transfer out',
+'1003' : 'Gateway transfer out',
+'1004' : 'Gateway transfer in',
+'1005' : 'Gateway report transfer in',
+'1006' : 'Gateway report transfer out',
+'1007' : 'Gateway report generation',
+'1010' : 'SMTP queued outbound',
+'1011' : 'SMTP transferred outbound',
+'1012' : 'SMTP received inbound',
+'1013' : 'SMTP transferred',
+'1014' : 'SMTP message rerouted',
+'1015' : 'SMTP report transferred in',
+'1016' : 'SMTP report transferred out',
+'1017' : 'SMTP report generated',
+'1018' : 'SMTP report absorbed',
+'1019' : 'SMTP submit message to AQ',
+'1020' : 'SMTP begin outbound transfer',
+'1021' : 'SMTP bad mail',
+'1022' : 'SMTP AQ failure',
+'1023' : 'SMTP local delivery',
+'1024' : 'SMTP submit message to cat',
+'1025' : 'SMTP begin submit message',
+'1026' : 'SMTP AQ failed message',
+'1027' : 'SMTP submit message to Store Driver',
+'1028' : 'SMTP Store Driver local delivery',
+'1029' : 'SMTP Store Driver gateway delivery',
+'1030' : 'SMTP NDR all',
+'1031' : 'SMTP end outbound transfer',
+'1032' : 'SMTP message scheduled to retry categorization',
+'1033' : 'SMTP message categorized and queued for routing',
+'1034' : 'SMTP message routed and queued for remote delivery',
+'1035' : 'SMTP message scheduled to retry routing',
+'1036' : 'SMTP message queued for local delivery',
+'1037' : 'SMTP message scheduled to retry local delivery',
+'1038' : 'SMTP message routed and queued for gateway delivery',
+'1040' : 'SMTP message rejected by Intelligent Message Filtering',
+'1039' : 'SMTP message deleted by Intelligent Message Filtering',
+'1041' : 'SMTP message archived by intelligent Message Filtering',
+'1042' : 'Message redirected to alternate recipient',
+}
+log['event'] = decoder.get(value, "UNKNOWN")</callback>
+    	<callback name="decode_date">
+try:
+	log["date"] = datetime.strptime(value, "%Y-%m-%d\t%H:%M:%S")
+except ValueError:
+	log['date'] = datetime.now()
+</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="Exchange2003MT-001">
+            <description>
+                <localized_desc language="en">The message tracking log format, as described in the headers of the log file</localized_desc>
+                <localized_desc language="fr">Le format du journal des messages, tel qu'il est décrit dans l'entête du fichier de log</localized_desc>
+            </description>
+            <text>DateTime \S+&#9;client-ip&#9;Client-hostname&#9;Partner-Name&#9;Server-hostname&#9;server-IP&#9;Recipient-Address&#9;Event-ID&#9;MSGID&#9;Priority&#9;Recipient-Report-Status&#9;total-bytes&#9;Number-Recipients&#9;Origination-Time \S+&#9;Encryption&#9;service-Version&#9;Linked-MSGID&#9;Message-Subject&#9;Sender-Address&#9;.+</text>
+            <tags>
+                <tag name="__date" tagType="DateFormat">
+                    <description>
+                        <localized_desc language="en">the date of the event</localized_desc>
+                        <localized_desc language="fr">la date de l'événement consigné</localized_desc>
+                    </description>
+                    <substitute>DateTime</substitute>
+                    <callbacks>
+                        <callback>decode_date</callback>
+                    </callbacks>
+                </tag>
+                <tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the client IP</localized_desc>
+                        <localized_desc language="fr">l'adresse IP du client</localized_desc>
+                    </description>
+                    <substitute>client-ip</substitute>
+                </tag>
+                <tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the client hostname</localized_desc>
+                        <localized_desc language="fr">le nom d'hôte du client</localized_desc>
+                    </description>
+                    <substitute>Client-hostname</substitute>
+                </tag>
+                <tag name="partner" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the partner name</localized_desc>
+                        <localized_desc language="fr">le nom de partenaire</localized_desc>
+                    </description>
+                    <substitute>Partner-Name</substitute>
+                </tag>
+                <tag name="dest_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the server hostname</localized_desc>
+                        <localized_desc language="fr">le nom d'hôte du serveur</localized_desc>
+                    </description>
+                    <substitute>Server-hostname</substitute>
+                </tag>
+                <tag name="dest_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the server IP</localized_desc>
+                        <localized_desc language="fr">l'adresse IP du serveur</localized_desc>
+                    </description>
+                    <substitute>server-IP</substitute>
+                </tag>
+                <tag name="message_recipient" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message's recipient</localized_desc>
+                        <localized_desc language="fr">l'adresse du destinataire</localized_desc>
+                    </description>
+                    <substitute>Recipient-Address</substitute>
+                </tag>
+                <tag name="event_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the event code</localized_desc>
+                        <localized_desc language="fr">le code d'événement</localized_desc>
+                    </description>
+                    <substitute>Event-ID</substitute>
+                    <callbacks>
+                        <callback>decode_event_id</callback>
+                    </callbacks>
+                </tag>
+                <tag name="internal_message_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de message</localized_desc>
+                    </description>
+                    <substitute>MSGID</substitute>
+                </tag>
+                <tag name="priority" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the priority</localized_desc>
+                        <localized_desc language="fr">la priorité</localized_desc>
+                    </description>
+                    <substitute>Priority</substitute>
+                </tag>
+                <tag name="recipient_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the recipient status</localized_desc>
+                        <localized_desc language="fr">le statut du destinataire</localized_desc>
+                    </description>
+                    <substitute>Recipient-Report-Status</substitute>
+                </tag>
+                <tag name="len" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the total length of the message</localized_desc>
+                        <localized_desc language="fr">la longueur du message</localized_desc>
+                    </description>
+                    <substitute>total-bytes</substitute>
+                </tag>
+                <tag name="recipient_count" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the number of recipients</localized_desc>
+                        <localized_desc language="fr">la quantité de destinataires</localized_desc>
+                    </description>
+                    <substitute>Number-Recipients</substitute>
+                </tag>
+                <tag name="creation_time" tagType="DateFormat">
+                    <description>
+                        <localized_desc language="en">the origination time</localized_desc>
+                        <localized_desc language="fr">la date d'origine</localized_desc>
+                    </description>
+                    <substitute>Origination-Time</substitute>
+                </tag>
+                <tag name="encryption" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the encryption</localized_desc>
+                        <localized_desc language="fr">l'encodage</localized_desc>
+                    </description>
+                    <substitute>Encryption</substitute>
+                </tag>
+                <tag name="service_version" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the service version</localized_desc>
+                        <localized_desc language="fr">la version du service</localized_desc>
+                    </description>
+                    <substitute>service-Version</substitute>
+                </tag>
+                <tag name="linked_message_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the linked message ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de message lié</localized_desc>
+                    </description>
+                    <substitute>Linked-MSGID</substitute>
+                </tag>
+                <tag name="message_subject" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message subject</localized_desc>
+                        <localized_desc language="fr">le sujet du message</localized_desc>
+                    </description>
+                    <substitute>Message-Subject</substitute>
+                </tag>
+                <tag name="message_sender" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the message sender</localized_desc>
+                        <localized_desc language="fr">l'émetteur du message</localized_desc>
+                    </description>
+                    <substitute>Sender-Address</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>2012-11-29&#9;10:41:58 GMT&#9;-&#9;-&#9;-&#9;EXCHANGE&#9;-&#9;mhu@wallix.com&#9;1027&#9;2E5AC9438EBEC04AA767178D6846D5923A05@exchange.q-ass.lan&#9;0&#9;0&#9;288&#9;1&#9;2012-11-29 10:41:58 GMT&#9;0&#9;-&#9;c=FR;a= ;p=Q-Ass;l=EXCHANGE-121129104157Z-1&#9;-&#9;EX:/O=Q-ASS/OU=PREMIER GROUPE D'ADMINISTRATION/CN=RECIPIENTS/CN=MHUIN&#9;-</text>
+                     <expectedTags>
+                          <expectedTag name="source_ip">-</expectedTag>
+                         <expectedTag name="source_host">-</expectedTag>
+                         <expectedTag name="partner">-</expectedTag>
+                         <expectedTag name="dest_host">EXCHANGE</expectedTag>
+                         <expectedTag name="dest_ip">-</expectedTag>
+                         <expectedTag name="message_recipient">mhu@wallix.com</expectedTag>
+                         <expectedTag name="event_id">1027</expectedTag>
+                         <expectedTag name="event">SMTP submit message to Store Driver</expectedTag>
+                          <expectedTag name="internal_message_id">2E5AC9438EBEC04AA767178D6846D5923A05@exchange.q-ass.lan</expectedTag>
+                          <expectedTag name="priority">0</expectedTag>
+                          <expectedTag name="recipient_status">0</expectedTag>
+                          <expectedTag name="len">288</expectedTag>
+                          <expectedTag name="recipient_count">1</expectedTag>
+                          <expectedTag name="creation_time">2012-11-29 10:41:58</expectedTag>
+                          <expectedTag name="encryption">0</expectedTag>
+                          <expectedTag name="service_version">-</expectedTag>
+                          <expectedTag name="linked_message_id">c=FR;a= ;p=Q-Ass;l=EXCHANGE-121129104157Z-1</expectedTag>
+                          <expectedTag name="message_subject">-</expectedTag>
+                          <expectedTag name="message_sender">EX:/O=Q-ASS/OU=PREMIER GROUPE D'ADMINISTRATION/CN=RECIPIENTS/CN=MHUIN</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
