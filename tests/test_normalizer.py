@@ -158,6 +158,9 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_034_msexchange2003MTL(self):
         self.normalize_samples('MSExchange2003MessageTracking.xml', 'MSExchange2003MessageTracking', 0.99)
 
+    def test_normalize_samples_035_msexchange2003ISMailboxStore(self):
+        self.normalize_samples('MSExchange2003ISMailboxStore.xml', 'MSExchangeIS Mailbox Store [2003-EN]', 0.99)
+
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
     normalizer_path = os.environ['NORMALIZERS_PATH']

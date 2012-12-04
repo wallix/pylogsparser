@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="MSExchangeIS Mailbox Store [2003-EN]"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses english messages issued by the MSExchangeIS Mailbox Store Event Log for Exchange 2003. Event IDs 1016, 1013, 1009 and 1029 are supported.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages de l'observateur d'événements appelé "MSExchangeIS Mailbox Store" pour Exchange 2003 en version anglaise. Les événements 1016, 1013, 1009 et 1029 sont couverts.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+<!--    <tagTypes>-->
+<!--        <tagType name="" type="basestring">-->
+<!--            <description>-->
+<!--                <localized_desc language="en"></localized_desc>-->
+<!--                <localized_desc language="fr"></localized_desc>-->
+<!--            </description>-->
+<!--            <regexp></regexp>-->
+<!--        </tagType>-->
+<!--    </tagTypes>-->
+<!--    <callbacks>-->
+<!--        <callback name="myCallbackFunction"></callback>-->
+<!--    </callbacks>-->
+    <patterns>
+        <pattern name="EventID-1016">
+            <description>
+                <localized_desc language="en">Access to a mailbox by a user who is not the owner of the mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par un utilisateur qui n'en est pas le propriétaire</localized_desc>
+            </description>
+            <text>Windows 2000 User _USERNAME_ logged on to _MAILBOXOWNER_ mailbox, and is not the primary Windows 2000 account on this mailbox</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="mailbox_owner" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the mailbox's owner</localized_desc>
+                        <localized_desc language="fr">le propriétaire de la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_MAILBOXOWNER_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Windows 2000 User NGH\User3 logged on to user1@ngh.net mailbox, and is not the primary Windows 2000 account on this mailbox.</text>
+                     <expectedTags>
+                          <expectedTag name="user">NGH\User3</expectedTag>
+                          <expectedTag name="mailbox_owner">user1@ngh.net</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+</normalizer>
+
