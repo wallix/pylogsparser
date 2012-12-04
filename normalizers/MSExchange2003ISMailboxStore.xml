@@ -85,6 +85,54 @@
                 </example>
             </examples>
         </pattern>
+        <pattern name="EventID-1013">
+            <description>
+                <localized_desc language="en">Access to a mailbox by a user who is not the owner of the mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par un utilisateur qui n'en est pas le propriétaire</localized_desc>
+            </description>
+            <text>_USERNAME_ was validated as _DN_ and logged on to _MAILBOXDN_ on database "_DB_"</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+                </tag>
+                <tag name="mailbox_dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_MAILBOXDN_</substitute>
+                </tag>
+                <tag name="database" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the database on which the mailbox is</localized_desc>
+                        <localized_desc language="fr">la base de données sur laquelle la boîte aux lettres se trouve</localized_desc>
+                    </description>
+                    <substitute>_DB_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>NGH\user1 was validated as /o=NGH/ou=First Administrative Group/cn=Recipients/cn=user1 and logged on to /o=NGH/ou=First Administrative Group/cn=Recipients/cn=User2 on database "First Storage Group\Mailbox Store (DCEXCH)".</text>
+                     <expectedTags>
+                          <expectedTag name="user">NGH\user1</expectedTag>
+                          <expectedTag name="dn">/o=NGH/ou=First Administrative Group/cn=Recipients/cn=user1</expectedTag>
+                          <expectedTag name="mailbox_dn">/o=NGH/ou=First Administrative Group/cn=Recipients/cn=User2</expectedTag>
+                          <expectedTag name="database">First Storage Group\Mailbox Store (DCEXCH)</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
     </patterns>
 </normalizer>
 
