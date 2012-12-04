@@ -176,6 +176,53 @@
                 </example>
             </examples>
         </pattern>
+         <pattern name="EventID-1029">
+            <description>
+                <localized_desc language="en">the mailbox specified in the description of this event does not have the permissions that are required to perform a specific operation</localized_desc>
+                <localized_desc language="fr">permissions insuffisantes pour effectuer l'action spécifiée</localized_desc>
+            </description>
+            <text>_USERNAME_ failed an operation because the user did not have the following access rights: _RIGHTS_ The distinguished name of the owning mailbox is _MAILBOXDN_. The folder ID is in the data section of this event</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="rights" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the rights needed to perform the operation</localized_desc>
+                        <localized_desc language="fr">les droits nécessaires à l'opération</localized_desc>
+                    </description>
+                    <substitute>_RIGHTS_</substitute>
+                </tag>
+                <tag name="mailbox_dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_MAILBOXDN_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>ewhitehead@ci.rowlett.tx.us failed an operation because the user did not have the following access rights:
+
+'Delete' 'Read Property' 'Write Property' 'Create Message' 'View Item' 'Create Subfolder' 'Write Security Descriptor' 'Write Owner' 'Read Security Descriptor' 'Contact'
+
+The distinguished name of the owning mailbox is /O=ROWLETTMAIL/OU=FIRST ADMINISTRATIVE GROUP/CN=RECIPIENTS/CN=AGUARD. The folder ID is in the data section of this event.
+
+For more information, click http://www.microsoft.com/contentredirect.asp..</text>
+                     <expectedTags>
+                          <expectedTag name="user">ewhitehead@ci.rowlett.tx.us</expectedTag>
+                          <expectedTag name="rights">'Delete' 'Read Property' 'Write Property' 'Create Message' 'View Item' 'Create Subfolder' 'Write Security Descriptor' 'Write Owner' 'Read Security Descriptor' 'Contact'</expectedTag>
+                          <expectedTag name="mailbox_dn">/O=ROWLETTMAIL/OU=FIRST ADMINISTRATIVE GROUP/CN=RECIPIENTS/CN=AGUARD</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
     </patterns>
     <commonTags>
     	<commonTag name="eventlog_name">MSExchangeIS Mailbox Store</commonTag>
