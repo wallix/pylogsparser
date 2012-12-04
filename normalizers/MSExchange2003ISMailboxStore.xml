@@ -81,6 +81,7 @@
                      <expectedTags>
                           <expectedTag name="user">NGH\User3</expectedTag>
                           <expectedTag name="mailbox_owner">user1@ngh.net</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
@@ -129,10 +130,55 @@
                           <expectedTag name="dn">/o=NGH/ou=First Administrative Group/cn=Recipients/cn=user1</expectedTag>
                           <expectedTag name="mailbox_dn">/o=NGH/ou=First Administrative Group/cn=Recipients/cn=User2</expectedTag>
                           <expectedTag name="database">First Storage Group\Mailbox Store (DCEXCH)</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="EventID-1009">
+            <description>
+                <localized_desc language="en">Successful logon to one's mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par son propriétaire</localized_desc>
+            </description>
+            <text>_USERNAME_  logged on as _DN_ on database "_DB_"</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+                </tag>
+                <tag name="database" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the database on which the mailbox is</localized_desc>
+                        <localized_desc language="fr">la base de données sur laquelle la boîte aux lettres se trouve</localized_desc>
+                    </description>
+                    <substitute>_DB_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>NGH\user1 logged on as /o=NGH/ou=First Administrative Group/cn=Recipients/cn=user1 on database "First Storage Group\Mailbox Store (DCEXCH)".</text>
+                     <expectedTags>
+                          <expectedTag name="user">NGH\user1</expectedTag>
+                          <expectedTag name="dn">/o=NGH/ou=First Administrative Group/cn=Recipients/cn=user1</expectedTag>
+                          <expectedTag name="database">First Storage Group\Mailbox Store (DCEXCH)</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
         </pattern>
     </patterns>
+    <commonTags>
+    	<commonTag name="eventlog_name">MSExchangeIS Mailbox Store</commonTag>
+    </commonTags>
 </normalizer>
 
