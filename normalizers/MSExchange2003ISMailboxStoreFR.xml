@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2011 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="MSExchangeIS Mailbox Store [2003-FR]"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses french messages issued by the MSExchangeIS Mailbox Store Event Log for Exchange 2003. Event IDs 1016, 1013 and 1009 are supported.</localized_desc>
+        <localized_desc language="fr">Ce normaliseur analyse les messages de l'observateur d'événements appelé "MSExchangeIS Mailbox Store" pour Exchange 2003 en version française. Les événements 1016, 1013 et 1009 sont couverts.</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+<!--    <tagTypes>-->
+<!--        <tagType name="" type="basestring">-->
+<!--            <description>-->
+<!--                <localized_desc language="en"></localized_desc>-->
+<!--                <localized_desc language="fr"></localized_desc>-->
+<!--            </description>-->
+<!--            <regexp></regexp>-->
+<!--        </tagType>-->
+<!--    </tagTypes>-->
+<!--    <callbacks>-->
+<!--        <callback name="myCallbackFunction"></callback>-->
+<!--    </callbacks>-->
+    <patterns>
+        <pattern name="EventID-1016">
+            <description>
+                <localized_desc language="en">Access to a mailbox by a user who is not the owner of the mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par un utilisateur qui n'en est pas le propriétaire</localized_desc>
+            </description>
+            <text>L'utilisateur Windows 2000 _USERNAME_ s'est connecté à la boîte aux lettres _MAILBOXOWNER_ et n'est pas le compte principal Windows 2000 de cette boîte aux lettres</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="mailbox_owner" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the mailbox's owner</localized_desc>
+                        <localized_desc language="fr">le propriétaire de la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_MAILBOXOWNER_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>L'utilisateur Windows 2000 Q-ASS\mhu s'est connecté à la boîte aux lettres sco@exchange.wallix.fr et n'est pas le compte principal Windows 2000 de cette boîte aux lettres. Pour plus d'informations, visitez le site http://www.microsoft.com/contentredirect.asp. </text>
+                     <expectedTags>
+                          <expectedTag name="user">Q-ASS\mhu</expectedTag>
+                          <expectedTag name="mailbox_owner">sco@exchange.wallix.fr</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+        <pattern name="EventID-1013">
+            <description>
+                <localized_desc language="en">Access to a mailbox by a user who is not the owner of the mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par un utilisateur qui n'en est pas le propriétaire</localized_desc>
+            </description>
+            <text>_USERNAME_ validé en tant que _DN_ et connecté à _MAILBOXDN_ dans la base de données "_DB_"</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+                </tag>
+                <tag name="mailbox_dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_MAILBOXDN_</substitute>
+                </tag>
+                <tag name="database" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the database on which the mailbox is</localized_desc>
+                        <localized_desc language="fr">la base de données sur laquelle la boîte aux lettres se trouve</localized_desc>
+                    </description>
+                    <substitute>_DB_</substitute>
+                </tag>
+            </tags>
+        </pattern>
+        <pattern name="EventID-1009">
+            <description>
+                <localized_desc language="en">Successful logon to one's mailbox</localized_desc>
+                <localized_desc language="fr">Accès à une boîte aux lettres par son propriétaire</localized_desc>
+            </description>
+            <text>_USERNAME_ a ouvert une session en tant que _DN_ sur la base de données "_DB_".</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox</localized_desc>
+                        <localized_desc language="fr">l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+                </tag>
+                <tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the user accessing the mailbox's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom distingué de l'utilisateur accédant à la boîte aux lettres</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+                </tag>
+                <tag name="database" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the database on which the mailbox is</localized_desc>
+                        <localized_desc language="fr">la base de données sur laquelle la boîte aux lettres se trouve</localized_desc>
+                    </description>
+                    <substitute>_DB_</substitute>
+                </tag>
+            </tags>
+            <examples>
+                <example>
+                     <text>Q-ASS\mhu a ouvert une session en tant que /o=Q-Ass/ou=Premier groupe d'administration/cn=Recipients/cn=mhu sur la base de données "Premier groupe de stockage\Banque de boîtes aux lettres (EXCHANGE)". Pour plus d'informations, visitez le site http://www.microsoft.com/contentredirect.asp. </text>
+                     <expectedTags>
+                          <expectedTag name="user">Q-ASS\mhu</expectedTag>
+                          <expectedTag name="dn">/o=Q-Ass/ou=Premier groupe d'administration/cn=Recipients/cn=mhu</expectedTag>
+                          <expectedTag name="database">Premier groupe de stockage\Banque de boîtes aux lettres (EXCHANGE)</expectedTag>
+                          <expectedTag name="eventlog_name">MSExchangeIS Mailbox Store</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+        </pattern>
+    </patterns>
+    <commonTags>
+    	<commonTag name="eventlog_name">MSExchangeIS Mailbox Store</commonTag>
+    </commonTags>
+</normalizer>
+
