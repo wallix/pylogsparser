@@ -1027,7 +1027,22 @@ class Test(unittest.TestCase):
                  "privileges" : "SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege",
                  'eventlog_description': """Special privileges assigned to new logon:     User Name: Administrator     Domain: W2003EN     Logon ID: (0x0,0x3A092)     Privileges: SeSecurityPrivilege   SeBackupPrivilege   SeRestorePrivilege   SeTakeOwnershipPrivilege   SeDebugPrivilege   SeSystemEnvironmentPrivilege   SeLoadDriverPrivilege   SeImpersonatePrivilege""", })  
 
-
+    def test_MSExchangeISMailboxStore2003(self):
+        """Testing MSExchangeIS Mailbox Store logs for exchange 2003"""
+        self.aS(u"""<13>Dec  3 18:14:15 exchange.q-ass.lan MSWinEventLog 1\tApplication\t127867\tMon Dec 03 18:14:13\t2012\t1016\tMSExchangeIS Mailbox Store\tUnknown User\tN/A\tSuccess Audit\tEXCHANGE\tOuvertures de session\tL'utilisateur Windows 2000 Q-ASS\mhu s'est connecté à la boîte aux lettres scr@exchange.wallix.fr et n'est pas le compte principal Windows 2000 de cette boîte aux lettres.      Pour plus d'informations, visitez le site http://www.microsoft.com/contentredirect.asp.\t711""",
+               {
+                 'criticality': '1',
+                 'eventlog_id': '1016',
+                 'eventlog_source': 'Application',
+                 'eventlog_name': 'MSExchangeIS Mailbox Store',
+                 'source_host': 'EXCHANGE',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '711',
+                 'eventlog_description': u"""L'utilisateur Windows 2000 Q-ASS\mhu s'est connecté à la boîte aux lettres scr@exchange.wallix.fr et n'est pas le compte principal Windows 2000 de cette boîte aux lettres.      Pour plus d'informations, visitez le site http://www.microsoft.com/contentredirect.asp.""",
+                 "user" : u"Q-ASS\\mhu",
+                 "mailbox_owner" : "scr@exchange.wallix.fr",
+                 })  
 
 if __name__ == "__main__":
     unittest.main()
