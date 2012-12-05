@@ -62,7 +62,7 @@ class LogNormalizer():
         @param normalizers_paths: a list of absolute paths to the normalizer
         XML definitions to use or a just a single path as str.
         @param active_normalizers: a dictionary of active normalizers
-        in the form {name: [True|False]}.
+        in the form {name-version : [True|False]}.
         """
         if not isinstance(normalizers_paths, list or tuple):
             normalizers_paths = [normalizers_paths,]
