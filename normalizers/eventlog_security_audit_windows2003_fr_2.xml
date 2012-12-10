@@ -1,0 +1,1359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2003[FR]_2"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in French.
+The following event IDs are covered: 
+* 592 to 595 (processes events),
+* 608 to 612 (Policy change events),
+* 624, 642, 645, 646 (account management events)
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version française.
+Les codes d'événements suivants sont normalisés :
+* 592 to 595 (événements de suivi des processus),
+* 608 to 612(événements de modification de stratégies),
+* 624, 642, 645, 646 (événements de gestion des comptes),
+</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="policy+-" type="basestring">
+            <description>
+        <localized_desc language="en">A single sign used to display a policy change.</localized_desc>
+        <localized_desc language="fr">Un simple signe utilisé pour indiquer un changement de politique.</localized_desc></description>
+            <regexp>[+-]</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+    	<callback name="strip_values">
+for t in log:
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_user_right">
+decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
+'SeMachineAccountPrivilege' : 'Ability to add workstations to the domain',
+'SeIncreaseQuotaPrivilege' : 'Ability to adjust memory quotas for a process',
+'SeBackupPrivilege' : 'Ability to back up files and directories',
+'SeChangeNotifyPrivilege' : 'Ability to bypass traverse checking',
+'SeSystemtimePrivilege' : 'Ability to change the system time',
+'SeCreatePagefilePrivilege' : 'Ability to create a pagefile',
+'SeCreateTokenPrivilege' : 'Ability to create a token object',
+'SeCreatePermanentPrivilege' : 'Ability to create permanent shared objects',
+'SeDebugPrivilege' : 'Ability to debug programs',
+'SeEnableDelegationPrivilege' : 'Ability to delegate trust on computers and user accounts',
+'SeRemoteShutdownPrivilege' : 'Ability to shutdown a system remotely',
+'SeAuditPrivilege' : 'Ability to generate security audits',
+'SeIncreaseBasePriorityPrivilege' : 'Ability to increase scheduling priority',
+'SeLoadDriverPrivilege' : 'Ability to load or unload device drivers',
+'SeLockMemoryPrivilege' : 'Ability to lock pages in memory',
+'SeSecurityPrivilege' : 'Ability to manage the security event log',
+'SeSystemEnvironmentPrivilege' : 'Ability to modify firmware environment values',
+'SeManageVolumePrivilege' : 'Ability to perform volume maintenance tasks',
+'SeProfileSingleProcessPrivilege' : 'Ability to profile a single process',
+'SeSystemProfilePrivilege' : 'Ability to profile the system performances',
+'SeUndockPrivilege' : 'Ability to remove the computer from its docking station',
+'SeAssignPrimaryTokenPrivilege' : 'Ability to replace a process level token',
+'SeRestorePrivilege' : 'Ability to restore files and directories',
+'SeShutdownPrivilege' : 'Ability to shut the system down',
+'SeSyncAgentPrivilege' : 'Ability to synchronize directory service data',
+'SeTakeOwnershipPrivilege' : 'Ability to take ownership of files or other objects',
+}
+log['user_right_description'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_direction">
+decoder = { '1' : 'Trusted',
+'2' : 'Trusting',
+'3' : '2-way',
+ }
+log['trust_direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_attributes">
+decoder = { '1' : 'Transitive',
+'2' : 'Nontransitive',
+ }
+log['trust_attributes'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_type">
+decoder = { '1': 'NT 4.0 legacy trust',
+'2' : 'Kerberos realm trust',
+'3' : 'forest or domain trust with another active directory domain',
+ }
+log['trust_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="eventID-00592">
+            <description>
+                <localized_desc language="en">Process creation</localized_desc>
+                <localized_desc language="fr">Création d'un nouveau processus</localized_desc>
+            </description>
+            <text>Un nouveau processus a été créé : Id. du nouveau processus : _PID_ Nom du fichier image : _FILENAME_ Id. du processus créateur : _CPID_ Utilisateur : _USER_ Domaine : _DOMAIN_ Id. de la session : _LOGONID_</text>
+            <tags>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+            	<tag name="creator_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The creator process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus d'origine</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>A new process has been created:-->
+<!--New Process ID: 2167588800-->
+<!--Image File Name: \WINNT\system32\notepad.exe-->
+<!--Creator Process ID: 2167187648-->
+<!--Utilisateur : administrator-->
+<!--Domaine : ELMW2-->
+<!--Id. de la session : (0x0,0x804C2)</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="pid">2167588800</expectedTag>-->
+<!--            			<expectedTag name="file_name">\WINNT\system32\notepad.exe</expectedTag>-->
+<!--            			<expectedTag name="creator_pid">2167187648</expectedTag>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x804C2)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00593">
+            <description>
+                <localized_desc language="en">A process has exited</localized_desc>
+                <localized_desc language="fr">Arrêt d'un processus</localized_desc>
+            </description>
+            <text>Un processus est terminé : Id. du processus : _PID_  Nom du fichier image : _FILENAME_ Utilisateur : _USER_ Domaine : _DOMAIN_ Id. d'ouv. de session : _LOGONID_</text>
+            <tags>
+                <tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>A process has exited:-->
+<!--Process ID: 2084-->
+<!--Image File Name: C:\WINDOWS\system32\notepad.exe-->
+<!--Utilisateur : administrator-->
+<!--Domaine : ELM-->
+<!--Id. de la session : (0x0,0x158EB7)</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="pid">2084</expectedTag>-->
+<!--            			<expectedTag name="file_name">C:\WINDOWS\system32\notepad.exe</expectedTag>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELM</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00594">
+            <description>
+                <localized_desc language="en">Object handle duplication</localized_desc>
+                <localized_desc language="fr">Duplication d'un descripteur d'objet</localized_desc>
+            </description>
+            <text>Un handle d'objet a été dupliqué : Id. du handle source : _HANDLEID_ Id. du processus source : _PID_ Id. du handle cible : _TARGETHANDLEID_ Id. du processus cible : _TARGETPID_</text>
+            <tags>
+                <tag name="handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The source handle ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du descripteur source</localized_desc>
+                    </description>
+                    <substitute>_HANDLEID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The source process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus source</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="target_handle_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target handle ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du descripteur cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETHANDLEID_</substitute>
+            	</tag>
+            	<tag name="target_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETPID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>A handle to an object has been duplicated:-->
+
+<!--Source Handle ID: 1064-->
+<!--Source Process ID: 796-->
+<!--Target Handle ID: 1072-->
+<!--Target Process ID: 796</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="handle_id">1064</expectedTag>-->
+<!--            			<expectedTag name="pid">796</expectedTag>-->
+<!--            			<expectedTag name="target_handle_id">1072</expectedTag>-->
+<!--            			<expectedTag name="target_pid">796</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00595">
+            <description>
+                <localized_desc language="en">Indirect access to an object has been granted</localized_desc>
+                <localized_desc language="fr">Accès indirect à un objet accordé</localized_desc>
+            </description>
+            <text>Un accès indirect à un objet a été obtenu : Type d'objet : _OBJTYPE_ Nom d'objet : _OBJNAME_ Id. de processus : _PID_ Utilisateur principal : _USER_ Domaine principal : _DOMAIN_ Id. de session principale : _LOGONID_ Utilisateur client : _CLIENTUSER_ Domaine client : _CLIENTDOMAIN_ Id. de la session cliente : _CLID_ Accès : _ACCESSES_(?: Masque d'accès : _ACCESSMASK_)?</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="object_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object type</localized_desc>
+                        <localized_desc language="fr">Le type d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJTYPE_</substitute>
+            	</tag>
+            	<tag name="object_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object name</localized_desc>
+                        <localized_desc language="fr">Le nom d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJNAME_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary domain</localized_desc>
+                        <localized_desc language="fr">Le domaine principal</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion principal</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="client_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">L'utilisateur du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="client_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine du client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="client_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du client</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="accesses" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The accesses</localized_desc>
+                        <localized_desc language="fr">Les accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSES_</substitute>
+            	</tag>
+            	<tag name="access_mask" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The access mask</localized_desc>
+                        <localized_desc language="fr">Le masque d'accès</localized_desc>
+                    </description>
+                    <substitute>_ACCESSMASK_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00608">
+            <description>
+                <localized_desc language="en">User right assigned</localized_desc>
+                <localized_desc language="fr">Assignation d'un droit utilisateur</localized_desc>
+            </description>
+            <text>Droit assigné à l'utilisateur : _USERRIGHT_ Assigné à : _USER_ Assigné par : Utilisateur : _USERNAME_ Domaine : _DOMAIN_ Id. de la session : _LOGONID_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_right" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The system name of the assigned user right </localized_desc>
+                        <localized_desc language="fr">Le nom système du droit assigné à l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERRIGHT_</substitute>
+                    <callbacks>
+                 		<callback>decode_user_right</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="assigned_by" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user who assigned the right</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur qui a assigné le droit</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>User Right Assigned:-->
+<!--User Right: SeUndockPrivilege-->
+<!--Assigned To: MTG\rsmith-->
+<!--Assigned By:-->
+<!--Utilisateur : MTG1$-->
+<!--Domaine : MTG-->
+<!--Id. de la session : (0x0,0x3E7)</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="user_right">SeUndockPrivilege</expectedTag>-->
+<!--						<expectedTag name="user_right_description">Ability to remove the computer from its docking station</expectedTag>-->
+<!--						<expectedTag name="user">MTG\rsmith</expectedTag>-->
+<!--						<expectedTag name="assigned_by">MTG1$</expectedTag>-->
+<!--						<expectedTag name="domain">MTG</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x3E7)</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00609">
+            <description>
+                <localized_desc language="en">User right removed</localized_desc>
+                <localized_desc language="fr">Révocation d'un droit utilisateur</localized_desc>
+            </description>
+            <text>Droit de l'utilisateur : _USERRIGHT_ Supprimé de : _USER_ Supprimé par : Utilisateur : _USERNAME_ Domaine : _DOMAIN_ Id. de la session : _LOGONID_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_right" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The system name of the removed user right </localized_desc>
+                        <localized_desc language="fr">Le nom système du droit retiré à l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERRIGHT_</substitute>
+                    <callbacks>
+                 		<callback>decode_user_right</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="removed_by" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user who removed the right</localized_desc>
+                        <localized_desc language="fr">Le nom de l'utilisateur qui a retiré le droit</localized_desc>
+                    </description>
+                    <substitute>_USERNAME_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>User Right Removed:-->
+<!--  User Right: SeManageVolumePrivilege-->
+<!--  Removed From: ACME\wsmith-->
+<!--  Removed By:-->
+<!--    Utilisateur : administrator-->
+<!--    Domaine : ACME-->
+<!--    Id. de la session : (0x0,0x12526E)</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="user_right">SeManageVolumePrivilege</expectedTag>-->
+<!--						<expectedTag name="user_right_description">Ability to perform volume maintenance tasks</expectedTag>-->
+<!--						<expectedTag name="user">ACME\wsmith</expectedTag>-->
+<!--						<expectedTag name="removed_by">administrator</expectedTag>-->
+<!--						<expectedTag name="domain">ACME</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x12526E)</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00610">
+            <description>
+                <localized_desc language="en">New trusted domain</localized_desc>
+                <localized_desc language="fr">Nouveau domaine de confiance</localized_desc>
+            </description>
+            <text>Nouveau domaine approuvé : Nom du domaine : _DOMAIN_ Id. du domaine : _DOMAINID_ Établi par : Utilisateur : _USER_ Domaine : _USERDOMAIN_ Id. de la session : _LOGONID_ Type d'approbation : _TRUSTTYPE_ Direction de l'approbation : _TRUSTDIRECTION_ Attributs de l'approbation : _TRUSTATTRIBUTES_ Filtrage SID : _FILTERING_</text>
+            <tags>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain name</localized_desc>
+                        <localized_desc language="fr">Le nom du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="trust_direction_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust direction code</localized_desc>
+                        <localized_desc language="fr">Le code du sens de la relation de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTDIRECTION_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_direction</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="trust_type_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust type code</localized_desc>
+                        <localized_desc language="fr">Le code du type de niveau de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTTYPE_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_type</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="trust_attributes_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The trust attributes code</localized_desc>
+                        <localized_desc language="fr">Le code des attributs de la relation de confiance</localized_desc>
+                    </description>
+                    <substitute>_TRUSTATTRIBUTES_</substitute>
+                    <callbacks>
+                    	<callback>decode_trust_attributes</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="sid_filtering" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The SID filtering status</localized_desc>
+                        <localized_desc language="fr">Le statut du filtrage par SID</localized_desc>
+                    </description>
+                    <substitute>_FILTERING_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>New Trusted Domaine :-->
+<!--Domaine : SouthAmerica-->
+<!--Id. du domaine : - -->
+<!--Established By:-->
+<!--Utilisateur : administrator-->
+<!--Domaine : ELM-->
+<!--Id. de la session : (0x0,0x158EB7)-->
+<!--Trust Type: 3-->
+<!--Trust Direction: 2-->
+<!--Trust Attributes: 1-->
+<!--SID Filtering: Disabled</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="domain">SouthAmerica</expectedTag>-->
+<!--						<expectedTag name="domain_id">-</expectedTag>-->
+<!--						<expectedTag name="user">administrator</expectedTag>-->
+<!--						<expectedTag name="user_domain">ELM</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>-->
+<!--						<expectedTag name="trust_type_code">3</expectedTag>-->
+<!--						<expectedTag name="trust_direction_code">2</expectedTag>-->
+<!--						<expectedTag name="trust_attributes_code">1</expectedTag>-->
+<!--						<expectedTag name="sid_filtering">Disabled</expectedTag>-->
+<!--						<expectedTag name="trust_type">forest or domain trust with another active directory domain</expectedTag>-->
+<!--						<expectedTag name="trust_direction">Trusting</expectedTag>-->
+<!--						<expectedTag name="trust_attributes">Transitive</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+                <pattern name="eventID-00611">
+            <description>
+                <localized_desc language="en">Trusted domain removed</localized_desc>
+                <localized_desc language="fr">Domaine de confiance détruit</localized_desc>
+            </description>
+            <text>Domaine approuvé supprimé : Nom du domaine : _DOMAIN_ Id. du domaine : _DOMAINID_ Supprimé par : Utilisateur : _USER_ Domaine : _USERDOMAIN_ Id. de la session : _LOGONID_</text>
+            <tags>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain name</localized_desc>
+                        <localized_desc language="fr">Le nom du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USERDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Trusted Domain Removed:-->
+<!--Domaine : SouthAmerica-->
+<!--Id. du domaine : - -->
+<!--Removed By:-->
+<!--Utilisateur : administrator-->
+<!--Domaine : ELM-->
+<!--Id. de la session : (0x0,0x158EB7)</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="domain">SouthAmerica</expectedTag>-->
+<!--						<expectedTag name="domain_id">-</expectedTag>-->
+<!--						<expectedTag name="user">administrator</expectedTag>-->
+<!--						<expectedTag name="user_domain">ELM</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00612">
+            <description>
+                <localized_desc language="en">Audit Policy Change. Changes are marked with a + if enabled, a - if disabled</localized_desc>
+                <localized_desc language="fr">Changement de politique d'audit. Les changements sont signalés par un + en cas d'activation, un - en cas de désactivation</localized_desc>
+            </description>
+            <text>Modification de la stratégie d'audit : Nouvelle stratégie : Succès Échec _LOGSUCCESS_ _LOGFAIL_ Ouvertures/Fermetures de session _OBJSUCCESS_ _OBJFAIL_ Accès aux objets _PRIVSUCCESS_ _PRIVFAIL_ Utilisation d'un privilège _ACCTMGMTSUCCESS_ _ACCTMGMTFAIL_ Gestion des comptes _POLCHANGESUCCESS_ _POLCHANGEFAIL_ Changement de stratégie _SYSTEMSUCCESS_ _SYSTEMFAIL_ Système _TRACKINGSUCCESS_ _TRACKINGFAIL_ Suivi détaillé _DSASUCCESS_ _DSAFAIL_ Accès Active Directory _ACCTLOGONSUCCESS_ _ACCTLOGONFAIL_ Connexion au compte Modifié par : Utilisateur : _USER_ Nom du domaine : _DOMAIN_ Id. de la session : _LOGONID_</text>
+            <tags>
+                <tag name="logon_logoff_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the logon/logoff success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de connexion et de déconnexion</localized_desc>
+                    </description>
+                    <substitute>_LOGSUCCESS_</substitute>
+            	</tag>
+            	<tag name="logon_logoff_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the logon/logoff failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de connexion et de déconnexion</localized_desc>
+                    </description>
+                    <substitute>_LOGFAIL_</substitute>
+            	</tag>
+            	<tag name="object_access_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the object access success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'accès aux objets</localized_desc>
+                    </description>
+                    <substitute>_OBJSUCCESS_</substitute>
+            	</tag>
+            	<tag name="object_access_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the object access failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'accès aux objets</localized_desc>
+                    </description>
+                    <substitute>_OBJFAIL_</substitute>
+            	</tag>
+            	<tag name="privilege_use_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the privilege use success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'usage des privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVSUCCESS_</substitute>
+            	</tag>
+            	<tag name="privilege_use_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the privilege use failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'usage des privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVFAIL_</substitute>
+            	</tag>
+            	<tag name="account_management_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account management success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de gestions des comptes</localized_desc>
+                    </description>
+                    <substitute>_ACCTMGMTSUCCESS_</substitute>
+            	</tag>
+            	<tag name="account_management_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account management failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de gestions des comptes</localized_desc>
+                    </description>
+                    <substitute>_ACCTMGMTFAIL_</substitute>
+            	</tag>
+            	<tag name="policy_change_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the policy change success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de changement de politique</localized_desc>
+                    </description>
+                    <substitute>_POLCHANGESUCCESS_</substitute>
+            	</tag>
+            	<tag name="policy_change_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the policy change failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de changement de politique</localized_desc>
+                    </description>
+                    <substitute>_POLCHANGEFAIL_</substitute>
+            	</tag>
+            	<tag name="system_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the system success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès système</localized_desc>
+                    </description>
+                    <substitute>_SYSTEMSUCCESS_</substitute>
+            	</tag>
+            	<tag name="system_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the system failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs système</localized_desc>
+                    </description>
+                    <substitute>_SYSTEMFAIL_</substitute>
+            	</tag>
+            	<tag name="detailed_tracking_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the detailed tracking success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de suivi détaillé</localized_desc>
+                    </description>
+                    <substitute>_TRACKINGSUCCESS_</substitute>
+            	</tag>
+            	<tag name="detailed_tracking_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the detailed tracking failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de suivi détaillé</localized_desc>
+                    </description>
+                    <substitute>_TRACKINGFAIL_</substitute>
+            	</tag>
+            	<tag name="directory_service_access_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the directory service access success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès d'accès au service d'annuaire</localized_desc>
+                    </description>
+                    <substitute>_DSASUCCESS_</substitute>
+            	</tag>
+            	<tag name="directory_service_access_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the directory service access failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs d'accès au service d'annuaire</localized_desc>
+                    </description>
+                    <substitute>_DSAFAIL_</substitute>
+            	</tag>
+            	<tag name="account_logon_success" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account logon success audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des succès de connexion de compte</localized_desc>
+                    </description>
+                    <substitute>_ACCTLOGONSUCCESS_</substitute>
+            	</tag>
+            	<tag name="account_logon_failure" tagType="policy+-">
+                    <description>
+                        <localized_desc language="en">the account logon failure audit policy</localized_desc>
+                        <localized_desc language="fr">La politique d'audit des échecs de connexion de compte</localized_desc>
+                    </description>
+                    <substitute>_ACCTLOGONFAIL_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Audit Policy Change:-->
+<!--New Policy:-->
+<!--	Success	Failure-->
+<!--	    +	    + Logon/Logoff-->
+<!--	    +	    + Object Access-->
+<!--	    -	    + Privilege Use-->
+<!--	    +	    + Account Management-->
+<!--	    -	    + Policy Change-->
+<!--	    +	    -   System-->
+<!--	    +	    + Detailed Tracking-->
+<!--	    +	    + Directory Service Access-->
+<!--	    +	    + Account Logon-->
+
+<!--Changed By:-->
+<!--	  Utilisateur : Alebovsky-->
+<!--	  Domaine : RESEARCH-->
+<!--	  Id. de la session : (0x0,0x59DF36)</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="logon_logoff_success">+</expectedTag>-->
+<!--						<expectedTag name="logon_logoff_failure">+</expectedTag>-->
+<!--						<expectedTag name="object_access_success">+</expectedTag>-->
+<!--						<expectedTag name="object_access_failure">+</expectedTag>-->
+<!--						<expectedTag name="privilege_use_success">-</expectedTag>-->
+<!--						<expectedTag name="privilege_use_failure">+</expectedTag>-->
+<!--						<expectedTag name="account_management_success">+</expectedTag>-->
+<!--						<expectedTag name="account_management_failure">+</expectedTag>-->
+<!--						<expectedTag name="policy_change_success">-</expectedTag>-->
+<!--						<expectedTag name="policy_change_failure">+</expectedTag>-->
+<!--						<expectedTag name="system_success">+</expectedTag>-->
+<!--						<expectedTag name="system_failure">-</expectedTag>-->
+<!--						<expectedTag name="detailed_tracking_success">+</expectedTag>-->
+<!--						<expectedTag name="detailed_tracking_failure">+</expectedTag>-->
+<!--						<expectedTag name="directory_service_access_success">+</expectedTag>-->
+<!--						<expectedTag name="directory_service_access_failure">+</expectedTag>-->
+<!--						<expectedTag name="account_logon_success">+</expectedTag>-->
+<!--						<expectedTag name="account_logon_failure">+</expectedTag>-->
+<!--						<expectedTag name="user">Alebovsky</expectedTag>-->
+<!--						<expectedTag name="domain">RESEARCH</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00624-00642-00645-00646">
+            <description>
+                <localized_desc language="en">User account creation or change</localized_desc>
+                <localized_desc language="fr">Création ou modification d'un utilisateur</localized_desc>
+            </description>
+            <text>Compte d'(?:ordinateur|utilisateur) (?:créé|modifié): (?:_ACTION_ )?Nom d. (?:nouveau )?compte (?:cible)?: _NEWUSER_ (?:Nouveau )?domaine (?:cible )?: _NEWDOMAIN_ Id. d. (?:nouveau )?compte (?:cible )?: _ACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de (?:la )?session (?:de l')?appelant(?:e)? : _LOGONID_ Privilèges : ? _PRIVILEGES_ Attributs (?:modifiés )?: Nom du compte SAM : _SAMACCT_ Nom affiché : _DISPLAYNAME_ Nom principal utilisateur : _DN_ Répertoire de base : _HOMEDIR_ Lecteur de base : _HOMEDRIVE_ Chemin d'accès au script : _SCRIPTPATH_ Chemin d'accès au profil : _PROFILEPATH_ Stations de travail utilisateur : _WORKSTATIONS_ Dernière modification du mot de passe le : _PWDLASTSET_ Le compte expire le : _EXPIRYDATE_ ID de groupe principal : _PGID_ Délégué autorisé : _DELEGATETO_ Précédente valeur UAC : _OLDUAC_ Nouvelle valeur UAC : _NEWUAC_ Contrôle du compte utilisateur .UAC. : _ACCTCONTROL_ Paramètres utilisateurs : _USERPARAMS_ Historique SID : _SIDHISTORY_ Heures d'ouverture de session : _LOGONHOURS_(?: Nom d'hôte DNS : _DNSHOSTNAME_)?(?: Noms principaux de service : _SERVICEPRINCIPALNAMES_)?</text>
+            <tags>
+            	<tag name="action" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The type of change, in case of a computer account change</localized_desc>
+                        <localized_desc language="fr">Le type de changement, dans le cas d'un changement de compte d'ordinateur</localized_desc>
+                    </description>
+                    <substitute>_ACTION_</substitute>
+            	</tag>
+                <tag name="target_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur cible</localized_desc>
+                    </description>
+                    <substitute>_NEWUSER_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain of the target user</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur cible</localized_desc>
+                    </description>
+                    <substitute>_NEWDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID of the created user</localized_desc>
+                        <localized_desc language="fr">L'identifiant de compte de l'utilisateur créé</localized_desc>
+                    </description>
+                    <substitute>_ACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user creating the account</localized_desc>
+                        <localized_desc language="fr">l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain of the user creating the account</localized_desc>
+                        <localized_desc language="fr">le domaine de l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID of the user creating the account</localized_desc>
+                        <localized_desc language="fr">l'identifiant de session de l'utilisateur créant le nouveau compte</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">an unidentified field, empty most of the time</localized_desc>
+                        <localized_desc language="fr">un champ non identifié, vide la plupart du temps</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="sam_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the legacy logon name</localized_desc>
+                        <localized_desc language="fr">le nom de compte utilisé par les clients de version antérieure à windows 2003</localized_desc>
+                    </description>
+                    <substitute>_SAMACCT_</substitute>
+            	</tag>
+            	<tag name="display_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the display name</localized_desc>
+                        <localized_desc language="fr">le nom affiché</localized_desc>
+                    </description>
+                    <substitute>_DISPLAYNAME_</substitute>
+            	</tag>
+            	<tag name="principal_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the full user name, in an email format, with either the domain address or the domain's distinguished name</localized_desc>
+                        <localized_desc language="fr">le nom d'utilisateur complet, au format email, accompagné soit de l'adresse de domaine, soit du nom distingué du domaine</localized_desc>
+                    </description>
+                    <substitute>_DN_</substitute>
+            	</tag>
+            	<tag name="home_directory" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the home directory</localized_desc>
+                        <localized_desc language="fr">le répertoire d'accueil</localized_desc>
+                    </description>
+                    <substitute>_HOMEDIR_</substitute>
+            	</tag>
+            	<tag name="home_drive" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the home drive</localized_desc>
+                        <localized_desc language="fr">le disque d'accueil</localized_desc>
+                    </description>
+                    <substitute>_HOMEDRIVE_</substitute>
+            	</tag>
+            	<tag name="script_path" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the path to the user's logon script</localized_desc>
+                        <localized_desc language="fr">le chemin vers le script de démarrage de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_SCRIPTPATH_</substitute>
+            	</tag>
+            	<tag name="profile_path" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the path to the user's profile</localized_desc>
+                        <localized_desc language="fr">le chemin vers le profil de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_PROFILEPATH_</substitute>
+            	</tag>
+            	<tag name="workstations" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the workstations from which the user can log on</localized_desc>
+                        <localized_desc language="fr">les postes de travail depuis lesquels l'utilisateur peut se connecter</localized_desc>
+                    </description>
+                    <substitute>_WORKSTATIONS_</substitute>
+            	</tag>
+            	<tag name="__password_last_set" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the date at which the password was last set</localized_desc>
+                        <localized_desc language="fr">la date de dernier changement du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_PWDLASTSET_</substitute>
+                    <callbacks>
+                    	<callback>decode_password_last_set</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="__expiry_date" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the expiry date of the account</localized_desc>
+                        <localized_desc language="fr">la date d'expiration du compte</localized_desc>
+                    </description>
+                    <substitute>_EXPIRYDATE_</substitute>
+                    <callbacks>
+                    	<callback>decode_expiry_date</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="primary_gid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the primary group ID</localized_desc>
+                        <localized_desc language="fr">l'identifiant de groupe primaire</localized_desc>
+                    </description>
+                    <substitute>_PGID_</substitute>
+            	</tag>
+            	<tag name="allowed_to_delegate_to" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the list of Service Principal Names to which the user can forward credentials</localized_desc>
+                        <localized_desc language="fr">la liste des Noms Principaux de Services auxquels l'utilisateur peut transférer ses crédences</localized_desc>
+                    </description>
+                    <substitute>_DELEGATETO_</substitute>
+            	</tag>
+            	<tag name="old_uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the bitwise value of User Account Control options (old)</localized_desc>
+                        <localized_desc language="fr">l'ancienne valeur en bits des options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_OLDUAC_</substitute>
+            	</tag>
+            	<tag name="new_uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the bitwise value of User Account Control options (new)</localized_desc>
+                        <localized_desc language="fr">la nouvelle valeur en bits des options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_NEWUAC_</substitute>
+            	</tag>
+            	<tag name="uac" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the User Account Control options</localized_desc>
+                        <localized_desc language="fr">les options d'UAC (User Account Control)</localized_desc>
+                    </description>
+                    <substitute>_ACCTCONTROL_</substitute>
+            	</tag>
+            	<tag name="user_parameters" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the optional, specific user parameters</localized_desc>
+                        <localized_desc language="fr">les paramètres utilisateurs spécifiques et optionnels</localized_desc>
+                    </description>
+                    <substitute>_USERPARAMS_</substitute>
+            	</tag>
+            	<tag name="sid_history" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the previous SID of the user, in case it was moved from a domain</localized_desc>
+                        <localized_desc language="fr">les précédents SID de l'utilisateur, si celui-ci provient d'un autre domaine</localized_desc>
+                    </description>
+                    <substitute>_SIDHISTORY_</substitute>
+            	</tag>
+            	<tag name="logon_hours" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the allowed logon hours</localized_desc>
+                        <localized_desc language="fr">les heures de connexion autorisées</localized_desc>
+                    </description>
+                    <substitute>_LOGONHOURS_</substitute>
+            	</tag>
+            	<tag name="service_principal_names" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the service principal names</localized_desc>
+                        <localized_desc language="fr">les noms de services principaux</localized_desc>
+                    </description>
+                    <substitute>_SERVICEPRINCIPALNAMES_</substitute>
+            	</tag>
+            	<tag name="dest_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the DNS host name</localized_desc>
+                        <localized_desc language="fr">le nom d'hôte DNS</localized_desc>
+                    </description>
+                    <substitute>_DNSHOSTNAME_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>User Account Created:-->
+<!--        New Account Name: Naruto-->
+<!--        New Domaine : KONOHA-->
+<!--        New Account ID: {S-1-5-21-184992632-1607737289-1287950321-1178}-->
+<!--        Caller Utilisateur : Hokage-->
+<!--        Caller Domaine : KONOHA-->
+<!--        Caller Id. de la session : (0x0,0x59DF36)-->
+<!--        Privileges - -->
+<!--        Attributes:-->
+<!--        Sam Account Name: Naruto-->
+<!--        Display Name: Naruto Uzumaki-->
+<!--        User Principal Name: Naruto@dc=konoha,dc=shinobi-->
+<!--        Home Directory: - -->
+<!--        Home Drive: - -->
+<!--        Script Path: - -->
+<!--        Profile Path: - -->
+<!--        User Workstations: - -->
+<!--        Password Last Set: &lt;never&gt;-->
+<!--        Account Expires: &lt;never&gt;-->
+<!--        Primary Group ID: 513-->
+<!--        AllowedToDelegateTo: - -->
+<!--        Old UAC Value: 0x0-->
+<!--        New UAC Value: 0x15-->
+<!--        User Account Control:-->
+<!--        Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled-->
+<!--        User Parameters: - -->
+<!--        Sid History: - -->
+<!--        Logon Hours: &lt;value not set&gt;</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="target_user">Naruto</expectedTag>-->
+<!--						<expectedTag name="target_domain">KONOHA</expectedTag>-->
+<!--						<expectedTag name="target_account_id">{S-1-5-21-184992632-1607737289-1287950321-1178}</expectedTag>-->
+<!--						<expectedTag name="user">Hokage</expectedTag>-->
+<!--						<expectedTag name="domain">KONOHA</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>-->
+<!--						<expectedTag name="privileges">-</expectedTag>-->
+<!--						<expectedTag name="sam_account_name">Naruto</expectedTag>-->
+<!--						<expectedTag name="display_name">Naruto Uzumaki</expectedTag>-->
+<!--						<expectedTag name="principal_name">Naruto@dc=konoha,dc=shinobi</expectedTag>-->
+<!--						<expectedTag name="home_directory">-</expectedTag>-->
+<!--						<expectedTag name="home_drive">-</expectedTag>-->
+<!--						<expectedTag name="script_path">-</expectedTag>-->
+<!--						<expectedTag name="profile_path">-</expectedTag>-->
+<!--						<expectedTag name="workstations">-</expectedTag>-->
+<!--						<expectedTag name="password_last_set">&lt;never&gt;</expectedTag>-->
+<!--						<expectedTag name="expiry_date">&lt;never&gt;</expectedTag>-->
+<!--						<expectedTag name="primary_gid">513</expectedTag>-->
+<!--						<expectedTag name="old_uac">0x0</expectedTag>-->
+<!--						<expectedTag name="new_uac">0x15</expectedTag>-->
+<!--						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled</expectedTag>-->
+<!--        				<expectedTag name="user_parameters">-</expectedTag>-->
+<!--        				<expectedTag name="sid_history">-</expectedTag>-->
+<!--        				<expectedTag name="logon_hours">&lt;value not set&gt;</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>User Account Changed:-->
+<!--Target Account Name: alicej-->
+<!--Target Domaine : ELMW2-->
+<!--Target Account ID: ELMW2\alicej-->
+<!--Caller Utilisateur : Administrator-->
+<!--Caller Domaine : ELMW2-->
+<!--Caller Id. de la session : (0x0,0x1469C1)-->
+<!--Privileges: - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Display Name: - -->
+<!--User Principal Name: - -->
+<!--Home Directory: - -->
+<!--Home Drive: - -->
+<!--Script Path: - -->
+<!--Profile Path: - -->
+<!--User Workstations: - -->
+<!--Password Last Set: - -->
+<!--Account Expires: &lt;never&gt;-->
+<!--Primary Group ID: - -->
+<!--AllowedToDelegateTo: - -->
+<!--Old UAC Value: - -->
+<!--New UAC Value: - -->
+<!--User Account Control: - -->
+<!--User Parameters: - -->
+<!--Sid History: - -->
+<!--Logon Hours: -</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="target_user">alicej</expectedTag>-->
+<!--						<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="target_account_id">ELMW2\alicej</expectedTag>-->
+<!--						<expectedTag name="user">Administrator</expectedTag>-->
+<!--						<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--						<expectedTag name="privileges">-</expectedTag>-->
+<!--						<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--						<expectedTag name="display_name">-</expectedTag>-->
+<!--						<expectedTag name="principal_name">-</expectedTag>-->
+<!--						<expectedTag name="home_directory">-</expectedTag>-->
+<!--						<expectedTag name="home_drive">-</expectedTag>-->
+<!--						<expectedTag name="script_path">-</expectedTag>-->
+<!--						<expectedTag name="profile_path">-</expectedTag>-->
+<!--						<expectedTag name="workstations">-</expectedTag>-->
+<!--						<expectedTag name="password_last_set">-</expectedTag>-->
+<!--						<expectedTag name="expiry_date">&lt;never&gt;</expectedTag>-->
+<!--						<expectedTag name="primary_gid">-</expectedTag>-->
+<!--						<expectedTag name="old_uac">-</expectedTag>-->
+<!--						<expectedTag name="new_uac">-</expectedTag>-->
+<!--						<expectedTag name="uac">-</expectedTag>-->
+<!--        				<expectedTag name="user_parameters">-</expectedTag>-->
+<!--        				<expectedTag name="sid_history">-</expectedTag>-->
+<!--        				<expectedTag name="logon_hours">-</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Computer Account Created:-->
+<!--New Account Name: COMP1$-->
+<!--New Domaine : ELMW2-->
+<!--New Account ID: comp1-->
+<!--Caller Utilisateur : Administrator-->
+<!--Caller Domaine : ELMW2-->
+<!--Caller Id. de la session : (0x0,0x12D622)-->
+<!--Privileges - -->
+<!--Attributes:-->
+<!--Sam Account Name: FILESERVER12$-->
+<!--Display Name: - -->
+<!--User Principal Name: - -->
+<!--Home Directory: - -->
+<!--Home Drive: - -->
+<!--Script Path: - -->
+<!--Profile Path: - -->
+<!--User Workstations: - -->
+<!--Password Last Set: - -->
+<!--Account Expires: - -->
+<!--Primary Group ID: 515-->
+<!--AllowedToDelegateTo: - -->
+<!--Old UAC Value: 0x0-->
+<!--New UAC Value: 0x85-->
+<!--User Account Control:-->
+<!--Account Disabled 'Password Not Required' - Enabled 'Workstation Trust Account' - Enabled-->
+<!--User Parameters: - -->
+<!--Sid History: - -->
+<!--Logon Hours: - -->
+<!--DNS Host Name: - -->
+<!--Service Principal Names: -</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="target_user">COMP1$</expectedTag>-->
+<!--						<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="target_account_id">comp1</expectedTag>-->
+<!--						<expectedTag name="user">Administrator</expectedTag>-->
+<!--						<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--						<expectedTag name="privileges">-</expectedTag>-->
+<!--						<expectedTag name="sam_account_name">FILESERVER12$</expectedTag>-->
+<!--						<expectedTag name="display_name">-</expectedTag>-->
+<!--						<expectedTag name="principal_name">-</expectedTag>-->
+<!--						<expectedTag name="home_directory">-</expectedTag>-->
+<!--						<expectedTag name="home_drive">-</expectedTag>-->
+<!--						<expectedTag name="script_path">-</expectedTag>-->
+<!--						<expectedTag name="profile_path">-</expectedTag>-->
+<!--						<expectedTag name="workstations">-</expectedTag>-->
+<!--						<expectedTag name="primary_gid">515</expectedTag>-->
+<!--						<expectedTag name="old_uac">0x0</expectedTag>-->
+<!--						<expectedTag name="new_uac">0x85</expectedTag>-->
+<!--						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Workstation Trust Account' - Enabled</expectedTag>-->
+<!--        				<expectedTag name="user_parameters">-</expectedTag>-->
+<!--        				<expectedTag name="sid_history">-</expectedTag>-->
+<!--        				<expectedTag name="dest_host">-</expectedTag>-->
+<!--        				<expectedTag name="service_principal_names">-</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Computer Account Changed:-->
+<!--Account Enabled.-->
+<!--Target Account Name: COMP1$-->
+<!--Target Domaine : ELMW2-->
+<!--Target Account ID: comp1-->
+<!--Caller Utilisateur : Administrator-->
+<!--Caller Domaine : ELMW2-->
+<!--Caller Id. de la session : (0x0,0x12D622)-->
+<!--Privileges: - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Display Name: - -->
+<!--User Principal Name: - -->
+<!--Home Directory: - -->
+<!--Home Drive: - -->
+<!--Script Path: - -->
+<!--Profile Path: - -->
+<!--User Workstations: - -->
+<!--Password Last Set: - -->
+<!--Account Expires: - -->
+<!--Primary Group ID: - -->
+<!--AllowedToDelegateTo: - -->
+<!--Old UAC Value: - -->
+<!--New UAC Value: - -->
+<!--User Account Control: - -->
+<!--User Parameters: - -->
+<!--Sid History: - -->
+<!--Logon Hours: - -->
+<!--DNS Host Name: - -->
+<!--Service Principal Names: -</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="action">Account Enabled.</expectedTag>-->
+<!--						<expectedTag name="target_user">COMP1$</expectedTag>-->
+<!--						<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="target_account_id">comp1</expectedTag>-->
+<!--						<expectedTag name="user">Administrator</expectedTag>-->
+<!--						<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--						<expectedTag name="privileges">-</expectedTag>-->
+<!--						<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--						<expectedTag name="display_name">-</expectedTag>-->
+<!--						<expectedTag name="principal_name">-</expectedTag>-->
+<!--						<expectedTag name="home_directory">-</expectedTag>-->
+<!--						<expectedTag name="home_drive">-</expectedTag>-->
+<!--						<expectedTag name="script_path">-</expectedTag>-->
+<!--						<expectedTag name="profile_path">-</expectedTag>-->
+<!--						<expectedTag name="workstations">-</expectedTag>-->
+<!--						<expectedTag name="primary_gid">-</expectedTag>-->
+<!--						<expectedTag name="old_uac">-</expectedTag>-->
+<!--						<expectedTag name="new_uac">-</expectedTag>-->
+<!--						<expectedTag name="uac">-</expectedTag>-->
+<!--        				<expectedTag name="user_parameters">-</expectedTag>-->
+<!--        				<expectedTag name="sid_history">-</expectedTag>-->
+<!--        				<expectedTag name="dest_host">-</expectedTag>-->
+<!--        				<expectedTag name="service_principal_names">-</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+    </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
+</normalizer>
+
