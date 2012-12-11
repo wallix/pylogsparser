@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2003[FR]_4"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in English.
+The following event IDs are covered: 
+* 685 (account management events),
+* 675 (logon events)
+* 578 (privileges use )
+* 537
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version anglaise.
+Les codes d'événements suivants sont normalisés :
+*  685 (événements de gestion des comptes),
+* 675 (événements de connexion)
+* 578 (utilisation des privilèges))
+* 537
+</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="policy+-" type="basestring">
+            <description>
+        <localized_desc language="en">A single sign used to display a policy change.</localized_desc>
+        <localized_desc language="fr">Un simple signe utilisé pour indiquer un changement de politique.</localized_desc></description>
+            <regexp>[+-]</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+    	<callback name="strip_values">
+for t in log:
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_user_right">
+decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
+'SeMachineAccountPrivilege' : 'Ability to add workstations to the domain',
+'SeIncreaseQuotaPrivilege' : 'Ability to adjust memory quotas for a process',
+'SeBackupPrivilege' : 'Ability to back up files and directories',
+'SeChangeNotifyPrivilege' : 'Ability to bypass traverse checking',
+'SeSystemtimePrivilege' : 'Ability to change the system time',
+'SeCreatePagefilePrivilege' : 'Ability to create a pagefile',
+'SeCreateTokenPrivilege' : 'Ability to create a token object',
+'SeCreatePermanentPrivilege' : 'Ability to create permanent shared objects',
+'SeDebugPrivilege' : 'Ability to debug programs',
+'SeEnableDelegationPrivilege' : 'Ability to delegate trust on computers and user accounts',
+'SeRemoteShutdownPrivilege' : 'Ability to shutdown a system remotely',
+'SeAuditPrivilege' : 'Ability to generate security audits',
+'SeIncreaseBasePriorityPrivilege' : 'Ability to increase scheduling priority',
+'SeLoadDriverPrivilege' : 'Ability to load or unload device drivers',
+'SeLockMemoryPrivilege' : 'Ability to lock pages in memory',
+'SeSecurityPrivilege' : 'Ability to manage the security event log',
+'SeSystemEnvironmentPrivilege' : 'Ability to modify firmware environment values',
+'SeManageVolumePrivilege' : 'Ability to perform volume maintenance tasks',
+'SeProfileSingleProcessPrivilege' : 'Ability to profile a single process',
+'SeSystemProfilePrivilege' : 'Ability to profile the system performances',
+'SeUndockPrivilege' : 'Ability to remove the computer from its docking station',
+'SeAssignPrimaryTokenPrivilege' : 'Ability to replace a process level token',
+'SeRestorePrivilege' : 'Ability to restore files and directories',
+'SeShutdownPrivilege' : 'Ability to shut the system down',
+'SeSyncAgentPrivilege' : 'Ability to synchronize directory service data',
+'SeTakeOwnershipPrivilege' : 'Ability to take ownership of files or other objects',
+}
+log['user_right_description'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_direction">
+decoder = { '1' : 'Trusted',
+'2' : 'Trusting',
+'3' : '2-way',
+ }
+log['trust_direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_attributes">
+decoder = { '1' : 'Transitive',
+'2' : 'Nontransitive',
+ }
+log['trust_attributes'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_type">
+decoder = { '1': 'NT 4.0 legacy trust',
+'2' : 'Kerberos realm trust',
+'3' : 'forest or domain trust with another active directory domain',
+ }
+log['trust_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
+		<callback name="decode_ticket_failure">
+decoder={ '0X1' : "Client's entry in database has expired",
+'0X2' : "Server's entry in database has expired",
+'0X3' : "Requested protocol version number not supported",
+'0X4' : "Client's key encrypted in old master key",
+'0X5' :  "Server's key encrypted in old master key",
+'0X6' : "Client not found in Kerberos database",
+'0X7' : "Server not found in Kerberos database",
+'0X8' : "Multiple principal entries in database",
+'0X9' : "The client or server has a null key",
+'0XA' : "Ticket not eligible for postdating",
+'0XB' : "Requested start time is later than end time",
+'0XC' : "KDC policy rejects requests",
+'0XD' : "KDC cannot accommodate requested option",
+'0XE' : "KDC has no support for encryption type",
+'0XF' : "KDC has no support for checksum type",
+'0X10' : "KDC has no support for padata type",
+'0X11' : "KDC has no support for transited type",
+'0X12' : "Clients credentials have been revoked",
+'0X13' : "Credentials for server have been revoked",
+'0X14' : "TGT has been revoked",
+'0X15' : "Client not yet valid",
+'0X16' : "Server not yet valid",
+'0X17' : "Password has expired",
+'0X18' : "Pre-authentication information was invalid",
+'0X19' : "Additional pre-authentication required",
+'0X1F' : "Integrity check on decrypted field failed",
+'0X20' : "Ticket expired",
+'0X21' : "Ticket not yet valid",
+'0X22' : "Request is a replay",
+'0X23' : "The ticket isn't for us",
+'0X24' : "Ticket and authenticator don't match",
+'0X25' : "Clock skew too great",
+'0X26' : "Incorrect net address",
+'0X27' : "Protocol version mismatch",
+'0X28' : "Invalid message type",
+'0X29' : "Message stream modified",
+'0X2A' : "Message out of order",
+'0X2C' : "Specified version of key is not available",
+'0X2D' : "Service key not available",
+'0X2E' : "Mutual authentication failed",
+'0X2F' : "Incorrect message direction",
+'0X30' : "Alternative authentication method required",
+'0X31' : "Incorrect sequence number in message",
+'0X32' : "Inappropriate type of checksum in message",
+'0X3C' : "Generic error",
+'0X3D' : "Field is too long for this implementation",
+}
+v = value.upper()
+if not v.startswith('0X'):
+	try:
+		v = hex(int(value)).upper()
+	except:
+		pass
+log['reason'] = decoder.get(v, "-")
+		</callback>
+		<callback name="decode_error_code_680">
+decoder = {'0xC0000064' : "user name does not exist",
+'0xC000006A' : "correct user name but wrong password",
+'0xC0000234' : "user currently locked out",
+'0xC0000072' : "account currently disabled",
+'0xC000006F' : "logon attempt outside of allowed hours",
+'0xC0000070' : "workstation restriction",
+'0xC0000193' : "account expiration",
+'0xC0000071' : "expired password",
+'0xC0000224' : "password change required at next logon",
+'0x0' : "success",
+}
+log['status'] = decoder.get(value, "UNKNOWN")
+		</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="eventID-00675">
+            <description>
+                <localized_desc language="en">Pre-authentication failure</localized_desc>
+                <localized_desc language="fr">Tentative infructueuse de pré-authentification</localized_desc>
+            </description>
+            <text>Échec de la pré-authentification : Utilisateur : _USER_ Id. de l'utilisateur : _USERID_ Nom du service : _SERVICENAME_ Type de pré-authentification : _PREAUTHTYPE_ Code d'échec : _FAILURECODE_ Adresse du client : _SOURCEIP_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="user_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user ID, NT style</localized_desc>
+                        <localized_desc language="fr">L'identifiant utilisateur, compatible NT</localized_desc>
+                    </description>
+                    <substitute>_USERID_</substitute>
+            	</tag>
+            	<tag name="service_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service name</localized_desc>
+                        <localized_desc language="fr">Le nom de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICENAME_</substitute>
+            	</tag>
+            	<tag name="preauth_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The pre-authentication type</localized_desc>
+                        <localized_desc language="fr">Le type de préauthentification</localized_desc>
+                    </description>
+                    <substitute>_PREAUTHTYPE_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The origin of the ticket request</localized_desc>
+                        <localized_desc language="fr">L'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="result_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The request result code</localized_desc>
+                        <localized_desc language="fr">Les code du résultat de la demande</localized_desc>
+                    </description>
+                    <substitute>_FAILURECODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_ticket_failure</callback>
+                    </callbacks>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Pre-authentication failed:-->
+<!--User Name: Fred-->
+<!--User ID: MKTG\Fred-->
+<!--Service Name: krbtgt/MKTG-->
+<!--Pre-Authentication Type: 0x2-->
+<!--Failure Code: 24-->
+<!--Client Address: 10.42.42.10</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">Fred</expectedTag>-->
+<!--            			<expectedTag name="user_id">MKTG\Fred</expectedTag>-->
+<!--            			<expectedTag name="service_name">krbtgt/MKTG</expectedTag>-->
+<!--            			<expectedTag name="preauth_type">0x2</expectedTag>-->
+<!--            			<expectedTag name="result_code">24</expectedTag>-->
+<!--            			<expectedTag name="reason">Pre-authentication information was invalid</expectedTag>-->
+<!--            			<expectedTag name="source_ip">10.42.42.10</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00685">
+            <description>
+                <localized_desc language="en">Account name change</localized_desc>
+                <localized_desc language="fr">Changement de nom de compte</localized_desc>
+            </description>
+            <text>Nom du compte modifié : Ancien nom de compte : _OLDNAME_ Nouveau nom de compte : _NEWNAME_ Domaine cible : _TARGETDOMAIN_ Identificateur du compte cible : _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de session de l'appelant : _LOGONID_ Privilèges : _PRIVILEGES_</text>
+            <tags>
+                <tag name="old_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The old account name</localized_desc>
+                        <localized_desc language="fr">L'ancien nom du compte</localized_desc>
+                    </description>
+                    <substitute>_OLDNAME_</substitute>
+            	</tag>
+            	<tag name="new_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new account name</localized_desc>
+                        <localized_desc language="fr">Le nouveau nom du compte</localized_desc>
+                    </description>
+                    <substitute>_NEWNAME_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Account Name Changed:-->
+<!--  Old Account Name: DC1$-->
+<!--  New Account Name: DC3$-->
+<!--  Target Domain: ACME-->
+<!--  Target Account ID: ACME\DC3$-->
+<!--  Caller User Name: administrator-->
+<!--  Caller Domain: ACME-->
+<!--  Caller Logon ID: (0x0,0x3C154)-->
+<!--  Privileges: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="old_name">DC1$</expectedTag>-->
+<!--            			<expectedTag name="new_name">DC3$</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ACME</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ACME\DC3$</expectedTag>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ACME</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x3C154)</expectedTag>-->
+<!--            			<expectedTag name="privileges">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00578">
+            <description>
+            	    <localized_desc language="en">Privileged object operation</localized_desc>
+            	    <localized_desc language="fr">Appel à une opération privilégiée sur un objet</localized_desc>
+            	</description>
+            <text>Opération sur objet privilégié : Serveur objet : _OBJSERVER_ Handle d'objet : _OBJHANDLE_ Id. de processus : _PID_ Utilisateur principal : _USER_ Domaine principal : _DOMAIN_ Id. de session principale : _LOGONID_ Utilisateur client : _CLIENTUSER_ Domaine client : _CLIENTDOMAIN_ Id. de la session cliente : _CLID_ Privilèges : _PRIVILEGES_</text>
+            <tags>
+                <tag name="object_server" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object server</localized_desc>
+                        <localized_desc language="fr">Le serveur d'objet'</localized_desc>
+                    </description>
+                    <substitute>_OBJSERVER_</substitute>
+            	</tag>
+            	<tag name="object_handle" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The object handle</localized_desc>
+                        <localized_desc language="fr">Le handle d'objet</localized_desc>
+                    </description>
+                    <substitute>_OBJHANDLE_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="primary_user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur primaire</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="primary_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine primaire</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="primary_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The primary logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion primaire</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTUSER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client domain</localized_desc>
+                        <localized_desc language="fr">Le domaine client</localized_desc>
+                    </description>
+                    <substitute>_CLIENTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client  logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion cliente</localized_desc>
+                    </description>
+                    <substitute>_CLID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Privileged object operation:-->
+<!--Object Server: EventLog-->
+<!--Object Handle: 0-->
+<!--Process ID: 248-->
+<!--Primary User Name: W2DC$-->
+<!--Primary Domain: ELMW2-->
+<!--Primary Logon ID: (0x0,0x3E7)-->
+<!--Client User Name: Administrator-->
+<!--Client Domain: ELMW2-->
+<!--Client Logon ID: (0x0,0x804C2)-->
+<!--Privileges: SeSecurityPrivilege</text>-->
+<!--					<expectedTags>-->
+<!--						<expectedTag name="object_server">EventLog</expectedTag>-->
+<!--						<expectedTag name="object_handle">0</expectedTag>-->
+<!--						<expectedTag name="pid">248</expectedTag>-->
+<!--						<expectedTag name="primary_user">W2DC$</expectedTag>-->
+<!--						<expectedTag name="primary_domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="primary_logon_id">(0x0,0x3E7)</expectedTag>-->
+<!--						<expectedTag name="user">Administrator</expectedTag>-->
+<!--						<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--						<expectedTag name="logon_id">(0x0,0x804C2)</expectedTag>-->
+<!--						<expectedTag name="privileges">SeSecurityPrivilege</expectedTag>-->
+<!--					</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00537">
+            <description>
+                <localized_desc language="en">Logon Failures</localized_desc>
+                <localized_desc language="fr">Connexions échouées</localized_desc>
+            </description>
+            <text>Échec de l'ouverture de session : Raison : _REASON_ Nom de l'utilisateur : _USER_ Domaine : _DOMAIN_ Type d'ouverture de session : _LOGONTYPE_ Processus d'ouv. de session : _LOGONPROCESS_ Package d'authentification : _AUTHPACKAGE_ Nom de station de travail : _WORKSTATION_ .+ Nom de l'utilisateur appelant : _CALLERUSER_ Domaine appelant : _CALLERDOMAIN_ ID de session de l'appelant : _CID_ ID de processus appelant : _CPID_ Services en transit : _TSERV_ Adresse réseau source : _SOURCEIP_ Port source : _SOURCEPORT_</text>
+            <tags>
+            	<tag name="reason" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure reason</localized_desc>
+                        <localized_desc language="fr">La raison de l'échec</localized_desc>
+                    </description>
+                    <substitute>_REASON_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The logon type</localized_desc>
+                        <localized_desc language="fr">Le type de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONTYPE_</substitute>
+                    <callbacks>
+                 		<callback>decode_logon_type</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="logon_process" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon process</localized_desc>
+                        <localized_desc language="fr">Le processus de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONPROCESS_</substitute>
+            	</tag>
+            	<tag name="authentication_package" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The authentication package</localized_desc>
+                        <localized_desc language="fr">Le package d'authentification</localized_desc>
+                    </description>
+                    <substitute>_AUTHPACKAGE_</substitute>
+            	</tag>
+            	<tag name="dest_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The workstation</localized_desc>
+                        <localized_desc language="fr">Le poste de travail</localized_desc>
+                    </description>
+                    <substitute>_WORKSTATION_</substitute>
+            	</tag>
+            	<tag name="logon_guid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon GUID</localized_desc>
+                        <localized_desc language="fr">Le GUID de connexion</localized_desc>
+                    </description>
+                    <substitute>_LGUID_</substitute>
+            	</tag>
+            	<tag name="caller" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur appelant</localized_desc>
+                    </description>
+                    <substitute>_CALLERUSER_</substitute>
+            	</tag>
+            	<tag name="caller_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_CALLERDOMAIN_</substitute>
+            	</tag>
+            	<tag name="caller_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_CID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+            	<tag name="transited_services" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The transited services</localized_desc>
+                        <localized_desc language="fr">Les services en transit</localized_desc>
+                    </description>
+                    <substitute>_TSERV_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source IP</localized_desc>
+                        <localized_desc language="fr">L'IP source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="source_port" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source port</localized_desc>
+                        <localized_desc language="fr">Le port source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SOURCEPORT_</substitute>
+            	</tag>
+            </tags>
+            <commonTags>
+            	<commonTag name="status">failure</commonTag>
+            </commonTags>
+<!--            <examples>-->
+<!--                <example>-->
+<!--                     <text>Logon Failure:-->
+<!--Reason: Unknown user name or bad password-->
+<!--User Name: Administrator-->
+<!--Domain: W2003EN-->
+<!--Logon Type: 7-->
+<!--Logon Process: - -->
+<!--Authentication Package: Negotiate-->
+<!--Workstation Name: MYWORKSTATION-->
+<!--Caller User Name: - -->
+<!--Caller Domain: - -->
+<!--Caller Logon ID: - -->
+<!--Caller Process ID: - -->
+<!--Transited Services: - -->
+<!--Source Network Address: 10.42.42.180-->
+<!--Source Port: 0</text>-->
+<!--                     <expectedTags>-->
+<!--                          <expectedTag name="user">Administrator</expectedTag>-->
+<!--                          <expectedTag name="domain">W2003EN</expectedTag>-->
+<!--                          <expectedTag name="logon_type">7</expectedTag>-->
+<!--                          <expectedTag name="method">UnlockWorkstationLogon</expectedTag>-->
+<!--                          <expectedTag name="authentication_package">Negotiate</expectedTag>-->
+<!--                          <expectedTag name="dest_host">MYWORKSTATION</expectedTag>-->
+<!--                          <expectedTag name="caller">-</expectedTag>-->
+<!--                          <expectedTag name="caller_domain">-</expectedTag>-->
+<!--                          <expectedTag name="caller_logon_id">-</expectedTag>-->
+<!--                          <expectedTag name="pid">-</expectedTag>-->
+<!--                          <expectedTag name="transited_services">-</expectedTag>-->
+<!--                          <expectedTag name="source_ip">10.42.42.180</expectedTag>-->
+<!--                          <expectedTag name="source_port">0</expectedTag>-->
+<!--                          <expectedTag name="status">failure</expectedTag>-->
+<!--                          <expectedTag name="reason">Unknown user name or bad password</expectedTag>-->
+<!--                     </expectedTags>-->
+<!--                </example>-->
+<!--			</examples>-->
+        </pattern>
+    </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
+</normalizer>
+
