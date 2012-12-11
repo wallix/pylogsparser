@@ -1,0 +1,1860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2003[FR]_3"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="match"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2003 Event Log, localized in French.
+The following event IDs are covered: 
+* 627, 632 to 668 (account management events),
+* 671 (Policy change events),
+* 672 to 674 (logon events)
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2003, en version française.
+Les codes d'événements suivants sont normalisés :
+* 627, 632 à 668 (événements de gestion des comptes),
+* 671, 768 (événements de changement de politique),
+* 672 à 674 (événements de connexion)
+</localized_desc>
+    </description>
+    <authors>
+        <author>mhu@wallix.com</author>
+    </authors>
+    <tagTypes>
+        <tagType name="policy+-" type="basestring">
+            <description>
+        <localized_desc language="en">A single sign used to display a policy change.</localized_desc>
+        <localized_desc language="fr">Un simple signe utilisé pour indiquer un changement de politique.</localized_desc></description>
+            <regexp>[+-]</regexp>
+        </tagType>
+    </tagTypes>
+    <callbacks>
+    	<callback name="strip_values">
+for t in log:
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_user_right">
+decoder = {'SeTcbPrivilege' : 'Ability to act as part of the operating system',
+'SeMachineAccountPrivilege' : 'Ability to add workstations to the domain',
+'SeIncreaseQuotaPrivilege' : 'Ability to adjust memory quotas for a process',
+'SeBackupPrivilege' : 'Ability to back up files and directories',
+'SeChangeNotifyPrivilege' : 'Ability to bypass traverse checking',
+'SeSystemtimePrivilege' : 'Ability to change the system time',
+'SeCreatePagefilePrivilege' : 'Ability to create a pagefile',
+'SeCreateTokenPrivilege' : 'Ability to create a token object',
+'SeCreatePermanentPrivilege' : 'Ability to create permanent shared objects',
+'SeDebugPrivilege' : 'Ability to debug programs',
+'SeEnableDelegationPrivilege' : 'Ability to delegate trust on computers and user accounts',
+'SeRemoteShutdownPrivilege' : 'Ability to shutdown a system remotely',
+'SeAuditPrivilege' : 'Ability to generate security audits',
+'SeIncreaseBasePriorityPrivilege' : 'Ability to increase scheduling priority',
+'SeLoadDriverPrivilege' : 'Ability to load or unload device drivers',
+'SeLockMemoryPrivilege' : 'Ability to lock pages in memory',
+'SeSecurityPrivilege' : 'Ability to manage the security event log',
+'SeSystemEnvironmentPrivilege' : 'Ability to modify firmware environment values',
+'SeManageVolumePrivilege' : 'Ability to perform volume maintenance tasks',
+'SeProfileSingleProcessPrivilege' : 'Ability to profile a single process',
+'SeSystemProfilePrivilege' : 'Ability to profile the system performances',
+'SeUndockPrivilege' : 'Ability to remove the computer from its docking station',
+'SeAssignPrimaryTokenPrivilege' : 'Ability to replace a process level token',
+'SeRestorePrivilege' : 'Ability to restore files and directories',
+'SeShutdownPrivilege' : 'Ability to shut the system down',
+'SeSyncAgentPrivilege' : 'Ability to synchronize directory service data',
+'SeTakeOwnershipPrivilege' : 'Ability to take ownership of files or other objects',
+}
+log['user_right_description'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_direction">
+decoder = { '1' : 'Trusted',
+'2' : 'Trusting',
+'3' : '2-way',
+ }
+log['trust_direction'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_attributes">
+decoder = { '1' : 'Transitive',
+'2' : 'Nontransitive',
+ }
+log['trust_attributes'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_trust_type">
+decoder = { '1': 'NT 4.0 legacy trust',
+'2' : 'Kerberos realm trust',
+'3' : 'forest or domain trust with another active directory domain',
+ }
+log['trust_type'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+        <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
+		<callback name="decode_ticket_failure">
+decoder={ '0X1' : "Client's entry in database has expired",
+'0X2' : "Server's entry in database has expired",
+'0X3' : "Requested protocol version number not supported",
+'0X4' : "Client's key encrypted in old master key",
+'0X5' :  "Server's key encrypted in old master key",
+'0X6' : "Client not found in Kerberos database",
+'0X7' : "Server not found in Kerberos database",
+'0X8' : "Multiple principal entries in database",
+'0X9' : "The client or server has a null key",
+'0XA' : "Ticket not eligible for postdating",
+'0XB' : "Requested start time is later than end time",
+'0XC' : "KDC policy rejects requests",
+'0XD' : "KDC cannot accommodate requested option",
+'0XE' : "KDC has no support for encryption type",
+'0XF' : "KDC has no support for checksum type",
+'0X10' : "KDC has no support for padata type",
+'0X11' : "KDC has no support for transited type",
+'0X12' : "Clients credentials have been revoked",
+'0X13' : "Credentials for server have been revoked",
+'0X14' : "TGT has been revoked",
+'0X15' : "Client not yet valid",
+'0X16' : "Server not yet valid",
+'0X17' : "Password has expired",
+'0X18' : "Pre-authentication information was invalid",
+'0X19' : "Additional pre-authentication required",
+'0X1F' : "Integrity check on decrypted field failed",
+'0X20' : "Ticket expired",
+'0X21' : "Ticket not yet valid",
+'0X22' : "Request is a replay",
+'0X23' : "The ticket isn't for us",
+'0X24' : "Ticket and authenticator don't match",
+'0X25' : "Clock skew too great",
+'0X26' : "Incorrect net address",
+'0X27' : "Protocol version mismatch",
+'0X28' : "Invalid message type",
+'0X29' : "Message stream modified",
+'0X2A' : "Message out of order",
+'0X2C' : "Specified version of key is not available",
+'0X2D' : "Service key not available",
+'0X2E' : "Mutual authentication failed",
+'0X2F' : "Incorrect message direction",
+'0X30' : "Alternative authentication method required",
+'0X31' : "Incorrect sequence number in message",
+'0X32' : "Inappropriate type of checksum in message",
+'0X3C' : "Generic error",
+'0X3D' : "Field is too long for this implementation",
+}
+v = value.upper()
+if not v.startswith('0X'):
+	try:
+		v = hex(int(value)).upper()
+	except:
+		pass
+log['reason'] = decoder.get(v, "-")
+		</callback>
+		<callback name="decode_error_code_680">
+decoder = {'0xC0000064' : "user name does not exist",
+'0xC000006A' : "correct user name but wrong password",
+'0xC0000234' : "user currently locked out",
+'0xC0000072' : "account currently disabled",
+'0xC000006F' : "logon attempt outside of allowed hours",
+'0xC0000070' : "workstation restriction",
+'0xC0000193' : "account expiration",
+'0xC0000071' : "expired password",
+'0xC0000224' : "password change required at next logon",
+'0x0' : "success",
+}
+log['status'] = decoder.get(value, "UNKNOWN")
+		</callback>
+    </callbacks>
+    <patterns>
+        <pattern name="eventID-00627">
+            <description>
+                <localized_desc language="en">Password change attempt failure</localized_desc>
+                <localized_desc language="fr">Tentative infructueuse de changement de mot de passe</localized_desc>
+            </description>
+            <text>Tentative de changement de mot de passe : Nom du compte cible : _TARGETACCOUNT_ Domaine cible : _TARGETDOMAIN_ Id. du compte cible : _TARGETACCOUNTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de la session appelante : _LOGONID_ Privilèges : _PRIVILEGES_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCOUNT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCOUNTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user attempting to change the password, can be Anonymous as a logon is not required to do so</localized_desc>
+                        <localized_desc language="fr">L'utilisateur tentant de changer le mot de passe, peut être un compte anonyme car l'opération ne nécessite pas d'être authentifié</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's domain</localized_desc>
+                        <localized_desc language="fr">Le domaine de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user's logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion de l'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">an undocumented value, empty most of the time</localized_desc>
+                        <localized_desc language="fr">un champ non documenté, de valeur nulle la plupart du temps</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Change Password Attempt:-->
+<!--Nom de compte cible: user-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\user-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x130650)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">user</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\user</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x130650)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00632-00633-00636-00637-00650-00651-00655-00656-00660-00661-00665-00666">
+            <description>
+                <localized_desc language="en">Security Group Member change</localized_desc>
+                <localized_desc language="fr">Changement opéré sur un membre de Groupe de Sécurité</localized_desc>
+            </description>
+            <text>Membre du groupe (?:global|local|universel) de sécurité (?:dés)?activée (?:ajouté|supprimé) : Nom du membre : _MEMBER_ Id. du membre : _MEMBERID_ Nom de compte cible : _TARGETACCT_ Domaine cible : _TARGETDOMAIN_ Id. d. compte cible : _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de session de l'appelant : _LOGONID_ Privilèges : _PRIVILEGES_</text>
+            <tags>
+            	<tag name="dn" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The member name</localized_desc>
+                        <localized_desc language="fr">Le nom du membre</localized_desc>
+                    </description>
+                    <substitute>_MEMBER_</substitute>
+            	</tag>
+            	<tag name="member_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The member ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du membre</localized_desc>
+                    </description>
+                    <substitute>_MEMBERID_</substitute>
+            	</tag>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Global Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Global Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Local Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Local Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Local Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Local Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Global Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Global Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Universal Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Universal Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Universal Group Member Added:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Universal Group Member Removed:-->
+<!--Member Name: cn=alice,DC=elmw2,DC=local-->
+<!--Member ID: ELMW2\alicej-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x1469C1)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="dn">cn=alice,DC=elmw2,DC=local</expectedTag>-->
+<!--            			<expectedTag name="member_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x1469C1)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>     
+        <pattern name="eventID-00634-00638-00647-00652-00657-00662-00667">
+            <description>
+                <localized_desc language="en">Various deletion events</localized_desc>
+                <localized_desc language="fr">Événements de suppression variés</localized_desc>
+            </description>
+            <text>(?:Compte d'ordinateur|(?:Groupe (?:Global|Local|Universel) de sécurité (?:dés)?activée)) supprimé : Nom de compte cible : _TARGETACCT_ Domaine cible : _TARGETDOMAIN_ Id. d. compte cible : _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de session de (?:l'appelant|la session appelante) : _LOGONID_ Privilèges : _PRIVILEGES_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Global Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Local Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Computer Account Deleted:-->
+<!--Nom de compte cible: COMP1$-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : comp1-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">COMP1$</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">comp1</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Local Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Global Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Universal Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Universal Group Deleted:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00635-00639-00641-00648-00649-00653-00654-00658-00659-00663-00664">
+            <description>
+                <localized_desc language="en">Various group creation or change events</localized_desc>
+                <localized_desc language="fr">Événements de création ou de changement de groupes variés</localized_desc>
+            </description>
+            <text>Groupe (?:global|local|universel) de sécurité (?:dés)?activée (?:créé|modifié) : (?:Nouveau )?Nom d.(?: nouveau)? compte (?:cible )?: _TARGETACCT_ (?:Nouveau )?Domaine (?:cible )?: _TARGETDOMAIN_ Id. d.(?: nouveau)? compte (?:cible )?: _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de session de l'appelant : _LOGONID_ Privilèges : _PRIVILEGES_ Attributs (?:modifiés )?: Nom du compte SAM : _SAMACCT_ Historique SID : _SIDHISTORY_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="sam_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the legacy logon name</localized_desc>
+                        <localized_desc language="fr">le nom de compte utilisé par les clients de version antérieure à windows 2003</localized_desc>
+                    </description>
+                    <substitute>_SAMACCT_</substitute>
+            	</tag>
+            	<tag name="sid_history" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">the previous SID of the user, in case it was moved from a domain</localized_desc>
+                        <localized_desc language="fr">les précédents SID de l'utilisateur, si celui-ci provient d'un autre domaine</localized_desc>
+                    </description>
+                    <substitute>_SIDHISTORY_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Local Group Created:-->
+<!--New Account Name: AccountingStaff-->
+<!--New Domain: ELMW2-->
+<!--New Account ID: ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Attributes:-->
+<!--Sam Account Name: TestGroup-->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">TestGroup</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Local Group Created:-->
+<!--        Nom de compte cible: Employees_distrib-->
+<!--        Domaine cible : RESEARCH-->
+<!--        Id. d. compte cible : %{S-1-5-21-184992632-1607737289-1287950321-1190}-->
+<!--        Utilisateur appelant : Alebovsky-->
+<!--        Domaine appelant : RESEARCH-->
+<!--        Id. de session de l'appelant : (0x0,0x59DF36)-->
+<!--        Privilèges : - -->
+<!--        Attributes:-->
+<!--        Sam Account Name: Employees_distrib-->
+<!--        Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">Employees_distrib</expectedTag>-->
+<!--            			<expectedTag name="target_domain">RESEARCH</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">%{S-1-5-21-184992632-1607737289-1287950321-1190}</expectedTag>-->
+<!--            			<expectedTag name="user">Alebovsky</expectedTag>-->
+<!--            			<expectedTag name="domain">RESEARCH</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">Employees_distrib</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Global Group Created:-->
+<!--New Account Name: AccountingStaff-->
+<!--New Domain: ELMW2-->
+<!--New Account ID: ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Attributes:-->
+<!--Sam Account Name: TestGroup-->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">TestGroup</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Universal Group Created:-->
+<!--New Account Name: AccountingStaff-->
+<!--New Domain: ELMW2-->
+<!--New Account ID: ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Attributes:-->
+<!--Sam Account Name: TestGroup-->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">TestGroup</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Universal Group Created:-->
+<!--New Account Name: AccountingStaff-->
+<!--New Domain: ELMW2-->
+<!--New Account ID: ELMW2\AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Attributes:-->
+<!--Sam Account Name: TestGroup-->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">TestGroup</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Local Group Changed:-->
+<!--  Nom de compte cible: Accounting-->
+<!--  Domaine cible : STG-->
+<!--  Id. d. compte cible : STG\Accounting-->
+<!--  Utilisateur appelant : wsmith-->
+<!--  Domaine appelant : STG-->
+<!--  Id. de session de l'appelant : (0x0,0x31AA8)-->
+<!--  Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">Accounting</expectedTag>-->
+<!--            			<expectedTag name="target_domain">STG</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">STG\Accounting</expectedTag>-->
+<!--            			<expectedTag name="user">wsmith</expectedTag>-->
+<!--            			<expectedTag name="domain">STG</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x31AA8)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Global Group Changed:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Local Group Changed:-->
+<!--        Nom de compte cible: Employees_distrib-->
+<!--        Domaine cible : RESEARCH-->
+<!--        Id. d. compte cible : %{S-1-5-21-184992632-1607737289-1287950321-1190}-->
+<!--        Utilisateur appelant : Alebovsky-->
+<!--        Domaine appelant : RESEARCH-->
+<!--        Id. de session de l'appelant : (0x0,0x59DF36)-->
+<!--        Privilèges : - -->
+<!--        Changed Attributes:-->
+<!--        Sam Account Name: - -->
+<!--        Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">Employees_distrib</expectedTag>-->
+<!--            			<expectedTag name="target_domain">RESEARCH</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">%{S-1-5-21-184992632-1607737289-1287950321-1190}</expectedTag>-->
+<!--            			<expectedTag name="user">Alebovsky</expectedTag>-->
+<!--            			<expectedTag name="domain">RESEARCH</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x59DF36)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Global Group Changed:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Enabled Universal Group Changed:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Security Disabled Universal Group Changed:-->
+<!--Nom de compte cible: AccountingStaff-->
+<!--Domaine cible : ELMW2-->
+<!--Id. d. compte cible : AccountingStaff-->
+<!--Utilisateur appelant : Administrator-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x12D622)-->
+<!--Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Sam Account Name: - -->
+<!--Sid History: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">AccountingStaff</expectedTag>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x12D622)</expectedTag>-->
+<!--            			<expectedTag name="sam_account_name">-</expectedTag>-->
+<!--            			<expectedTag name="sid_history">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00644-00671">
+            <description>
+                <localized_desc language="en">Account locking events</localized_desc>
+                <localized_desc language="fr">Événements de blocage de compte</localized_desc>
+            </description>
+            <text>Compte d'utilisateur (?:désactivé|verrouillé) : Nom d. compte (?:cible|source) : _TARGETACCT_ (?:Domaine cible : _TARGETDOMAIN_ )?Id. d. compte cible : _TARGETACCTID_ (?:Nom de l'ordinateur appelant : _SOURCEHOST_ )?(?:Nom de l')'?utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de (?:la )?session (?:de l')'?appelant(?:e)? : _LOGONID_</text>
+            <tags>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="target_account_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCTID_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user locking or unlocking the account</localized_desc>
+                        <localized_desc language="fr">L'utilisateur verrouillant ou déverrouillant le compte cible</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>User Account Locked Out:-->
+<!--Nom de compte cible: alicej-->
+<!--Id. d. compte cible : ELMW2\alicej-->
+<!--Caller Machine Name: W3DC-->
+<!--Utilisateur appelant : W2DC$-->
+<!--Domaine appelant : ELMW2-->
+<!--Id. de session de l'appelant : (0x0,0x3E7)</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">alicej</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELMW2\alicej</expectedTag>-->
+<!--            			<expectedTag name="source_host">W3DC</expectedTag>-->
+<!--            			<expectedTag name="user">W2DC$</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x3E7)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>User Account Unlocked:-->
+<!--Nom de compte cible: harold-->
+<!--Domaine cible : ELM-->
+<!--Id. d. compte cible : ELM\harold-->
+<!--Utilisateur appelant : administrator-->
+<!--Domaine appelant : ELM-->
+<!--Id. de session de l'appelant : (0x0,0x158EB7)</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="target_account">harold</expectedTag>-->
+<!--            			<expectedTag name="target_account_id">ELM\harold</expectedTag>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELM</expectedTag>-->
+<!--            			<expectedTag name="target_domain">ELM</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00682-00683">
+            <description>
+                <localized_desc language="en">connection to/disconnection from winstation</localized_desc>
+                <localized_desc language="fr">connexion à/déconnexion d'une station de travail</localized_desc>
+            </description>
+            <text>Session (?:dé|re)connectée .* station Windows : Utilisateur : _USER_ Domaine : _DOMAIN_ Id. de session : _LOGONID_ Nom de session : _SESSIONNAME_ Nom de client : _SOURCEHOST_ Adresse de client : _SOURCEIP_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user connecting or disconnecting from the terminal server session</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+                <tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The session name</localized_desc>
+                        <localized_desc language="fr">Le nom de session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONNAME_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Session reconnected to winstation:-->
+<!--User Name: administrator-->
+<!--Domain: ELMW2-->
+<!--Logon ID: (0x0,0xBBA2)-->
+<!--Session Name: RDP-Tcp#5-->
+<!--Client Name: CPQ-->
+<!--Client Address: 10.42.42.90</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0xBBA2)</expectedTag>-->
+<!--            			<expectedTag name="session_name">RDP-Tcp#5</expectedTag>-->
+<!--            			<expectedTag name="source_host">CPQ</expectedTag>-->
+<!--            			<expectedTag name="source_ip">10.42.42.90</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Session disconnected from winstation:-->
+<!--User Name: administrator-->
+<!--Domain: ELMW2-->
+<!--Logon ID: (0x0,0x5BAA5)-->
+<!--Session Name: Unknown-->
+<!--Client Name: CPQ-->
+<!--Client Address: 10.42.42.90</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELMW2</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x5BAA5)</expectedTag>-->
+<!--            			<expectedTag name="session_name">Unknown</expectedTag>-->
+<!--            			<expectedTag name="source_host">CPQ</expectedTag>-->
+<!--            			<expectedTag name="source_ip">10.42.42.90</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00673-00674">
+            <description>
+                <localized_desc language="en">Service Ticket events</localized_desc>
+                <localized_desc language="fr">Événements concernant des tickets de service</localized_desc>
+            </description>
+            <text>(?:Nom )?Utilisateur : _USER_ Domaine (?:de l')?utilisateur : _DOMAIN_ Nom du service : _SERVICENAME_ Id.(?:ntificateur)? du service : _SERVICEID_ Options du ticket : _TICKETOPTIONS_ Type de cryptage du ticket : _TICKETENCRYPTIONTYPE_ Adresse du client : _SOURCEIP_(?: Code d'échec : _FAILURECODE_ GUID d'ouv. de session : _GUID_ Services en transit : _TRANSITEDSERVICES_)?</text>
+            <tags>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+                <tag name="service_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The name of the computer</localized_desc>
+                        <localized_desc language="fr">Le nom de l'ordinateur</localized_desc>
+                    </description>
+                    <substitute>_SERVICENAME_</substitute>
+            	</tag>
+            	<tag name="service_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICEID_</substitute>
+            	</tag>
+            	<tag name="ticket_options" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket options</localized_desc>
+                        <localized_desc language="fr">Les options de ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETOPTIONS_</substitute>
+            	</tag>
+            	<tag name="ticket_encryption_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket encryption type</localized_desc>
+                        <localized_desc language="fr">Le type d'encodage du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETENCRYPTIONTYPE_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The client address</localized_desc>
+                        <localized_desc language="fr">L'adresse du client</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="failure_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure code</localized_desc>
+                        <localized_desc language="fr">Le code d'échec</localized_desc>
+                    </description>
+                    <substitute>_FAILURECODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_ticket_failure</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="guid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon GUID</localized_desc>
+                        <localized_desc language="fr">Le GUID de connexion</localized_desc>
+                    </description>
+                    <substitute>_GUID_</substitute>
+            	</tag>
+            	<tag name="transited_services" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The transited services</localized_desc>
+                        <localized_desc language="fr">Les services transités</localized_desc>
+                    </description>
+                    <substitute>_TRANSITEDSERVICES_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Service Ticket Request:-->
+<!--User Name: -->
+<!--User Domain: SERVER.APPLEADV.COM-->
+<!--Service Name: host/server1.server.appleadv.com-->
+<!--Service ID: - -->
+<!--Ticket Options: 0x40830000-->
+<!--Ticket Encryption Type: - -->
+<!--Client Address: 127.0.0.1-->
+<!--Failure Code: 0xD-->
+<!--Logon GUID: - -->
+<!--Transited Services: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="domain">SERVER.APPLEADV.COM</expectedTag>-->
+<!--            			<expectedTag name="service_name">host/server1.server.appleadv.com</expectedTag>-->
+<!--            			<expectedTag name="service_id">-</expectedTag>-->
+<!--            			<expectedTag name="ticket_options">0x40830000</expectedTag>-->
+<!--            			<expectedTag name="ticket_encryption_type">-</expectedTag>-->
+<!--            			<expectedTag name="source_ip">127.0.0.1</expectedTag>-->
+<!--            			<expectedTag name="failure_code">0xD</expectedTag>-->
+<!--            			<expectedTag name="reason">KDC cannot accommodate requested option</expectedTag>-->
+<!--            			<expectedTag name="guid">-</expectedTag>-->
+<!--            			<expectedTag name="transited_services">-</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            	<example>-->
+<!--            		<text>Service Ticket Renewed:-->
+<!--User Name: qbvm$@MONTEREYTECHGROUP.COM-->
+<!--User Domain: MONTEREYTECHGROUP.COM-->
+<!--Service Name: krbtgt-->
+<!--Service ID: MTG\krbtgt-->
+<!--Ticket Options: 0x2-->
+<!--Ticket Encryption Type: 0x17-->
+<!--Client Address: 10.42.42.24</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">qbvm$@MONTEREYTECHGROUP.COM</expectedTag>-->
+<!--            			<expectedTag name="domain">MONTEREYTECHGROUP.COM</expectedTag>-->
+<!--            			<expectedTag name="service_name">krbtgt</expectedTag>-->
+<!--            			<expectedTag name="service_id">MTG\krbtgt</expectedTag>-->
+<!--            			<expectedTag name="ticket_options">0x2</expectedTag>-->
+<!--            			<expectedTag name="ticket_encryption_type">0x17</expectedTag>-->
+<!--            			<expectedTag name="source_ip">10.42.42.24</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00643">
+            <description>
+                <localized_desc language="en">Domain policy change</localized_desc>
+                <localized_desc language="fr">Changement de politique de domaine</localized_desc>
+            </description>
+            <text>Stratégie de domaine modifiée : _POLICY_ modifié Domaine : _POLICYDOMAIN_ Id. de domaine : _POLICYDOMAINID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de la session appelante : _LOGONID_ Privilèges : _PRIVILEGES_ Attributs modifiés : Âge minimal du mot de passe : _MINPASSWDAGE_ Âge maximal du mot de passe : _MAXPASSWDAGE_ Fermeture de session forcée : _FORCELOGOFF_ Seuil de verrouillage : _LOCKOUTTHRESHOLD_ Fenêtre d'observation du verrouillage : _LOCKOUTOBSWINDOW_ Durée du verrouillage : _LOCKOUTDURATION_ Propriétés du mot de passe : _PASSWDPROPERTIES_ Longueur minimale du mot de passe : _MINPASSWDLENGTH_ Longueur de l'historique de mot de passe : _PASSWDHISTORYLENGTH_ Quota de comptes d'ordinateurs : _MACHINEACCTQUOTA_ Mode domaine mixte : _MIXEDDOMAINMODE_ Version de comportement du domaine : _DOMAINBEHAVIORVERSION_ Informations OEM</text>
+            <tags>
+                <tag name="policy" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy name</localized_desc>
+                        <localized_desc language="fr">Le nom de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICY_</substitute>
+            	</tag>
+            	<tag name="policy_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICYDOMAIN_</substitute>
+            	</tag>
+            	<tag name="policy_domain_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The policy domain ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de domaine de la politique</localized_desc>
+                    </description>
+                    <substitute>_POLICYDOMAINID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user changing the policy</localized_desc>
+                        <localized_desc language="fr">L'utilisateur changeant la politique</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privileges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            	<tag name="minimum_password_age" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The minimum password age</localized_desc>
+                        <localized_desc language="fr">L'âge minimal du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_MINPASSWDAGE_</substitute>
+            	</tag>
+            	<tag name="maximum_password_age" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The maximum password age</localized_desc>
+                        <localized_desc language="fr">L'âge maximal du mot de passe</localized_desc>
+                    </description>
+                    <substitute>_MAXPASSWDAGE_</substitute>
+            	</tag>
+            	<tag name="force_logoff" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The force logoff option</localized_desc>
+                        <localized_desc language="fr">L'option de déconnexion forcée</localized_desc>
+                    </description>
+                    <substitute>_FORCELOGOFF_</substitute>
+            	</tag>
+            	<tag name="lockout_threshold" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout threshold</localized_desc>
+                        <localized_desc language="fr">Le pallier de blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTTHRESHOLD_</substitute>
+            	</tag>
+            	<tag name="lockout_observation_window" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout observation window</localized_desc>
+                        <localized_desc language="fr">La plage d'observation du blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTOBSWINDOW_</substitute>
+            	</tag>
+            	<tag name="lockout_duration" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The lockout duration</localized_desc>
+                        <localized_desc language="fr">La durée du blocage</localized_desc>
+                    </description>
+                    <substitute>_LOCKOUTDURATION_</substitute>
+            	</tag>
+            	<tag name="password_properties" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The password properties as a bit code</localized_desc>
+                        <localized_desc language="fr">Les propriétés de mot de passe</localized_desc>
+                    </description>
+                    <substitute>_PASSWDPROPERTIES_</substitute>
+            	</tag>
+            	<tag name="minimum_password_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The minimum password length</localized_desc>
+                        <localized_desc language="fr">La longueur de mot de passe minimale</localized_desc>
+                    </description>
+                    <substitute>_MINPASSWDLENGTH_</substitute>
+            	</tag>
+            	<tag name="password_history_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The password history length</localized_desc>
+                        <localized_desc language="fr">La nombre de mots de passe conservés en historique</localized_desc>
+                    </description>
+                    <substitute>_PASSWDHISTORYLENGTH_</substitute>
+            	</tag>
+            	<tag name="machine_account_quota" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine account quota</localized_desc>
+                        <localized_desc language="fr">Le quota de comptes machines</localized_desc>
+                    </description>
+                    <substitute>_MACHINEACCTQUOTA_</substitute>
+            	</tag>
+            	<tag name="mixed_domain_mode" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The mixed domain mode</localized_desc>
+                        <localized_desc language="fr">Le mode de domaine mixte</localized_desc>
+                    </description>
+                    <substitute>_MIXEDDOMAINMODE_</substitute>
+            	</tag>
+            	<tag name="domain_behavior_version" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain behavior version</localized_desc>
+                        <localized_desc language="fr">La version de comportement de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAINBEHAVIORVERSION_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Domain Policy Changed: - modified-->
+<!--Domain Name: ELM-->
+<!--Domain ID: ELM-->
+<!--Utilisateur appelant : administrator-->
+<!--Domaine appelant : ELM-->
+<!--Id. de session de l'appelant : (0x0,0x158EB7)-->
+<!--Privilèges : - -->
+<!--Changed Attributes:-->
+<!--Min. Password Age: - -->
+<!--Max. Password Age: - -->
+<!--Force Logoff: - -->
+<!--Lockout Threshold: - -->
+<!--Lockout Observation Window: - -->
+<!--Lockout Duration: - -->
+<!--Password Properties: - -->
+<!--Min. Password Length: - -->
+<!--Password History Length: - -->
+<!--Machine Account Quota: - -->
+<!--Mixed Domain Mode: - -->
+<!--Domain Behavior Version: 2-->
+<!--OEM Information: -</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="policy">-</expectedTag>-->
+<!--            			<expectedTag name="policy_domain">ELM</expectedTag>-->
+<!--            			<expectedTag name="policy_domain_id">ELM</expectedTag>-->
+<!--            			<expectedTag name="user">administrator</expectedTag>-->
+<!--            			<expectedTag name="domain">ELM</expectedTag>-->
+<!--            			<expectedTag name="logon_id">(0x0,0x158EB7)</expectedTag>-->
+<!--            			<expectedTag name="privileges">-</expectedTag>-->
+<!--            			<expectedTag name="minimum_password_age">-</expectedTag>-->
+<!--            			<expectedTag name="maximum_password_age">-</expectedTag>-->
+<!--            			<expectedTag name="force_logoff">-</expectedTag>-->
+<!--            			<expectedTag name="lockout_threshold">-</expectedTag>-->
+<!--            			<expectedTag name="lockout_observation_window">-</expectedTag>-->
+<!--            			<expectedTag name="lockout_duration">-</expectedTag>-->
+<!--            			<expectedTag name="password_properties">-</expectedTag>-->
+<!--            			<expectedTag name="minimum_password_length">-</expectedTag>-->
+<!--            			<expectedTag name="password_history_length">-</expectedTag>-->
+<!--            			<expectedTag name="machine_account_quota">-</expectedTag>-->
+<!--            			<expectedTag name="mixed_domain_mode">-</expectedTag>-->
+<!--            			<expectedTag name="domain_behavior_version">2</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00678">
+            <description>
+                <localized_desc language="en">Account mapped for logon</localized_desc>
+                <localized_desc language="fr">Account mapping à la connexion</localized_desc>
+            </description>
+            <text>Compte mappé pour l'ouverture de session .* Mappage tenté par : _ACCTMAPPER_ Nom du client : _USER_ Nom mappé : _MAPPEDNAME_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="account_mapper" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">undocumented</localized_desc>
+                        <localized_desc language="fr">non documenté</localized_desc>
+                    </description>
+                    <substitute>_ACCTMAPPER_</substitute>
+            	</tag>
+            	<tag name="mapped_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">undocumented</localized_desc>
+                        <localized_desc language="fr">non documenté</localized_desc>
+                    </description>
+                    <substitute>_MAPPEDNAME_</substitute>
+            	</tag>
+            </tags>
+        </pattern>
+        <pattern name="eventID-00680">
+            <description>
+                <localized_desc language="en">Logon attempt resulting in an error</localized_desc>
+                <localized_desc language="fr">Tentative de connexion aboutissant à une erreur</localized_desc>
+            </description>
+            <text>Tentative d'ouverture de session par : _AUTHPACKAGE_ Compte d'ouverture de session : _USER_ Station de travail source : _SOURCEHOST_ Code erreur : _ERRORCODE_</text>
+            <tags>
+                <tag name="authentication_package" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The authentication mechanism</localized_desc>
+                        <localized_desc language="fr">Le mécanisme d'authentification</localized_desc>
+                    </description>
+                    <substitute>_AUTHPACKAGE_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user</localized_desc>
+                        <localized_desc language="fr">L'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The workstation used for the logon attempt</localized_desc>
+                        <localized_desc language="fr">Le poste de travail à partir duquel la tentative de connexion a lieu</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            	<tag name="error_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The error code</localized_desc>
+                        <localized_desc language="fr">Le code d'erreur</localized_desc>
+                    </description>
+                    <substitute>_ERRORCODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_error_code_680</callback>
+                    </callbacks>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Logon attempt by: MICROSOFT _AUTHENTICATION _PACKAGE_V1_0-->
+<!--Logon account: sbergman-->
+<!--Source Workstation: RAID-->
+<!--Error Code: 0xC0000064</text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">sbergman</expectedTag>-->
+<!--            			<expectedTag name="authentication_package">MICROSOFT _AUTHENTICATION _PACKAGE_V1_0</expectedTag>-->
+<!--            			<expectedTag name="source_host">RAID</expectedTag>-->
+<!--            			<expectedTag name="error_code">0xC0000064</expectedTag>-->
+<!--            			<expectedTag name="status">user name does not exist</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+        <pattern name="eventID-00672">
+            <description>
+                <localized_desc language="en">Authentication ticket request</localized_desc>
+                <localized_desc language="fr">Demande de ticket d'authentification</localized_desc>
+            </description>
+            <text>Requête de ticket d'authentification : Utilisateur : _USER_ Nom de domaine Kerberos fourni : _REALM_ Id. de l'utilisateur : _USERID_ Nom du service : _SERVICENAME_ Id. du service : _SERVICEID_ Options du ticket : _TICKETOPTIONS_ Code de résultat : _RESULTCODE_ Type de cryptage du ticket : _TICKETENCRYPTIONTYPE_ Type de pré-authentification : _PREAUTHTYPE_ Adresse du client : _SOURCEIP_ Nom de l'émetteur du certificat : _CERTISSUER_ Numéro de série du certificat : _CERTSN_ Empreinte digitale du certificat : _CERTTHUMBPRINT_</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user requesting a ticket</localized_desc>
+                        <localized_desc language="fr">L'utilisateur demandant le ticket</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="realm" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user account's DNS suffix</localized_desc>
+                        <localized_desc language="fr">Le suffixe DNS du compte utilisateur</localized_desc>
+                    </description>
+                    <substitute>_REALM_</substitute>
+            	</tag>
+            	<tag name="user_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user ID, NT style</localized_desc>
+                        <localized_desc language="fr">L'identifiant utilisateur, compatible NT</localized_desc>
+                    </description>
+                    <substitute>_USERID_</substitute>
+            	</tag>
+            	<tag name="service_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service name</localized_desc>
+                        <localized_desc language="fr">Le nom de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICENAME_</substitute>
+            	</tag>
+            	<tag name="service_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The service ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de service</localized_desc>
+                    </description>
+                    <substitute>_SERVICEID_</substitute>
+            	</tag>
+            	<tag name="ticket_options" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket options</localized_desc>
+                        <localized_desc language="fr">Les options du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETOPTIONS_</substitute>
+            	</tag>
+            	<tag name="result_code" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The request result code</localized_desc>
+                        <localized_desc language="fr">Les code du résultat de la demande</localized_desc>
+                    </description>
+                    <substitute>_RESULTCODE_</substitute>
+                    <callbacks>
+                    	<callback>decode_ticket_failure</callback>
+                    </callbacks>
+            	</tag>
+            	<tag name="ticket_encryption_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The ticket encryption type</localized_desc>
+                        <localized_desc language="fr">Le type de cryptage du ticket</localized_desc>
+                    </description>
+                    <substitute>_TICKETENCRYPTIONTYPE_</substitute>
+            	</tag>
+            	<tag name="preauth_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The pre-authentication type</localized_desc>
+                        <localized_desc language="fr">Le type de préauthentification</localized_desc>
+                    </description>
+                    <substitute>_PREAUTHTYPE_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The origin of the ticket request</localized_desc>
+                        <localized_desc language="fr">L'origine de la requête</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="certificate_issuer" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate issuer name</localized_desc>
+                        <localized_desc language="fr">L'émetteur du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTISSUER_</substitute>
+            	</tag>
+            	<tag name="certificate_serial_number" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate serial number</localized_desc>
+                        <localized_desc language="fr">Le numéro de série du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTSN_</substitute>
+            	</tag>
+            	<tag name="certificate_thumbprint" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The certificate thumbprint</localized_desc>
+                        <localized_desc language="fr">L'empreinte du certificat</localized_desc>
+                    </description>
+                    <substitute>_CERTTHUMBPRINT_</substitute>
+            	</tag>
+            </tags>
+<!--            <examples>-->
+<!--            	<example>-->
+<!--            		<text>Authentication Ticket Request:-->
+<!--User Name: Administrator-->
+<!--Supplied Realm Name: elm.local-->
+<!--User ID: S-1-5-21-2121316058-685099279-904526279-500-->
+<!--Service Name: krbtgt-->
+<!--Service ID: ELM\krbtgt-->
+<!--Ticket Options: 0x40810010-->
+<!--Result Code: - -->
+<!--Ticket Encryption Type: 0x17-->
+<!--Pre-Authentication Type: 2-->
+<!--Client Address: 10.42.42.171-->
+<!--Certificate Issuer Name: -->
+<!--Certificate Serial Number: -->
+<!--Certificate Thumbprint: </text>-->
+<!--            		<expectedTags>-->
+<!--            			<expectedTag name="user">Administrator</expectedTag>-->
+<!--            			<expectedTag name="realm">elm.local</expectedTag>-->
+<!--            			<expectedTag name="user_id">S-1-5-21-2121316058-685099279-904526279-500</expectedTag>-->
+<!--            			<expectedTag name="service_name">krbtgt</expectedTag>-->
+<!--            			<expectedTag name="service_id">ELM\krbtgt</expectedTag>-->
+<!--            			<expectedTag name="ticket_options">0x40810010</expectedTag>-->
+<!--            			<expectedTag name="result_code">-</expectedTag>-->
+<!--            			<expectedTag name="ticket_encryption_type">0x17</expectedTag>-->
+<!--            			<expectedTag name="preauth_type">2</expectedTag>-->
+<!--            			<expectedTag name="source_ip">10.42.42.171</expectedTag>-->
+<!--            		</expectedTags>-->
+<!--            	</example>-->
+<!--            </examples>-->
+        </pattern>
+    </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
+</normalizer>
+
