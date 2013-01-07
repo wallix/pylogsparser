@@ -61,6 +61,10 @@ if value == "SUCCESS":
 else:
 	log['result'] = 'False'
 		</callback>
+		<callback name="uid_func">
+if not log.has_key('uid') and log.has_key('pid') :
+	log['uid'] = log['pid']
+		</callback>
     </callbacks>
  <patterns>
 	 <pattern name="primary_authentication-001">
@@ -186,10 +190,98 @@ else:
             </examples>
      </pattern>
      
-     <pattern name="session opened">
+     <pattern name="session opened-001">
          <description>
-             <localized_desc language="en">Message structure for successful secondary authentications</localized_desc>
-             <localized_desc language="fr">Structure des messages consignant une connexion secondaire réussie</localized_desc>
+             <localized_desc language="en">Message structure for successful secondary authentications on the WAB 3.1</localized_desc>
+             <localized_desc language="fr">Structure des messages consignant une connexion secondaire réussie sur le WAB 3.1</localized_desc>
+         </description>
+         <text>type='SESSION_OPENED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE' uid='UID'</text>
+         <tags>
+             <tag name="type" tagType="sessionOpened">
+                 <description>
+                     <localized_desc language="en">The event type</localized_desc>
+                     <localized_desc language="fr">La nature de l'événement</localized_desc>
+                 </description>
+                 <substitute>SESSION_OPENED</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user requesting an authentication</localized_desc>
+                     <localized_desc language="fr">L'utilisateur demandant une authentification</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+             <tag name="account" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target account used.</localized_desc>
+                     <localized_desc language="fr">Le compte cible utilisé</localized_desc>
+                 </description>
+                 <substitute>ACCOUNT</substitute>
+             </tag>
+             <tag name="resource" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target resource accessed</localized_desc>
+                     <localized_desc language="fr">L'équipement cible de destination</localized_desc>
+                 </description>
+                 <substitute>RESOURCE</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The IP of the connecting client</localized_desc>
+                     <localized_desc language="fr">L'adresse IP du client en cours d'authentification</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+             <tag name="source_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">The protocol used by the client to connect to the WAB</localized_desc>
+                     <localized_desc language="fr">Le protocole de connexion au WAB</localized_desc>
+                 </description>
+                 <substitute>SOURCE_PROTO</substitute>
+             </tag>
+             <tag name="dest_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">the protocol used by the WAB to connect to the target resource.</localized_desc>
+                     <localized_desc language="fr">le protocole de connexion à l'équipement cible utilisé par le WAB</localized_desc>
+                 </description>
+                 <substitute>DEST_PROTO</substitute>
+             </tag>
+             <tag name="message" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Other comment.</localized_desc>
+                 </description>
+                 <substitute>MESSAGE</substitute>
+             </tag>
+             <tag name="uid" tagType="Anything">
+                 <description>
+                     <localized_desc language="en">Opened Session identifier</localized_desc>
+                     <localized_desc language="fr">Identifiant de la session ouverte</localized_desc>
+                 </description>
+                 <substitute>UID</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='session opened' username='admin' secondary='test@debian32' client_ip='10.10.43.25' src_protocol='SSH' dst_protocol='SSH_X11_SESSION' message='' uid='1357555658581-671692-0030488bc462'</text>
+                 <expectedTags>
+                     <expectedTag name="account">test</expectedTag>
+                     <expectedTag name="client_ip">10.10.43.25</expectedTag>
+                     <expectedTag name="dest_proto">SSH_X11_SESSION</expectedTag>
+                     <expectedTag name="resource">debian32</expectedTag>
+                     <expectedTag name="source_proto">SSH</expectedTag>
+                     <expectedTag name="type">session opened</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
+                     <expectedTag name="uid">1357555658581-671692-0030488bc462</expectedTag>
+                 </expectedTags>
+            </example>
+        </examples>
+     </pattern>
+     
+     <pattern name="session opened-002">
+         <description>
+             <localized_desc language="en">Message structure for successful secondary authentications on the WAB 3.0</localized_desc>
+             <localized_desc language="fr">Structure des messages consignant une connexion secondaire réussie sur le WAB 3.0</localized_desc>
          </description>
          <text>type='SESSION_OPENED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE'</text>
          <tags>
@@ -265,11 +357,100 @@ else:
             </example>
         </examples>
      </pattern>
-
-      <pattern name="session closed">
+     
+     <pattern name="session closed-001">
          <description>
-             <localized_desc language="en">Message structure used when a secondary connection is closed</localized_desc>
-             <localized_desc language="fr">structure des messages consignant une fermeture de connexion secondaire</localized_desc>
+             <localized_desc language="en">Message structure used when a secondary connection is closed on the WAB 3.1</localized_desc>
+             <localized_desc language="fr">structure des messages consignant une fermeture de connexion secondaire sur le WAB 3.1</localized_desc>
+         </description>
+         <text>type='SESSION_CLOSED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE' uid='UID'</text>
+         <tags>
+             <tag name="type" tagType="sessionClosed">
+                 <description>
+                     <localized_desc language="en">The event type</localized_desc>
+                     <localized_desc language="fr">la nature de l'événement</localized_desc>
+                 </description>
+                 <substitute>SESSION_CLOSED</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user interrupting the session</localized_desc>
+                     <localized_desc language="fr">l'utilisateur interrompant la session</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+             <tag name="account" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target account used.</localized_desc>
+                     <localized_desc language="fr">le compte cible utilisé</localized_desc>
+                 </description>
+                 <substitute>ACCOUNT</substitute>
+             </tag>
+             <tag name="resource" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The target resource accessed</localized_desc>
+                     <localized_desc language="fr">l'équipement cible de destination</localized_desc>
+                 </description>
+                 <substitute>RESOURCE</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The IP of the connected client</localized_desc>
+                     <localized_desc language="fr">l'adresse IP du client connecté</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+             <tag name="source_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">The protocol used by the client to connect to the WAB</localized_desc>
+                     <localized_desc language="fr">le protocole de connexion au WAB utilisé par le client</localized_desc>
+                 </description>
+                 <substitute>SOURCE_PROTO</substitute>
+             </tag>
+             <tag name="dest_proto" tagType="wab_protocol">
+                 <description>
+                     <localized_desc language="en">the protocol used by the WAB to connect to the target resource.</localized_desc>
+                     <localized_desc language="fr">le protocole de connexion à l'équipement cible utilisé par le WAB</localized_desc>
+                 </description>
+                 <substitute>DEST_PROTO</substitute>
+             </tag>
+             <tag name="message" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Other comment.</localized_desc>
+                     <localized_desc language="fr">Autre</localized_desc>
+                 </description>
+                 <substitute>MESSAGE</substitute>
+             </tag>
+             <tag name="uid" tagType="Anything">
+                 <description>
+                     <localized_desc language="en">Closed Session identifier</localized_desc>
+                     <localized_desc language="fr">Identifiant de la session fermée</localized_desc>
+                 </description>
+                 <substitute>UID</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='session closed' username='admin' secondary='test@debian32' client_ip='10.10.43.25' src_protocol='SSH' dst_protocol='SSH_X11_SESSION' message='Session ended' uid='1357555658581-671692-0030488bc462'</text>
+                 <expectedTags>
+                     <expectedTag name="account">test</expectedTag>
+                     <expectedTag name="client_ip">10.10.43.25</expectedTag>
+                     <expectedTag name="dest_proto">SSH_X11_SESSION</expectedTag>
+                     <expectedTag name="resource">debian32</expectedTag>
+                     <expectedTag name="source_proto">SSH</expectedTag>
+                     <expectedTag name="type">session closed</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
+                     <expectedTag name="uid">1357555658581-671692-0030488bc462</expectedTag>
+                 </expectedTags>
+             </example>
+         </examples>
+     </pattern>
+
+      <pattern name="session closed-002">
+         <description>
+             <localized_desc language="en">Message structure used when a secondary connection is closed on the WAB 3.0</localized_desc>
+             <localized_desc language="fr">structure des messages consignant une fermeture de connexion secondaire sur le WAB 3.0</localized_desc>
          </description>
          <text>type='SESSION_CLOSED' username='USERNAME' secondary='ACCOUNT@RESOURCE' client_ip='CLIENT_IP' src_protocol='SOURCE_PROTO' dst_protocol='DEST_PROTO' message='MESSAGE'</text>
          <tags>
@@ -347,6 +528,9 @@ else:
          </examples>
      </pattern>
 </patterns>
+<finalCallbacks>
+	<callback>uid_func</callback>
+</finalCallbacks>
 </normalizer>
 
 

@@ -744,6 +744,7 @@ class Test(unittest.TestCase):
 
     def test_simple_wabauth(self):
         """Test syslog logs"""
+        #WAB 3.0
         self.aS("Dec 20 17:20:22 wab2 WAB(CORE)[18190]: type='session closed' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''",
                 { 'account': 'root',
                   'client_ip': '10.10.4.25',
@@ -751,6 +752,7 @@ class Test(unittest.TestCase):
                   'dest_proto': 'SFTP_SESSION',
                   'message': '',
                   'pid': '18190',
+				  'uid' : '18190',
                   'program': 'WAB(CORE)',
                   'resource': 'debian32',
                   'source': 'wab2',
@@ -766,7 +768,19 @@ class Test(unittest.TestCase):
                  'program': 'WAB(CORE)',
                  'source': 'wab2',
                  'type': 'primary_authentication',
-                 'username': 'admin'})
+                 'username': 'admin',
+                 'result' : 'True'})
+	
+	self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='primary_authentication' timestamp='2011-12-20 17:19:35.621952' username='admin' client_ip='10.10.4.25' diagnostic='FAIL'",
+                {'client_ip': '10.10.4.25',
+                 'date': datetime(2012, 12, 20, 17, 19, 35),
+                 'diagnostic': 'FAIL',
+                 'pid': '18190',
+                 'program': 'WAB(CORE)',
+                 'source': 'wab2',
+                 'type': 'primary_authentication',
+                 'username': 'admin',
+                 'result' : 'False'})
 
         self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='session opened' username='admin' secondary='root@debian32' client_ip='10.10.4.25' src_protocol='SFTP_SESSION' dst_protocol='SFTP_SESSION' message=''",
                 { 'account': 'root',
@@ -775,11 +789,80 @@ class Test(unittest.TestCase):
                   'dest_proto': 'SFTP_SESSION',
                   'message': '',
                   'pid': '18190',
+                  'uid': '18190',
                   'program': 'WAB(CORE)',
                   'resource': 'debian32',
                   'source': 'wab2',
                   'source_proto': 'SFTP_SESSION',
                   'type': 'session opened',
+                  'username': 'admin'})
+	
+	#WAB 3.1
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='primary_authentication' timestamp='2013-01-07 11:47:30.348667' username='admin' client_ip='10.10.43.25' diagnostic=''local' -pubkey- Authentication failed' result='False'",
+                {'client_ip': '10.10.43.25',
+                 'date': datetime(2012, 12, 20, 17, 19, 35),
+                 'diagnostic': "'local' -pubkey- Authentication failed",
+                 'pid': '18190',
+                 'program': 'WAB(CORE)',
+                 'source': 'wab2',
+                 'type': 'primary_authentication',
+                 'username': 'admin',
+                 'result' : 'False'})
+
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='primary_authentication' timestamp='2013-01-07 11:47:30.348667' username='admin' client_ip='10.10.43.25' diagnostic=''local' -pubkey- Authentication failed' result='True'",
+                {'client_ip': '10.10.43.25',
+                 'date': datetime(2012, 12, 20, 17, 19, 35),
+                 'diagnostic': "'local' -pubkey- Authentication failed",
+                 'pid': '18190',
+                 'program': 'WAB(CORE)',
+                 'source': 'wab2',
+                 'type': 'primary_authentication',
+                 'username': 'admin',
+                 'result' : 'True'})
+                 
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='session opened' username='admin' secondary='test@debian32' client_ip='10.10.43.25' src_protocol='SSH' dst_protocol='SSH_X11_SESSION' message='' uid='1357555658581-671692-0030488bc462'",
+                { 'account': 'test',
+                  'client_ip': '10.10.43.25',
+                  'date': datetime(2012, 12, 20, 17, 19, 35),
+                  'dest_proto': 'SSH_X11_SESSION',
+                  'message': '',
+                  'pid': '18190',
+                  'uid': '1357555658581-671692-0030488bc462',
+                  'program': 'WAB(CORE)',
+                  'resource': 'debian32',
+                  'source': 'wab2',
+                  'source_proto': 'SSH',
+                  'type': 'session opened',
+                  'username': 'admin'})
+	
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='session closed' username='admin' secondary='test@debian32' client_ip='10.10.43.25' src_protocol='SSH' dst_protocol='SSH_X11_SESSION' message='Session ended' uid='1357555658581-671692-0030488bc462'",
+                { 'account': 'test',
+                  'client_ip': '10.10.43.25',
+                  'date': datetime(2012, 12, 20, 17, 19, 35),
+                  'dest_proto': 'SSH_X11_SESSION',
+                  'message': 'Session ended',
+                  'pid': '18190',
+                  'uid': '1357555658581-671692-0030488bc462',
+                  'program': 'WAB(CORE)',
+                  'resource': 'debian32',
+                  'source': 'wab2',
+                  'source_proto': 'SSH',
+                  'type': 'session closed',
+                  'username': 'admin'})
+		
+        self.aS("Dec 20 17:19:35 wab2 WAB(CORE)[18190]: type='session closed' username='admin' secondary='test@debian32' client_ip='10.10.43.25' src_protocol='SSH' dst_protocol='SSH_X11_SESSION' message='Killed by admin' uid='1357555658581-671692-0030488bc462'",
+                { 'account': 'test',
+                  'client_ip': '10.10.43.25',
+                  'date': datetime(2012, 12, 20, 17, 19, 35),
+                  'dest_proto': 'SSH_X11_SESSION',
+                  'message': 'Killed by admin',
+                  'pid': '18190',
+                  'uid': '1357555658581-671692-0030488bc462',
+                  'program': 'WAB(CORE)',
+                  'resource': 'debian32',
+                  'source': 'wab2',
+                  'source_proto': 'SSH',
+                  'type': 'session closed',
                   'username': 'admin'})
 
     def test_MSExchange2003MTL(self):
