@@ -339,6 +339,9 @@ if not log.has_key('uid') and log.has_key('pid') :
                      <localized_desc language="en">Other comment.</localized_desc>
                  </description>
                  <substitute>MESSAGE</substitute>
+                 <callbacks>
+					<callback>uid_func</callback>
+                 </callbacks>
              </tag>
          </tags>
          <examples>
@@ -509,6 +512,9 @@ if not log.has_key('uid') and log.has_key('pid') :
                      <localized_desc language="fr">Autre</localized_desc>
                  </description>
                  <substitute>MESSAGE</substitute>
+                 <callbacks>
+					<callback>uid_func</callback>
+                 </callbacks>
              </tag>
          </tags>
          <examples>
@@ -528,9 +534,6 @@ if not log.has_key('uid') and log.has_key('pid') :
          </examples>
      </pattern>
 </patterns>
-<finalCallbacks>
-	<callback>uid_func</callback>
-</finalCallbacks>
 </normalizer>
 
 
