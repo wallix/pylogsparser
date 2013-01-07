@@ -51,14 +51,91 @@
         <description>
             <localized_desc language="en">A arbitrary string</localized_desc>
         </description>
-        <regexp>[^: ]*</regexp>
+        <regexp>[^:]*</regexp>
     </tagType>
     </tagTypes>
+    <callbacks>
+		<callback name="result_func">
+if value == "SUCCESS":
+	log['result'] = 'True'
+else:
+	log['result'] = 'False'
+		</callback>
+    </callbacks>
  <patterns>
-     <pattern name="primary_authentication">
+	 <pattern name="primary_authentication-001">
          <description>
-             <localized_desc language="en">An event raised when a user is trying to authenticate itself on the WAB</localized_desc>
-             <localized_desc language="fr">Un événement survenant au moment d'une authentification primaire sur le WAB</localized_desc>
+             <localized_desc language="en">An event raised when a user is trying to authenticate itself on the WAB 3.1</localized_desc>
+             <localized_desc language="fr">Un événement survenant au moment d'une authentification primaire sur le WAB 3.1</localized_desc>
+         </description>
+         <text>type='PRIMARY_AUTHENTICATION' timestamp='[^']+' username='USERNAME' client_ip='CLIENT_IP' diagnostic='DIAG' result='_RESULT_'</text>
+         <tags>
+             <tag name="type" tagType="prim_auth">
+                 <description>
+                     <localized_desc language="en">The event type</localized_desc>
+                     <localized_desc language="fr">la nature de l'événement</localized_desc>
+                 </description>
+                 <substitute>PRIMARY_AUTHENTICATION</substitute>
+             </tag>
+             <tag name="username" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user requesting an authentication</localized_desc>
+                     <localized_desc language="fr">l'utilisateur demandant une authentification</localized_desc>
+                 </description>
+                 <substitute>USERNAME</substitute>
+             </tag>
+              <tag name="client_ip" tagType="ip">
+                 <description>
+                     <localized_desc language="en">The IP of the connecting client</localized_desc>
+                     <localized_desc language="fr">L'adresse IP du client en cours d'authentification</localized_desc>
+                 </description>
+                 <substitute>CLIENT_IP</substitute>
+             </tag>
+             <tag name="diagnostic" tagType="comment">
+                 <description>
+                     <localized_desc language="en">Connection attempt diagnostic.</localized_desc>
+                     <localized_desc language="fr">Diagnostic de la tentative de connexion</localized_desc>
+                 </description>
+                 <substitute>DIAG</substitute>
+             </tag>
+              <tag name="result" tagType="Anything">
+                 <description>
+                     <localized_desc language="en">Connection attempt result.</localized_desc>
+                     <localized_desc language="fr">Résultat de la tentative de connexion</localized_desc>
+                 </description>
+                 <substitute>_RESULT_</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>type='primary_authentication' timestamp='2013-01-07 11:47:30.348667' username='admin' client_ip='10.10.43.25' diagnostic=''local' -pubkey- Authentication failed' result='False'</text>
+                 <expectedTags>
+                     <expectedTag name="type">primary_authentication</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="client_ip">10.10.43.25</expectedTag>
+                     <expectedTag name="diagnostic">'local' -pubkey- Authentication failed</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
+                     <expectedTag name="result">False</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                 <text>type='primary_authentication' timestamp='2013-01-07 11:47:32.001563' username='admin' client_ip='10.10.43.25' diagnostic=''local' -password- Authentication succeeded' result='True'</text>
+                 <expectedTags>
+                     <expectedTag name="type">primary_authentication</expectedTag>
+                     <expectedTag name="username">admin</expectedTag>
+                     <expectedTag name="client_ip">10.10.43.25</expectedTag>
+                     <expectedTag name="diagnostic">'local' -password- Authentication succeeded</expectedTag>
+                     <expectedTag name="taxonomy">access control</expectedTag>
+                     <expectedTag name="result">True</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+     </pattern>
+     
+     <pattern name="primary_authentication-002">
+         <description>
+             <localized_desc language="en">An event raised when a user is trying to authenticate itself on the WAB 3.0</localized_desc>
+             <localized_desc language="fr">Un événement survenant au moment d'une authentification primaire sur le WAB 3.0</localized_desc>
          </description>
          <text>type='PRIMARY_AUTHENTICATION' timestamp='[^']+' username='USERNAME' client_ip='CLIENT_IP' diagnostic='DIAG'</text>
          <tags>
@@ -89,6 +166,9 @@
                      <localized_desc language="fr">Résultat de la tentative de connexion</localized_desc>
                  </description>
                  <substitute>DIAG</substitute>
+                 <callbacks>
+					<callback>result_func</callback>
+                 </callbacks>
              </tag>
          </tags>
          <examples>
@@ -100,6 +180,7 @@
                      <expectedTag name="client_ip">10.10.4.25</expectedTag>
                      <expectedTag name="diagnostic">SUCCESS</expectedTag>
                      <expectedTag name="taxonomy">access control</expectedTag>
+                     <expectedTag name="result">True</expectedTag>
                      </expectedTags>
                 </example>
             </examples>
