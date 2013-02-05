@@ -1126,6 +1126,45 @@ class Test(unittest.TestCase):
                  "user" : u"Q-ASS\\mhu",
                  "mailbox_owner" : "scr@exchange.wallix.fr",
                  })  
-
+                 
+    def test_eventlogW8EN(self):
+        """Testing Win2008 security audit logs (english)"""
+        self.aS(u"""<13>Nov 21 17:45:25 WIN-D7NM05T4KNM    MSWinEventLog    1\tSecurity\t399\tThu Jan 31 13:18:31\t2013\t4624\tMicrosoft-Windows-Security-Auditing\tWIN-D7NM05T4KNM\Administrator\tN/A\tSuccess Audit\tWIN-D7NM05T4KNM\tLogon\tAn account was successfully logged on. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon Type: 2 New Logon: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xd30cd Logon GUID: {00000000-0000-0000-0000-000000000000} Process Information: Process ID: 0x5e0 Process Name: C:\Windows\System32\winlogon.exe Network Information: Workstation Name: WIN-D7NM05T4KNM Source Network Address: 127.0.0.1 Source Port: 0 Detailed Authentication Information: Logon Process: User32 Authentication Package: Negotiate Transited Services: - Package Name (NTLM only): - Key Length: 0 This event is generated when a logon session is created. It is generated on the computer that was accessed. The subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The logon type field indicates the kind of logon that occurred. The most common types are 2 (interactive) and 3 (network). The New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on. The network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Logon GUID is a unique identifier that can be used to correlate this event with a KDC event. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.\t271""",
+                {
+                 'criticality': '1',
+                 'eventlog_id': '4624',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Microsoft-Windows-Security-Auditing',
+                 'source_host': 'WIN-D7NM05T4KNM',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '271',
+                 'eventlog_description': """An account was successfully logged on. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon Type: 2 New Logon: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xd30cd Logon GUID: {00000000-0000-0000-0000-000000000000} Process Information: Process ID: 0x5e0 Process Name: C:\Windows\System32\winlogon.exe Network Information: Workstation Name: WIN-D7NM05T4KNM Source Network Address: 127.0.0.1 Source Port: 0 Detailed Authentication Information: Logon Process: User32 Authentication Package: Negotiate Transited Services: - Package Name (NTLM only): - Key Length: 0 This event is generated when a logon session is created. It is generated on the computer that was accessed. The subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The logon type field indicates the kind of logon that occurred. The most common types are 2 (interactive) and 3 (network). The New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on. The network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Logon GUID is a unique identifier that can be used to correlate this event with a KDC event. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.""",
+                 'security_id': 'S-1-5-18',
+                 'account_name': 'WIN-D7NM05T4KNM$',
+                 'account_domaine': 'WORKGROUP',
+                 'logon_id': '0x3e7',
+                 'logon_type':'2',
+                 'method': 'Interactive',
+                 'new_logon_security_id': 'S-1-5-21-2218251928-2375033965-419438225-500',
+                 'new_logon_account_name': 'Administrator',
+                 'new_logon_account_domain': 'WIN-D7NM05T4KNM',
+                 'new_logon_id': '0xd30cd',
+                 'new_logon_guid': '{00000000-0000-0000-0000-000000000000}',
+                 'pid': '0x5e0',
+                 'process_name': 'C:\Windows\System32\winlogon.exe',
+                 'workstation_name':'WIN-D7NM05T4KNM',
+                 'source_ip': '127.0.0.1',
+                 'source_port': '0',
+                 'logon_process': 'User32',
+                 'authentification_package': 'Negotiate',
+                 'transited_services': '-',
+                 'package_name': '-',
+                 'key_length': '0',
+                 'status' : 'success'
+                 })
+        
+  
+                
 if __name__ == "__main__":
     unittest.main()

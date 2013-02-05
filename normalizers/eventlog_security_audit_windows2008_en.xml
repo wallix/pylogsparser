@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2008[EN]_1"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="search"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
+The following event IDs are covered: 
+* 4624, 4625, 4634, 4647, 4648 (logon events),
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version anglaise.
+Les codes d'événements suivants sont normalisés :
+* 4624, 4625, 4634, 4647, 4648 (événements de connexion),
+</localized_desc>
+    </description>
+    <authors>
+        <author>lbenlahmr@wallix.com</author>
+    </authors>
+    <callbacks>
+    	<callback name="strip_values">
+for t in log:
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+    </callbacks>
+    <patterns>
+	<pattern name="eventID-4624">
+            <description>
+                <localized_desc language="en">Successful logon</localized_desc>
+                <localized_desc language="fr">Connexion réussie</localized_desc>
+            </description>            
+            <text>An account was successfully logged on. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ New Logon: Security ID: _NLOSID_ Account Name: _NACCOUNTNAME_ Account Domain: _NACCOUNTDOMAIN_ Logon ID: _NLID_ Logon GUID: _NLGUID_ Process Information: Process ID: _PID_ Process Name: _PNAME_ Network Information: Workstation Name: _WORKSTATIONNAME_ Source Network Address: _SRCNETWORKADDR_ Source Port: _SRCPORT_ Detailed Authentication Information: Logon Process: _LPROCESS_ Authentication Package: _AP_ Transited Services: _TS_ Package Name \(NTLM only\): _PN_ Key Length: _KL_ This event is generated when a logon session is created. It is generated on the computer that was accessed. The subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The logon type field indicates the kind of logon that occurred. The most common types are 2 \(interactive\) and 3 \(network\). The New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on. The network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Logon GUID is a unique identifier that can be used to correlate this event with a KDC event. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
+            <tags>
+            	<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="account_domaine" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="logon_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The logon type</localized_desc>
+                        <localized_desc language="fr">Le type de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONTYPE_</substitute>
+                    <callbacks>
+                 		<callback>decode_logon_type</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="new_logon_security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account security ID of the user who just logged on</localized_desc>
+                        <localized_desc language="fr">L'identifiant de securité du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
+                    </description>
+                    <substitute>_NLOSID_</substitute>
+            	</tag>            	
+            	<tag name="new_logon_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account name of the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Le nom du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
+                    </description>
+                    <substitute>_NACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="new_logon_account_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account domaine of the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Le domaine du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
+                    </description>
+                    <substitute>_NACCOUNTDOMAIN_</substitute>
+            	</tag> 
+            	<tag name="new_logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_NLID_</substitute>
+            	</tag> 
+            	<tag name="new_logon_guid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account GUID</localized_desc>
+                        <localized_desc language="fr">Le GUID de connexion</localized_desc>
+                    </description>
+                    <substitute>_NLGUID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	<tag name="process_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process name that processed the logon</localized_desc>
+                        <localized_desc language="fr">Le nom du programme qui provoqué la connexion</localized_desc>
+                    </description>
+                    <substitute>_PNAME_</substitute>
+            	</tag> 
+            	<tag name="workstation_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The workstation name</localized_desc>
+                        <localized_desc language="fr">Le nom du poste de travail</localized_desc>
+                    </description>
+                    <substitute>_WORKSTATIONNAME_</substitute>
+            	</tag> 
+				<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source IP</localized_desc>
+                        <localized_desc language="fr">L'IP source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SRCNETWORKADDR_</substitute>
+            	</tag>
+            	<tag name="source_port" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source port</localized_desc>
+                        <localized_desc language="fr">Le port source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SRCPORT_</substitute>
+            	</tag>
+            	<tag name="logon_process" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon pricess name</localized_desc>
+                        <localized_desc language="fr">Le nom de programme de connexion</localized_desc>
+                    </description>
+                    <substitute>_LPROCESS_</substitute>
+            	</tag>
+            	<tag name="authentification_package" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The authentication package</localized_desc>
+                        <localized_desc language="fr">Le package d'authentification</localized_desc>
+                    </description>
+                    <substitute>_AP_</substitute>
+            	</tag> 
+            	<tag name="transited_services" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The transited services</localized_desc>
+                        <localized_desc language="fr">Les services en transit</localized_desc>
+                    </description>
+                    <substitute>_TS_</substitute>
+            	</tag>
+            	<tag name="package_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The package name</localized_desc>
+                        <localized_desc language="fr">Le nom du package</localized_desc>
+                    </description>
+                    <substitute>_PN_</substitute>
+            	</tag> 
+            	<tag name="key_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The key length</localized_desc>
+                        <localized_desc language="fr">La taille de la clé</localized_desc>
+                    </description>
+                    <substitute>_KL_</substitute>
+            	</tag>
+            </tags>
+            <commonTags>
+            	<commonTag name="status">success</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>An account was successfully logged on.
+
+Subject:
+   Security ID:  SYSTEM
+   Account Name:  WIN-R9H529RIO4Y$
+   Account Domain:  WORKGROUP
+   Logon ID:  0x3e7
+Logon Type: 10
+New Logon:
+      Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x19f4c
+   Logon GUID:  {00000000-0000-0000-0000-000000000000}
+Process Information:
+   Process ID:  0x4c0
+   Process Name:  C:\Windows\System32\winlogon.exe
+Network Information:
+   Workstation Name: WIN-R9H529RIO4Y
+   Source Network Address: 10.42.42.211
+   Source Port:  1181
+Detailed Authentication Information:
+   Logon Process:  User32 
+   Authentication Package: Negotiate
+   Transited Services: -
+   Package Name (NTLM only): -
+   Key Length:  0
+   
+ This event is generated when a logon session is created. 
+ It is generated on the computer that was accessed. 
+ The subject fields indicate the account on the local system which requested the logon. 
+ This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. 
+ The logon type field indicates the kind of logon that occurred. 
+ The most common types are 2 (interactive) and 3 (network). 
+ The New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on. 
+ The network fields indicate where a remote logon request originated. 
+ Workstation name is not always available and may be left blank in some cases. 
+ The authentication information fields provide detailed information about this specific logon request. 
+ 
+ - Logon GUID is a unique identifier that can be used to correlate this event with a KDC event. 
+ - Transited services indicate which intermediate services have participated in this logon request. 
+ - Package name indicates which sub-protocol was used among the NTLM protocols. 
+ - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
+                     <expectedTags>
+                          <expectedTag name="security_id">SYSTEM</expectedTag>
+                          <expectedTag name="account_name">WIN-R9H529RIO4Y$</expectedTag>
+                          <expectedTag name="account_domaine">WORKGROUP</expectedTag>
+                          <expectedTag name="logon_id">0x3e7</expectedTag>
+                          <expectedTag name="logon_type">10</expectedTag>
+                          <expectedTag name="method">RemoteInteractive</expectedTag>
+                          <expectedTag name="new_logon_security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+                          <expectedTag name="new_logon_account_name">Administrator</expectedTag>
+                          <expectedTag name="new_logon_account_domain">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="new_logon_id">0x19f4c</expectedTag>
+                          <expectedTag name="new_logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
+                          <expectedTag name="pid">0x4c0</expectedTag>
+                          <expectedTag name="process_name">C:\Windows\System32\winlogon.exe</expectedTag>
+                          <expectedTag name="workstation_name">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="source_ip">10.42.42.211</expectedTag>
+                          <expectedTag name="source_port">1181</expectedTag>
+                          <expectedTag name="logon_process">User32</expectedTag>
+                          <expectedTag name="authentification_package">Negotiate</expectedTag>
+                          <expectedTag name="transited_services">-</expectedTag>
+                          <expectedTag name="package_name">-</expectedTag>
+                          <expectedTag name="key_length">0</expectedTag>
+                          <expectedTag name="status">success</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+	</pattern>
+    </patterns>
+    <finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
+</normalizer>
