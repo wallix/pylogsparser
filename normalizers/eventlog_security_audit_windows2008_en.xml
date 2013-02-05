@@ -286,7 +286,257 @@ Detailed Authentication Information:
                      </expectedTags>
                 </example>
             </examples>
-	</pattern>
+	</pattern><pattern name="eventID-4625">
+            <description>
+                <localized_desc language="en">Logon failure</localized_desc>
+                <localized_desc language="fr">Echec de la connexion</localized_desc>
+            </description>            
+            <text>An account failed to log on. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID:  _LID_ Logon Type: _LOGONTYPE_ Account For Which Logon Failed: Security ID: _FSID_ Account Name: _FACCN_ Account Domain: _FACCD_ Failure Information: Failure Reason:  _FREASON_ Status: _FSTATUS_ Sub Status: _FSUBSTATUS_ Process Information: Caller Process ID: _CPID_ Caller Process Name: _CPN_ Network Information: Workstation Name:  _WORKSTATIONNAME_ Source Network Address: _SRCNETWORKADDR_ Source Port:  _SRCPORT_ Detailed Authentication Information: Logon Process:  _LPROCESS_  Authentication Package: _AP_ Transited Services: _TS_ Package Name \(NTLM only\): _PN_  Key Length:  _KL_  This event is generated when a logon request fails. It is generated on the computer where access was attempted. The Subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The Logon Type field indicates the kind of logon that was requested. The most common types are 2 \(interactive\) and 3 \(network\). The Process Information fields indicate which account and process on the system requested the logon. The Network Information fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested</text>
+            <tags>
+            	<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="account_domaine" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="logon_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The logon type</localized_desc>
+                        <localized_desc language="fr">Le type de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONTYPE_</substitute>
+                    <callbacks>
+                 		<callback>decode_logon_type</callback>
+                 	</callbacks>
+            	</tag>
+            	<tag name="failed_security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account security ID for which Llogon failed</localized_desc>
+                        <localized_desc language="fr">L'identifiant de securité du compte pour lequel la connexion a échoué</localized_desc>
+                    </description>
+                    <substitute>_FSID_</substitute>
+            	</tag>            	
+            	<tag name="failed_account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account name for which logon failed</localized_desc>
+                        <localized_desc language="fr">Le nom du compte pour lequel la connexion a échoué</localized_desc>
+                    </description>
+                    <substitute>_FACCN_</substitute>
+            	</tag>
+            	<tag name="failed_account_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account domaine for which logon failed</localized_desc>
+                        <localized_desc language="fr">Le domaine du compte pour lequel la connexion a échoué</localized_desc>
+                    </description>
+                    <substitute>_FACCD_</substitute>
+            	</tag> 
+            	
+            	
+            	<tag name="failure_reason" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure reason</localized_desc>
+                        <localized_desc language="fr">La raison de l'échec</localized_desc>
+                    </description>
+                    <substitute>_FREASON_</substitute>
+            	</tag> 
+            	<tag name="failure_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure status</localized_desc>
+                        <localized_desc language="fr">Le status de l'échec de connexion</localized_desc>
+                    </description>
+                    <substitute>_FSTATUS_</substitute>
+            	</tag>
+            	<tag name="failure_sub_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The failure sub_status"</localized_desc>
+                        <localized_desc language="fr">Le sous-status de l'échec de connexion</localized_desc>
+                    </description>
+                    <substitute>_FSUBSTATUS_</substitute>
+            	</tag>
+            	
+            	<tag name="caller_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+            	
+            	<tag name="caller_process_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The caller process name</localized_desc>
+                        <localized_desc language="fr">Le nom du processus de l'appelant</localized_desc>
+                    </description>
+                    <substitute>_CPN_</substitute>
+            	</tag> 
+				<tag name="workstation_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The workstation name</localized_desc>
+                        <localized_desc language="fr">Le nom du poste de travail</localized_desc>
+                    </description>
+                    <substitute>_WORKSTATIONNAME_</substitute>
+            	</tag> 
+				<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source IP</localized_desc>
+                        <localized_desc language="fr">L'IP source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SRCNETWORKADDR_</substitute>
+            	</tag>
+            	<tag name="source_port" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon source port</localized_desc>
+                        <localized_desc language="fr">Le port source de la connexion</localized_desc>
+                    </description>
+                    <substitute>_SRCPORT_</substitute>
+            	</tag>
+            	<tag name="logon_process" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon process name</localized_desc>
+                        <localized_desc language="fr">Le nom de programme de connexion</localized_desc>
+                    </description>
+              		<substitute>_LPROCESS_</substitute>
+            	</tag>
+              	
+              	<tag name="logon_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The logon type</localized_desc>
+                        <localized_desc language="fr">Le type de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONTYPE_</substitute>
+                    <callbacks>
+                 		<callback>decode_logon_type</callback>
+                 	</callbacks>
+            	</tag>
+                    
+            	<tag name="authentification_package" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The authentication package</localized_desc>
+                        <localized_desc language="fr">Le package d'authentification</localized_desc>
+                    </description>
+                    <substitute>_AP_</substitute>
+            	</tag> 
+            	<tag name="transited_services" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The transited services</localized_desc>
+                        <localized_desc language="fr">Les services en transit</localized_desc>
+                    </description>
+                    <substitute>_TS_</substitute>
+            	</tag>
+            	<tag name="package_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The package name</localized_desc>
+                        <localized_desc language="fr">Le nom du package</localized_desc>
+                    </description>
+                    <substitute>_PN_</substitute>
+            	</tag> 
+            	<tag name="key_length" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The key length</localized_desc>
+                        <localized_desc language="fr">La taille de la clé</localized_desc>
+                    </description>
+                    <substitute>_KL_</substitute>
+            	</tag>
+            </tags>
+            <commonTags>
+            	<commonTag name="status">failure</commonTag>
+            </commonTags>
+            <examples>
+                <example>
+                     <text>An account failed to log on.
+
+Subject:
+   Security ID:  NULL SID
+   Account Name:  -
+   Account Domain:  -
+   Logon ID:  0x0
+Logon Type:  3
+Account For Which Logon Failed:
+   Security ID:  NULL SID
+   Account Name:  asdf
+   Account Domain: - 
+Failure Information:
+   Failure Reason:  Unknown user name or bad password.
+   Status:   0xc000006d
+   Sub Status:  0xc0000064
+Process Information:
+   Caller Process ID: 0x0
+   Caller Process Name: -
+Network Information:
+   Workstation Name: WIN-R9H529RIO4Y
+   Source Network Address: 10.42.42.201
+   Source Port:  53176
+Detailed Authentication Information:
+      Logon Process:  NtLmSsp 
+   Authentication Package: NTLM
+   Transited Services: -
+   Package Name (NTLM only): -
+   Key Length:  0
+ 
+ This event is generated when a logon request fails. 
+ It is generated on the computer where access was attempted. 
+ The Subject fields indicate the account on the local system which requested the logon. 
+ This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. 
+ The Logon Type field indicates the kind of logon that was requested. 
+ The most common types are 2 (interactive) and 3 (network). 
+ The Process Information fields indicate which account and process on the system requested the logon. 
+ The Network Information fields indicate where a remote logon request originated. 
+ Workstation name is not always available and may be left blank in some cases. 
+ The authentication information fields provide detailed information about this specific logon request. 
+ 
+ - Transited services indicate which intermediate services have participated in this logon request. 
+ - Package name indicates which sub-protocol was used among the NTLM protocols. 
+ - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
+                     <expectedTags>
+                          <expectedTag name="security_id">NULL SID</expectedTag>
+                          <expectedTag name="account_name">-</expectedTag>
+                          <expectedTag name="account_domaine">-</expectedTag>
+                          <expectedTag name="logon_id">0x0</expectedTag>
+                          <expectedTag name="logon_type">3</expectedTag>
+                          <expectedTag name="method">Network</expectedTag>                   
+                          <expectedTag name="failed_security_id">NULL SID</expectedTag>
+                          <expectedTag name="failed_account_name">asdf</expectedTag>
+                          <expectedTag name="failed_account_domain">-</expectedTag>
+                          <expectedTag name="failure_reason">Unknown user name or bad password.</expectedTag>
+                          <expectedTag name="failure_status">0xc000006d</expectedTag>
+                          <expectedTag name="failure_sub_status">0xc0000064</expectedTag>
+                          <expectedTag name="caller_pid">0x0</expectedTag>
+                          <expectedTag name="caller_process_name">-</expectedTag>
+                          <expectedTag name="workstation_name">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="source_ip">10.42.42.201</expectedTag>
+                          <expectedTag name="source_port">53176</expectedTag>
+                          <expectedTag name="logon_process">NtLmSsp</expectedTag>
+                          <expectedTag name="authentification_package">NTLM</expectedTag>
+                          <expectedTag name="transited_services">-</expectedTag>
+                          <expectedTag name="package_name">-</expectedTag>
+                          <expectedTag name="key_length">0</expectedTag>
+                          <expectedTag name="status">failure</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+		</pattern>
     </patterns>
     <finalCallbacks>
     	<callback>strip_values</callback>

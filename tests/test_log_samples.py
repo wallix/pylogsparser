@@ -1164,7 +1164,43 @@ class Test(unittest.TestCase):
                  'status' : 'success'
                  })
         
-  
+        self.aS(u"""<13>Nov 21 17:45:25 WIN-D7NM05T4KNM    MSWinEventLog    1\tSecurity\t392\tThu Jan 31 13:18:27\t2013\t4625\tMicrosoft-Windows-Security-Auditing\tWIN-D7NM05T4KNM\Administrator\tN/A\tFailure Audit\tWIN-D7NM05T4KNM\tLogon\tAn account failed to log on. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon Type: 2 Account For Which Logon Failed: Security ID: S-1-0-0 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Failure Information: Failure Reason: Unknown user name or bad password. Status: 0xc000006d Sub Status: 0xc000006a Process Information: Caller Process ID: 0x5e0 Caller Process Name: C:\Windows\System32\winlogon.exe Network Information: Workstation Name: WIN-D7NM05T4KNM Source Network Address: 127.0.0.1 Source Port: 0 Detailed Authentication Information: Logon Process: User32 Authentication Package: Negotiate Transited Services: - Package Name (NTLM only): - Key Length: 0 This event is generated when a logon request fails. It is generated on the computer where access was attempted. The Subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The Logon Type field indicates the kind of logon that was requested. The most common types are 2 (interactive) and 3 (network). The Process Information fields indicate which account and process on the system requested the logon. The Network Information fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.\t268""",
+                {
+                 'criticality': '1',
+                 'eventlog_id': '4625',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Microsoft-Windows-Security-Auditing',
+                 'source_host': 'WIN-D7NM05T4KNM',
+                 'eventlog_type': 'Failure Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '268',
+                 'eventlog_description': """An account failed to log on. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon Type: 2 Account For Which Logon Failed: Security ID: S-1-0-0 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Failure Information: Failure Reason: Unknown user name or bad password. Status: 0xc000006d Sub Status: 0xc000006a Process Information: Caller Process ID: 0x5e0 Caller Process Name: C:\Windows\System32\winlogon.exe Network Information: Workstation Name: WIN-D7NM05T4KNM Source Network Address: 127.0.0.1 Source Port: 0 Detailed Authentication Information: Logon Process: User32 Authentication Package: Negotiate Transited Services: - Package Name (NTLM only): - Key Length: 0 This event is generated when a logon request fails. It is generated on the computer where access was attempted. The Subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The Logon Type field indicates the kind of logon that was requested. The most common types are 2 (interactive) and 3 (network). The Process Information fields indicate which account and process on the system requested the logon. The Network Information fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.""",
+                 'security_id': 'S-1-5-18',
+                 'account_name': 'WIN-D7NM05T4KNM$',
+                 'account_domaine': 'WORKGROUP',
+                 'logon_id': '0x3e7',
+                 'logon_type': '2',
+                 'method': 'Interactive',                   
+                 'failed_security_id': 'S-1-0-0',
+                 'failed_account_name': 'Administrator',
+                 'failed_account_domain': 'WIN-D7NM05T4KNM',
+                 'failure_reason': 'Unknown user name or bad password.',
+                 'failure_status': '0xc000006d',
+                 'failure_sub_status': '0xc000006a',
+                 'caller_pid': '0x5e0',
+                 'caller_process_name': 'C:\Windows\System32\winlogon.exe',
+                 'workstation_name': 'WIN-D7NM05T4KNM',
+                 'source_ip': '127.0.0.1',
+                 'source_port':'0',
+                 'logon_process': 'User32',
+                 'authentification_package': 'Negotiate',
+                 'transited_services': '-',
+                 'package_name' : '-',
+                 'key_length': '0',
+                 'status': 'failure'           
+                 })
+               
+        
                 
 if __name__ == "__main__":
     unittest.main()
