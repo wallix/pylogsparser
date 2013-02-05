@@ -605,6 +605,83 @@ Logon IDs are only unique between reboots on the same computer.</text>
 					</expectedTags>
 				</example>
 			</examples>
+		</pattern><pattern name="eventID-4647">
+			<description>
+				<localized_desc language="en">User initiated logoff</localized_desc>
+				<localized_desc language="fr">L'utilisateur a initié une déconnexion</localized_desc>
+			</description>
+			<text>User initiated logoff: Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ This event is generated when a logoff is initiated.? (?:but the token reference count is not zero and the logon session cannot be destroyed. )?No further user-initiated activity can occur.  This event can be interpreted as a logoff event.</text>
+			<tags>
+				<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="account_domaine" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+			</tags>
+			<examples>
+				<example>
+					<text>User initiated logoff:
+
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x19f4c
+
+This event is generated when a logoff is initiated but the token reference count 
+is not zero and the logon session cannot be destroyed.  
+No further user-initiated activity can occur.  
+This event can be interpreted as a logoff event.</text>
+					<expectedTags>
+						<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+						<expectedTag name="account_name">Administrator</expectedTag>
+						<expectedTag name="account_domaine">WIN-R9H529RIO4Y</expectedTag>
+						<expectedTag name="logon_id">0x19f4c</expectedTag>
+					</expectedTags>
+				</example>
+				<example>
+					<text>User initiated logoff: 
+					
+Subject: 
+	Security ID: S-1-5-21-2218251928-2375033965-419438225-500 
+	Account Name: Administrator 
+	Account Domain: WIN-D7NM05T4KNM 
+	Logon ID: 0xa2a99 
+	
+This event is generated when a logoff is initiated. 
+No further user-initiated activity can occur. 
+This event can be interpreted as a logoff event.</text>
+					<expectedTags>
+						<expectedTag name="security_id">S-1-5-21-2218251928-2375033965-419438225-500</expectedTag>
+						<expectedTag name="account_name">Administrator</expectedTag>
+						<expectedTag name="account_domaine">WIN-D7NM05T4KNM</expectedTag>
+						<expectedTag name="logon_id">0xa2a99</expectedTag>
+					</expectedTags>
+				</example>
+			</examples>
 		</pattern>
     </patterns>
     <finalCallbacks>

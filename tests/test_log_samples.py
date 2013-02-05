@@ -1219,7 +1219,23 @@ class Test(unittest.TestCase):
                  'method': 'Interactive'                   
                  })
         
-      
+        self.aS(u"""<13>Nov 21 17:45:25 WIN-D7NM05T4KNM    MSWinEventLog    1\tSecurity\t378\tThu Jan 31 13:18:18\t2013\t4647\tMicrosoft-Windows-Security-Auditing\tWIN-D7NM05T4KNM\Administrator\tN/A\tSuccess Audit\tWIN-D7NM05T4KNM\tLogoff\tUser initiated logoff: Subject: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xa2a99 This event is generated when a logoff is initiated. No further user-initiated activity can occur. This event can be interpreted as a logoff event.\t255""",
+                {'criticality': '1',
+                 'eventlog_id': '4647',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Microsoft-Windows-Security-Auditing',
+                 'source_host': 'WIN-D7NM05T4KNM',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '255',
+                 'eventlog_description':"""User initiated logoff: Subject: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xa2a99 This event is generated when a logoff is initiated. No further user-initiated activity can occur. This event can be interpreted as a logoff event.""",
+                 'security_id': 'S-1-5-21-2218251928-2375033965-419438225-500',
+                 'account_name' : 'Administrator',
+                 'account_domaine': 'WIN-D7NM05T4KNM',
+                 'logon_id': '0xa2a99',
+                 
+                 })
+     
         
                 
 if __name__ == "__main__":
