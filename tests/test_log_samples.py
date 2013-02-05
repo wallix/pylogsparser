@@ -1235,7 +1235,34 @@ class Test(unittest.TestCase):
                  'logon_id': '0xa2a99',
                  
                  })
-     
+        
+        self.aS(u"""<13>Nov 21 17:45:25 WIN-D7NM05T4KNM    MSWinEventLog    1\tSecurity\t398\tThu Jan 31 13:18:31\t2013\t4648\tMicrosoft-Windows-Security-Auditing\tWIN-D7NM05T4KNM\Administrator\tN/A\tSuccess Audit\tWIN-D7NM05T4KNM\tLogon\tA logon was attempted using explicit credentials. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon GUID: {00000000-0000-0000-0000-000000000000} Account Whose Credentials Were Used: Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon GUID: {00000000-0000-0000-0000-000000000000} Target Server: Target Server Name: localhost Additional Information: localhost Process Information: Process ID: 0x5e0 Process Name: C:\Windows\System32\winlogon.exe Network Information: Network Address: 127.0.0.1 Port: 0 This event is generated when a process attempts to log on an account by explicitly specifying that account's credentials. This most commonly occurs in batch-type configurations such as scheduled tasks, or when using the RUNAS command.\t270""",
+                {'criticality': '1',
+                 'eventlog_id': '4648',
+                 'eventlog_source': 'Security',
+                 'eventlog_name': 'Microsoft-Windows-Security-Auditing',
+                 'source_host': 'WIN-D7NM05T4KNM',
+                 'eventlog_type': 'Success Audit',
+                 'program' : 'EventLog',
+                 'md5_checksum' : '270',
+                 'eventlog_description':"""A logon was attempted using explicit credentials. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon GUID: {00000000-0000-0000-0000-000000000000} Account Whose Credentials Were Used: Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon GUID: {00000000-0000-0000-0000-000000000000} Target Server: Target Server Name: localhost Additional Information: localhost Process Information: Process ID: 0x5e0 Process Name: C:\Windows\System32\winlogon.exe Network Information: Network Address: 127.0.0.1 Port: 0 This event is generated when a process attempts to log on an account by explicitly specifying that account's credentials. This most commonly occurs in batch-type configurations such as scheduled tasks, or when using the RUNAS command.""",
+                 'security_id': 'S-1-5-18',
+                 'account_name': 'WIN-D7NM05T4KNM$',
+                 'account_domaine': 'WORKGROUP',
+                 'logon_id': '0x3e7',
+                 'logon_guid': '{00000000-0000-0000-0000-000000000000}',
+                 'credentials_account_name': 'Administrator',                  
+                 'credentials_account_domain': 'WIN-D7NM05T4KNM',
+                 'credentials_logon_guid': '{00000000-0000-0000-0000-000000000000}',
+                 'target_server_name': 'localhost',
+                 'additional_information': 'localhost',
+                 'pid': '0x5e0',
+                 'process_name': 'C:\Windows\System32\winlogon.exe',
+                 'address': '127.0.0.1',
+                 'port': '0',
+                 'status': 'failure',
+                 })
+        
         
                 
 if __name__ == "__main__":
