@@ -536,6 +536,75 @@ Detailed Authentication Information:
                      </expectedTags>
                 </example>
             </examples>
+		</pattern><pattern name="eventID-4634">
+			<description>
+                <localized_desc language="en">User Logoff</localized_desc>
+                <localized_desc language="fr">Déconnexion utilisateur</localized_desc>
+            </description>
+			<text>An account was logged off. Subject:	Security ID:  _SID_	Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_   Logon ID:  _LID_ Logon Type: _LOGONTYPE_ This event is generated when a logon session is destroyed. It may be positively correlated with a logon event using the Logon ID value. Logon IDs are only unique between reboots on the same computer.</text>
+			<tags>
+				<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="account_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="account_domaine" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="logon_type" tagType="Integer">
+                    <description>
+                        <localized_desc language="en">The logon type</localized_desc>
+                        <localized_desc language="fr">Le type de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONTYPE_</substitute>
+                    <callbacks>
+                 		<callback>decode_logon_type</callback>
+                 	</callbacks>
+            	</tag>
+			</tags>
+			<examples>
+				<example>
+					<text>An account was logged off.
+
+Subject:
+   Security ID:  ANONYMOUS LOGON
+   Account Name:  ANONYMOUS LOGON
+   Account Domain:  NT AUTHORITY   
+   Logon ID:  0x149be
+Logon Type: 3
+
+This event is generated when a logon session is destroyed. 
+It may be positively correlated with a logon event using the Logon ID value. 
+Logon IDs are only unique between reboots on the same computer.</text>
+					<expectedTags>
+						<expectedTag name="security_id">ANONYMOUS LOGON</expectedTag>
+						<expectedTag name="account_name">ANONYMOUS LOGON</expectedTag>
+						<expectedTag name="account_domaine">NT AUTHORITY</expectedTag>
+						<expectedTag name="logon_id">0x149be</expectedTag>
+						<expectedTag name="logon_type">3</expectedTag>
+					</expectedTags>
+				</example>
+			</examples>
 		</pattern>
     </patterns>
     <finalCallbacks>
