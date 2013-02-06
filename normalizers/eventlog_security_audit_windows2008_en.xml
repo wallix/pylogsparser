@@ -75,14 +75,14 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
@@ -178,7 +178,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	</tag>
             	<tag name="logon_process" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The logon pricess name</localized_desc>
+                        <localized_desc language="en">The logon process name</localized_desc>
                         <localized_desc language="fr">Le nom de programme de connexion</localized_desc>
                     </description>
                     <substitute>_LPROCESS_</substitute>
@@ -262,8 +262,8 @@ Detailed Authentication Information:
  - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
                      <expectedTags>
                           <expectedTag name="security_id">SYSTEM</expectedTag>
-                          <expectedTag name="account_name">WIN-R9H529RIO4Y$</expectedTag>
-                          <expectedTag name="account_domaine">WORKGROUP</expectedTag>
+                          <expectedTag name="user">WIN-R9H529RIO4Y$</expectedTag>
+                          <expectedTag name="domain">WORKGROUP</expectedTag>
                           <expectedTag name="logon_id">0x3e7</expectedTag>
                           <expectedTag name="logon_type">10</expectedTag>
                           <expectedTag name="method">RemoteInteractive</expectedTag>
@@ -300,14 +300,14 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
@@ -511,8 +511,8 @@ Detailed Authentication Information:
  - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
                      <expectedTags>
                           <expectedTag name="security_id">NULL SID</expectedTag>
-                          <expectedTag name="account_name">-</expectedTag>
-                          <expectedTag name="account_domaine">-</expectedTag>
+                          <expectedTag name="user">-</expectedTag>
+                          <expectedTag name="domain">-</expectedTag>
                           <expectedTag name="logon_id">0x0</expectedTag>
                           <expectedTag name="logon_type">3</expectedTag>
                           <expectedTag name="method">Network</expectedTag>                   
