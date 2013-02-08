@@ -550,14 +550,14 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -598,8 +598,8 @@ It may be positively correlated with a logon event using the Logon ID value.
 Logon IDs are only unique between reboots on the same computer.</text>
 					<expectedTags>
 						<expectedTag name="security_id">ANONYMOUS LOGON</expectedTag>
-						<expectedTag name="account_name">ANONYMOUS LOGON</expectedTag>
-						<expectedTag name="account_domaine">NT AUTHORITY</expectedTag>
+						<expectedTag name="user">ANONYMOUS LOGON</expectedTag>
+						<expectedTag name="domain">NT AUTHORITY</expectedTag>
 						<expectedTag name="logon_id">0x149be</expectedTag>
 						<expectedTag name="logon_type">3</expectedTag>
 					</expectedTags>
@@ -619,14 +619,14 @@ Logon IDs are only unique between reboots on the same computer.</text>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -657,8 +657,8 @@ No further user-initiated activity can occur.
 This event can be interpreted as a logoff event.</text>
 					<expectedTags>
 						<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-						<expectedTag name="account_name">Administrator</expectedTag>
-						<expectedTag name="account_domaine">WIN-R9H529RIO4Y</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
 						<expectedTag name="logon_id">0x19f4c</expectedTag>
 					</expectedTags>
 				</example>
@@ -676,8 +676,8 @@ No further user-initiated activity can occur.
 This event can be interpreted as a logoff event.</text>
 					<expectedTags>
 						<expectedTag name="security_id">S-1-5-21-2218251928-2375033965-419438225-500</expectedTag>
-						<expectedTag name="account_name">Administrator</expectedTag>
-						<expectedTag name="account_domaine">WIN-D7NM05T4KNM</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">WIN-D7NM05T4KNM</expectedTag>
 						<expectedTag name="logon_id">0xa2a99</expectedTag>
 					</expectedTags>
 				</example>
@@ -697,14 +697,14 @@ This event can be interpreted as a logoff event.</text>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -823,8 +823,8 @@ This most commonly occurs in batch-type configurations such as scheduled tasks,
 or when using the RUNAS command.</text>
                      <expectedTags>
                           <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-                          <expectedTag name="account_name">Administrator</expectedTag>
-                          <expectedTag name="account_domaine">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
                           <expectedTag name="logon_id">0x1ba0e</expectedTag>
                           <expectedTag name="logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
                           <expectedTag name="credentials_account_name">rsmith@mtg.com</expectedTag>                   
@@ -868,8 +868,8 @@ This most commonly occurs in batch-type configurations such as scheduled tasks,
 or when using the RUNAS command.</text>
                 	<expectedTags>
 	                	  <expectedTag name="security_id">S-1-5-18</expectedTag>
-                          <expectedTag name="account_name">WIN-D7NM05T4KNM$</expectedTag>
-                          <expectedTag name="account_domaine">WORKGROUP</expectedTag>
+                          <expectedTag name="user">WIN-D7NM05T4KNM$</expectedTag>
+                          <expectedTag name="domain">WORKGROUP</expectedTag>
                           <expectedTag name="logon_id">0x3e7</expectedTag>
                           <expectedTag name="logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
                           <expectedTag name="credentials_account_name">Administrator</expectedTag>                   

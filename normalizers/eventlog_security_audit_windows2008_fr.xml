@@ -66,7 +66,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                 <localized_desc language="en">Successful logon</localized_desc>
                 <localized_desc language="fr">Connexion réussie</localized_desc>
             </description>   
-            <text>L'ouverture de session d'un compte s'est correctement déroulée. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d'ouverture de session : _LID_ Type d'ouverture de session : _LOGONTYPE_ Nouvelle ouverture de session : ID de sécurité : _NLOSID_ Nom du compte : _NACCOUNTNAME_ Domaine du compte : _NACCOUNTDOMAIN_ ID d'ouverture de session :_NLID_ GUID d'ouverture de session : _NLGUID_  Informations sur le processus : ID du processus : _PID_ Nom du processus : _PNAME_ Informations sur le réseau : Nom de la station de travail : _WORKSTATIONNAME_ Adresse du réseau source : _SRCNETWORKADDR_ Port source : _SRCPORT_ Informations détaillées sur l'authentification : Processus d'ouverture de session : _LPROCESS_ Package d'authentification :	_AP_ Services en transit : _TS_ Nom du package \(NTLM uniquement\) : _PN_ Longueur de la clé : _KL_ Cet événement est généré lors de la création d'une ouverture de session. Il est généré sur l'ordinateur sur lequel l'ouverture de session a été effectuée. Le champ Objet indique le compte sur le système local qui a demandé l'ouverture de session. Il s'agit le plus souvent d'un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d'ouverture de session indique le type d'ouverture de session qui s'est produit. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\).</text>         
+            <text>L’ouverture de session d’un compte s’est correctement déroulée. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?Type d’ouverture de session : (?:_LOGONTYPE_ )Nouvelle ouverture de session : ID de sécurité : (?:_NLOSID_ )?Nom du compte : (?:_NACCOUNTNAME_ )?Domaine du compte : (?:_NACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_NLID_ )?GUID d’ouverture de session : (?:_NLGUID_ )?Informations sur le processus : ID du processus : (?:_PID_ )?Nom du processus : (?:_PNAME_ )?Informations sur le réseau : Nom de la station de travail : (?:_WORKSTATIONNAME_ )?Adresse du réseau source : (?:_SRCNETWORKADDR_ )?Port source : (?:_SRCPORT_ )?Informations détaillées sur l’authentification : Processus d’ouverture de session : (?:_LPROCESS_ )?Package d’authentification :	(?:_AP_ )?Services en transit : (?:_TS_ )?Nom du package \(NTLM uniquement\) : (?:_PN_ )?Longueur de la clé : (?:_KL_ )?Cet événement est généré lors de la création d’une ouverture de session. Il est généré sur l’ordinateur sur lequel l’ouverture de session a été effectuée. Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d’ouverture de session indique le type d’ouverture de session qui s’est produit. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\).</text>         
             
             <tags>
             	<tag name="security_id" tagType="Anything">
@@ -110,7 +110,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	<tag name="new_logon_security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account security ID of the user who just logged on</localized_desc>
-                        <localized_desc language="fr">L'identifiant de securité du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
+                        <localized_desc language="fr">L’identifiant de securité du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NLOSID_</substitute>
             	</tag>            	
@@ -218,20 +218,20 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             </commonTags>
             <examples>
                 <example>
-                	<text>L'ouverture de session d'un compte s'est correctement déroulée.
+                	<text>L’ouverture de session d’un compte s’est correctement déroulée.
 
 Sujet :
 	ID de sécurité : SYSTEM
 	Nom du compte : WIN-R9H529RIO4Y$
 	Domaine du compte : WORKGROUP
-	ID d'ouverture de session : 0x3e7
-Type d'ouverture de session : 10
+	ID d’ouverture de session : 0x3e7
+Type d’ouverture de session : 10
 Nouvelle ouverture de session :
 	ID de sécurité : WIN-R9H529RIO4Y\Administrator
 	Nom du compte : Administrator
 	Domaine du compte : WIN-R9H529RIO4Y
-	ID d'ouverture de session :  0x19f4c
-	GUID d'ouverture de session :  {00000000-0000-0000-0000-000000000000}
+	ID d’ouverture de session :  0x19f4c
+	GUID d’ouverture de session :  {00000000-0000-0000-0000-000000000000}
 
 Informations sur le processus :
 	ID du processus :  0x4c0
@@ -242,18 +242,18 @@ Informations sur le réseau :
 	Adresse du réseau source : 10.42.42.211
 	Port source :  1181
 
-Informations détaillées sur l'authentification :
-	Processus d'ouverture de session :  User32
-	Package d'authentification : Negotiate
+Informations détaillées sur l’authentification :
+	Processus d’ouverture de session :  User32
+	Package d’authentification : Negotiate
 	Services en transit : -
 	Nom du package (NTLM uniquement) : -
 	Longueur de la clé : 0
 
-Cet événement est généré lors de la création d'une ouverture de session. 
-Il est généré sur l'ordinateur sur lequel l'ouverture de session a été effectuée.
-Le champ Objet indique le compte sur le système local qui a demandé l'ouverture de session. 
-Il s'agit le plus souvent d'un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe.
-Le champ Type d'ouverture de session indique le type d'ouverture de session qui s'est produit. 
+Cet événement est généré lors de la création d’une ouverture de session. 
+Il est généré sur l’ordinateur sur lequel l’ouverture de session a été effectuée.
+Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. 
+Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe.
+Le champ Type d’ouverture de session indique le type d’ouverture de session qui s’est produit. 
 Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                      <expectedTags>
                           <expectedTag name="security_id">SYSTEM</expectedTag>
@@ -286,7 +286,7 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                 <localized_desc language="en">Logon failure</localized_desc>
                 <localized_desc language="fr">Echec de la connexion</localized_desc>
             </description> 
-            <text>Échec d'ouverture de session d'un compte. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d'ouverture de session : _LID_ Type d'ouverture de session : _LOGONTYPE_ Compte pour lequel l'ouverture de session a échoué : ID de sécurité : _FSID_ Nom du compte : _FACCN_ Domaine du compte : _FACCD_ Informations sur l'échec : Raison de l'échec : _FREASON_ État : _FSTATUS_ Sous-état : _FSUBSTATUS_ Informations sur le processus : ID du processus de l'appelant : _CPID_ Nom du processus de l'appelant : _CPN_ Informations sur le réseau : Nom de la station de travail : _WORKSTATIONNAME_ Adresse du réseau source : _SRCNETWORKADDR_ Port source : _SRCPORT_ Informations détaillées sur l'authentification : Processus d'ouverture de session : _LPROCESS_ Package d'authentification : _AP_ Services en transit : _TS_ Nom du package \(NTLM uniquement\) : _PN_ Longueur de clé : _KL_ Cet événement est généré lorsqu'une demande d'ouverture de session échoue. Il est généré sur l'ordinateur sur lequel l'accès a été tenté. Le champ Objet indique le compte sur le système local qui a demandé l'ouverture de session. Il s'agit le plus souvent d'un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d'ouverture de session indique le type d'ouverture de session qui a été demandé. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\). Les champs relatifs aux informations sur le processus indiquent quel est le compte et le processus sur le système qui ont demandé l'ouverture de session. Les champs relatifs aux informations sur le réseau indiquent la provenance de la demande d'ouverture de session distante. Le nom de la station de travail n'étant pas toujours disponible, peut rester vide dans certains cas. Les champs relatifs aux informations d'authentification fournissent des détails sur cette demande d'ouverture de session spécifique. - Les services en transit indiquent les services intermédiaires qui ont participé à cette demande d'ouverture de session. - Le nom du package indique quel a été le sous-protocole qui a été utilisé parmi les protocoles NTLM. - La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n'a été demandée.</text>         
+            <text>Échec d’ouverture de session d’un compte. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?Type d’ouverture de session : (?:_LOGONTYPE_ )?Compte pour lequel l’ouverture de session a échoué : ID de sécurité : (?:_FSID_ )?Nom du compte : (?:_FACCN_ )?Domaine du compte : (?:_FACCD_ )?Informations sur l’échec : Raison de l’échec : (?:_FREASON_ )?État : (?:_FSTATUS_ )?Sous-état : (?:_FSUBSTATUS_ )?Informations sur le processus : ID du processus de l’appelant : (?:_CPID_ )?Nom du processus de l’appelant : (?:_CPN_ )?Informations sur le réseau : Nom de la station de travail : (?:_WORKSTATIONNAME_ )?Adresse du réseau source : (?:_SRCNETWORKADDR_ )?Port source : (?:_SRCPORT_ )?Informations détaillées sur l’authentification : Processus d’ouverture de session : (?:_LPROCESS_ )?Package d’authentification : (?:_AP_ )?Services en transit : (?:_TS_ )?Nom du package \(NTLM uniquement\) : (?:_PN_ )?Longueur de clé : (?:_KL_ )?Cet événement est généré lorsqu’une demande d’ouverture de session échoue. Il est généré sur l’ordinateur sur lequel l’accès a été tenté. Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d’ouverture de session indique le type d’ouverture de session qui a été demandé. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\). Les champs relatifs aux informations sur le processus indiquent quel est le compte et le processus sur le système qui ont demandé l’ouverture de session. Les champs relatifs aux informations sur le réseau indiquent la provenance de la demande d’ouverture de session distante. Le nom de la station de travail n’étant pas toujours disponible, peut rester vide dans certains cas. Les champs relatifs aux informations d’authentification fournissent des détails sur cette demande d’ouverture de session spécifique. - Les services en transit indiquent les services intermédiaires qui ont participé à cette demande d’ouverture de session. - Le nom du package indique quel a été le sous-protocole qui a été utilisé parmi les protocoles NTLM. - La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n’a été demandée.</text>         
             <tags>
             	<tag name="security_id" tagType="Anything">
                     <description>
@@ -460,49 +460,49 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
             </commonTags>
             <examples>
                 <example>
-                	 <text>Échec d'ouverture de session d'un compte.
+                	 <text>Échec d’ouverture de session d’un compte.
                 	           	 
 Sujet :
 	ID de sécurité : NULL SID
 	Nom du compte : -
 	Domaine du compte : -
-	ID d'ouverture de session : 0x0
-Type d'ouverture de session : 3
-Compte pour lequel l'ouverture de session a échoué :
+	ID d’ouverture de session : 0x0
+Type d’ouverture de session : 3
+Compte pour lequel l’ouverture de session a échoué :
 	ID de sécurité : NULL SID
 	Nom du compte : asdf
 	Domaine du compte : -
-Informations sur l'échec :
-	Raison de l'échec : Unknown user name or bad password.
+Informations sur l’échec :
+	Raison de l’échec : Unknown user name or bad password.
 	État : 0xc000006d
 	Sous-état : 0xc0000064
 Informations sur le processus :
-	ID du processus de l'appelant : 0x0
-	Nom du processus de l'appelant : -
+	ID du processus de l’appelant : 0x0
+	Nom du processus de l’appelant : -
 Informations sur le réseau :
 	Nom de la station de travail : WIN-R9H529RIO4Y
 	Adresse du réseau source : 10.42.42.201
 	Port source : 53176
-Informations détaillées sur l'authentification :
- 	Processus d'ouverture de session : NtLmSsp
- 	Package d'authentification : NTLM
+Informations détaillées sur l’authentification :
+ 	Processus d’ouverture de session : NtLmSsp
+ 	Package d’authentification : NTLM
  	Services en transit : -
  	Nom du package (NTLM uniquement) : -
  	Longueur de clé : 0
  	
-Cet événement est généré lorsqu'une demande d'ouverture de session échoue. 
-Il est généré sur l'ordinateur sur lequel l'accès a été tenté.
-Le champ Objet indique le compte sur le système local qui a demandé l'ouverture de session. 
-Il s'agit le plus souvent d'un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe.
-Le champ Type d'ouverture de session indique le type d'ouverture de session qui a été demandé. 
+Cet événement est généré lorsqu’une demande d’ouverture de session échoue. 
+Il est généré sur l’ordinateur sur lequel l’accès a été tenté.
+Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. 
+Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe.
+Le champ Type d’ouverture de session indique le type d’ouverture de session qui a été demandé. 
 Les types les plus courants sont 2 (interactif) et 3 (réseau).
-Les champs relatifs aux informations sur le processus indiquent quel est le compte et le processus sur le système qui ont demandé l'ouverture de session.
-Les champs relatifs aux informations sur le réseau indiquent la provenance de la demande d'ouverture de session distante. 
-Le nom de la station de travail n'étant pas toujours disponible, peut rester vide dans certains cas.
-Les champs relatifs aux informations d'authentification fournissent des détails sur cette demande d'ouverture de session spécifique.
-	- Les services en transit indiquent les services intermédiaires qui ont participé à cette demande d'ouverture de session.
+Les champs relatifs aux informations sur le processus indiquent quel est le compte et le processus sur le système qui ont demandé l’ouverture de session.
+Les champs relatifs aux informations sur le réseau indiquent la provenance de la demande d’ouverture de session distante. 
+Le nom de la station de travail n’étant pas toujours disponible, peut rester vide dans certains cas.
+Les champs relatifs aux informations d’authentification fournissent des détails sur cette demande d’ouverture de session spécifique.
+	- Les services en transit indiquent les services intermédiaires qui ont participé à cette demande d’ouverture de session.
 	- Le nom du package indique quel a été le sous-protocole qui a été utilisé parmi les protocoles NTLM.
-	- La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n'a été demandée.</text>
+	- La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n’a été demandée.</text>
                           <expectedTags>
                           <expectedTag name="security_id">NULL SID</expectedTag>
                           <expectedTag name="user">-</expectedTag>
@@ -535,7 +535,7 @@ Les champs relatifs aux informations d'authentification fournissent des détails
                 <localized_desc language="en">User Logoff</localized_desc>
                 <localized_desc language="fr">Déconnexion utilisateur</localized_desc>
             </description>
-            <text>Fermeture de session d’un compte. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID du compte : _LID_ Type d’ouverture de session : _LOGONTYPE_ Cet événement est généré lorsqu’une session ouverte est supprimée. Il peut être associé à un événement d’ouverture de session en utilisant la valeur ID d’ouverture de session. Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur un même ordinateur.</text>
+            <text>Fermeture de session d’un compte. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID du compte : (?:_LID_ )?Type d’ouverture de session : (?:_LOGONTYPE_ )?Cet événement est généré lorsqu’une session ouverte est supprimée. Il peut être associé à un événement d’ouverture de session en utilisant la valeur ID d’ouverture de session. Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur un même ordinateur.</text>
 			<tags>
 				<tag name="security_id" tagType="Anything">
                     <description>
@@ -544,14 +544,14 @@ Les champs relatifs aux informations d'authentification fournissent des détails
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -592,8 +592,8 @@ Il peut être associé à un événement d’ouverture de session en utilisant l
 Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur un même ordinateur.</text>
 					<expectedTags>
 						<expectedTag name="security_id">ANONYMOUS LOGON</expectedTag>
-						<expectedTag name="account_name">ANONYMOUS LOGON</expectedTag>
-						<expectedTag name="account_domaine">NT AUTHORITY</expectedTag>
+						<expectedTag name="user">ANONYMOUS LOGON</expectedTag>
+						<expectedTag name="domain">NT AUTHORITY</expectedTag>
 						<expectedTag name="logon_id">0x149be</expectedTag>
 						<expectedTag name="logon_type">3</expectedTag>
 					</expectedTags>
@@ -604,7 +604,7 @@ Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur
 				<localized_desc language="en">User initiated logoff</localized_desc>
 				<localized_desc language="fr">L'utilisateur a initié une déconnexion</localized_desc>
 			</description>
-			<text>Fermeture de session initiée par l’utilisateur : Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ Cet événement est généré lorsqu’une fermeture de session est initiée, mais que le nombre de références du jeton n’étant pas zéro, la session ouverte ne peut pas être supprimée. Aucune autre activité initiée par l’utilisateur ne peut se produire. Cet événement peut être interprété comme un événement de fermeture de session.</text>
+			<text>Fermeture de session initiée par l’utilisateur : Sujet : ID de sécurité : (?:_SID_ )Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?Cet événement est généré lorsqu’une fermeture de session est initiée, mais que le nombre de références du jeton n’étant pas zéro, la session ouverte ne peut pas être supprimée. Aucune autre activité initiée par l’utilisateur ne peut se produire. Cet événement peut être interprété comme un événement de fermeture de session.</text>
 			<tags>
 				<tag name="security_id" tagType="Anything">
                     <description>
@@ -613,14 +613,14 @@ Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -652,8 +652,8 @@ Aucune autre activité initiée par l’utilisateur ne peut se produire.
 Cet événement peut être interprété comme un événement de fermeture de session.</text>
 					<expectedTags>
 						<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-						<expectedTag name="account_name">Administrator</expectedTag>
-						<expectedTag name="account_domaine">WIN-R9H529RIO4Y</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
 						<expectedTag name="logon_id">0x19f4c</expectedTag>
 					</expectedTags>
 				</example>
@@ -673,8 +673,8 @@ Aucune autre activité initiée par l’utilisateur ne peut se produire.
 Cet événement peut être interprété comme un événement de fermeture de session.</text>
 					<expectedTags>
 						<expectedTag name="security_id">S-1-5-21-2218251928-2375033965-419438225-500</expectedTag>
-						<expectedTag name="account_name">Administrator</expectedTag>
-						<expectedTag name="account_domaine">WIN-D7NM05T4KNM</expectedTag>
+						<expectedTag name="user">Administrator</expectedTag>
+						<expectedTag name="domain">WIN-D7NM05T4KNM</expectedTag>
 						<expectedTag name="logon_id">0xa2a99</expectedTag>
 					</expectedTags>
 				</example>
@@ -684,7 +684,7 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                 <localized_desc language="en">Logon failure</localized_desc>
                 <localized_desc language="fr">Echec de la connexion</localized_desc>
             </description>            
-            <text>Tentative d’ouverture de session en utilisant des informations d’identification explicites. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ GUID d’ouverture de session : _LGUID_ Compte dont les informations d’identification ont été utilisées : Nom du compte : _CACCOUNTNAME_ Domaine du compte : _CACCOUNTDOMAINE_ GUID d’ouverture de session : _CLOGUID_ Serveur cible : Nom du serveur cible : _TSERVERNAME_ Informations supplémentaires : (?:_ADDINFO_ )?Informations sur le processus : ID du processus : _PID_ Nom du processus : _PNAME_ Informations sur le réseau : Adresse du réseau : _NETWORKADDR_ Port : _PORT_ Cet événement est généré lorsqu’un processus tente d’ouvrir une session pour un compte en spécifiant explicitement les informations d’identification de ce compte. Ceci se produit le plus souvent dans les configurations par lot comme les tâches planifiées, ou avec l’utilisation de la commande RUNAS.</text>
+            <text>Tentative d’ouverture de session en utilisant des informations d’identification explicites. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?GUID d’ouverture de session : (?:_LGUID_ )?Compte dont les informations d’identification ont été utilisées : Nom du compte : (?:_CACCOUNTNAME_ )?Domaine du compte : (?:_CACCOUNTDOMAINE_ )?GUID d’ouverture de session : (?:_CLOGUID_ )?Serveur cible : Nom du serveur cible : (?:_TSERVERNAME_ )?Informations supplémentaires : (?:_ADDINFO_ )?Informations sur le processus : ID du processus : (?:_PID_ )?Nom du processus : (?:_PNAME_ )?Informations sur le réseau : Adresse du réseau : (?:_NETWORKADDR_ )?Port : (?:_PORT_ )?Cet événement est généré lorsqu’un processus tente d’ouvrir une session pour un compte en spécifiant explicitement les informations d’identification de ce compte. Ceci se produit le plus souvent dans les configurations par lot comme les tâches planifiées, ou avec l’utilisation de la commande RUNAS.</text>
             <tags>
             	<tag name="security_id" tagType="Anything">
                     <description>
@@ -693,14 +693,14 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="account_domaine" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
@@ -822,8 +822,8 @@ Ceci se produit le plus souvent dans les configurations par lot comme les tâche
 ou avec l’utilisation de la commande RUNAS.</text>
                      <expectedTags>
                           <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-                          <expectedTag name="account_name">Administrator</expectedTag>
-                          <expectedTag name="account_domaine">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
                           <expectedTag name="logon_id">0x1ba0e</expectedTag>
                           <expectedTag name="logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
                           <expectedTag name="credentials_account_name">rsmith@mtg.com</expectedTag>                   
