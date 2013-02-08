@@ -1212,8 +1212,8 @@ class Test(unittest.TestCase):
                  'md5_checksum' : '260',
                  'eventlog_description': """An account was logged off. Subject: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xa2a99 Logon Type: 2 This event is generated when a logon session is destroyed. It may be positively correlated with a logon event using the Logon ID value. Logon IDs are only unique between reboots on the same computer.""",
                  'security_id': 'S-1-5-21-2218251928-2375033965-419438225-500',
-                 'account_name': 'Administrator',
-                 'account_domaine': 'WIN-D7NM05T4KNM',
+                 'user': 'Administrator',
+                 'domain': 'WIN-D7NM05T4KNM',
                  'logon_id': '0xa2a99',
                  'logon_type' : '2',
                  'method': 'Interactive'                   
@@ -1230,8 +1230,8 @@ class Test(unittest.TestCase):
                  'md5_checksum' : '255',
                  'eventlog_description':"""User initiated logoff: Subject: Security ID: S-1-5-21-2218251928-2375033965-419438225-500 Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon ID: 0xa2a99 This event is generated when a logoff is initiated. No further user-initiated activity can occur. This event can be interpreted as a logoff event.""",
                  'security_id': 'S-1-5-21-2218251928-2375033965-419438225-500',
-                 'account_name' : 'Administrator',
-                 'account_domaine': 'WIN-D7NM05T4KNM',
+                 'user' : 'Administrator',
+                 'domain': 'WIN-D7NM05T4KNM',
                  'logon_id': '0xa2a99',
                  
                  })
@@ -1247,8 +1247,8 @@ class Test(unittest.TestCase):
                  'md5_checksum' : '270',
                  'eventlog_description':"""A logon was attempted using explicit credentials. Subject: Security ID: S-1-5-18 Account Name: WIN-D7NM05T4KNM$ Account Domain: WORKGROUP Logon ID: 0x3e7 Logon GUID: {00000000-0000-0000-0000-000000000000} Account Whose Credentials Were Used: Account Name: Administrator Account Domain: WIN-D7NM05T4KNM Logon GUID: {00000000-0000-0000-0000-000000000000} Target Server: Target Server Name: localhost Additional Information: localhost Process Information: Process ID: 0x5e0 Process Name: C:\Windows\System32\winlogon.exe Network Information: Network Address: 127.0.0.1 Port: 0 This event is generated when a process attempts to log on an account by explicitly specifying that account's credentials. This most commonly occurs in batch-type configurations such as scheduled tasks, or when using the RUNAS command.""",
                  'security_id': 'S-1-5-18',
-                 'account_name': 'WIN-D7NM05T4KNM$',
-                 'account_domaine': 'WORKGROUP',
+                 'user': 'WIN-D7NM05T4KNM$',
+                 'domain': 'WORKGROUP',
                  'logon_id': '0x3e7',
                  'logon_guid': '{00000000-0000-0000-0000-000000000000}',
                  'credentials_account_name': 'Administrator',                  
@@ -1261,7 +1261,8 @@ class Test(unittest.TestCase):
                  'address': '127.0.0.1',
                  'port': '0',
                  'status': 'failure',
-                 })
+                 })               
+        
         
         
                 
