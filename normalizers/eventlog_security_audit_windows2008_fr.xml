@@ -46,6 +46,32 @@ Les codes d'événements suivants sont normalisés :
     <authors>
         <author>lbenlahmr@wallix.com</author>
     </authors>
+    <tagTypes>
+    	<tagType name="PortWin" type="basestring">
+    		<description>
+    			<localized_desc language="en">Matches EventLog port: - or integer</localized_desc>
+    			<localized_desc language="">Port contenu dans un EventLog: - ou entier</localized_desc>
+    		</description>
+    		<regexp>(?:-|\d+)</regexp>
+    	</tagType>
+    	<tagType name="IPwin" type="basestring">
+        	<description>
+            	<localized_desc language="en">Matches a numeric IP or - if not defined</localized_desc>
+            	<localized_desc language="fr">Correspond à une adresse IP numérique ou - si non fourni</localized_desc>
+        	</description>
+       	 <regexp>(?:-|(?&lt;![.0-9])(?:\d{1,3}.){3}\d{1,3}(?![.0-9]))</regexp>
+    	</tagType>
+    	<tagType name="PIDwin" type="basestring">
+    		<description>
+    			<localized_desc language="en">Matches a Windows process PID</localized_desc>
+    			<localized_desc language="fr">Correspond au PID d'un process Windows </localized_desc>
+    		</description>
+    		<regexp>(?:-|[a-zA-Z0-9]+)</regexp>
+    	</tagType>
+    	<tagType name="GUIDWIN">
+    		<regexp>[a-zA-z0-9{}-]+</regexp>
+    	</tagType>
+    </tagTypes>
     <callbacks>
     	<callback name="strip_values">
 for t in log:
@@ -90,7 +116,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -128,21 +154,21 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_NACCOUNTDOMAIN_</substitute>
             	</tag> 
-            	<tag name="new_logon_id" tagType="Anything">
+            	<tag name="new_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_NLID_</substitute>
             	</tag> 
-            	<tag name="new_logon_guid" tagType="Anything">
+            	<tag name="new_logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The account GUID</localized_desc>
                         <localized_desc language="fr">Le GUID de connexion</localized_desc>
                     </description>
                     <substitute>_NLGUID_</substitute>
             	</tag>
-            	<tag name="pid" tagType="Anything">
+            	<tag name="pid" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The caller process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
@@ -163,14 +189,14 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_WORKSTATIONNAME_</substitute>
             	</tag> 
-				<tag name="source_ip" tagType="Anything">
+				<tag name="source_ip" tagType="IPwin">
                     <description>
                         <localized_desc language="en">The logon source IP</localized_desc>
                         <localized_desc language="fr">L'IP source de la connexion</localized_desc>
                     </description>
                     <substitute>_SRCNETWORKADDR_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Anything">
+            	<tag name="source_port" tagType="PortWin">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -309,7 +335,7 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -371,7 +397,7 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                     <substitute>_FSUBSTATUS_</substitute>
             	</tag>
             	
-            	<tag name="caller_pid" tagType="Anything">
+            	<tag name="caller_pid" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The caller process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
@@ -393,14 +419,14 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                     </description>
                     <substitute>_WORKSTATIONNAME_</substitute>
             	</tag> 
-				<tag name="source_ip" tagType="Anything">
+				<tag name="source_ip" tagType="IPwin">
                     <description>
                         <localized_desc language="en">The logon source IP</localized_desc>
                         <localized_desc language="fr">L'IP source de la connexion</localized_desc>
                     </description>
                     <substitute>_SRCNETWORKADDR_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Anything">
+            	<tag name="source_port" tagType="PortWin">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -558,7 +584,7 @@ Les champs relatifs aux informations d’authentification fournissent des détai
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
@@ -627,7 +653,7 @@ Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
@@ -707,14 +733,14 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_LID_</substitute>
             	</tag>
-            	<tag name="logon_guid" tagType="Anything">
+            	<tag name="logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The account GUID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant GUID de connexion du compte qui a fait la requête de connexion</localized_desc>
@@ -735,7 +761,7 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                     </description>
                     <substitute>_CACCOUNTDOMAINE_</substitute>
             	</tag> 
-            	<tag name="credentials_logon_guid" tagType="Anything">
+            	<tag name="credentials_logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The credentials logon GUID</localized_desc>
                         <localized_desc language="fr">L'identifiant GUID du compte dont les informations d'identification de connexion ont été utilisés</localized_desc>
@@ -756,7 +782,7 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                     </description>
                     <substitute>_ADDINFO_</substitute>
             	</tag>
-            	<tag name="pid" tagType="Anything">
+            	<tag name="pid" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The  process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant du processus</localized_desc>
@@ -771,14 +797,14 @@ Cet événement peut être interprété comme un événement de fermeture de ses
                     <substitute>_PNAME_</substitute>
             	</tag>
             	 
-				<tag name="address" tagType="Anything">
+				<tag name="address" tagType="IPwin">
                     <description>
                         <localized_desc language="en">The logon source address</localized_desc>
                         <localized_desc language="fr">L'adresse de connexion</localized_desc>
                     </description>
                     <substitute>_NETWORKADDR_</substitute>
             	</tag> 
-				<tag name="port" tagType="Anything">
+				<tag name="port" tagType="PortWin">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port de connexion</localized_desc>

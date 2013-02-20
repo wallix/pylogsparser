@@ -46,6 +46,32 @@ Les codes d'événements suivants sont normalisés :
     <authors>
         <author>lbenlahmr@wallix.com</author>
     </authors>
+    <tagTypes>
+    	<tagType name="PortWin" type="basestring">
+    		<description>
+    			<localized_desc language="en">Matches EventLog port: - or integer</localized_desc>
+    			<localized_desc language="">Port contenu dans un EventLog: - ou entier</localized_desc>
+    		</description>
+    		<regexp>(?:-|\d+)</regexp>
+    	</tagType>
+    	<tagType name="IPwin" type="basestring">
+        	<description>
+            	<localized_desc language="en">Matches a numeric IP or - if not defined</localized_desc>
+            	<localized_desc language="fr">Correspond à une adresse IP numérique ou - si non fourni</localized_desc>
+        	</description>
+       	 <regexp>(?:-|(?&lt;![.0-9])(?:\d{1,3}.){3}\d{1,3}(?![.0-9]))</regexp>
+    	</tagType>
+    	<tagType name="PIDwin" type="basestring">
+    		<description>
+    			<localized_desc language="en">Matches a Windows process PID</localized_desc>
+    			<localized_desc language="fr">Correspond au PID d'un process Windows </localized_desc>
+    		</description>
+    		<regexp>(?:-|[a-zA-Z0-9]+)</regexp>
+    	</tagType>
+    	<tagType name="GUIDWIN">
+    		<regexp>[a-zA-z0-9{}-]+</regexp>
+    	</tagType>
+    </tagTypes>
     <callbacks>
     	<callback name="strip_values">
 for t in log:
@@ -89,7 +115,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -127,21 +153,21 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_NACCOUNTDOMAIN_</substitute>
             	</tag> 
-            	<tag name="new_logon_id" tagType="Anything">
+            	<tag name="new_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_NLID_</substitute>
             	</tag> 
-            	<tag name="new_logon_guid" tagType="Anything">
+            	<tag name="new_logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The account GUID</localized_desc>
                         <localized_desc language="fr">Le GUID de connexion</localized_desc>
                     </description>
                     <substitute>_NLGUID_</substitute>
             	</tag>
-            	<tag name="pid" tagType="Anything">
+            	<tag name="pid" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The caller process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
@@ -162,14 +188,14 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                     </description>
                     <substitute>_WORKSTATIONNAME_</substitute>
             	</tag> 
-				<tag name="source_ip" tagType="Anything">
+				<tag name="source_ip" tagType="IPwin">
                     <description>
                         <localized_desc language="en">The logon source IP</localized_desc>
                         <localized_desc language="fr">L'IP source de la connexion</localized_desc>
                     </description>
                     <substitute>_SRCNETWORKADDR_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Anything">
+            	<tag name="source_port" tagType="PortWin">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -314,7 +340,7 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -375,8 +401,7 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_FSUBSTATUS_</substitute>
             	</tag>
-            	
-            	<tag name="caller_pid" tagType="Anything">
+            	<tag name="caller_pid" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The caller process ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de processus de l'appelant</localized_desc>
@@ -398,14 +423,14 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_WORKSTATIONNAME_</substitute>
             	</tag> 
-				<tag name="source_ip" tagType="Anything">
+				<tag name="source_ip" tagType="IPwin">
                     <description>
                         <localized_desc language="en">The logon source IP</localized_desc>
                         <localized_desc language="fr">L'IP source de la connexion</localized_desc>
                     </description>
                     <substitute>_SRCNETWORKADDR_</substitute>
             	</tag>
-            	<tag name="source_port" tagType="Anything">
+            	<tag name="source_port" tagType="PortWin">
                     <description>
                         <localized_desc language="en">The logon source port</localized_desc>
                         <localized_desc language="fr">Le port source de la connexion</localized_desc>
@@ -564,7 +589,7 @@ Detailed Authentication Information:
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
@@ -633,7 +658,7 @@ Logon IDs are only unique between reboots on the same computer.</text>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
@@ -682,22 +707,18 @@ This event can be interpreted as a logoff event.</text>
 					</expectedTags>
 				</example>
 			</examples>
-		</pattern><pattern name="eventID-4648">
-            <description>
-                <localized_desc language="en">Logon failure</localized_desc>
-                <localized_desc language="fr">Echec de la connexion</localized_desc>
-            </description>            
-            
-            <text>A logon was attempted using explicit credentials.	Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Logon GUID: _LGUID_ Account Whose Credentials Were Used: Account Name:  _CACCOUNTNAME_ Account Domain:  _CACCOUNTDOMAINE_ Logon GUID:  _CLOGUID_ Target Server: Target Server Name: _TSERVERNAME_ Additional Information: (?:_ADDINFO_ )?Process Information: Process ID: _PID_ Process Name: _PNAME_ Network Information: Network Address: _NETWORKADDR_ Port: _PORT_  This event is generated when a process attempts to log on an account by explicitly specifying that account\'s credentials.  This most commonly occurs in batch-type configurations such as scheduled tasks, or when using the RUNAS command.</text>
-            <tags>
-            	<tag name="security_id" tagType="Anything">
+		</pattern>
+		<pattern name="eventID-4648">
+    		<text>A logon was attempted using explicit credentials. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Logon GUID: _LGUID_ Account Whose Credentials Were Used: Account Name: _CACCOUNTNAME_ Account Domain: _CACCOUNTDOMAINE_ Logon GUID: _CLOGUID_ Target Server: Target Server Name: _TSERVERNAME_ Additional Information: (?:_ADDINFO_ )?Process Information: Process ID: _PID_ Process Name: _PNAME_ Network Information: Network Address: _NETWORKADDR_ Port: _PORT_ This event is generated when a process attempts to log on an account by explicitly specifying that account’s credentials.  This most commonly occurs in batch-type configurations such as scheduled tasks, or when using the RUNAS command.</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+    			<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
@@ -711,89 +732,88 @@ This event can be interpreted as a logoff event.</text>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="Anything">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_LID_</substitute>
-            	</tag>
-            	<tag name="logon_guid" tagType="Anything">
+           		</tag>
+           		<tag name="logon_guid" tagType="GUIDWIN">
                     <description>
-                        <localized_desc language="en">The account GUID that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="en">The account GUID that requested the logon</localized_desc>
                         <localized_desc language="fr">L'identifiant GUID de connexion du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_LGUID_</substitute>
-            	</tag>
-            	<tag name="credentials_account_name" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The Account name whose credentials were used</localized_desc>
-                        <localized_desc language="fr">Le nom du compte dont les informations d'identification de connexion ont été utilisés</localized_desc>
-                    </description>
-                    <substitute>_CACCOUNTNAME_</substitute>
-            	</tag>
-            	<tag name="credentials_account_domain" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The account domaine whose credentials were used</localized_desc>
-                        <localized_desc language="fr">Le domaine du compte dont les informations d'identification de connexion ont été utilisés</localized_desc>
-                    </description>
-                    <substitute>_CACCOUNTDOMAINE_</substitute>
-            	</tag> 
-            	<tag name="credentials_logon_guid" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The credentials logon GUID</localized_desc>
-                        <localized_desc language="fr">L'identifiant GUID du compte dont les informations d'identification de connexion ont été utilisés</localized_desc>
-                    </description>
-                    <substitute>_CLOGUID_</substitute>
-            	</tag> 
-            	<tag name="target_server_name" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The target server name</localized_desc>
-                        <localized_desc language="fr">Le nom du serveur cible</localized_desc>
-                    </description>
-                    <substitute>_TSERVERNAME_</substitute>
-            	</tag>
-            	<tag name="additional_information" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">Addictional information</localized_desc>
-                        <localized_desc language="fr">Information supplémentaire</localized_desc>
-                    </description>
-                    <substitute>_ADDINFO_</substitute>
-            	</tag>
-            	<tag name="pid" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The  process ID</localized_desc>
-                        <localized_desc language="fr">L'identifiant du processus</localized_desc>
-                    </description>
-                    <substitute>_PID_</substitute>
-            	</tag>
-            	<tag name="process_name" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The  process name</localized_desc>
-                        <localized_desc language="fr">Le nom du processus</localized_desc>
-                    </description>
-                    <substitute>_PNAME_</substitute>
-            	</tag>
-            	 
-				<tag name="address" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The logon source address</localized_desc>
-                        <localized_desc language="fr">L'adresse de connexion</localized_desc>
-                    </description>
-                    <substitute>_NETWORKADDR_</substitute>
-            	</tag> 
-				<tag name="port" tagType="Anything">
-                    <description>
-                        <localized_desc language="en">The logon source port</localized_desc>
-                        <localized_desc language="fr">Le port de connexion</localized_desc>
-                    </description>
-                    <substitute>_PORT_</substitute>
-            	</tag>
-            </tags>
-            <commonTags>
+           		</tag>
+           		<tag name="credentials_account_name" tagType="Anything">
+           			<description>
+           				<localized_desc language="en">The Account name whode credentials were used</localized_desc>
+           				<localized_desc language="fr">Le nom du compte dont les informations de connexion ont été utilisées</localized_desc>
+           			</description>
+           			<substitute>_CACCOUNTNAME_</substitute>
+           		</tag>
+           		<tag name="credentials_account_domain" tagType="Anything">
+           			<description>
+           				<localized_desc language="en">The account domain whose credentials were used</localized_desc>
+           				<localized_desc language="fr">Le domaine du compte dont les informations d'indentification de connexion ont été utilisés</localized_desc>
+           			</description>
+           			<substitute>_CACCOUNTDOMAINE_</substitute>
+           		</tag>
+           		<tag name="credentials_logon_guid" tagType="GUIDWIN">
+           			<description>
+           				<localized_desc language="en">The credentials logon GUID</localized_desc>
+           				<localized_desc language="fr">L'identifiant GUID du compte dont les informations de connexion ont été utilisées</localized_desc>
+           			</description>
+           			<substitute>_CLOGUID_</substitute>
+           		</tag>
+           		<tag name="target_server_name" tagType="Anything">
+           			<description>
+           				<localized_desc language="en">The target server name</localized_desc>
+           				<localized_desc language="fr">Le nom du serveur cible</localized_desc>
+           			</description>
+           			<substitute>_TSERVERNAME_</substitute>
+           		</tag>
+           		<tag name="additional_information" tagType="Anything">
+           			<description>
+           				<localized_desc language="en">Additional information</localized_desc>
+           				<localized_desc language="fr">Information supplémentaire</localized_desc>
+           			</description>
+           			<substitute>_ADDINFO_</substitute>
+           		</tag>
+           		<tag name="pid" tagType="PIDwin">
+           			<description>
+           				<localized_desc language="en">The process ID</localized_desc>
+           				<localized_desc language="fr">L'identifiant du processus</localized_desc>
+           			</description>
+           			<substitute>_PID_</substitute>
+           		</tag>
+           		<tag name="process_name" tagType="Anything">
+           			<description>
+           				<localized_desc language="en">The process name</localized_desc>
+           				<localized_desc language="fr">Le nom du processus</localized_desc>
+           			</description>
+           			<substitute>_PNAME_</substitute>
+           		</tag>
+           		<tag name="address" tagType="IPwin">
+           			<description>
+           				<localized_desc language="en">The logon source address</localized_desc>
+           				<localized_desc language="fr">L'adresse de connexion</localized_desc>
+           			</description>
+           			<substitute>_NETWORKADDR_</substitute>
+           		</tag>
+           		<tag name="port" tagType="PortWin">
+           			<description>
+           				<localized_desc language="en">The logon source port</localized_desc>
+           				<localized_desc language="fr">Le port de connexion</localized_desc>
+           			</description>
+           			<substitute>_PORT_</substitute>
+           		</tag>           		
+    		</tags>
+    		<commonTags>
             	<commonTag name="status">failure</commonTag>
-            </commonTags>
-            <examples>
+           	</commonTags>
+           	<examples>
                 <example>
                      <text>A logon was attempted using explicit credentials.
 
@@ -818,7 +838,7 @@ Network Information:
    Port:   -
    
 This event is generated when a process attempts 
-to log on an account by explicitly specifying that account's credentials.  
+to log on an account by explicitly specifying that account’s credentials.  
 This most commonly occurs in batch-type configurations such as scheduled tasks, 
 or when using the RUNAS command.</text>
                      <expectedTags>
@@ -863,7 +883,7 @@ Network Information:
    Port: 0 
          		
 This event is generated when a process attempts 
-to log on an account by explicitly specifying that account's credentials. 
+to log on an account by explicitly specifying that account’s credentials. 
 This most commonly occurs in batch-type configurations such as scheduled tasks, 
 or when using the RUNAS command.</text>
                 	<expectedTags>
@@ -884,7 +904,210 @@ or when using the RUNAS command.</text>
                 	</expectedTags>
                 </example>
             </examples>
-		</pattern>
+    	</pattern>
+    	<pattern name="eventID-4778-4779">
+    		<text>A session was (?:reconnected to|disconnected from) a Window Station. Subject: Account Name: _ACCOUNTNAME_ Account Domain:  _ACCOUNTDOMAIN_ Logon ID: _LID_ Session: Session Name:  _SESSION_ Additional Information: Client Name: _CNAME_ Client Address:  _CADDRESS_ (?:This event is generated when a user reconnects to an existing Terminal Services session, or when a user switches to an existing desktop using Fast User Switching.|This event is generated when a user disconnects from an existing Terminal Services session, or when a user switches away from an existing desktop using Fast User Switching.)</text>
+    		<tags>
+    			<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="PIDwin">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">name of the session</localized_desc>
+                        <localized_desc language="fr">nom de la session</localized_desc>
+                    </description>
+                    <substitute>_SESSION_</substitute>
+            	</tag>
+            	<tag name="client_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Client name</localized_desc>
+                        <localized_desc language="fr">nom du client</localized_desc>
+                    </description>
+                    <substitute>_CNAME_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Client addresse</localized_desc>
+                        <localized_desc language="fr">addresse du client</localized_desc>
+                    </description>
+                    <substitute>_CADDRESS_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>A session was disconnected from a Window Station.
+    		
+Subject:
+	Account Name: Administrator
+	Account Domain:  WIN-R9H529RIO4Y
+	Logon ID: 0x169e9
+Session:
+   Session Name:  RDP-Tcp#0
+Additional Information:
+   Client Name:  XPEDIT
+   Client Address:  10.42.42.211
+
+This event is generated when a user disconnects from an existing Terminal Services session, 
+or when a user switches away from an existing desktop using Fast User Switching.</text>
+    				<expectedTags>
+    					<expectedTag name="user">Administrator</expectedTag>
+                        <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                        <expectedTag name="logon_id">0x169e9</expectedTag>
+                        <expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+                        <expectedTag name="client_name">XPEDIT</expectedTag>
+                        <expectedTag name="source_host">10.42.42.211</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>A session was reconnected to a Window Station.
+    		
+Subject:
+	Account Name: Administrator
+	Account Domain:  WIN-R9H529RIO4Y
+	Logon ID: 0x169e9
+Session:
+   Session Name:  RDP-Tcp#0
+Additional Information:
+   Client Name:  XPEDIT
+   Client Address:  10.42.42.211
+
+This event is generated when a user reconnects to an existing Terminal Services session,
+ or when a user switches to an existing desktop using Fast User Switching.</text>
+    				<expectedTags>
+    					<expectedTag name="user">Administrator</expectedTag>
+                        <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                        <expectedTag name="logon_id">0x169e9</expectedTag>
+                        <expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+                        <expectedTag name="client_name">XPEDIT</expectedTag>
+                        <expectedTag name="source_host">10.42.42.211</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
+    	<pattern name="eventID-4800-4801-4802-4803">
+    		<text>(?:The workstation was (?:un)?locked.|The screen saver was (?:invoked|dismissed).) Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Session ID: _SESSIONID_</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+    			<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="session_id">
+            		<description>
+                        <localized_desc language="en">The session ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de la session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONID_</substitute>
+            	</tag>
+    		</tags>
+    		<examples>
+    			<example>
+    				<text>The workstation was locked.
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x1be4b
+   Session ID: 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>The workstation was unlocked.
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x1be4b
+   Session ID: 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>The screen saver was invoked.
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x192a4
+   Session ID: 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x192a4</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>The screen saver was dismissed.
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x192a4
+   Session ID: 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x192a4</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
     </patterns>
     <finalCallbacks>
     	<callback>strip_values</callback>

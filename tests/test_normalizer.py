@@ -165,6 +165,10 @@ class TestSample(unittest.TestCase):
     def test_normalize_samples_035_msexchange2003ISMailboxStore(self):
         self.normalize_samples('MSExchange2003ISMailboxStore.xml', 'MSExchangeIS Mailbox Store [2003-EN]', 0.99)
         self.normalize_samples('MSExchange2003ISMailboxStoreFR.xml', 'MSExchangeIS Mailbox Store [2003-FR]', 0.99)
+    
+    def test_normalize_samples_036_eventlogW2008(self):
+        self.normalize_samples('eventlog_security_audit_windows2008_en.xml', 'EventLog-Security-Windows2008[EN]_1', 0.99)
+        self.normalize_samples('eventlog_security_audit_windows2008_fr.xml', 'EventLog-Security-Windows2008[FR]_1', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
