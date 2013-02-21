@@ -37,10 +37,13 @@
         <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
 The following event IDs are covered: 
 * 4624, 4625, 4634, 4647, 4648 (logon events),
+* 4778, 4779, 4800, 4801, 4802, 4803 (session events)
 </localized_desc>
         <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version anglaise.
 Les codes d'événements suivants sont normalisés :
 * 4624, 4625, 4634, 4647, 4648 (événements de connexion),
+* 4778, 4779, 4800, 4801, 4802, 4803 (événements de session)
+
 </localized_desc>
     </description>
     <authors>

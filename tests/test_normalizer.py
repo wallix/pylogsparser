@@ -168,6 +168,7 @@ class TestSample(unittest.TestCase):
     
     def test_normalize_samples_036_eventlogW2008(self):
         self.normalize_samples('eventlog_security_audit_windows2008_en.xml', 'EventLog-Security-Windows2008[EN]_1', 0.99)
+        self.normalize_samples('eventlog_security_audit_windows2008_en_2.xml', 'EventLog-Security-Windows2008[EN]_2', 0.99)
         self.normalize_samples('eventlog_security_audit_windows2008_fr.xml', 'EventLog-Security-Windows2008[FR]_1', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
