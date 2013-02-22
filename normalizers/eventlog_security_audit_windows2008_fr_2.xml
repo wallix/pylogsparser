@@ -25,7 +25,7 @@
 <!--                                                            -->
 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 <!DOCTYPE normalizer SYSTEM "normalizer.dtd">
-<normalizer name="EventLog-Security-Windows2008[EN]_2"
+<normalizer name="EventLog-Security-Windows2008[FR]_2"
             version="0.99"
             unicode="yes"
             ignorecase="yes"
@@ -76,7 +76,7 @@ except:
     </callbacks>
     <patterns>
     	<pattern name="eventID-4720-4741">
-    		<text>A (?:user|computer) account was created. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ New (?:Computer )?Account: Security ID: _NEWSID_ Account Name: _NEWUSER_ Account Domain: _NEWDOMAIN_ Attributes: SAM Account Name: _SAMACCT_ Display Name: _DISPLAYNAME_ User Principal Name: _DN_ Home Directory: _HOMEDIR_ Home Drive: _HOMEDRIVE_ Script Path: _SCRIPTPATH_ Profile Path: _PROFILEPATH_ User Workstations: _WORKSTATIONS_ Password Last Set: _PWDLASTSET_ Account Expires: (?:_EXPIRYDATE_ )?Primary Group ID: _PGID_ Allowed To Delegate To: _DELEGATETO_ Old UAC Value: _OLDUAC_ New UAC Value: _NEWUAC_ User Account Control: (?:_ACCTCONTROL_ )?User Parameters: _USERPARAMS_ SID History: _SIDHISTORY_ Logon Hours: (?:_LOGONHOURS_ )?(?:DNS Host Name:  _DNS_ Service Principal Names: _SPN_ )?Additional Information: Privileges _ADDINFO_</text>
+    		<text>Un compte (?:d’utilisateur|d'ordinateur) a été créé. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ Nouveau compte : ID de sécurité : _NEWSID_ Nom du compte : _NEWUSER_ Domaine du compte : _NEWDOMAIN_ Attributs : Nom du compte SAM : _SAMACCT_ Nom complet : _DISPLAYNAME_ Nom principal de l’utilisateur : _DN_ Répertoire de base : _HOMEDIR_ Lecteur de base : _HOMEDRIVE_ Chemin d’accès au script : _SCRIPTPATH_ Chemin d’accès au profil : _PROFILEPATH_ Stations de travail des utilisateurs : _WORKSTATIONS_ Dernière modification du mot de passe le : _PWDLASTSET_ Le compte expire le : (?:_EXPIRYDATE_ )?ID de groupe principal : _PGID_ Délégué autorisé : _DELEGATETO_ Ancienne valeur UAC : _OLDUAC_ Nouvelle valeur UAC : _NEWUAC_ Contrôle du compte d’utilisateur \(UAC\) : (?:_ACCTCONTROL_ )?Paramètres d’utilisateur : _USERPARAMS_ Historique SID : _SIDHISTORY_ Horaire d’accès : (?:_LOGONHOURS_ )?(?:Nom de l’hôte DNS : _DNS_ Noms principaux des services : _SPN_ )?Informations supplémentaires : Privilèges _ADDINFO_</text>
     		<tags>
     			<tag name="security_id" tagType="Anything">
                     <description>
@@ -283,38 +283,39 @@ except:
     		</tags>
     		<examples>
             	<example>
-            		<text>A user account was created.
-Subject:
-   Security ID: ACME-FR\administrator
-   Account Name:  administrator
-   Account Domain:  ACME-FR
-   Logon ID:  0x20f9d
-New Account:
-   Security ID:  ACME-FR\John.Locke
-   Account Name:  Naruto
-   Account Domain:  KONOHA
-Attributes:
-    SAM Account Name: Naruto
-    Display Name: Naruto Uzumaki
-    User Principal Name: Naruto@dc=konoha,dc=shinobi
-    Home Directory: -
-    Home Drive: -
-    Script Path: -
-    Profile Path: -
-    User Workstations: -
-    Password Last Set: &lt;never&gt;
-    Account Expires: &lt;never&gt;
-    Primary Group ID: 513
-    Allowed To Delegate To: -
-    Old UAC Value: 0x0
-    New UAC Value: 0x15
-    User Account Control:
-    Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled
-    User Parameters: -
-    SID History: -
-        Logon Hours: &lt;value not set&gt;
-Additional Information:
-   Privileges  -</text>
+            		<text>Un compte d’utilisateur a été créé.
+Sujet :
+	ID de sécurité : ACME-FR\administrator
+	Nom du compte : administrator
+	Domaine du compte : ACME-FR
+	ID d’ouverture de session : 0x20f9d
+	
+Nouveau compte :
+	ID de sécurité : ACME-FR\John.Locke
+	Nom du compte : Naruto
+	Domaine du compte : KONOHA
+
+Attributs :
+	Nom du compte SAM : Naruto
+	Nom complet : Naruto Uzumaki
+	Nom principal de l’utilisateur : Naruto@dc=konoha,dc=shinobi
+	Répertoire de base : -
+	Lecteur de base : -
+	Chemin d’accès au script : -
+	Chemin d’accès au profil : -
+	Stations de travail des utilisateurs : -
+	Dernière modification du mot de passe le : &lt;never&gt;
+	Le compte expire le : &lt;never&gt;
+	ID de groupe principal : 513
+	Délégué autorisé : -
+	Ancienne valeur UAC : 0x0
+	Nouvelle valeur UAC : 0x15
+	Contrôle du compte d’utilisateur (UAC) : Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled
+	Paramètres d’utilisateur : -
+	Historique SID : -
+	Horaire d’accès : &lt;value not set&gt;
+Informations supplémentaires :
+	Privilèges -</text>
 					<expectedTags>
 						<expectedTag name="security_id">ACME-FR\administrator</expectedTag>
 						<expectedTag name="user">administrator</expectedTag>
@@ -342,60 +343,54 @@ Additional Information:
         				<expectedTag name="logon_hours">&lt;value not set&gt;</expectedTag>
         				<expectedTag name="additional_info">-</expectedTag>
 					</expectedTags>
-            	</example><example>
-            		<text>A computer account was created.
+            	</example>
+            	<example>
+            		<text>Un compte d’utilisateur a été créé.
+Sujet :
+	ID de sécurité : ACME-FR\administrator
+	Nom du compte : administrator
+	Domaine du compte : ACME-FR
+	ID d’ouverture de session : 0x20f9d
+	
+Nouveau compte :
+	ID de sécurité : ACME-FR\John.Locke
+	Nom du compte : Naruto
+	Domaine du compte : KONOHA
 
-Subject:
-
-   Security ID:  ACME\Administrator
-   Account Name:  Administrator
-   Account Domain:  ACME
-   Logon ID:  0x27a79
-
-New Computer Account:
-
-   Security ID:  S-1-5-21-3108364787-189202583-342365621-1109
-   Account Name:  WS2321$
-   Account Domain:  ACME
-
-Attributes:
-
-   SAM Account Name: WS2321$
-   Display Name:  -
-   User Principal Name: -
-   Home Directory:  -
-   Home Drive:  -
-   Script Path:  -
-   Profile Path:  -
-   User Workstations: -
-   Password Last Set: &lt;never&gt;
-   Account Expires:  &lt;never&gt;
-   Primary Group ID: 515
-   Allowed To Delegate To: -
-   Old UAC Value:  0x0
-   New UAC Value:  0x85
-   User Account Control: 
-     Account Disabled 'Password Not Required' - Enabled 'Workstation Trust Account' - Enabled
-   User Parameters: -
-   SID History:  -
-   Logon Hours:  &lt;value not set&gt;
-   DNS Host Name:  -
-   Service Principal Names: -
-
-Additional Information:
-
-   Privileges  -</text>
-            		<expectedTags>
-						<expectedTag name="security_id">ACME\Administrator</expectedTag>
-						<expectedTag name="user">Administrator</expectedTag>
-						<expectedTag name="domain">ACME</expectedTag>
-						<expectedTag name="logon_id">0x27a79</expectedTag>
-						<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1109</expectedTag>
-						<expectedTag name="target_user">WS2321$</expectedTag>
-						<expectedTag name="target_domain">ACME</expectedTag>
-						<expectedTag name="sam_account_name">WS2321$</expectedTag>
-						<expectedTag name="display_name">-</expectedTag>
-						<expectedTag name="principal_name">-</expectedTag>
+Attributs :
+	Nom du compte SAM : Naruto
+	Nom complet : Naruto Uzumaki
+	Nom principal de l’utilisateur : Naruto@dc=konoha,dc=shinobi
+	Répertoire de base : -
+	Lecteur de base : -
+	Chemin d’accès au script : -
+	Chemin d’accès au profil : -
+	Stations de travail des utilisateurs : -
+	Dernière modification du mot de passe le : &lt;never&gt;
+	Le compte expire le : &lt;never&gt;
+	ID de groupe principal : 513
+	Délégué autorisé : -
+	Ancienne valeur UAC : 0x0
+	Nouvelle valeur UAC : 0x15
+	Contrôle du compte d’utilisateur (UAC) : Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled
+	Paramètres d’utilisateur : -
+	Historique SID : -
+	Horaire d’accès : &lt;value not set&gt;
+	Nom de l’hôte DNS : -
+	Noms principaux des services : -
+Informations supplémentaires :
+	Privilèges -</text>
+					<expectedTags>
+						<expectedTag name="security_id">ACME-FR\administrator</expectedTag>
+						<expectedTag name="user">administrator</expectedTag>
+						<expectedTag name="domain">ACME-FR</expectedTag>
+						<expectedTag name="logon_id">0x20f9d</expectedTag>
+						<expectedTag name="target_security_id">ACME-FR\John.Locke</expectedTag>
+						<expectedTag name="target_user">Naruto</expectedTag>
+						<expectedTag name="target_domain">KONOHA</expectedTag>
+						<expectedTag name="sam_account_name">Naruto</expectedTag>
+						<expectedTag name="display_name">Naruto Uzumaki</expectedTag>
+						<expectedTag name="principal_name">Naruto@dc=konoha,dc=shinobi</expectedTag>
 						<expectedTag name="home_directory">-</expectedTag>
 						<expectedTag name="home_drive">-</expectedTag>
 						<expectedTag name="script_path">-</expectedTag>
@@ -403,10 +398,10 @@ Additional Information:
 						<expectedTag name="workstations">-</expectedTag>
 						<expectedTag name="password_last_set">&lt;never&gt;</expectedTag>
 						<expectedTag name="expiry_date">&lt;never&gt;</expectedTag>
-						<expectedTag name="primary_gid">515</expectedTag>
+						<expectedTag name="primary_gid">513</expectedTag>
 						<expectedTag name="old_uac">0x0</expectedTag>
-						<expectedTag name="new_uac">0x85</expectedTag>
-						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Workstation Trust Account' - Enabled</expectedTag>
+						<expectedTag name="new_uac">0x15</expectedTag>
+						<expectedTag name="uac">Account Disabled 'Password Not Required' - Enabled 'Normal Account' - Enabled</expectedTag>
         				<expectedTag name="user_parameters">-</expectedTag>
         				<expectedTag name="sid_history">-</expectedTag>
         				<expectedTag name="logon_hours">&lt;value not set&gt;</expectedTag>
@@ -417,8 +412,8 @@ Additional Information:
             	</example>
     		</examples>
     	</pattern>
-    	<pattern name="eventID-4726-4743">
-    		<text>A (?:user|computer) account was deleted. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Target Account: Security ID:  _TSID_ Account Name: _TACCOUNTNAME_ Account Domain:  _TACCOUNTDOMAIN_ Additional Information: Privileges:? _ADDINFO_</text>
+    	<pattern name="eventID-4726-4743">    		
+    		<text>Un compte (?:d’utilisateur|d’ordinateur) a été supprimé. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ (?:Compte|Ordinateur) cible :  ID de sécurité : _TSID_ Nom du compte : _TACCOUNTNAME_ Domaine du compte : _TACCOUNTDOMAIN_ Informations supplémentaires : Privilèges _ADDINFO_</text>
     		<tags>
     			<tag name="security_id" tagType="Anything">
                     <description>
@@ -479,24 +474,18 @@ Additional Information:
     		</tags>
     		<examples>
     			<example>
-    				<text>A user account was deleted.
-
-Subject:
-
-   Security ID:  WIN-R9H529RIO4Y\Administrator
-   Account Name:  Administrator
-   Account Domain:  WIN-R9H529RIO4Y
-   Logon ID:  0x1fd23
-
-Target Account:
-
-  Security ID:  WIN-R9H529RIO4Y\bob
-  Account Name:  bob
-  Account Domain:  WIN-R9H529RIO4Y
-
-Additional Information:
-
-   Privileges -</text>
+    				<text>Un compte d’utilisateur a été supprimé.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1fd23
+Compte cible :
+	ID de sécurité : WIN-R9H529RIO4Y\bob
+	Nom du compte : bob
+	Domaine du compte : WIN-R9H529RIO4Y
+Informations supplémentaires :
+	Privilèges -</text>
     				<expectedTags>
     					<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
     					<expectedTag name="user">Administrator</expectedTag>
@@ -509,24 +498,18 @@ Additional Information:
     				</expectedTags>
     			</example>
     			<example>
-    				<text>A computer account was deleted.
-
-Subject:
-
-   Security ID:  WIN-R9H529RIO4Y\Administrator
-   Account Name:  Administrator
-   Account Domain:  WIN-R9H529RIO4Y
-   Logon ID:  0x1fd23
-
-Target Account:
-
-  Security ID:  WIN-R9H529RIO4Y\bob
-  Account Name:  bob
-  Account Domain:  WIN-R9H529RIO4Y
-
-Additional Information:
-
-   Privileges: -</text>
+    				<text>Un compte d’ordinateur a été supprimé.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1fd23
+Ordinateur cible :
+	ID de sécurité : WIN-R9H529RIO4Y\bob
+	Nom du compte : bob
+	Domaine du compte : WIN-R9H529RIO4Y
+Informations supplémentaires :
+	Privilèges -</text>
     				<expectedTags>
     					<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
     					<expectedTag name="user">Administrator</expectedTag>
@@ -541,7 +524,8 @@ Additional Information:
     		</examples>
     	</pattern>
     	<pattern name="eventID-4738-4742">
-    		<text>A (?:user|computer) account was changed. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain:  _ACCOUNTDOMAIN_ Logon ID:  _LID_ (?:Target Account|Computer Account That Was Changed): Security ID:  _TSID_ Account Name:  _TACCOUNTNAME_ Account Domain:  _TACCOUNTDOMAIN_ Changed Attributes: SAM Account Name: _SAMACCT_ Display Name:  _DISPLAYNAME_ User Principal Name: _DN_ Home Directory:  _HOMEDIR_ Home Drive:  _HOMEDRIVE_ Script Path:  _SCRIPTPATH_ Profile Path:  _PROFILEPATH_ User Workstations: _WORKSTATIONS_ Password Last Set: _PWDLASTSET_ Account Expires:  _EXPIRYDATE_ Primary Group ID: _PGID_ AllowedToDelegateTo: _DELEGATETO_ Old UAC Value:  _OLDUAC_ New UAC Value:  _NEWUAC_ User Account Control: _ACCTCONTROL_ User Parameters: _USERPARAMS_ SID History:  _SIDHISTORY_ Logon Hours:  (?:_LOGONHOURS_ )?(?:DNS Host Name:  _DNS_ Service Principal Names: _SPN_ )?Additional Information: Privileges: _ADDINFO_</text><tags>
+    		<text>Un compte (?:d’utilisateur|d’ordinateur) a été modifié. Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ Compte (?:cible|d’ordinateur modifié) : ID de sécurité : _TSID_ Nom du compte : _TACCOUNTNAME_ Domaine du compte : _TACCOUNTDOMAIN_ Attributs modifiés : Nom du compte SAM : _SAMACCT_ Nom complet : _DISPLAYNAME_ Nom principal de l’utilisateur : _DN_ Répertoire de base : _HOMEDIR_ Lecteur de base : _HOMEDRIVE_ Chemin d’accès au script : _SCRIPTPATH_ Chemin d’accès au profil : _PROFILEPATH_ Stations de travail utilisateurs : _WORKSTATIONS_ Dernière modification du mot de passe le : _PWDLASTSET_ Le compte expire le : _EXPIRYDATE_ ID de groupe principal : _PGID_ Délégué autorisé : _DELEGATETO_ Ancienne valeur UAC : _OLDUAC_ Nouvelle valeur UAC : _NEWUAC_ Contrôle du compte d’utilisateur : _ACCTCONTROL_ Paramètres utilisateur : _USERPARAMS_ Historique SID : _SIDHISTORY_ Horaire d’accès : (?:_LOGONHOURS_ )?(?:Nom de l’hôte DNS : _DNS_ Noms principaux des services : _SPN_ )?Informations supplémentaires : Privilèges: _ADDINFO_</text>
+    		<tags>
     			<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
@@ -747,38 +731,41 @@ Additional Information:
     		</tags>
     		<examples>
             	<example>
-            		<text>A user account was changed.
-Subject:
-   Security ID:  ACME-FR\administrator
-   Account Name:  administrator
-   Account Domain:  ACME-FR
-   Logon ID:  0x20f9d
-Target Account:
-   Security ID:  ACME-FR\John.Locke
-   Account Name:  John.Locke
-   Account Domain:  ACME-FR
-Changed Attributes:
-   SAM Account Name: -
-   Display Name:  -
-   User Principal Name: -
-   Home Directory:  -
-   Home Drive:  -
-   Script Path:  -
-   Profile Path:  -
-   User Workstations: -
-   Password Last Set: -
-   Account Expires:  -
-   Primary Group ID: -
-   AllowedToDelegateTo: -
-   Old UAC Value:  0x10
-   New UAC Value:  0x4010
-   User Account Control: 
-   'Not Delegated' - Enabled
-   User Parameters: -
-   SID History:  -
-   Logon Hours:  -
-Additional Information:
-   Privileges:  -</text>
+            		<text>Un compte d’utilisateur a été modifié.
+
+Sujet :
+   ID de sécurité : ACME-FR\administrator
+   Nom du compte : administrator
+   Domaine du compte :  ACME-FR
+   ID d’ouverture de session : 0x20f9d
+
+Compte cible :
+   ID de sécurité : ACME-FR\John.Locke
+   Nom du compte : John.Locke
+   Domaine du compte : ACME-FR
+
+Attributs modifiés :
+   Nom du compte SAM : -
+   Nom complet : -
+   Nom principal de l’utilisateur : -
+   Répertoire de base : -
+   Lecteur de base : -
+   Chemin d’accès au script : -
+   Chemin d’accès au profil : -
+   Stations de travail utilisateurs : -
+   Dernière modification du mot de passe le : -
+   Le compte expire le : -
+   ID de groupe principal : -
+   Délégué autorisé : -
+   Ancienne valeur UAC : 0x10
+   Nouvelle valeur UAC : 0x4010
+   Contrôle du compte d’utilisateur : 'Not Delegated' - Enabled
+   Paramètres utilisateur : -
+   Historique SID : -
+   Horaire d’accès : -
+
+Informations supplémentaires :
+   Privilèges: -</text>
 					<expectedTags>
 						<expectedTag name="security_id">ACME-FR\administrator</expectedTag>
 						<expectedTag name="user">administrator</expectedTag>
@@ -808,41 +795,43 @@ Additional Information:
 					</expectedTags>
             	</example>
             	<example>
-            		<text>A computer account was changed.
-Subject:
-   Security ID:  ACME-FR\administrator
-   Account Name:  administrator
-   Account Domain:  ACME-FR
-   Logon ID:  0x20f9d
-Computer Account That Was Changed:
-   Security ID:  ACME-FR\John.Locke
-   Account Name:  John.Locke
-   Account Domain:  ACME-FR
-Changed Attributes:
-   SAM Account Name: -
-   Display Name:  -
-   User Principal Name: -
-   Home Directory:  -
-   Home Drive:  -
-   Script Path:  -
-   Profile Path:  -
-   User Workstations: -
-   Password Last Set: -
-   Account Expires:  -
-   Primary Group ID: -
-   AllowedToDelegateTo: -
-   Old UAC Value:  0x10
-   New UAC Value:  0x4010
-   User Account Control: 
-   'Not Delegated' - Enabled
-   User Parameters: -
-   SID History:  -
-   Logon Hours:  -
-   DNS Host Name:  -
-   Service Principal Names: -
+            		<text>Un compte d’ordinateur a été modifié.
+
+Sujet :
+   ID de sécurité : ACME-FR\administrator
+   Nom du compte : administrator
+   Domaine du compte :  ACME-FR
+   ID d’ouverture de session : 0x20f9d
+
+Compte d’ordinateur modifié :
+   ID de sécurité : ACME-FR\John.Locke
+   Nom du compte : John.Locke
+   Domaine du compte : ACME-FR
+
+Attributs modifiés :
+   Nom du compte SAM : -
+   Nom complet : -
+   Nom principal de l’utilisateur : -
+   Répertoire de base : -
+   Lecteur de base : -
+   Chemin d’accès au script : -
+   Chemin d’accès au profil : -
+   Stations de travail utilisateurs : -
+   Dernière modification du mot de passe le : -
+   Le compte expire le : -
+   ID de groupe principal : -
+   Délégué autorisé : -
+   Ancienne valeur UAC : 0x10
+   Nouvelle valeur UAC : 0x4010
+   Contrôle du compte d’utilisateur : 'Not Delegated' - Enabled
+   Paramètres utilisateur : -
+   Historique SID : -
+   Horaire d’accès : -
+   Nom de l’hôte DNS : -
+   Noms principaux des services : -
    
-Additional Information:
-   Privileges:  -</text>
+Informations supplémentaires :
+   Privilèges: -</text>
 					<expectedTags>
 						<expectedTag name="security_id">ACME-FR\administrator</expectedTag>
 						<expectedTag name="user">administrator</expectedTag>
