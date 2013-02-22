@@ -629,7 +629,7 @@ Privileges: -</text>
                 <localized_desc language="en">Various deletion events</localized_desc>
                 <localized_desc language="fr">Événements de suppression variés</localized_desc>
             </description>
-            <text>(?:(?:Computer|user) Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted: Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
+            <text>(?:(?:Computer|User) Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted: Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>

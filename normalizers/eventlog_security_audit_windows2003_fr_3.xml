@@ -624,12 +624,12 @@ log['status'] = decoder.get(value, "UNKNOWN")
 <!--            	</example>-->
 <!--            </examples>-->
         </pattern>     
-        <pattern name="eventID-00634-00638-00647-00652-00657-00662-00667">
+        <pattern name="eventID-00630-00634-00638-00647-00652-00657-00662-00667">
             <description>
                 <localized_desc language="en">Various deletion events</localized_desc>
                 <localized_desc language="fr">Événements de suppression variés</localized_desc>
             </description>
-            <text>(?:Compte d'(?:ordinateur|utilisateur)|(?:Groupe (?:Global|Local|Universel) de sécurité (?:dés)?activée)) supprimé : Nom de compte cible : _TARGETACCT_ Domaine cible : _TARGETDOMAIN_ Id. d. compte cible : _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de session de (?:l'appelant|la session appelante) : _LOGONID_ Privilèges : _PRIVILEGES_</text>
+            <text>(?:Compte d'(?:ordinateur|utilisateur)|(?:Groupe (?:Global|Local|Universel) de sécurité (?:dés)?activée)) supprimé : Nom (?:de|du) compte cible : _TARGETACCT_ Domaine cible : _TARGETDOMAIN_ Id. d. compte cible : _TARGETACCTID_ Utilisateur appelant : _USER_ Domaine appelant : _DOMAIN_ Id. de (?:session de l'appelant|la session appelante) : _LOGONID_ Privilèges : _PRIVILEGES_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
