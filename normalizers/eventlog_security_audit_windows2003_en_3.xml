@@ -624,12 +624,12 @@ Privileges: -</text>
             	</example>
             </examples>
         </pattern>     
-        <pattern name="eventID-00634-00638-00647-00652-00657-00662-00667">
+        <pattern name="eventID-00630-00634-00638-00647-00652-00657-00662-00667">
             <description>
                 <localized_desc language="en">Various deletion events</localized_desc>
                 <localized_desc language="fr">Événements de suppression variés</localized_desc>
             </description>
-            <text>(?:Computer Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted: Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
+            <text>(?:(?:Computer|user) Account|(?:Security (?:Enabled|Disabled) (?:Global|Local|Universal) Group)) Deleted: Target Account Name: _TARGETACCT_ Target Domain: _TARGETDOMAIN_ Target Account ID: _TARGETACCTID_ Caller User Name: _USER_ Caller Domain: _DOMAIN_ Caller Logon ID: _LOGONID_ Privileges: _PRIVILEGES_</text>
             <tags>
                 <tag name="target_account" tagType="Anything">
                     <description>
@@ -682,6 +682,24 @@ Privileges: -</text>
             	</tag>
             </tags>
             <examples>
+            	<example>
+            	<text>User Account Deleted:
+  Target Account Name: Dave
+  Target Domain: MS0
+  Target Account ID: %{S-1-5-21-1234561642-881234518-725345543-1010}
+  Caller User Name: Administrator
+  Caller Domain: ACME
+  Caller Logon ID: (0x0,0xD44E)
+  Privileges: -</text>
+            		<expectedTags>
+            			<expectedTag name="target_account">Dave</expectedTag>
+            			<expectedTag name="target_domain">MS0</expectedTag>
+            			<expectedTag name="target_account_id">%{S-1-5-21-1234561642-881234518-725345543-1010}</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">(0x0,0xD44E)</expectedTag>
+            		</expectedTags>
+            	</example>
             	<example>
             		<text>Security Enabled Global Group Deleted:
 Target Account Name: AccountingStaff
