@@ -646,7 +646,7 @@ class Test(unittest.TestCase):
                  'snare_event_counter': '284',
                  'eventlog_id': '4689',
                  'eventlog_name': 'Microsoft-Windows-Security-Auditing',
-                 'user': 'A-ZA-Z0-9_\\clo',
+                 'user': 'clo',
                  'sid_used': 'N/A',
                  'eventlog_type': 'Success Audit',
                  'source_host': 'a-zA-Z0-9_',

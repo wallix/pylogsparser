@@ -875,6 +875,187 @@ Additional Information:
             	</example>
     		</examples>
     	</pattern>
+    	<pattern name="eventID-4688">
+    		<text>A new process has been created. Subject: Security ID: _SID_ Account Name: _USER_ Account Domain: _DOMAIN_ Logon ID: _LOGONID_ Process Information: New Process ID: _PID_ New Process Name: _FILENAME_ Token Elevation Type: _TOKEN_ Creator Process ID: _CPID_ Token Elevation Type indicates the type of token that was assigned to the new process in accordance with User Account Control policy. Type 1 is a full token with no privileges removed or groups disabled. A full token is only used if User Account Control is disabled or if the user is the built-in Administrator account or a service account. Type 2 is an elevated token with no privileges removed or groups disabled.  An elevated token is used when User Account Control is enabled and the user chooses to start the program using Run as administrator. An elevated token is also used when an application is configured to always require administrative privilege or to always require maximum privilege, and the user is a member of the Administrators group. Type 3 is a limited token with administrative privileges removed and administrative groups disabled.  The limited token is used when User Account Control is enabled, the application does not require administrative privilege, and the user does not choose to start the program using Run as administrator.</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The process name</localized_desc>
+                        <localized_desc language="fr">Le nom du processus</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+            	<tag name="creator_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The creator process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus d'origine</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="token_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The Token Elevation Type</localized_desc>
+                        <localized_desc language="fr">Type d'élévation d'un jeton</localized_desc>
+                    </description>
+                    <substitute>_TOKEN_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>A new process has been created.
+Subject:
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x1fd23
+
+Process Information:
+
+   New Process ID:  0xed0
+   New Process Name: C:\Windows\System32\notepad.exe
+   Token Elevation Type: TokenElevationTypeDefault (1)
+   Creator Process ID: 0x8c0
+
+Token Elevation Type indicates the type of token that was assigned to the new process in accordance with User Account Control policy.
+Type 1 is a full token with no privileges removed or groups disabled.  
+A full token is only used if User Account Control is disabled or if the user is the built-in Administrator account or a service account.
+Type 2 is an elevated token with no privileges removed or groups disabled.  
+An elevated token is used when User Account Control is enabled and the user chooses to start the program using Run as administrator.  
+An elevated token is also used when an application is configured to always require administrative privilege or to always require maximum privilege, 
+and the user is a member of the Administrators group.
+Type 3 is a limited token with administrative privileges removed and administrative groups disabled.  
+The limited token is used when User Account Control is enabled, the application does not require administrative privilege, and the user does not choose to start the program using Run as administrator.</text>
+    				<expectedTags>
+    				    <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="pid">0xed0</expectedTag>
+            			<expectedTag name="file_name">C:\Windows\System32\notepad.exe</expectedTag>
+            			<expectedTag name="creator_pid">0x8c0</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1fd23</expectedTag>
+            			<expectedTag name="token_type">TokenElevationTypeDefault (1)</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
+    	<pattern name="eventID-4689">
+    		<text>A process has exited. Subject: Security ID: _SID_ Account Name: _USER_ Account Domain: _DOMAIN_ Logon ID: _LOGONID_ Process Information: Process ID: _PID_ Process Name:_FILENAME_ Exit Status: _STATUS_</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="exit_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The exit status</localized_desc>
+                        <localized_desc language="fr">Type de Token</localized_desc>
+                    </description>
+                    <substitute>_STATUS_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>A process has exited.
+
+Subject:
+
+   Security ID:  WIN-R9H529RIO4Y\Administrator
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x1fd23
+
+Process Information:
+
+   Process ID: 0xed0
+   Process Name: C:\Windows\System32\notepad.exe
+   Exit Status: 0x0</text>
+    				<expectedTags>
+    				    <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="pid">0xed0</expectedTag>
+            			<expectedTag name="file_name">C:\Windows\System32\notepad.exe</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1fd23</expectedTag>
+            			<expectedTag name="exit_status">0x0</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>    	
     </patterns>
    	<finalCallbacks>
     	<callback>strip_values</callback>

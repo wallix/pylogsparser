@@ -864,6 +864,182 @@ Informations supplémentaires :
             	</example>
     		</examples>
     	</pattern>
+    	<pattern name="eventID-4688">
+    		<text>Un nouveau processus a été créé. Sujet : ID de sécurité : _SID_ Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ Informations sur le processus : ID du nouveau processus : _PID_ Nom du nouveau processus : _FILENAME_ Type d’élévation du jeton : _TOKEN_ ID du processus créateur : _CPID_ Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur. Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service. Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs. Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.</text>
+    	  <tags>
+     		<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+            	<tag name="creator_pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The creator process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du processus d'origine</localized_desc>
+                    </description>
+                    <substitute>_CPID_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="token_type" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The Token Elevation Type</localized_desc>
+                        <localized_desc language="fr">Type d'élévation d'un jeton</localized_desc>
+                    </description>
+                    <substitute>_TOKEN_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>Un nouveau processus a été créé.
+Sujet :
+ ID de sécurité : WIN-R9H529RIO4Y\Administrator
+ Nom du compte : Administrator
+ Domaine du compte : WIN-R9H529RIO4Y
+ ID d’ouverture de session : 0x1fd23
+ 
+Informations sur le processus :
+ ID du nouveau processus : 0xed0
+ Nom du nouveau processus : C:\Windows\System32\notepad.exe
+ Type d’élévation du jeton : TokenElevationTypeDefault (1)
+ ID du processus créateur : 0x8c0
+
+Le type d’élévation du jeton indique le type de jeton qui a été attribué au nouveau processus conformément à la stratégie de contrôle du compte d’utilisateur.
+Le type 1 est un jeton complet sans aucun privilège supprimé ni aucun groupe désactivé. 
+Un jeton complet est uniquement utilisé si le contrôle du compte d’utilisateur est désactivé, ou si l’utilisateur est le compte d’administrateur intégré ou un compte de service.
+Le type 2 est un jeton aux droits élevés sans aucun privilège supprimé ni aucun groupe désactivé. 
+Un jeton aux droits élevés est utilisé lorsque le contrôle de compte d’utilisateur est activé et que l’utilisateur choisit de démarrer le programme en tant qu’administrateur. 
+Un jeton aux droits élevés est également utilisé lorsqu’une application est configurée pour toujours exiger un privilège administratif ou pour toujours exiger les privilèges maximum, et que l’utilisateur est membre du groupe Administrateurs.
+Le type 3 est un jeton limité dont les privilèges administratifs sont supprimés et les groupes administratifs désactivés. Le jeton limité est utilisé lorsque le contrôle de compte d’ utilisateur est activé, 
+que l’application n’exige pas le privilège administratif et que l’utilisateur ne choisit pas de démarrer le programme en tant qu’administrateur.</text>
+    				<expectedTags>
+    				    <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="pid">0xed0</expectedTag>
+            			<expectedTag name="file_name">C:\Windows\System32\notepad.exe</expectedTag>
+            			<expectedTag name="creator_pid">0x8c0</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1fd23</expectedTag>
+            			<expectedTag name="token_type">TokenElevationTypeDefault (1)</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
+    	<pattern name="eventID-4689">
+    		<text>Un processus est terminé. Sujet : ID de sécurité : _SID_ Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ Informations sur le processus : ID du processus : _PID_ Nom du processus : _FILENAME_ État de fin : _STATUS_</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="pid" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The new process ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant du nouveau processus</localized_desc>
+                    </description>
+                    <substitute>_PID_</substitute>
+            	</tag>
+            	
+            	<tag name="file_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The image file name</localized_desc>
+                        <localized_desc language="fr">Le nom du fichier image</localized_desc>
+                    </description>
+                    <substitute>_FILENAME_</substitute>
+            	</tag>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user name</localized_desc>
+                        <localized_desc language="fr">Le nom d'utilisateur</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain name</localized_desc>
+                        <localized_desc language="fr">Le nom de domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="exit_status" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The exit status</localized_desc>
+                        <localized_desc language="fr">Type de Token</localized_desc>
+                    </description>
+                    <substitute>_STATUS_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>Un processus est terminé.
+Sujet :
+ ID de sécurité :  WIN-R9H529RIO4Y\Administrator
+ Nom du compte : Administrator
+ Domaine du compte : WIN-R9H529RIO4Y
+ ID d’ouverture de session : 0x1fd23
+
+Informations sur le processus :
+ ID du processus : 0xed0
+ Nom du processus : C:\Windows\System32\notepad.exe
+ État de fin : 0x0</text>
+    				<expectedTags>
+    				    <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="pid">0xed0</expectedTag>
+            			<expectedTag name="file_name">C:\Windows\System32\notepad.exe</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1fd23</expectedTag>
+            			<expectedTag name="exit_status">0x0</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
     </patterns>
    	<finalCallbacks>
     	<callback>strip_values</callback>
