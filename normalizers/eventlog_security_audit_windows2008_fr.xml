@@ -95,28 +95,28 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             <text>L’ouverture de session d’un compte s’est correctement déroulée. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?Type d’ouverture de session : (?:_LOGONTYPE_ )Nouvelle ouverture de session : ID de sécurité : (?:_NLOSID_ )?Nom du compte : (?:_NACCOUNTNAME_ )?Domaine du compte : (?:_NACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_NLID_ )?GUID d’ouverture de session : (?:_NLGUID_ )?Informations sur le processus : ID du processus : (?:_PID_ )?Nom du processus : (?:_PNAME_ )?Informations sur le réseau : Nom de la station de travail : (?:_WORKSTATIONNAME_ )?Adresse du réseau source : (?:_SRCNETWORKADDR_ )?Port source : (?:_SRCPORT_ )?Informations détaillées sur l’authentification : Processus d’ouverture de session : (?:_LPROCESS_ )?Package d’authentification :	(?:_AP_ )?Services en transit : (?:_TS_ )?Nom du package \(NTLM uniquement\) : (?:_PN_ )?Longueur de la clé : (?:_KL_ )?Cet événement est généré lors de la création d’une ouverture de session. Il est généré sur l’ordinateur sur lequel l’ouverture de session a été effectuée. Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d’ouverture de session indique le type d’ouverture de session qui s’est produit. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\).</text>         
             
             <tags>
-            	<tag name="security_id" tagType="Anything">
+            	<tag name="old_security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+            	<tag name="old_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="old_domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="PIDwin">
+            	<tag name="old_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -133,35 +133,35 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                  		<callback>decode_logon_type</callback>
                  	</callbacks>
             	</tag>
-            	<tag name="new_logon_security_id" tagType="Anything">
+            	<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account security ID of the user who just logged on</localized_desc>
                         <localized_desc language="fr">L’identifiant de securité du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NLOSID_</substitute>
             	</tag>            	
-            	<tag name="new_logon_account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account name of the user who just logged on</localized_desc>
                         <localized_desc language="fr">Le nom du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="new_logon_account_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account domaine of the user who just logged on</localized_desc>
                         <localized_desc language="fr">Le domaine du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NACCOUNTDOMAIN_</substitute>
             	</tag> 
-            	<tag name="new_logon_id" tagType="PIDwin">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_NLID_</substitute>
             	</tag> 
-            	<tag name="new_logon_guid" tagType="GUIDWIN">
+            	<tag name="logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The account GUID</localized_desc>
                         <localized_desc language="fr">Le GUID de connexion</localized_desc>
@@ -282,17 +282,17 @@ Il s’agit le plus souvent d’un service, comme le service Serveur, ou un proc
 Le champ Type d’ouverture de session indique le type d’ouverture de session qui s’est produit. 
 Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                      <expectedTags>
-                          <expectedTag name="security_id">SYSTEM</expectedTag>
-                          <expectedTag name="user">WIN-R9H529RIO4Y$</expectedTag>
-                          <expectedTag name="domain">WORKGROUP</expectedTag>
-                          <expectedTag name="logon_id">0x3e7</expectedTag>
+                          <expectedTag name="old_security_id">SYSTEM</expectedTag>
+                          <expectedTag name="old_user">WIN-R9H529RIO4Y$</expectedTag>
+                          <expectedTag name="old_domain">WORKGROUP</expectedTag>
+                          <expectedTag name="old_logon_id">0x3e7</expectedTag>
                           <expectedTag name="logon_type">10</expectedTag>
                           <expectedTag name="method">RemoteInteractive</expectedTag>
-                          <expectedTag name="new_logon_security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-                          <expectedTag name="new_logon_account_name">Administrator</expectedTag>
-                          <expectedTag name="new_logon_account_domain">WIN-R9H529RIO4Y</expectedTag>
-                          <expectedTag name="new_logon_id">0x19f4c</expectedTag>
-                          <expectedTag name="new_logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
+                          <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="logon_id">0x19f4c</expectedTag>
+                          <expectedTag name="logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
                           <expectedTag name="pid">0x4c0</expectedTag>
                           <expectedTag name="process_name">C:\Windows\System32\winlogon.exe</expectedTag>
                           <expectedTag name="workstation_name">WIN-R9H529RIO4Y</expectedTag>
@@ -314,28 +314,28 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
             </description> 
             <text>Échec d’ouverture de session d’un compte. Sujet : ID de sécurité : (?:_SID_ )?Nom du compte : (?:_ACCOUNTNAME_ )?Domaine du compte : (?:_ACCOUNTDOMAIN_ )?ID d’ouverture de session : (?:_LID_ )?Type d’ouverture de session : (?:_LOGONTYPE_ )?Compte pour lequel l’ouverture de session a échoué : ID de sécurité : (?:_FSID_ )?Nom du compte : (?:_FACCN_ )?Domaine du compte : (?:_FACCD_ )?Informations sur l’échec : Raison de l’échec : (?:_FREASON_ )?État : (?:_FSTATUS_ )?Sous-état : (?:_FSUBSTATUS_ )?Informations sur le processus : ID du processus de l’appelant : (?:_CPID_ )?Nom du processus de l’appelant : (?:_CPN_ )?Informations sur le réseau : Nom de la station de travail : (?:_WORKSTATIONNAME_ )?Adresse du réseau source : (?:_SRCNETWORKADDR_ )?Port source : (?:_SRCPORT_ )?Informations détaillées sur l’authentification : Processus d’ouverture de session : (?:_LPROCESS_ )?Package d’authentification : (?:_AP_ )?Services en transit : (?:_TS_ )?Nom du package \(NTLM uniquement\) : (?:_PN_ )?Longueur de clé : (?:_KL_ )?Cet événement est généré lorsqu’une demande d’ouverture de session échoue. Il est généré sur l’ordinateur sur lequel l’accès a été tenté. Le champ Objet indique le compte sur le système local qui a demandé l’ouverture de session. Il s’agit le plus souvent d’un service, comme le service Serveur, ou un processus local tel que Winlogon.exe ou Services.exe. Le champ Type d’ouverture de session indique le type d’ouverture de session qui a été demandé. Les types les plus courants sont 2 \(interactif\) et 3 \(réseau\). Les champs relatifs aux informations sur le processus indiquent quel est le compte et le processus sur le système qui ont demandé l’ouverture de session. Les champs relatifs aux informations sur le réseau indiquent la provenance de la demande d’ouverture de session distante. Le nom de la station de travail n’étant pas toujours disponible, peut rester vide dans certains cas. Les champs relatifs aux informations d’authentification fournissent des détails sur cette demande d’ouverture de session spécifique. - Les services en transit indiquent les services intermédiaires qui ont participé à cette demande d’ouverture de session. - Le nom du package indique quel a été le sous-protocole qui a été utilisé parmi les protocoles NTLM. - La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n’a été demandée.</text>         
             <tags>
-            	<tag name="security_id" tagType="Anything">
+            	<tag name="old_security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+            	<tag name="old_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="old_domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="PIDwin">
+            	<tag name="old_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -352,21 +352,21 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
                  		<callback>decode_logon_type</callback>
                  	</callbacks>
             	</tag>
-            	<tag name="failed_security_id" tagType="Anything">
+            	<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account security ID for which Llogon failed</localized_desc>
                         <localized_desc language="fr">L'identifiant de securité du compte pour lequel la connexion a échoué</localized_desc>
                     </description>
                     <substitute>_FSID_</substitute>
             	</tag>            	
-            	<tag name="failed_account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account name for which logon failed</localized_desc>
                         <localized_desc language="fr">Le nom du compte pour lequel la connexion a échoué</localized_desc>
                     </description>
                     <substitute>_FACCN_</substitute>
             	</tag>
-            	<tag name="failed_account_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account domaine for which logon failed</localized_desc>
                         <localized_desc language="fr">Le domaine du compte pour lequel la connexion a échoué</localized_desc>
@@ -530,15 +530,15 @@ Les champs relatifs aux informations d’authentification fournissent des détai
 	- Le nom du package indique quel a été le sous-protocole qui a été utilisé parmi les protocoles NTLM.
 	- La longueur de la clé indique la longueur de la clé de session générée. Elle a la valeur 0 si aucune clé de session n’a été demandée.</text>
                           <expectedTags>
-                          <expectedTag name="security_id">NULL SID</expectedTag>
-                          <expectedTag name="user">-</expectedTag>
-                          <expectedTag name="domain">-</expectedTag>
-                          <expectedTag name="logon_id">0x0</expectedTag>
+                          <expectedTag name="old_security_id">NULL SID</expectedTag>
+                          <expectedTag name="old_user">-</expectedTag>
+                          <expectedTag name="old_domain">-</expectedTag>
+                          <expectedTag name="old_logon_id">0x0</expectedTag>
                           <expectedTag name="logon_type">3</expectedTag>
                           <expectedTag name="method">Network</expectedTag>                   
-                          <expectedTag name="failed_security_id">NULL SID</expectedTag>
-                          <expectedTag name="failed_account_name">asdf</expectedTag>
-                          <expectedTag name="failed_account_domain">-</expectedTag>
+                          <expectedTag name="security_id">NULL SID</expectedTag>
+                          <expectedTag name="user">asdf</expectedTag>
+                          <expectedTag name="domain">-</expectedTag>
                           <expectedTag name="failure_reason">Unknown user name or bad password.</expectedTag>
                           <expectedTag name="failure_status">0xc000006d</expectedTag>
                           <expectedTag name="failure_sub_status">0xc0000064</expectedTag>
@@ -866,6 +866,209 @@ ou avec l’utilisation de la commande RUNAS.</text>
                 </example>                	
             </examples>
 		</pattern>
+		<pattern name="eventID-4778-4779">
+    		<text>Une session a été (?:dé|re)connectée? (?:d’|à )une station Windows. Sujet : Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ Session : Nom de la session : _SESSION_ Informations supplémentaires : Nom du client : _CNAME_ Adresse du client : _CADDRESS_ Cet événement est généré lorsqu’un utilisateur se (?:dé|re)connecte (?:à |d’)une session existante des services Terminal Server ou (?:quitte|bascule vers) un Bureau existant à l’aide de la fonction Changement rapide d’utilisateur.</text>
+    		<tags>
+    			<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">name of the session</localized_desc>
+                        <localized_desc language="fr">nom de la session</localized_desc>
+                    </description>
+                    <substitute>_SESSION_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Client name</localized_desc>
+                        <localized_desc language="fr">nom du client</localized_desc>
+                    </description>
+                    <substitute>_CNAME_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Client addresse</localized_desc>
+                        <localized_desc language="fr">addresse du client</localized_desc>
+                    </description>
+                    <substitute>_CADDRESS_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+    				<text>Une session a été déconnecté d’une station Windows.
+    				
+Sujet : 
+	Nom du compte : Administrator 
+	Domaine du compte : WIN-R9H529RIO4Y 
+	ID d’ouverture de session : 0x169e9
+Session : 
+	Nom de la session : RDP-Tcp#0
+Informations supplémentaires : 
+	Nom du client : XPEDIT 
+	Adresse du client : 10.42.42.211 
+	
+Cet événement est généré lorsqu’un utilisateur se déconnecte d’une session existante des services Terminal Server
+ou quitte un Bureau existant à l’aide de la fonction Changement rapide d’utilisateur.</text>
+    				<expectedTags>
+    					<expectedTag name="user">Administrator</expectedTag>
+                        <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                        <expectedTag name="logon_id">0x169e9</expectedTag>
+                        <expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+                        <expectedTag name="source_host">XPEDIT</expectedTag>
+                        <expectedTag name="source_ip">10.42.42.211</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>Une session a été reconnectée à une station Windows.
+    				
+Sujet : 
+	Nom du compte : Administrator 
+	Domaine du compte : WIN-R9H529RIO4Y 
+	ID d’ouverture de session : 0x169e9
+Session : 
+	Nom de la session : RDP-Tcp#0
+Informations supplémentaires : 
+	Nom du client : XPEDIT 
+	Adresse du client : 10.42.42.211 
+	
+Cet événement est généré lorsqu’un utilisateur se reconnecte à une session existante des services Terminal
+ Server ou bascule vers un Bureau existant à l’aide de la fonction Changement rapide d’utilisateur.</text>
+    				<expectedTags>
+    					<expectedTag name="user">Administrator</expectedTag>
+                        <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                        <expectedTag name="logon_id">0x169e9</expectedTag>
+                        <expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+                        <expectedTag name="source_host">XPEDIT</expectedTag>
+                        <expectedTag name="source_ip">10.42.42.211</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
+    	<pattern name="eventID-4800-4801-4802-4803">
+    		<text>(?:La station de travail était (?:dé)?verrouillée.|L’écran de veille a été (?:appelé|abandonné).) Sujet : ID de sécurité : _SID_ Nom du compte : _ACCOUNTNAME_ Domaine du compte : _ACCOUNTDOMAIN_ ID d’ouverture de session : _LID_ ID de la session : _SESSIONID_</text>
+    		<tags>
+    			<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+    			<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTNAME_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_ACCOUNTDOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The account ID that requested the logon</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion</localized_desc>
+                    </description>
+                    <substitute>_LID_</substitute>
+            	</tag>
+            	<tag name="session_id">
+            		<description>
+                        <localized_desc language="en">The session ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de la session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONID_</substitute>
+            	</tag>
+    		</tags>
+    		<examples>
+    			<example>
+    				<text>La station de travail était verrouillée.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1be4b
+	ID de la session : 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>La station de travail était déverrouillée.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1be4b
+	ID de la session : 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>L’écran de veille a été abandonné.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1be4b
+	ID de la session : 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>L’écran de veille a été appelé.
+Sujet :
+	ID de sécurité : WIN-R9H529RIO4Y\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x1be4b
+	ID de la session : 1</text>
+    				<expectedTags>
+            			<expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x1be4b</expectedTag>
+            			<expectedTag name="session_id">1</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
     </patterns>
     <finalCallbacks>
     	<callback>strip_values</callback>

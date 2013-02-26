@@ -97,28 +97,28 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             </description>            
             <text>An account was successfully logged on. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID: _LID_ Logon Type: _LOGONTYPE_ New Logon: Security ID: _NLOSID_ Account Name: _NACCOUNTNAME_ Account Domain: _NACCOUNTDOMAIN_ Logon ID: _NLID_ Logon GUID: _NLGUID_ Process Information: Process ID: _PID_ Process Name: _PNAME_ Network Information: Workstation Name: _WORKSTATIONNAME_ Source Network Address: _SRCNETWORKADDR_ Source Port: _SRCPORT_ Detailed Authentication Information: Logon Process: _LPROCESS_ Authentication Package: _AP_ Transited Services: _TS_ Package Name \(NTLM only\): _PN_ Key Length: _KL_ This event is generated when a logon session is created. It is generated on the computer that was accessed. The subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The logon type field indicates the kind of logon that occurred. The most common types are 2 \(interactive\) and 3 \(network\). The New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on. The network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Logon GUID is a unique identifier that can be used to correlate this event with a KDC event. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
             <tags>
-            	<tag name="security_id" tagType="Anything">
+            	<tag name="old_security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+            	<tag name="old_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="old_domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="PIDwin">
+            	<tag name="old_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -135,35 +135,35 @@ log['method'] = decoder.get(value, 'UNKNOWN')
                  		<callback>decode_logon_type</callback>
                  	</callbacks>
             	</tag>
-            	<tag name="new_logon_security_id" tagType="Anything">
+            	<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account security ID of the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de securité du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NLOSID_</substitute>
             	</tag>            	
-            	<tag name="new_logon_account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account name of the user who just logged on</localized_desc>
                         <localized_desc language="fr">Le nom du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="new_logon_account_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account domaine of the user who just logged on</localized_desc>
                         <localized_desc language="fr">Le domaine du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NACCOUNTDOMAIN_</substitute>
             	</tag> 
-            	<tag name="new_logon_id" tagType="PIDwin">
+            	<tag name="logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion</localized_desc>
                     </description>
                     <substitute>_NLID_</substitute>
             	</tag> 
-            	<tag name="new_logon_guid" tagType="GUIDWIN">
+            	<tag name="logon_guid" tagType="GUIDWIN">
                     <description>
                         <localized_desc language="en">The account GUID</localized_desc>
                         <localized_desc language="fr">Le GUID de connexion</localized_desc>
@@ -290,17 +290,17 @@ Detailed Authentication Information:
  - Package name indicates which sub-protocol was used among the NTLM protocols. 
  - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
                      <expectedTags>
-                          <expectedTag name="security_id">SYSTEM</expectedTag>
-                          <expectedTag name="user">WIN-R9H529RIO4Y$</expectedTag>
-                          <expectedTag name="domain">WORKGROUP</expectedTag>
-                          <expectedTag name="logon_id">0x3e7</expectedTag>
+                          <expectedTag name="old_security_id">SYSTEM</expectedTag>
+                          <expectedTag name="old_user">WIN-R9H529RIO4Y$</expectedTag>
+                          <expectedTag name="old_domain">WORKGROUP</expectedTag>
+                          <expectedTag name="old_logon_id">0x3e7</expectedTag>
                           <expectedTag name="logon_type">10</expectedTag>
                           <expectedTag name="method">RemoteInteractive</expectedTag>
-                          <expectedTag name="new_logon_security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
-                          <expectedTag name="new_logon_account_name">Administrator</expectedTag>
-                          <expectedTag name="new_logon_account_domain">WIN-R9H529RIO4Y</expectedTag>
-                          <expectedTag name="new_logon_id">0x19f4c</expectedTag>
-                          <expectedTag name="new_logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
+                          <expectedTag name="security_id">WIN-R9H529RIO4Y\Administrator</expectedTag>
+                          <expectedTag name="user">Administrator</expectedTag>
+                          <expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+                          <expectedTag name="logon_id">0x19f4c</expectedTag>
+                          <expectedTag name="logon_guid">{00000000-0000-0000-0000-000000000000}</expectedTag>
                           <expectedTag name="pid">0x4c0</expectedTag>
                           <expectedTag name="process_name">C:\Windows\System32\winlogon.exe</expectedTag>
                           <expectedTag name="workstation_name">WIN-R9H529RIO4Y</expectedTag>
@@ -322,28 +322,28 @@ Detailed Authentication Information:
             </description>            
             <text>An account failed to log on. Subject: Security ID: _SID_ Account Name: _ACCOUNTNAME_ Account Domain: _ACCOUNTDOMAIN_ Logon ID:  _LID_ Logon Type: _LOGONTYPE_ Account For Which Logon Failed: Security ID: _FSID_ Account Name: _FACCN_ Account Domain: _FACCD_ Failure Information: Failure Reason:  _FREASON_ Status: _FSTATUS_ Sub Status: _FSUBSTATUS_ Process Information: Caller Process ID: _CPID_ Caller Process Name: _CPN_ Network Information: Workstation Name:  _WORKSTATIONNAME_ Source Network Address: _SRCNETWORKADDR_ Source Port:  _SRCPORT_ Detailed Authentication Information: Logon Process:  _LPROCESS_  Authentication Package: _AP_ Transited Services: _TS_ Package Name \(NTLM only\): _PN_  Key Length:  _KL_  This event is generated when a logon request fails. It is generated on the computer where access was attempted. The Subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe. The Logon Type field indicates the kind of logon that was requested. The most common types are 2 \(interactive\) and 3 \(network\). The Process Information fields indicate which account and process on the system requested the logon. The Network Information fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases. The authentication information fields provide detailed information about this specific logon request. - Transited services indicate which intermediate services have participated in this logon request. - Package name indicates which sub-protocol was used among the NTLM protocols. - Key length indicates the length of the generated session key. This will be 0 if no session key was requested</text>
             <tags>
-            	<tag name="security_id" tagType="Anything">
+            	<tag name="old_security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The security ID</localized_desc>
                         <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
                     </description>
                     <substitute>_SID_</substitute>
             	</tag>
-            	<tag name="user" tagType="Anything">
+            	<tag name="old_user" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTNAME_</substitute>
             	</tag>
-            	<tag name="domain" tagType="Anything">
+            	<tag name="old_domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
             	</tag>
-            	<tag name="logon_id" tagType="PIDwin">
+            	<tag name="old_logon_id" tagType="PIDwin">
                     <description>
                         <localized_desc language="en">The account ID that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">L'identifiant de connexion du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté </localized_desc>
@@ -360,21 +360,21 @@ Detailed Authentication Information:
                  		<callback>decode_logon_type</callback>
                  	</callbacks>
             	</tag>
-            	<tag name="failed_security_id" tagType="Anything">
+            	<tag name="security_id" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account security ID for which Llogon failed</localized_desc>
                         <localized_desc language="fr">L'identifiant de securité du compte pour lequel la connexion a échoué</localized_desc>
                     </description>
                     <substitute>_FSID_</substitute>
             	</tag>            	
-            	<tag name="failed_account_name" tagType="Anything">
+            	<tag name="user" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account name for which logon failed</localized_desc>
                         <localized_desc language="fr">Le nom du compte pour lequel la connexion a échoué</localized_desc>
                     </description>
                     <substitute>_FACCN_</substitute>
             	</tag>
-            	<tag name="failed_account_domain" tagType="Anything">
+            	<tag name="domain" tagType="Anything">
                     <description>
                         <localized_desc language="en">The account domaine for which logon failed</localized_desc>
                         <localized_desc language="fr">Le domaine du compte pour lequel la connexion a échoué</localized_desc>
@@ -447,18 +447,7 @@ Detailed Authentication Information:
                     </description>
               		<substitute>_LPROCESS_</substitute>
             	</tag>
-              	
-              	<tag name="logon_type" tagType="Integer">
-                    <description>
-                        <localized_desc language="en">The logon type</localized_desc>
-                        <localized_desc language="fr">Le type de connexion</localized_desc>
-                    </description>
-                    <substitute>_LOGONTYPE_</substitute>
-                    <callbacks>
-                 		<callback>decode_logon_type</callback>
-                 	</callbacks>
-            	</tag>
-                    
+              	                    
             	<tag name="authentification_package" tagType="Anything">
                     <description>
                         <localized_desc language="en">The authentication package</localized_desc>
@@ -538,15 +527,15 @@ Detailed Authentication Information:
  - Package name indicates which sub-protocol was used among the NTLM protocols. 
  - Key length indicates the length of the generated session key. This will be 0 if no session key was requested.</text>
                      <expectedTags>
-                          <expectedTag name="security_id">NULL SID</expectedTag>
-                          <expectedTag name="user">-</expectedTag>
-                          <expectedTag name="domain">-</expectedTag>
-                          <expectedTag name="logon_id">0x0</expectedTag>
+                          <expectedTag name="old_security_id">NULL SID</expectedTag>
+                          <expectedTag name="old_user">-</expectedTag>
+                          <expectedTag name="old_domain">-</expectedTag>
+                          <expectedTag name="old_logon_id">0x0</expectedTag>
                           <expectedTag name="logon_type">3</expectedTag>
                           <expectedTag name="method">Network</expectedTag>                   
-                          <expectedTag name="failed_security_id">NULL SID</expectedTag>
-                          <expectedTag name="failed_account_name">asdf</expectedTag>
-                          <expectedTag name="failed_account_domain">-</expectedTag>
+                          <expectedTag name="security_id">NULL SID</expectedTag>
+                          <expectedTag name="user">asdf</expectedTag>
+                          <expectedTag name="domain">-</expectedTag>
                           <expectedTag name="failure_reason">Unknown user name or bad password.</expectedTag>
                           <expectedTag name="failure_status">0xc000006d</expectedTag>
                           <expectedTag name="failure_sub_status">0xc0000064</expectedTag>
