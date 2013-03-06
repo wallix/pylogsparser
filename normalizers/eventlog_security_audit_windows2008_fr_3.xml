@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- pylogparser - Logs parsers python library                  -->
+<!-- Copyright (C) 2012 Wallix Inc.                             -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--                                                            -->
+<!-- This package is free software; you can redistribute        -->
+<!-- it and/or modify it under the terms of the GNU Lesser      -->
+<!-- General Public License as published by the Free Software   -->
+<!-- Foundation; either version 2.1 of the License, or (at      -->
+<!-- your option) any later version.                            -->
+<!--                                                            -->
+<!-- This package is distributed in the hope that it will be    -->
+<!-- useful, but WITHOUT ANY WARRANTY; without even the implied -->
+<!-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR    -->
+<!-- PURPOSE.  See the GNU Lesser General Public License for    -->
+<!-- more details.                                              -->
+<!--                                                            -->
+<!-- You should have received a copy of the GNU Lesser General  -->
+<!-- Public License along with this package; if not, write      -->
+<!-- to the Free Software Foundation, Inc., 59 Temple Place,    -->
+<!-- Suite 330, Boston, MA  02111-1307  USA                     -->
+<!--                                                            -->
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="EventLog-Security-Windows2008[FR]_3"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="search"
+            appliedTo="eventlog_description"
+            taxonomy="access control"
+            expandWhitespaces="yes">
+    <description>
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
+</localized_desc>
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version anglaise.
+</localized_desc>
+    </description>
+    <authors>
+        <author>lbenlahmr@wallix.com</author>
+    </authors>
+    <callbacks>
+    	<callback name="strip_values">
+for t in log:
+	if isinstance(log[t], basestring):
+		try:
+			log[t] = log[t].strip()
+		except:
+			pass
+    	</callback>
+    	<callback name="decode_logon_type">
+decoder = { '2' : 'Interactive', '3' : 'Network', '4' : 'Batch', '5' : 'Service', '6' : 'Proxy', '7' : 'UnlockWorkstationLogon', '8' : 'NetworkCleartext', '9' : 'NewCredentials', '10' : 'RemoteInteractive', '11' : 'CachedInteractive' }
+log['method'] = decoder.get(value, 'UNKNOWN')
+        </callback>
+         <callback name="decode_password_last_set">
+try:
+	a = long(value)
+	log['password_last_set'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['password_last_set'] = value
+		</callback>
+		<callback name="decode_expiry_date">
+try:
+	a = long(value)
+	log['expiry_date'] = extras.winUTC2UnixTimestamp(a)
+except:
+	log['expiry_date'] = value
+		</callback>
+    </callbacks>
+    <patterns>
+    	<pattern name="eventID-4730-4734-4748-4753-4758-4763">
+    		<text>Un groupe (?:global|local|universel) dont la sécurité est (?:dés)?activée a été supprimé.
+Sujet :
+	ID de sécurité : _SID_
+	Nom du compte : _USER_
+	Domaine du compte : _DOMAIN_
+	ID d’ouverture de session : _LOGONID_
+Groupe(?: :| supprimé :)
+	ID de sécurité : _TSID_
+	Nom du groupe : _TARGETACCT_
+	Domaine du groupe : _TARGETDOMAIN_
+Informations supplémentaires :
+	Privilèges : _PRIVILEGES_</text>
+    		<tags>
+            	<tag name="target_security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_TSID_</substitute>
+            	</tag>
+                <tag name="target_account" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target account</localized_desc>
+                        <localized_desc language="fr">Le compte cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETACCT_</substitute>
+            	</tag>
+            	<tag name="target_domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The target domain</localized_desc>
+                        <localized_desc language="fr">Le domaine cible</localized_desc>
+                    </description>
+                    <substitute>_TARGETDOMAIN_</substitute>
+            	</tag>
+            	<tag name="security_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The security ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de sécurité</localized_desc>
+                    </description>
+                    <substitute>_SID_</substitute>
+            	</tag>
+            	<tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user modifying the member</localized_desc>
+                        <localized_desc language="fr">L'utilisateur à l'origine de la modification</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+            	<tag name="privileges" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The privileges</localized_desc>
+                        <localized_desc language="fr">Les privilèges</localized_desc>
+                    </description>
+                    <substitute>_PRIVILEGES_</substitute>
+            	</tag>
+            </tags>
+    		<examples>
+    			<example>
+   				<text>Un groupe global dont la sécurité est activée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe supprimé :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+   				<text>Un groupe local dont la sécurité est activée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe supprimé :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+   				<text>Un groupe local dont la sécurité est désactivée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+   				<text>Un groupe global dont la sécurité est désactivée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+   				<text>Un groupe universel dont la sécurité est désactivée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+   				<text>Un groupe universel dont la sécurité est activée a été supprimé.
+Sujet :
+	ID de sécurité : ACME\Administrator
+	Nom du compte : Administrator
+	Domaine du compte : ACME
+	ID d’ouverture de session : 0x27a79
+Groupe :
+	ID de sécurité : S-1-5-21-3108364787-189202583-342365621-1108
+	Nom du groupe : Historical Figures
+	Domaine du groupe : ACME
+Informations supplémentaires :
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">ACME\Administrator</expectedTag>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">ACME</expectedTag>
+            			<expectedTag name="logon_id">0x27a79</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-3108364787-189202583-342365621-1108</expectedTag>
+            			<expectedTag name="target_account">Historical Figures</expectedTag>
+            			<expectedTag name="target_domain">ACME</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    		</examples>
+    	</pattern>
+    </patterns>
+   	<finalCallbacks>
+    	<callback>strip_values</callback>
+    </finalCallbacks>
+</normalizer>
