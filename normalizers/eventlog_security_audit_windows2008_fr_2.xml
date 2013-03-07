@@ -34,11 +34,11 @@
             taxonomy="access control"
             expandWhitespaces="yes">
     <description>
-        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in French.
 The following event IDs are covered: 
 * 4720, 4726, 4738, 4741, 4742, 4743 (Account Management  events),
 </localized_desc>
-        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version anglaise.
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version française.
 Les codes d'événements suivants sont normalisés :
 * 4720, 4726, 4738, 4741, 4742, 4743 (événements de gestion de compte),
 </localized_desc>
@@ -94,7 +94,7 @@ except:
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -431,7 +431,7 @@ Informations supplémentaires :
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -459,7 +459,7 @@ Informations supplémentaires :
             	</tag>
             	<tag name="target_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the targeted account</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the targeted account</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte cible</localized_desc>
                     </description>
                     <substitute>_TACCOUNTDOMAIN_</substitute>
@@ -542,7 +542,7 @@ Informations supplémentaires :
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -570,7 +570,7 @@ Informations supplémentaires :
             	</tag>
             	<tag name="target_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the targeted account</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the targeted account</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte cible</localized_desc>
                     </description>
                     <substitute>_TACCOUNTDOMAIN_</substitute>
@@ -709,7 +709,7 @@ Informations supplémentaires :
             	</tag>
             	<tag name="additional_info" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Additionnal information</localized_desc>
+                        <localized_desc language="en">Additional information</localized_desc>
                         <localized_desc language="fr">Information additionnelle</localized_desc>
                     </description>
                     <substitute>_ADDINFO_</substitute>
@@ -717,7 +717,7 @@ Informations supplémentaires :
             	<tag name="dns_host_name" tagType="Anything">
                     <description>
                         <localized_desc language="en">DNS host name</localized_desc>
-                        <localized_desc language="fr">Nom de l'hote DNS</localized_desc>
+                        <localized_desc language="fr">Nom de l'hôte DNS</localized_desc>
                     </description>
                     <substitute>_DNS_</substitute>
             	</tag>

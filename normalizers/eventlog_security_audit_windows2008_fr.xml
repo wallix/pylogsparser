@@ -34,11 +34,11 @@
             taxonomy="access control"
             expandWhitespaces="yes">
     <description>
-        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in French.
 The following event IDs are covered: 
 * 4624, 4625, 4634, 4647, 4648 (logon events),
 </localized_desc>
-        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'événéments de Windows 2008, en version anglaise.
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'événéments de Windows 2008, en version française.
 Les codes d'événements suivants sont normalisés :
 * 4624, 4625, 4634, 4647, 4648 (événements de connexion),
 </localized_desc>
@@ -111,7 +111,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	</tag>
             	<tag name="old_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -149,7 +149,7 @@ log['method'] = decoder.get(value, 'UNKNOWN')
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The account domaine of the user who just logged on</localized_desc>
+                        <localized_desc language="en">The account domain of the user who just logged on</localized_desc>
                         <localized_desc language="fr">Le domaine du compte de l'utilisateur qui vient juste de se connecter</localized_desc>
                     </description>
                     <substitute>_NACCOUNTDOMAIN_</substitute>
@@ -330,7 +330,7 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
             	</tag>
             	<tag name="old_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon - NOT the user who just logged on</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon - NOT the user who just logged on</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion - Pas l'utilisateur qui est déjà connecté</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -368,7 +368,7 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The account domaine for which logon failed</localized_desc>
+                        <localized_desc language="en">The account domain for which logon failed</localized_desc>
                         <localized_desc language="fr">Le domaine du compte pour lequel la connexion a échoué</localized_desc>
                     </description>
                     <substitute>_FACCD_</substitute>
@@ -391,8 +391,8 @@ Les types les plus courants sont 2 (interactif) et 3 (réseau).</text>
             	</tag>
             	<tag name="failure_sub_status" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The failure sub_status"</localized_desc>
-                        <localized_desc language="fr">Le sous-status de l'échec de connexion</localized_desc>
+                        <localized_desc language="en">The failure substatus</localized_desc>
+                        <localized_desc language="fr">Le sous-statut de l'échec de connexion</localized_desc>
                     </description>
                     <substitute>_FSUBSTATUS_</substitute>
             	</tag>
@@ -648,7 +648,7 @@ Les ID d’ouverture de session ne sont uniques qu’entre les redémarrages sur
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -728,7 +728,7 @@ Cet événement peut être interprété comme un événement de fermeture de ses
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -756,7 +756,7 @@ Cet événement peut être interprété comme un événement de fermeture de ses
             	</tag>
             	<tag name="credentials_account_domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">The account domaine whose credentials were used</localized_desc>
+                        <localized_desc language="en">The account domain whose credentials were used</localized_desc>
                         <localized_desc language="fr">Le domaine du compte dont les informations d'identification de connexion ont été utilisés</localized_desc>
                     </description>
                     <substitute>_CACCOUNTDOMAINE_</substitute>
@@ -878,7 +878,7 @@ ou avec l’utilisation de la commande RUNAS.</text>
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>
@@ -906,8 +906,8 @@ ou avec l’utilisation de la commande RUNAS.</text>
             	</tag>
             	<tag name="source_ip" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Client addresse</localized_desc>
-                        <localized_desc language="fr">addresse du client</localized_desc>
+                        <localized_desc language="en">Client address</localized_desc>
+                        <localized_desc language="fr">adresse du client</localized_desc>
                     </description>
                     <substitute>_CADDRESS_</substitute>
             	</tag>
@@ -982,7 +982,7 @@ Cet événement est généré lorsqu’un utilisateur se reconnecte à une sessi
             	</tag>
             	<tag name="domain" tagType="Anything">
                     <description>
-                        <localized_desc language="en">Identifies the domaine of the account that requested the logon</localized_desc>
+                        <localized_desc language="en">Identifies the domain of the account that requested the logon</localized_desc>
                         <localized_desc language="fr">Identifie le domaine du compte qui a fait la requête de connexion</localized_desc>
                     </description>
                     <substitute>_ACCOUNTDOMAIN_</substitute>

@@ -34,9 +34,9 @@
             taxonomy="access control"
             expandWhitespaces="yes">
     <description>
-        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in English.
+        <localized_desc language="en">This normalizer parses common security audit logs from the Windows 2008 Event Log, localized in French.
 </localized_desc>
-        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version anglaise.
+        <localized_desc language="fr">Ce normaliseur traite les logs d'audit de sécurité communs du Journal d'Événéments de Windows 2008, en version française.
 </localized_desc>
     </description>
     <authors>
