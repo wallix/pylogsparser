@@ -72,18 +72,7 @@ except:
     </callbacks>
     <patterns>
     	<pattern name="eventID-4730-4734-4748-4753-4758-4763">
-    		<text>Un groupe (?:global|local|universel) dont la sécurité est (?:dés)?activée a été supprimé.
-Sujet :
-	ID de sécurité : _SID_
-	Nom du compte : _USER_
-	Domaine du compte : _DOMAIN_
-	ID d’ouverture de session : _LOGONID_
-Groupe(?: :| supprimé :)
-	ID de sécurité : _TSID_
-	Nom du groupe : _TARGETACCT_
-	Domaine du groupe : _TARGETDOMAIN_
-Informations supplémentaires :
-	Privilèges : _PRIVILEGES_</text>
+    		<text>Un groupe (?:global|local|universel) dont la sécurité est (?:dés)?activée a été supprimé. Sujet : ID de sécurité : _SID_ Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ Groupe(?: :| supprimé :) ID de sécurité : _TSID_ Nom du groupe : _TARGETACCT_ Domaine du groupe : _TARGETDOMAIN_ Informations supplémentaires : Privilèges : _PRIVILEGES_</text>
     		<tags>
             	<tag name="target_security_id" tagType="Anything">
                     <description>
@@ -289,21 +278,7 @@ Informations supplémentaires :
     			</example>
     		</examples>
     	</pattern><pattern name="eventID-4737-4750-4735-4745-4755-4760">
-    		<text>Un groupe (?:local|global|universel) dont la sécurité est (?:dés)?activée a été modifié.
-Sujet :
-	ID de sécurité : _SID_
-	Nom du compte : _USER_
-	Domaine du compte : _DOMAIN_
-	ID d’ouverture de session : _LOGONID_
-Groupe(?: :| supprimé :)
-	ID de sécurité : _TSID_
-	Nom du groupe : _TARGETACCT_
-	Domaine du groupe : _TARGETDOMAIN_
-Attributs modifiés :
-	Nom du compte SAM : _SAMACCT_
-	Historique SID : _SIDHISTORY_
-Informations supplémentaires :
-	Privilèges : _PRIVILEGES_</text>
+    		<text>Un groupe (?:local|global|universel) dont la sécurité est (?:dés)?activée a été modifié. Sujet : ID de sécurité : _SID_ Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ Groupe(?: :| supprimé :) ID de sécurité : _TSID_ Nom du groupe : _TARGETACCT_ Domaine du groupe : _TARGETDOMAIN_ Attributs modifiés : Nom du compte SAM : _SAMACCT_ Historique SID : _SIDHISTORY_ Informations supplémentaires : Privilèges : _PRIVILEGES_</text>
     		<tags>
             	<tag name="target_security_id" tagType="Anything">
                     <description>
@@ -554,21 +529,7 @@ Informations supplémentaires :
     		</examples>
     	</pattern>
     	<pattern name="eventID-4731-4749-4759-4754-4744-4727">
-    		<text>Un groupe (?:local|global|universel) dont la sécurité est (?:dés)?activée a été crée.
-Sujet :
-	ID de sécurité : _SID_
-	Nom du compte : _USER_
-	Domaine du compte : _DOMAIN_
-	ID d’ouverture de session : _LOGONID_
-(?:Nouveau )?Groupe :
-	ID de sécurité : _TSID_
-	Nom du groupe : _TARGETACCT_
-	Domaine du groupe : _TARGETDOMAIN_
-Attributs :
-	Nom du compte SAM : _SAMACCT_
-	Historique SID : _SIDHISTORY_
-Informations supplémentaires :
-	Privilèges : _PRIVILEGES_</text>
+    		<text>Un groupe (?:local|global|universel) dont la sécurité est (?:dés)?activée a été créé. Sujet : ID de sécurité : _SID_ Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ (?:Nouveau )?(?:g|G)roupe : ID de sécurité : _TSID_ Nom du groupe : _TARGETACCT_ Domaine du groupe : _TARGETDOMAIN_ Attributs : Nom du compte SAM : _SAMACCT_ Historique SID : _SIDHISTORY_ Informations supplémentaires : Privilèges : _PRIVILEGES_</text>
     		<tags>
             	<tag name="target_security_id" tagType="Anything">
                     <description>
@@ -643,7 +604,7 @@ Informations supplémentaires :
             </tags>
             <examples>
     			<example>
-    				<text>Un groupe local dont la sécurité est activée a été crée.
+    				<text>Un groupe local dont la sécurité est activée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -672,7 +633,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe global dont la sécurité est désactivée a été crée.
+    				<text>Un groupe global dont la sécurité est désactivée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -701,7 +662,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe universel dont la sécurité est désactivée a été crée.
+    				<text>Un groupe universel dont la sécurité est désactivée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -730,7 +691,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe universel dont la sécurité est activée a été crée.
+    				<text>Un groupe universel dont la sécurité est activée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -759,7 +720,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe universel dont la sécurité est désactivée a été crée.
+    				<text>Un groupe universel dont la sécurité est désactivée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -788,7 +749,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe local dont la sécurité est désactivée a été crée.
+    				<text>Un groupe local dont la sécurité est désactivée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -817,7 +778,7 @@ Informations supplémentaires :
     				</expectedTags>
     			</example>
     			<example>
-    				<text>Un groupe global dont la sécurité est activée a été crée.
+    				<text>Un groupe global dont la sécurité est activée a été créé.
 Sujet :
 	ID de sécurité : ACME\Administrator
 	Nom du compte : Administrator
@@ -841,6 +802,65 @@ Informations supplémentaires :
             			<expectedTag name="target_account">Historical Figures</expectedTag>
             			<expectedTag name="target_domain">ACME</expectedTag>
             			<expectedTag name="sam_account_name">-</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>Un groupe local dont la sécurité est activée a été créé. 
+    				
+Sujet :
+	ID de sécurité : S-1-5-21-846086097-1886781744-2141174601-500 
+	Nom du compte : Administrateur 
+	Domaine du compte : WIN-L89K99E7H0F 
+	ID d’ouverture de session : 0x1f4b5 
+Nouveau groupe : 
+	ID de sécurité : S-1-5-21-846086097-1886781744-2141174601-1001 
+	Nom du groupe : GroupeLogBox 
+	Domaine du groupe : WIN-L89K99E7H0F 
+Attributs : 
+	Nom du compte SAM : GroupeLogBox 
+	Historique SID : - 
+Informations supplémentaires : 
+	Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">S-1-5-21-846086097-1886781744-2141174601-500</expectedTag>
+            			<expectedTag name="user">Administrateur</expectedTag>
+            			<expectedTag name="domain">WIN-L89K99E7H0F</expectedTag>
+            			<expectedTag name="logon_id">0x1f4b5</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-846086097-1886781744-2141174601-1001</expectedTag>
+            			<expectedTag name="target_account">GroupeLogBox</expectedTag>
+            			<expectedTag name="target_domain">WIN-L89K99E7H0F</expectedTag>
+            			<expectedTag name="sam_account_name">GroupeLogBox</expectedTag>
+            			<expectedTag name="sid_history">-</expectedTag>
+            			<expectedTag name="privileges">-</expectedTag>
+    				</expectedTags>
+    			</example>
+    			<example>
+    				<text>Un groupe local dont la sécurité est activée a été créé. 
+    			
+Sujet : 
+	ID de sécurité : S-1-5-21-846086097-1886781744-2141174601-500 
+ 	Nom du compte : Administrateur 
+ 	Domaine du compte : WIN-L89K99E7H0F 
+ 	ID d’ouverture de session : 0x1aa9d5 
+Nouveau groupe : 
+	ID de sécurité : S-1-5-21-846086097-1886781744-2141174601-1004 
+	Nom du groupe : MyNewLogBoxGroup 
+	Domaine du groupe : WIN-L89K99E7H0F 
+Attributs : 
+	Nom du compte SAM : MyNewLogBoxGroup 
+	Historique SID : - 
+Informations supplémentaires : Privilèges : -</text>
+    				<expectedTags>
+    					<expectedTag name="security_id">S-1-5-21-846086097-1886781744-2141174601-500</expectedTag>
+            			<expectedTag name="user">Administrateur</expectedTag>
+            			<expectedTag name="domain">WIN-L89K99E7H0F</expectedTag>
+            			<expectedTag name="logon_id">0x1aa9d5</expectedTag>
+            			<expectedTag name="target_security_id">S-1-5-21-846086097-1886781744-2141174601-1004</expectedTag>
+            			<expectedTag name="target_account">MyNewLogBoxGroup</expectedTag>
+            			<expectedTag name="target_domain">WIN-L89K99E7H0F</expectedTag>
+            			<expectedTag name="sam_account_name">MyNewLogBoxGroup</expectedTag>
             			<expectedTag name="sid_history">-</expectedTag>
             			<expectedTag name="privileges">-</expectedTag>
     				</expectedTags>
