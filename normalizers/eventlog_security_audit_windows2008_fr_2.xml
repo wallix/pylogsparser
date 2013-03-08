@@ -450,7 +450,7 @@ Informations supplémentaires :
                     </description>
                     <substitute>_TSID_</substitute>
             	</tag>
-            	<tag name="target_user" tagType="Anything">
+            	<tag name="target_account" tagType="Anything">
                     <description>
                         <localized_desc language="en">Identifies the targeted account</localized_desc>
                         <localized_desc language="fr">Identifie le nom du compte cible</localized_desc>
