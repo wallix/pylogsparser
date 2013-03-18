@@ -491,7 +491,7 @@ Subject:
 Target Account:
 
   Security ID:  WIN-R9H529RIO4Y\bob
-  Account Name:  bob
+  Account Name: bob
   Account Domain:  WIN-R9H529RIO4Y
 
 Additional Information:
@@ -503,7 +503,7 @@ Additional Information:
     					<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
     					<expectedTag name="logon_id">0x1fd23</expectedTag>
     					<expectedTag name="target_security_id">WIN-R9H529RIO4Y\bob</expectedTag>
-    					<expectedTag name="target_user">bob</expectedTag>
+    					<expectedTag name="target_account">bob</expectedTag>
     					<expectedTag name="target_domain">WIN-R9H529RIO4Y</expectedTag>
     					<expectedTag name="additional_info">-</expectedTag>
     				</expectedTags>
@@ -521,7 +521,7 @@ Subject:
 Target Account:
 
   Security ID:  WIN-R9H529RIO4Y\bob
-  Account Name:  bob
+  Account Name: bob
   Account Domain:  WIN-R9H529RIO4Y
 
 Additional Information:
@@ -533,7 +533,7 @@ Additional Information:
     					<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
     					<expectedTag name="logon_id">0x1fd23</expectedTag>
     					<expectedTag name="target_security_id">WIN-R9H529RIO4Y\bob</expectedTag>
-    					<expectedTag name="target_user">bob</expectedTag>
+    					<expectedTag name="target_account">bob</expectedTag>
     					<expectedTag name="target_domain">WIN-R9H529RIO4Y</expectedTag>
     					<expectedTag name="additional_info">-</expectedTag>
     				</expectedTags>
