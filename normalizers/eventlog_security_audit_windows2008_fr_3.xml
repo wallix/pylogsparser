@@ -867,6 +867,109 @@ Informations supplémentaires : Privilèges : -</text>
     			</example>
     		</examples>
     	</pattern>
+    	<pattern name="eventID-4778-4779">
+            <description>
+                <localized_desc language="en">connection to/disconnection from winstation</localized_desc>
+                <localized_desc language="fr">connexion à/déconnexion d'une station de travail</localized_desc>
+            </description>
+            <text>Une session a été (?:re|dé)connectée? (:?à |d’)une station Windows. Sujet : Nom du compte : _USER_ Domaine du compte : _DOMAIN_ ID d’ouverture de session : _LOGONID_ Session : Nom de la session : _SESSIONNAME_ Informations supplémentaires : Nom du client : _SOURCEHOST_ Adresse du client : _SOURCEIP_ Cet événement est généré lorsqu’un utilisateur se (?:re|dé)connecte (?:à |d’)une session existante des services Terminal Server ou (?:bascule vers|quitte) un Bureau existant à l’aide de la fonction Changement rapide d’utilisateur.</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user connecting or disconnecting from the terminal server session</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+                <tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The session name</localized_desc>
+                        <localized_desc language="fr">Le nom de session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONNAME_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>Une session a été reconnectée à une station Windows.
+Sujet :
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x169e9
+	
+Session :
+	Nom de la session : RDP-Tcp#0
+	
+Informations supplémentaires :
+	Nom du client : XPEDIT
+	Adresse du client : 10.42.42.211
+	
+Cet événement est généré lorsqu’un utilisateur se reconnecte à une session existante des services Terminal Server ou bascule vers un Bureau existant 
+à l’aide de la fonction Changement rapide d’utilisateur.</text>
+            		<expectedTags>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x169e9</expectedTag>
+            			<expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+            			<expectedTag name="source_host">XPEDIT</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.211</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>Une session a été déconnecté d’une station Windows.
+Sujet :
+	Nom du compte : Administrator
+	Domaine du compte : WIN-R9H529RIO4Y
+	ID d’ouverture de session : 0x169e9
+
+Session :
+	Nom de la session : RDP-Tcp#0
+
+Informations supplémentaires :
+	Nom du client : XPEDIT
+	Adresse du client : 10.42.42.211
+
+Cet événement est généré lorsqu’un utilisateur se déconnecte d’une session existante des services Terminal Server ou quitte un Bureau existant
+à l’aide de la fonction Changement rapide d’utilisateur.</text>
+            		<expectedTags>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x169e9</expectedTag>
+            			<expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+            			<expectedTag name="source_host">XPEDIT</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.211</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+    	</pattern>
     </patterns>
    	<finalCallbacks>
     	<callback>strip_values</callback>

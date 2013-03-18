@@ -810,6 +810,117 @@ Additional Information:
     			</example>
     		</examples>
     	</pattern>
+    	<pattern name="eventID-4778-4779">
+            <description>
+                <localized_desc language="en">connection to/disconnection from winstation</localized_desc>
+                <localized_desc language="fr">connexion à/déconnexion d'une station de travail</localized_desc>
+            </description>
+            <text>A session was (?:re|dis)connected (?:to|from) a Window Station. Subject: Account Name: _USER_ Account Domain:  _DOMAIN_ Logon ID:  _LOGONID_ Session: Session Name:  _SESSIONNAME_ Additional Information: Client Name:  _SOURCEHOST_ Client Address:  _SOURCEIP_ This event is generated when a user (?:re|dis)connects (?:to|from) an existing Terminal Services session, or when a user switches (?:to|away from) an existing desktop using Fast User Switching.</text>
+            <tags>
+                <tag name="user" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The user connecting or disconnecting from the terminal server session</localized_desc>
+                        <localized_desc language="fr">L'utilisateur se connectant ou se déconnectant d'une session terminal server</localized_desc>
+                    </description>
+                    <substitute>_USER_</substitute>
+            	</tag>
+            	<tag name="domain" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The domain</localized_desc>
+                        <localized_desc language="fr">Le domaine</localized_desc>
+                    </description>
+                    <substitute>_DOMAIN_</substitute>
+            	</tag>
+            	<tag name="logon_id" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The logon ID</localized_desc>
+                        <localized_desc language="fr">L'identifiant de connexion</localized_desc>
+                    </description>
+                    <substitute>_LOGONID_</substitute>
+            	</tag>
+                <tag name="session_name" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The session name</localized_desc>
+                        <localized_desc language="fr">Le nom de session</localized_desc>
+                    </description>
+                    <substitute>_SESSIONNAME_</substitute>
+            	</tag>
+            	<tag name="source_ip" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEIP_</substitute>
+            	</tag>
+            	<tag name="source_host" tagType="Anything">
+                    <description>
+                        <localized_desc language="en">The machine from which the action is taken</localized_desc>
+                        <localized_desc language="fr">La machine depuis laquelle l'action est effectuée</localized_desc>
+                    </description>
+                    <substitute>_SOURCEHOST_</substitute>
+            	</tag>
+            </tags>
+            <examples>
+            	<example>
+            		<text>A session was reconnected to a Window Station.
+
+Subject:
+
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x169e9
+
+Session:
+
+   Session Name:  RDP-Tcp#0
+
+Additional Information:
+
+   Client Name:  XPEDIT
+   Client Address:  10.42.42.211
+
+This event is generated when a user reconnects to an existing Terminal Services session, 
+or when a user switches to an existing desktop using Fast User Switching.</text>
+            		<expectedTags>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x169e9</expectedTag>
+            			<expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+            			<expectedTag name="source_host">XPEDIT</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.211</expectedTag>
+            		</expectedTags>
+            	</example>
+            	<example>
+            		<text>A session was disconnected from a Window Station.
+
+Subject:
+
+   Account Name:  Administrator
+   Account Domain:  WIN-R9H529RIO4Y
+   Logon ID:  0x169e9
+
+Session:
+
+   Session Name:  RDP-Tcp#0
+
+Additional Information:
+
+   Client Name:  XPEDIT
+   Client Address:  10.42.42.211
+
+This event is generated when a user disconnects from an existing Terminal Services session,
+or when a user switches away from an existing desktop using Fast User Switching.</text>
+            		<expectedTags>
+            			<expectedTag name="user">Administrator</expectedTag>
+            			<expectedTag name="domain">WIN-R9H529RIO4Y</expectedTag>
+            			<expectedTag name="logon_id">0x169e9</expectedTag>
+            			<expectedTag name="session_name">RDP-Tcp#0</expectedTag>
+            			<expectedTag name="source_host">XPEDIT</expectedTag>
+            			<expectedTag name="source_ip">10.42.42.211</expectedTag>
+            		</expectedTags>
+            	</example>
+            </examples>
+        </pattern>
     </patterns>
    	<finalCallbacks>
     	<callback>strip_values</callback>
