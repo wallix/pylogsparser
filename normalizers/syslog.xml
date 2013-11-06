@@ -79,6 +79,10 @@ log["severity"] = "%s" % SEVERITIES[severity]
 log["facility_code"] = "%d" % facility
 log["severity_code"] = "%d" % severity
   </callback>
+  <callback name="iso_to_utc">
+utc_date = extras.iso_to_utc(value)
+log['date'] = utc_date
+  </callback>
  </callbacks>
  <patterns>
   <pattern name="syslog-001">
@@ -257,6 +261,125 @@ log["severity_code"] = "%d" % severity
     </example>
    </examples>
   </pattern>
+  <pattern name="syslog-004-iso-timestamp">
+   <description>
+    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, program and optional PID. Using iso timestamp</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, un programme et un PID (optionnel). Utilise l'horodatage iso</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE PROGRAM(?:\[PID\])?: BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority"><!-- tags starting with double underscores will not appear in the final wallixlog.-->
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDateISO">
+     <description>
+     <localized_desc language="en">the log's date and time</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>iso_to_utc</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="program" tagType="syslogProgram">
+     <description>
+     <localized_desc language="en">the log's program</localized_desc>
+     <localized_desc language="fr">le programme à l'origine de l'événement</localized_desc>
+     </description>
+     <substitute>PROGRAM</substitute>
+    </tag>
+    <tag name="pid" tagType="Integer">
+     <description>
+     <localized_desc language="en">the program's process ID</localized_desc>
+     <localized_desc language="fr">le PID du programme</localized_desc>
+     </description>
+     <substitute>PID</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>&lt;29&gt;Jul 18 08:55:35 naruto dhclient[2218]: bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
+     <expectedTags>
+      <expectedTag name="facility">daemon</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">naruto</expectedTag>
+      <expectedTag name="program">dhclient</expectedTag>
+      <expectedTag name="pid">2218</expectedTag>
+      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
+  <pattern name="syslog-005-iso-timestamp">
+   <description>
+    <localized_desc language="en">A syslog line with optional priority (if sent through network), source, and no information about program and PID. Using iso timestamp</localized_desc>
+    <localized_desc language="fr">Une ligne de log encapsulée par syslog comprenant une priorité optionnelle (présente si les logs transitent via le réseau), une source, et pas d'information sur le programme. Utilise l'horodatage iso</localized_desc>
+   </description>
+   <text>(?:&lt;PRIORITY&gt;)?DATE SOURCE BODY</text>
+   <tags>
+    <tag name="__priority" tagType="syslogPriority">
+     <description>
+      <localized_desc language="en">the log's priority</localized_desc>
+      <localized_desc language="fr">la priorité du log, égale à 8 x facilité + gravité</localized_desc>
+     </description>
+     <substitute>PRIORITY</substitute>
+     <callbacks>
+      <callback>decode_priority</callback>
+     </callbacks>
+    </tag>
+    <tag name="date" tagType="syslogDateISO">
+     <description>
+     <localized_desc language="en">the log's date and time</localized_desc>
+     <localized_desc language="fr">l'horodatage du log par le démon syslog</localized_desc></description>
+     <substitute>DATE</substitute>
+     <callbacks>
+      <callback>iso_to_utc</callback>
+     </callbacks>
+    </tag>
+    <tag name="source" tagType="syslogSource">
+     <description>
+     <localized_desc language="en">the log's source</localized_desc>
+     <localized_desc language="fr">l'équipement d'origine de l'événement</localized_desc></description>
+     <substitute>SOURCE</substitute>
+    </tag>
+    <tag name="body" tagType="Anything">
+     <description>
+     <localized_desc language="en">the actual event message</localized_desc>
+     <localized_desc language="fr">le message décrivant l'événement</localized_desc>
+     </description>
+     <substitute>BODY</substitute>
+    </tag>
+   </tags>
+   <examples>
+    <example>
+     <text>&lt;29&gt;2013-11-05T11:09:02+01:00 naruto bound to 10.10.4.11 -- renewal in 2792 seconds.</text>
+     <expectedTags>
+      <expectedTag name="facility">daemon</expectedTag>
+      <expectedTag name="severity">notice</expectedTag>
+      <expectedTag name="source">naruto</expectedTag>
+      <expectedTag name="body">bound to 10.10.4.11 -- renewal in 2792 seconds.</expectedTag>
+     </expectedTags>
+    </example>
+   </examples>
+  </pattern>
  </patterns>
 </normalizer>
-

@@ -68,6 +68,13 @@
         </description>
         <regexp>[A-Z][a-z]{2} [ 0-9]\d \d{2}:\d{2}:\d{2}</regexp>
     </tagType>
+    <tagType name="syslogDateISO" type="datetime">
+        <description>
+            <localized_desc language="en">Expression matching syslog dates.</localized_desc>
+            <localized_desc language="fr">Date au format syslog.</localized_desc>
+        </description>
+        <regexp>(?:\d{4}\-\d\d\-\d\d(:?[tT][\d:\.]*)?)(?:[zZ]|(?:[+\-])(:?\d\d):?(:?\d\d))?</regexp>
+    </tagType>
     <tagType name="URL" type="basestring">
         <description>
             <localized_desc language="en">Matches an URL.</localized_desc>

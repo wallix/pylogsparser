@@ -1263,7 +1263,15 @@ class Test(unittest.TestCase):
                  'status': 'failure',
                  })               
         
-        
+    def test_wabObjects(self):
+        """Testing WAB objects logs"""
+        self.aS(u"""<14>Jul 11 11:49:21 wab2-3-1-4 wabengine: [-] Group 'foo' has just been saved by admin""",
+                { 'wab_object_type': 'Group',
+                  'wab_object_content': 'foo',
+                  'wab_object_action': 'save',
+                  'by_user': 'admin',
+                 
+                 })
         
                 
 if __name__ == "__main__":

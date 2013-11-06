@@ -173,6 +173,9 @@ class TestSample(unittest.TestCase):
         self.normalize_samples('eventlog_security_audit_windows2008_fr_2.xml', 'EventLog-Security-Windows2008[FR]_2', 0.99)
         self.normalize_samples('eventlog_security_audit_windows2008_en_3.xml', 'EventLog-Security-Windows2008[EN]_3', 0.99)
         self.normalize_samples('eventlog_security_audit_windows2008_fr_3.xml', 'EventLog-Security-Windows2008[FR]_3', 0.99)
+        
+    def test_normalize_samples_037_wabObject(self):
+        self.normalize_samples('wabObjects.xml', 'wabObject', 0.99)
 
 class TestCSVPattern(unittest.TestCase):
     """Test CSVPattern behaviour"""
