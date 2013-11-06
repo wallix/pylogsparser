@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE normalizer SYSTEM "normalizer.dtd">
+<normalizer name="wabObject"
+            version="0.99"
+            unicode="yes"
+            ignorecase="yes"
+            matchtype="search"
+            appliedTo="body">
+ <description>
+     <localized_desc language="en">This normalizer parses Wallix AdminBastion objects  logs.</localized_desc>
+     <localized_desc language="fr">Ce normaliseur traite les logs sur les objets de Wallix AdminBastion</localized_desc>
+ </description>
+ <authors>
+     <author>lbenlahmr@wallix.com</author>
+ </authors>
+
+ <!-- Most of the following declarations should be unnecessary once we define a pool of generic types. They are here for educational purposes.-->
+ <tagTypes>
+    <tagType name="wab_id" type="basestring">
+        <description>
+            <localized_desc language="en">A user name as defined in Wallix Admin Bastion</localized_desc>
+        </description>
+        <regexp>[^: ]+</regexp>
+    </tagType>
+    <tagType name="wabObject" type="basestring">
+    	<description>
+    		<localized_desc language="en">An object type as defined in Wallix Admin Bastion</localized_desc>
+    		<localized_desc language="fr">Un type d'objet comme défini dans le Wallix Admin Bastion</localized_desc>
+    	</description>
+    	<regexp>[A-Za-z]+</regexp>
+    </tagType>
+    <tagType name="wabObjectAction" type="basestring">
+    	<description>
+    		<localized_desc language="en">An object action type as defined in Wallix Admin Bastion</localized_desc>
+    		<localized_desc language="fr">Un type d'action sur un objet comme défini dans le Wallix Admin Bastion</localized_desc>
+    	</description>
+    	<regexp>(deleted|saved|edited|added)?</regexp>
+    </tagType>
+ </tagTypes>
+ <callbacks>
+ 	<callback name="action_func">
+if value == "added":
+	log['wab_object_action'] = 'add'
+if value == "saved":
+	log['wab_object_action'] = 'save'
+elif value == "deleted":
+	log['wab_object_action'] = 'delete'
+elif value == "edited":
+	log['wab_object_action'] = 'edit'
+ 	</callback>
+ </callbacks>
+ <patterns>
+	 <pattern name="wab-object">
+         <description>
+             <localized_desc language="en">An event raised by a WAB object</localized_desc>
+             <localized_desc language="fr">Un événement survenant sur un objet du WAB</localized_desc>
+         </description>
+         <text>_OBJECT_ '_OBJECTCONTENT_' has (?:juste? )?been _ACTION_ by _USER_</text>
+         <tags>
+             <tag name="wab_object_type" tagType="wabObject">
+                 <description>
+                     <localized_desc language="en">The WAB object type</localized_desc>
+                     <localized_desc language="fr">la nature de l'objet WAB</localized_desc>
+                 </description>
+                 <substitute>_OBJECT_</substitute>
+             </tag>
+             <tag name="wab_object_content" tagType="Anything">
+                 <description>
+                     <localized_desc language="en">The WAB object content</localized_desc>
+                     <localized_desc language="fr">le contenu de l'objet WAB</localized_desc>
+                 </description>
+                 <substitute>_OBJECTCONTENT_</substitute>
+             </tag>
+              <tag name="wab_object_action" tagType="wabObjectAction">
+                 <description>
+                     <localized_desc language="en">The WAB object action</localized_desc>
+                     <localized_desc language="fr">L'action sur l'objet WAB</localized_desc>
+                 </description>
+                 <substitute>_ACTION_</substitute>
+                 <callbacks>
+					<callback>action_func</callback>
+                 </callbacks>
+             </tag>
+             <tag name="by_user" tagType="wab_id">
+                 <description>
+                     <localized_desc language="en">The user who makes the object action.</localized_desc>
+                     <localized_desc language="fr">L'utilisateur resonsable de l'action sur l'objet</localized_desc>
+                 </description>
+                 <substitute>_USER_</substitute>
+             </tag>
+         </tags>
+         <examples>
+             <example>
+                 <text>User 'foo' has just been saved by admin</text>
+                 <expectedTags>
+                     <expectedTag name="wab_object_type">User</expectedTag>
+                     <expectedTag name="wab_object_content">foo</expectedTag>
+                     <expectedTag name="wab_object_action">save</expectedTag>
+                     <expectedTag name="by_user">admin</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                 <text>User 'test' has juste been deleted by admin</text>
+                 <expectedTags>
+                     <expectedTag name="wab_object_type">User</expectedTag>
+                     <expectedTag name="wab_object_content">test</expectedTag>
+                     <expectedTag name="wab_object_action">delete</expectedTag>
+                     <expectedTag name="by_user">admin</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                 <text>Group 'foo' has just been saved by admin</text>
+                 <expectedTags>
+                     <expectedTag name="wab_object_type">Group</expectedTag>
+                     <expectedTag name="wab_object_content">foo</expectedTag>
+                     <expectedTag name="wab_object_action">save</expectedTag>
+                     <expectedTag name="by_user">admin</expectedTag>
+                     </expectedTags>
+                </example>
+                <example>
+                 <text>Account 'ben@appli2' has been added by admin</text>
+                 <expectedTags>
+                     <expectedTag name="wab_object_type">Account</expectedTag>
+                     <expectedTag name="wab_object_content">ben@appli2</expectedTag>
+                     <expectedTag name="wab_object_action">add</expectedTag>
+                     <expectedTag name="by_user">admin</expectedTag>
+                     </expectedTags>
+                </example>
+            </examples>
+     </pattern>
+</patterns>
+</normalizer>
