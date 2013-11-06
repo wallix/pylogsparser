@@ -21,8 +21,13 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-from domain_parser import get_domain
-from robots import robot_regex
-from timezone import to_naive_utc
-from windows import winUTC2UnixTimestamp
-from iso8601_parser import iso_to_utc
+""""""
+
+import dateutil.parser as dp
+
+def iso_to_utc(date):
+    """
+    @param date: an str datetime instance
+    @return: naive datetime set to UTC
+    """
+    return dp.parse(date)
