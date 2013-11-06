@@ -37,7 +37,7 @@ fr_trans = glob.glob('logsparser/i18n/fr_FR/LC_MESSAGES/normalizer.*')
 
 setup(
     name = "pylogsparser",
-    version = "1.0",
+    version = "1.2",
     author = "Wallix",
     author_email = "opensource@wallix.org",
     description = ("A log parser library packaged with a set of ready to use parsers (DHCPd, Squid, Apache, ...)"),
@@ -48,7 +48,7 @@ setup(
     packages=['logsparser', 'logsparser.tests', 'logsparser.extras'],
     data_files=[('share/logsparser/normalizers', data),
                 ('share/logsparser/i18n/fr_FR/LC_MESSAGES/', fr_trans),],
-    requires=['lxml', 'pytz'],
+    requires=['lxml', 'pytz', 'python-dateutil'],
     long_description=read('README.rst'),
     # http://pypi.python.org/pypi?:action=list_classifiers
     classifiers=[
